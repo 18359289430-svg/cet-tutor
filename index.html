@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>四级备考搭子·金牌陪练</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a2e;
+        }
+        .header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 20px;
+            color: #f0c040;
+        }
+        .header p {
+            margin: 5px 0 0 0;
+            font-size: 13px;
+            color: #9e9e9e;
+        }
+        #chat-container {
+            height: calc(100vh - 70px);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>⚡ 四级备考搭子·金牌陪练</h1>
+        <p>你的专属AI私教，24小时在线陪你过四级</p>
+    </div>
+    <div id="chat-container"></div>
+
+    <script src="https://lf-cdn.coze.cn/obj/unpkg/flow-platform/chat-app-sdk/1.0.0-beta.1/libs/cn/index.js"></script>
+    <script>
+        // 从URL读取用户标识（如 uid=ORDER-001）
+        const urlParams = new URLSearchParams(window.location.search);
+        const userId = urlParams.get('uid') || 'guest';
+
+        // 初始化Coze聊天窗口
+        new CozeWebSDK.WebChatClient({
+            botId: '7636289658620215331',
+            title: '四级备考搭子·金牌陪练',
+            auth: {
+                type: 'personal',
+                token: 'pat_hAOthvv429aDEqWspP4lITuL3DAU7VZJiGlVrnmA1zuoZ4IWW2kmxYzXUbGvZTYb'
+            },
+            userInfo: {
+                id: userId
+            },
+            ui: {
+                isFullScreen: true,
+                isShowTitle: false
+            }
+        }, document.getElementById('chat-container'));
+    </script>
+</body>
+</html>
