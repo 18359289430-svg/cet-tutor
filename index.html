@@ -155,7 +155,8 @@
             const userId = getUserId();
 
             try {
-                new CozeWebSDK.WebChatClient({
+                new CozeWebSDK.ChatApp({
+                    target: '#chat-app',
                     config: {
                         bot_id: BOT_ID,
                     },
@@ -173,8 +174,8 @@
                         id: userId,
                     },
                     ui: {
-                        isFullScreen: true,
                         isShowTitle: false,
+                        layout: 'embedded',
                     },
                 });
 
