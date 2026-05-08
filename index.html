@@ -17,6 +17,7 @@
             min-height: 100%;
         }
 
+        /* 顶部渐变装饰 */
         .top-gradient {
             position: fixed;
             top: 0; left: 0; right: 0;
@@ -26,6 +27,7 @@
             z-index: 0;
         }
 
+        /* 导航 */
         .nav {
             position: sticky;
             top: 0;
@@ -57,6 +59,7 @@
             padding: 2px 8px; border-radius: 20px;
         }
 
+        /* Hero */
         .hero {
             position: relative; z-index: 1;
             padding: 48px 24px 40px;
@@ -87,6 +90,7 @@
             line-height: 1.7; max-width: 360px; margin: 0 auto 32px;
         }
 
+        /* 数据条 */
         .stats-bar {
             display: flex;
             justify-content: center;
@@ -105,6 +109,7 @@
 
         .stat-label { font-size: 11px; color: #8b8fa0; margin-top: 2px; }
 
+        /* 功能卡片 */
         .features {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -139,6 +144,7 @@
         .feature-label { font-size: 13px; font-weight: 600; color: #2a2a3e; }
         .feature-sub { font-size: 10px; color: #8b8fa0; margin-top: 1px; }
 
+        /* 学习流程 */
         .how-section {
             position: relative; z-index: 1;
             padding: 0 24px 36px;
@@ -175,25 +181,69 @@
         .step-text { font-size: 13px; font-weight: 500; color: #2a2a3e; }
         .step-sub { font-size: 11px; color: #8b8fa0; margin-top: 1px; }
 
+        /* 用户评价 */
         .testimonials {
             position: relative; z-index: 1;
             padding: 0 24px 36px;
         }
 
-        .testimonial-card {
-            max-width: 400px; margin: 0 auto;
+        .t-card {
+            max-width: 400px; margin: 0 auto 10px;
             background: #fff;
             border: 1px solid rgba(0,0,0,0.05);
             border-radius: 12px;
-            padding: 16px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+            overflow: hidden;
+            transition: box-shadow 0.2s;
+        }
+        .t-card:hover { box-shadow: 0 2px 8px rgba(91,91,255,0.08); }
+        .t-pain {
+            padding: 14px 14px 0;
+            font-size: 14px; font-weight: 600; color: #1a1a2e;
+            line-height: 1.5;
+        }
+        .t-pain-icon { margin-right: 4px; }
+        .t-divider {
+            height: 1px; margin: 10px 14px;
+            background: linear-gradient(90deg, rgba(91,91,255,0.2), rgba(91,91,255,0.05));
+        }
+        .t-solution {
+            padding: 0 14px 14px;
+            display: flex; gap: 8px; align-items: flex-start;
+        }
+        .t-solution-badge {
+            flex-shrink: 0;
+            font-size: 9px; font-weight: 700; color: #fff;
+            background: linear-gradient(135deg, #5b5bff, #7c5cbf);
+            padding: 2px 6px; border-radius: 4px;
+            letter-spacing: 0.5px; margin-top: 2px;
+        }
+        .t-solution-text { font-size: 12px; color: #4a4a5e; line-height: 1.8; }
+        .t-result { color: #5b5bff; font-weight: 700; }
+        .t-footer {
+            padding: 0 14px 10px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .t-source { font-size: 10px; color: #b0b4c0; }
+        .t-collapse-btn {
+            max-width: 400px; margin: 4px auto 0;
+            display: block; width: 100%;
+            padding: 10px; text-align: center;
+            font-size: 12px; font-weight: 500; color: #5b5bff;
+            background: rgba(91,91,255,0.04);
+            border: 1px dashed rgba(91,91,255,0.2);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .t-collapse-btn:hover { background: rgba(91,91,255,0.08); }
+        .t-hidden { display: none; }
+        .t-disclaimer {
+            max-width: 400px; margin: 8px auto 0;
+            font-size: 9px; color: #c0c4d0; text-align: center;
+            line-height: 1.6;
         }
 
-        .t-stars { color: #f0c040; font-size: 12px; margin-bottom: 8px; letter-spacing: 2px; }
-        .t-text { font-size: 13px; color: #3a3a4e; line-height: 1.7; margin-bottom: 10px; }
-        .t-author { font-size: 11px; color: #8b8fa0; }
-        .t-author span { font-weight: 600; color: #5b5bff; }
-
+        /* CTA */
         .cta-section {
             position: relative; z-index: 1;
             padding: 0 24px 32px;
@@ -215,6 +265,7 @@
             display: flex; align-items: center; justify-content: center; gap: 4px;
         }
 
+        /* Footer */
         .footer {
             position: relative; z-index: 1;
             text-align: center;
@@ -222,6 +273,7 @@
             font-size: 10px; color: #b0b4c0;
         }
 
+        /* Loading */
         .loading-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -253,6 +305,7 @@
 
         .loading-text { margin-top: 14px; color: #8b8fa0; font-size: 12px; font-weight: 500; }
 
+        /* 响应式 */
         @media (max-width: 380px) {
             .hero-title { font-size: 26px; }
             .stats-bar { gap: 20px; }
@@ -284,6 +337,7 @@
         <div class="nav-badge">AI Tutor</div>
     </nav>
 
+    <!-- Hero -->
     <section class="hero">
         <div class="hero-tag">CET-4 智能备考</div>
         <div class="hero-title">过四级，<span class="accent">有方法</span></div>
@@ -344,6 +398,7 @@
         </div>
     </section>
 
+    <!-- 学习流程 -->
     <section class="how-section">
         <div class="section-title">三步开启备考</div>
         <div class="steps">
@@ -371,15 +426,93 @@
         </div>
     </section>
 
+    <!-- 痛点场景 -->
     <section class="testimonials">
-        <div class="section-title">他们都在用</div>
-        <div class="testimonial-card">
-            <div class="t-stars">★★★★★</div>
-            <div class="t-text">之前听力一直拖后腿，AI私教帮我精听了20篇真题，考试的时候感觉每段都听得懂了，最后听力提了30分！</div>
-            <div class="t-author"><span>小李</span> · 大二 · 425分上岸</div>
+        <div class="section-title">你的痛点，AI私教都能解</div>
+
+        <!-- 痛点1：听力 -->
+        <div class="t-card">
+            <div class="t-pain"><span class="t-pain-icon">🎧</span>"听力像天书，每次只能蒙"</div>
+            <div class="t-divider"></div>
+            <div class="t-solution">
+                <div class="t-solution-badge">AI解法</div>
+                <div class="t-solution-text">逐句精听训练，连读弱读单独拆解反复练，一个月听力正确率翻倍，<span class="t-result">从只对8题到抓大半</span></div>
+            </div>
+            <div class="t-footer"><span class="t-source">改编自真实备考经历</span></div>
         </div>
+
+        <!-- 痛点2：多次不过 -->
+        <div class="t-card">
+            <div class="t-pain"><span class="t-pain-icon">😭</span>"裸考三次，417、417、416，快崩溃了"</div>
+            <div class="t-divider"></div>
+            <div class="t-solution">
+                <div class="t-solution-badge">AI解法</div>
+                <div class="t-solution-text">每天推送针对性练习，背完单词当天复盘，考前真题估分追踪进度，<span class="t-result">第四次496过线</span></div>
+            </div>
+            <div class="t-footer"><span class="t-source">改编自真实备考经历</span></div>
+        </div>
+
+        <!-- 痛点3：刷题无效 -->
+        <div class="t-card">
+            <div class="t-pain"><span class="t-pain-icon">😤</span>"真题刷了3遍还是差2分过不了"</div>
+            <div class="t-divider"></div>
+            <div class="t-solution">
+                <div class="t-solution-badge">AI解法</div>
+                <div class="t-solution-text">AI诊断错题类型，精准复盘替代盲目刷题，把"转折词陷阱"等套路整理成表，<span class="t-result">正确率直接涨70%</span></div>
+            </div>
+            <div class="t-footer"><span class="t-source">改编自真实备考经历</span></div>
+        </div>
+
+        <!-- 痛点4：阅读做不完 - 折叠区 -->
+        <div class="t-card t-hidden t-extra">
+            <div class="t-pain"><span class="t-pain-icon">⏰</span>"阅读永远做不完，最后两篇全靠蒙"</div>
+            <div class="t-divider"></div>
+            <div class="t-solution">
+                <div class="t-solution-badge">AI解法</div>
+                <div class="t-solution-text">教你先读题干再回文定位，不用逐字翻译也能找答案，<span class="t-result">正确率60%→85%，还能提前5分钟做完</span></div>
+            </div>
+            <div class="t-footer"><span class="t-source">改编自真实备考经历</span></div>
+        </div>
+
+        <!-- 痛点5：考多次不过想放弃 -->
+        <div class="t-card t-hidden t-extra">
+            <div class="t-pain"><span class="t-pain-icon">💪</span>"考了四五次了，差几分就差几分，真想放弃"</div>
+            <div class="t-divider"></div>
+            <div class="t-solution">
+                <div class="t-solution-badge">AI解法</div>
+                <div class="t-solution-text">每天固定推送任务+鼓励陪伴，像有个真人在旁边盯你学，<span class="t-result">坚持下来，下次一定能过</span></div>
+            </div>
+            <div class="t-footer"><span class="t-source">改编自真实备考经历</span></div>
+        </div>
+
+        <!-- 痛点6：听力抓不到重点 -->
+        <div class="t-card t-hidden t-extra">
+            <div class="t-pain"><span class="t-pain-icon">👂</span>"听力一快就跟不上，关键信息全漏掉"</div>
+            <div class="t-divider"></div>
+            <div class="t-solution">
+                <div class="t-solution-badge">AI解法</div>
+                <div class="t-solution-text">训练"信号词定位法"，听到but、however后面往往是答案，逐句听写标注生词，<span class="t-result">听力从最弱项变成提分最快项</span></div>
+            </div>
+            <div class="t-footer"><span class="t-source">改编自真实备考经历</span></div>
+        </div>
+
+        <!-- 痛点7：坚持不下来 -->
+        <div class="t-card t-hidden t-extra">
+            <div class="t-pain"><span class="t-pain-icon">🫠</span>"买过课买过书全都吃灰，坚持不下来"</div>
+            <div class="t-divider"></div>
+            <div class="t-solution">
+                <div class="t-solution-badge">AI解法</div>
+                <div class="t-solution-text">AI每天主动推题+限时训练，培养考试节奏感，像有个学习搭子每天陪你练，<span class="t-result">28天没断过，比预期高50分</span></div>
+            </div>
+            <div class="t-footer"><span class="t-source">改编自真实备考经历</span></div>
+        </div>
+
+        <!-- 展开/收起按钮 -->
+        <div class="t-collapse-btn" id="toggleMore" onclick="toggleMore()">更多痛点 ▼</div>
+        <div class="t-disclaimer">*案例改编自公开备考经验，展示AI私教可提供的解决思路</div>
     </section>
 
+    <!-- CTA -->
     <section class="cta-section">
         <div class="cta-card">
             <div class="cta-title">开始你的四级逆袭</div>
@@ -396,6 +529,22 @@
     <script src="https://lf-cdn.coze.cn/obj/unpkg/flow-platform/chat-app-sdk/1.2.0-beta.20/libs/cn/index.js"></script>
 
     <script>
+        // 更多痛点展开交互
+        let moreExpanded = false;
+        function toggleMore() {
+            moreExpanded = !moreExpanded;
+            const extras = document.querySelectorAll('.t-extra');
+            const btn = document.getElementById('toggleMore');
+            extras.forEach(el => {
+                if (moreExpanded) {
+                    el.classList.remove('t-hidden');
+                } else {
+                    el.classList.add('t-hidden');
+                }
+            });
+            btn.textContent = moreExpanded ? '收起 ▲' : '更多痛点 ▼';
+        }
+
         const BOT_ID = '7636289658620215331';
         const API_TOKEN = 'pat_hAOthvv429aDEqWspP4lITuL3DAU7VZJiGlVrnmA1zuoZ4IWW2kmxYzXUbGvZTYb';
 
