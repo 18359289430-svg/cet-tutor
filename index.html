@@ -17,32 +17,20 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
-            background: #0c0c14;
+            background: #f8f9fc;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
             min-height: -webkit-fill-available;
         }
 
-        .grid-bg {
+        .top-gradient {
             position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-image:
-                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
-            background-size: 60px 60px;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .glow-top {
-            position: fixed;
-            top: -200px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 600px;
-            height: 400px;
-            background: radial-gradient(ellipse, rgba(91, 91, 255, 0.08) 0%, transparent 70%);
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 320px;
+            background: linear-gradient(135deg, #eef1ff 0%, #f0e6ff 50%, #fef1f8 100%);
             pointer-events: none;
             z-index: 0;
         }
@@ -53,11 +41,10 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
             flex-shrink: 0;
             position: relative;
             z-index: 100;
-            background: rgba(12, 12, 20, 0.8);
+            background: rgba(248, 249, 252, 0.85);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
         }
@@ -71,12 +58,12 @@
         .logo {
             width: 30px;
             height: 30px;
-            background: linear-gradient(135deg, #5b5bff 0%, #8b5cf6 100%);
+            background: linear-gradient(135deg, #5b5bff 0%, #7c5cbf 100%);
             border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 700;
             color: #fff;
         }
@@ -84,20 +71,19 @@
         .nav-title {
             font-size: 15px;
             font-weight: 600;
-            color: #e0e0ea;
+            color: #1a1a2e;
             letter-spacing: -0.3px;
         }
 
         .nav-badge {
             font-size: 10px;
             font-weight: 600;
-            color: #8b8bff;
-            background: rgba(91, 91, 255, 0.1);
-            border: 1px solid rgba(91, 91, 255, 0.2);
+            color: #5b5bff;
+            background: rgba(91, 91, 255, 0.08);
+            border: 1px solid rgba(91, 91, 255, 0.15);
             padding: 3px 10px;
             border-radius: 20px;
             letter-spacing: 0.5px;
-            text-transform: uppercase;
         }
 
         .hero {
@@ -113,10 +99,10 @@
 
         .hero-tag {
             font-size: 12px;
-            font-weight: 500;
-            color: #6b6bff;
-            background: rgba(91, 91, 255, 0.08);
-            border: 1px solid rgba(91, 91, 255, 0.15);
+            font-weight: 600;
+            color: #5b5bff;
+            background: rgba(91, 91, 255, 0.06);
+            border: 1px solid rgba(91, 91, 255, 0.12);
             padding: 5px 14px;
             border-radius: 20px;
             margin-bottom: 24px;
@@ -126,15 +112,15 @@
         .hero-title {
             font-size: 36px;
             font-weight: 700;
-            color: #f0f0f5;
+            color: #1a1a2e;
             text-align: center;
             letter-spacing: -1px;
             line-height: 1.2;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
         }
 
         .hero-title .accent {
-            background: linear-gradient(135deg, #5b5bff, #a78bfa);
+            background: linear-gradient(135deg, #5b5bff, #7c5cbf);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -142,11 +128,11 @@
 
         .hero-desc {
             font-size: 15px;
-            color: #6a6a82;
+            color: #6b7080;
             text-align: center;
             line-height: 1.7;
             max-width: 380px;
-            margin-bottom: 40px;
+            margin-bottom: 36px;
         }
 
         .features {
@@ -158,25 +144,26 @@
         }
 
         .feature-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: #ffffff;
+            border: 1px solid rgba(0, 0, 0, 0.06);
             border-radius: 12px;
             padding: 16px;
             display: flex;
             align-items: center;
             gap: 10px;
-            transition: border-color 0.2s, background 0.2s;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
 
         .feature-card:hover {
             border-color: rgba(91, 91, 255, 0.2);
-            background: rgba(91, 91, 255, 0.04);
+            box-shadow: 0 2px 8px rgba(91, 91, 255, 0.08);
         }
 
         .feature-icon {
             width: 32px;
             height: 32px;
-            background: rgba(91, 91, 255, 0.1);
+            background: linear-gradient(135deg, rgba(91, 91, 255, 0.1), rgba(124, 92, 191, 0.1));
             border-radius: 8px;
             display: flex;
             align-items: center;
@@ -187,7 +174,7 @@
         .feature-icon svg {
             width: 16px;
             height: 16px;
-            stroke: #6b6bff;
+            stroke: #5b5bff;
             fill: none;
             stroke-width: 2;
             stroke-linecap: round;
@@ -196,13 +183,13 @@
 
         .feature-label {
             font-size: 13px;
-            font-weight: 500;
-            color: #c0c0d0;
+            font-weight: 600;
+            color: #2a2a3e;
         }
 
         .feature-sub {
             font-size: 11px;
-            color: #5a5a72;
+            color: #8b8fa0;
             margin-top: 1px;
         }
 
@@ -212,7 +199,7 @@
             left: 50%;
             transform: translateX(-50%);
             font-size: 12px;
-            color: #3a3a52;
+            color: #b0b4c0;
             display: flex;
             align-items: center;
             gap: 4px;
@@ -221,7 +208,7 @@
         .loading-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: #0c0c14;
+            background: #f8f9fc;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -238,7 +225,7 @@
         .loading-bar {
             width: 100px;
             height: 2px;
-            background: rgba(255, 255, 255, 0.06);
+            background: rgba(91, 91, 255, 0.1);
             border-radius: 1px;
             overflow: hidden;
         }
@@ -258,7 +245,7 @@
 
         .loading-text {
             margin-top: 14px;
-            color: #4a4a62;
+            color: #8b8fa0;
             font-size: 12px;
             font-weight: 500;
         }
@@ -281,8 +268,7 @@
     </style>
 </head>
 <body>
-    <div class="grid-bg"></div>
-    <div class="glow-top"></div>
+    <div class="top-gradient"></div>
 
     <div class="loading-overlay" id="loadingOverlay">
         <div class="loading-bar"><div class="loading-bar-inner"></div></div>
@@ -402,7 +388,7 @@
         function showError(message) {
             const overlay = document.getElementById('loadingOverlay');
             if (overlay) {
-                overlay.innerHTML = '<div style="text-align:center;color:#5a5a72;padding:20px;"><p>' + message + '</p></div>';
+                overlay.innerHTML = '<div style="text-align:center;color:#8b8fa0;padding:20px;"><p>' + message + '</p></div>';
             }
         }
 
