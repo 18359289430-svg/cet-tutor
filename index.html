@@ -71,6 +71,46 @@
             min-height: 0;
         }
 
+        .landing {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .landing-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .landing-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #e8e8f0;
+            margin-bottom: 8px;
+        }
+
+        .landing-desc {
+            font-size: 14px;
+            color: #6b6b80;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        .landing-hint {
+            margin-top: 40px;
+            font-size: 13px;
+            color: #4a4a6a;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+
         .loading-overlay {
             position: fixed;
             top: 0;
@@ -120,6 +160,9 @@
             .subtitle {
                 font-size: 11px;
             }
+            .landing-title {
+                font-size: 18px;
+            }
         }
     </style>
 </head>
@@ -136,8 +179,11 @@
         <div class="subtitle">AI智能私教 · 专属定制服务</div>
     </header>
 
-    <div class="chat-container">
-        <div id="chat-app"></div>
+    <div class="landing">
+        <div class="landing-icon">🎓</div>
+        <div class="landing-title">你的专属AI私教已就绪</div>
+        <div class="landing-desc">点击右下角按钮开始对话<br>24小时在线，陪你过四级</div>
+        <div class="landing-hint">↓ 点击右下角开始聊天</div>
     </div>
 
     <script src="https://lf-cdn.coze.cn/obj/unpkg/flow-platform/chat-app-sdk/1.2.0-beta.20/libs/cn/index.js"></script>
@@ -155,8 +201,7 @@
             const userId = getUserId();
 
             try {
-                new CozeWebSDK.ChatApp({
-                    target: '#chat-app',
+                new CozeWebSDK.WebChatClient({
                     config: {
                         bot_id: BOT_ID,
                     },
@@ -174,8 +219,8 @@
                         id: userId,
                     },
                     ui: {
+                        isFullScreen: true,
                         isShowTitle: false,
-                        layout: 'embedded',
                     },
                 });
 
