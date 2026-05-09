@@ -518,15 +518,15 @@
         .delay-4 { animation-delay: 0.4s; }
         .delay-5 { animation-delay: 0.5s; }
 
-/* ========== 功能卡片区 - Apple式精致浅色风格 ========== */
+        /* ========== 功能卡片区 - 高级科技风格 ========== */
         .features-section {
             padding: 100px 40px;
-            background: #FFFFFF;
+            background: linear-gradient(180deg, #0a0a1a 0%, #120a2e 50%, #0a0a1a 100%);
             position: relative;
             overflow: hidden;
         }
 
-        /* 极淡网格背景 */
+        /* 背景网格 */
         .features-section::before {
             content: '';
             position: absolute;
@@ -535,21 +535,31 @@
             right: 0;
             bottom: 0;
             background-image: 
-                linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
+                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
             background-size: 60px 60px;
             pointer-events: none;
         }
 
-        /* 顶部渐变过渡 */
+        /* 背景光晕 */
         .features-section::after {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 80px;
-            background: linear-gradient(180deg, rgba(0,0,0,0.02) 0%, transparent 100%);
+            top: -200px;
+            left: -200px;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(167,139,250,0.15) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .features-glow-bottom {
+            position: absolute;
+            bottom: -200px;
+            right: -200px;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(34,211,238,0.1) 0%, transparent 70%);
             pointer-events: none;
         }
 
@@ -568,14 +578,15 @@
         .features-title {
             font-size: 36px;
             font-weight: 700;
-            color: #1a1a2e;
+            color: white;
             letter-spacing: -0.02em;
             margin-bottom: 12px;
+            text-shadow: 0 0 40px rgba(167,139,250,0.3);
         }
 
         .features-subtitle {
             font-size: 18px;
-            color: #6b7280;
+            color: rgba(255,255,255,0.5);
         }
 
         .features-grid {
@@ -592,18 +603,19 @@
             }
         }
 
-        /* 高级浅色功能卡片 */
+        /* 高级功能卡片 */
         .feature-card {
-            background: #FFFFFF;
-            border: 1px solid rgba(0,0,0,0.06);
+            background: rgba(15, 15, 30, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.08);
             border-radius: 20px;
-            padding: 32px;
+            padding: 36px;
             position: relative;
             overflow: hidden;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             opacity: 0;
             transform: translateY(30px);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.06);
         }
 
         .feature-card.visible {
@@ -616,107 +628,131 @@
         .feature-card:nth-child(3) { transition-delay: 0.3s; }
 
         .feature-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 32px rgba(0,0,0,0.1);
+            transform: translateY(-6px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
         }
 
-        /* 移除旧光晕效果 */
-        .feature-glow,
-        .feature-border-glow,
-        .features-glow-bottom {
-            display: none;
+        .feature-card:hover .feature-glow {
+            opacity: 1;
         }
 
-        /* 卡片左上角标签 */
-        .feature-tag {
-            display: inline-flex;
-            align-items: center;
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: 600;
-            margin-bottom: 20px;
+        .feature-card:hover .feature-border-glow {
+            opacity: 1;
         }
 
-        .feature-card:nth-child(1) .feature-tag {
-            background: rgba(124, 58, 237, 0.1);
-            color: #7C3AED;
+        /* 右上角光晕 */
+        .feature-glow {
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            opacity: 0.6;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+            filter: blur(40px);
         }
 
-        .feature-card:nth-child(2) .feature-tag {
-            background: rgba(6, 182, 212, 0.1);
-            color: #06B6D4;
+        .feature-card:nth-child(1) .feature-glow {
+            background: radial-gradient(circle, rgba(167,139,250,0.8) 0%, transparent 70%);
         }
 
-        .feature-card:nth-child(3) .feature-tag {
-            background: rgba(249, 115, 22, 0.1);
-            color: #f97316;
+        .feature-card:nth-child(2) .feature-glow {
+            background: radial-gradient(circle, rgba(34,211,238,0.8) 0%, transparent 70%);
         }
 
-        /* 图标样式 - 精致线条风格 */
+        .feature-card:nth-child(3) .feature-glow {
+            background: radial-gradient(circle, rgba(249,115,22,0.8) 0%, transparent 70%);
+        }
+
+        /* 边框发光 */
+        .feature-border-glow {
+            position: absolute;
+            inset: -1px;
+            border-radius: 20px;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+        }
+
+        .feature-card:nth-child(1) .feature-border-glow {
+            background: linear-gradient(135deg, rgba(167,139,250,0.3), transparent 50%, transparent);
+        }
+
+        .feature-card:nth-child(2) .feature-border-glow {
+            background: linear-gradient(135deg, rgba(34,211,238,0.3), transparent 50%, transparent);
+        }
+
+        .feature-card:nth-child(3) .feature-border-glow {
+            background: linear-gradient(135deg, rgba(249,115,22,0.3), transparent 50%, transparent);
+        }
+
+        /* 图标样式 - 线条风格 */
         .feature-icon {
-            width: 48px;
-            height: 48px;
+            width: 56px;
+            height: 56px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
             position: relative;
         }
 
         .feature-icon svg {
-            width: 28px;
-            height: 28px;
+            width: 32px;
+            height: 32px;
             position: relative;
             z-index: 1;
         }
 
         .feature-card:nth-child(1) .feature-icon svg {
-            stroke: #7C3AED;
+            stroke: #a78bfa;
+            filter: drop-shadow(0 0 8px rgba(167,139,250,0.5));
         }
 
         .feature-card:nth-child(2) .feature-icon svg {
-            stroke: #06B6D4;
+            stroke: #22d3ee;
+            filter: drop-shadow(0 0 8px rgba(34,211,238,0.5));
         }
 
         .feature-card:nth-child(3) .feature-icon svg {
-            stroke: #f97316;
+            stroke: #fb923c;
+            filter: drop-shadow(0 0 8px rgba(249,115,22,0.5));
         }
 
         .feature-title {
             font-size: 20px;
             font-weight: 600;
-            color: #1a1a2e;
+            color: white;
             margin-bottom: 10px;
             letter-spacing: -0.01em;
         }
 
         .feature-desc {
             font-size: 14px;
-            color: #6b7280;
+            color: rgba(255,255,255,0.5);
             line-height: 1.7;
             margin-bottom: 28px;
         }
 
         /* 功能卡片底部预览 */
         .feature-preview {
-            background: rgba(0,0,0,0.03);
-            border-radius: 12px;
+            background: rgba(10,10,25,0.6);
+            border-radius: 16px;
             padding: 24px;
             display: flex;
             align-items: center;
             justify-content: center;
             min-height: 160px;
+            border: 1px solid rgba(255,255,255,0.04);
         }
 
-        /* ===== 雷达图样式 - 浅色精致版 ===== */
+        /* ===== 雷达图样式 - 发光版 ===== */
         .radar-preview {
             width: 150px;
             height: 150px;
             position: relative;
-            background: #FFFFFF;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
         }
 
         .radar-preview canvas {
@@ -736,13 +772,13 @@
         .radar-label {
             position: absolute;
             font-size: 11px;
-            color: #9ca3af;
+            color: rgba(255,255,255,0.6);
             white-space: nowrap;
             transform: translate(-50%, -50%);
             font-weight: 500;
         }
 
-        /* ===== 进度条样式 - 浅色精致版 ===== */
+        /* ===== 进度条样式 - 发光版 ===== */
         .progress-preview {
             width: 100%;
         }
@@ -756,18 +792,19 @@
 
         .progress-label {
             font-size: 13px;
-            color: #9ca3af;
+            color: rgba(255,255,255,0.5);
         }
 
         .progress-value {
             font-size: 36px;
             font-weight: 700;
-            color: #06B6D4;
+            color: #22d3ee;
+            text-shadow: 0 0 20px rgba(34,211,238,0.5);
         }
 
         .progress-bar-container {
             height: 8px;
-            background: rgba(0,0,0,0.06);
+            background: rgba(255,255,255,0.08);
             border-radius: 4px;
             overflow: hidden;
             margin-bottom: 20px;
@@ -777,10 +814,27 @@
         .progress-bar {
             height: 100%;
             border-radius: 4px;
-            background: linear-gradient(90deg, #06B6D4, #22d3ee);
+            background: linear-gradient(90deg, #06b6d4, #22d3ee);
             width: 0;
+            box-shadow: 0 0 20px rgba(34,211,238,0.6), 0 0 40px rgba(34,211,238,0.3);
             transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 30px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4));
+            animation: progressShine 2s ease-in-out infinite;
+        }
+
+        @keyframes progressShine {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.8; }
         }
 
         .progress-items {
@@ -791,10 +845,11 @@
 
         .progress-item {
             font-size: 12px;
-            color: #06B6D4;
+            color: rgba(255,255,255,0.7);
             padding: 8px 14px;
-            background: rgba(6, 182, 212, 0.1);
+            background: rgba(10,10,25,0.8);
             border-radius: 20px;
+            border: 1px solid rgba(34,211,238,0.2);
             display: flex;
             align-items: center;
             gap: 6px;
@@ -807,8 +862,9 @@
             content: '';
             width: 6px;
             height: 6px;
-            background: #06B6D4;
+            background: #22d3ee;
             border-radius: 50%;
+            box-shadow: 0 0 8px rgba(34,211,238,0.8);
         }
 
         .progress-item.visible {
@@ -820,7 +876,7 @@
         .progress-item:nth-child(2) { transition-delay: 0.75s; }
         .progress-item:nth-child(3) { transition-delay: 0.9s; }
 
-        /* ===== 分数对比样式 - 浅色精致版 ===== */
+        /* ===== 分数对比样式 - 科技版 ===== */
         .score-preview {
             display: flex;
             align-items: center;
@@ -851,17 +907,18 @@
         }
 
         .score-from .score-value {
-            color: #9ca3af;
+            color: rgba(255,255,255,0.6);
             font-size: 28px;
         }
 
         .score-to .score-value {
-            color: #f97316;
+            color: #fb923c;
+            text-shadow: 0 0 20px rgba(249,115,22,0.5);
         }
 
         .score-label {
             font-size: 12px;
-            color: #9ca3af;
+            color: rgba(255,255,255,0.4);
             margin-top: 6px;
         }
 
@@ -883,10 +940,24 @@
 
         .score-arrow .arrow-gradient {
             stroke: url(#arrowGradient);
+            filter: drop-shadow(0 0 6px rgba(34,197,94,0.6));
         }
 
         .score-arrow .arrow-pulse {
-            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 60px;
+            height: 60px;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(circle, rgba(34,197,94,0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: arrowPulse 2s ease-out infinite;
+        }
+
+        @keyframes arrowPulse {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; }
         }
 
         /* 底部微型折线图 */
@@ -915,11 +986,12 @@
             stroke: rgba(34,197,94,0.6);
             stroke-width: 2;
             stroke-linecap: round;
+            filter: drop-shadow(0 0 4px rgba(34,197,94,0.8));
         }
 
         .sparkline-area {
             fill: url(#sparklineGradient);
-            opacity: 0.2;
+            opacity: 0.3;
         }
 
         /* prefers-reduced-motion 降级 */
@@ -936,11 +1008,13 @@
             .progress-bar {
                 transition: none;
             }
+            .progress-bar::after {
+                animation: none;
+            }
             .score-arrow .arrow-pulse {
                 animation: none;
             }
         }
-
         /* ========== 人格预览区 ========== *//* ========== 人格预览区 ========== */
         .section {
             padding: 80px 40px;
@@ -2003,7 +2077,8 @@
                     </div>
                 </div>
             </div>
-<section class="features-section" id="features">
+        <section class="features-section" id="features">
+            <div class="features-glow-bottom"></div>
             <div class="features-container">
                 <div class="features-header">
                     <h2 class="features-title animate-in">AI驱动的备考，不止是刷题</h2>
@@ -2013,7 +2088,8 @@
                 <div class="features-grid" id="featuresGrid">
                     <!-- 卡片1: AI对话诊断 -->
                     <div class="feature-card" data-animate="true">
-                        <span class="feature-tag">AI诊断</span>
+                        <div class="feature-border-glow"></div>
+                        <div class="feature-glow"></div>
                         <div class="feature-icon">
                             <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
@@ -2040,7 +2116,8 @@
 
                     <!-- 卡片2: 智能备考计划 -->
                     <div class="feature-card" data-animate="true">
-                        <span class="feature-tag">AI计划</span>
+                        <div class="feature-border-glow"></div>
+                        <div class="feature-glow"></div>
                         <div class="feature-icon">
                             <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                                 <circle cx="12" cy="12" r="10"/>
@@ -2074,7 +2151,8 @@
 
                     <!-- 卡片3: 实战模拟提分 -->
                     <div class="feature-card" data-animate="true">
-                        <span class="feature-tag">AI提分</span>
+                        <div class="feature-border-glow"></div>
+                        <div class="feature-glow"></div>
                         <div class="feature-icon">
                             <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                                 <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
@@ -2097,7 +2175,7 @@
                                         </linearGradient>
                                     </defs>
                                 </svg>
-                                <div class="score-box score-from">
+                                <div class="score-box">
                                     <div class="score-value" id="scoreFrom">0</div>
                                     <div class="score-label">诊断时</div>
                                 </div>
@@ -2105,8 +2183,9 @@
                                     <svg viewBox="0 0 24 24" fill="none">
                                         <path class="arrow-gradient" d="M5 12h14M13 5l7 7-7 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                     </svg>
+                                    <div class="arrow-pulse"></div>
                                 </div>
-                                <div class="score-box score-to">
+                                <div class="score-box">
                                     <div class="score-value" id="scoreTo">0</div>
                                     <div class="score-label">目标分数</div>
                                 </div>
@@ -2123,7 +2202,7 @@
             </div>
         </section>
 
-
+        <!-- 人格预览区 -->
         <section class="section" id="personalities">
             <div class="section-header">
                 <h2 class="section-title animate-in">8种备考人格，你是哪一种？</h2>
