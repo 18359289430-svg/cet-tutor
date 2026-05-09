@@ -2388,17 +2388,16 @@
         function initCozeChat() {
             try {
                 chatClient = new CozeWebSDK.WebChatClient({
-                    bot_id: "7636289658620215331",
+                    config: {
+                        bot_id: "7636289658620215331",
+                    },
+                    componentProps: {
+                        title: "四级备考诊断师",
+                    },
                     auth: {
                         type: "token",
                         token: "pat_hAOthvv429aDEqWspP4lITuL3DAU7VZJiGlVrnmA1zuoZ4IWW2kmxYzXUbGvZTYb",
-                        onRefreshToken: async () => "pat_hAOthvv429aDEqWspP4lITuL3DAU7VZJiGlVrnmA1zuoZ4IWW2kmxYzXUbGvZTYb"
-                    },
-                    userInfo: { id: getUserId() },
-                    componentProps: { title: "四级备考诊断师" },
-                    ui: {
-                        isFullScreen: false,
-                        isShowTitle: true
+                        onRefreshToken: function () { return "pat_hAOthvv429aDEqWspP4lITuL3DAU7VZJiGlVrnmA1zuoZ4IWW2kmxYzXUbGvZTYb"; }
                     }
                 });
 
