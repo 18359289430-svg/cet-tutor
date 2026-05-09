@@ -1626,37 +1626,60 @@
             border-top: 1px solid var(--border);
         }
 
-        /* ========== 用户中心 ========== */
+                /* ========== 用户中心 - Stripe Dashboard 风格 ========== */
         .user-center {
             padding: 80px 40px;
             max-width: 1000px;
             margin: 0 auto;
+            background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+            min-height: calc(100vh - 200px);
+            position: relative;
+        }
+
+        .user-center::before {
+            content: '';
+            position: absolute;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 800px;
+            height: 400px;
+            background: radial-gradient(ellipse at center top, rgba(99, 91, 255, 0.08) 0%, transparent 70%);
+            pointer-events: none;
         }
 
         .user-center-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 32px;
+            margin-bottom: 40px;
         }
 
         .user-center-title {
             font-size: 28px;
             font-weight: 700;
-            color: var(--slate);
+            color: #0a2540;
             letter-spacing: -0.02em;
         }
 
         .user-center-link {
-            font-size: 14px;
-            color: var(--primary);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: rgba(99, 91, 255, 0.08);
+            color: #635BFF;
             text-decoration: none;
             font-weight: 500;
-            transition: opacity 0.2s;
+            font-size: 14px;
+            border-radius: 20px;
+            transition: all 0.2s ease;
+            border: 1px solid rgba(99, 91, 255, 0.12);
         }
 
         .user-center-link:hover {
-            opacity: 0.7;
+            background: rgba(99, 91, 255, 0.12);
+            transform: translateX(-2px);
         }
 
         .user-status-cards {
@@ -1674,58 +1697,168 @@
 
         .status-card {
             background: var(--white);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 24px;
+            border: 1px solid rgba(0,0,0,0.06);
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.04);
+            transition: all 0.25s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .status-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, rgba(99, 91, 255, 0.3), transparent);
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
+
+        .status-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.08);
+        }
+
+        .status-card:hover::before {
+            opacity: 1;
         }
 
         .status-card-label {
             font-size: 13px;
-            color: var(--slate-light);
-            margin-bottom: 8px;
+            color: #64748b;
+            margin-bottom: 12px;
             font-weight: 500;
+            letter-spacing: 0.02em;
         }
 
         .status-card-value {
             font-size: 20px;
             font-weight: 600;
-            color: var(--slate);
+            color: #0a2540;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
         .status-card-meta {
             font-size: 13px;
-            color: var(--slate-light);
-            margin-top: 4px;
+            color: #64748b;
+            margin-top: 8px;
         }
 
         .plan-status-badge {
             display: inline-flex;
             align-items: center;
             gap: 4px;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 500;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
         }
 
         .plan-status-badge.free {
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--success);
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(5, 150, 105, 0.12));
+            color: #059669;
+            border: 1px solid rgba(16, 185, 129, 0.2);
         }
 
         .plan-status-badge.paid {
-            background: rgba(99, 91, 255, 0.1);
-            color: var(--primary);
+            background: linear-gradient(135deg, rgba(99, 91, 255, 0.12), rgba(124, 58, 237, 0.12));
+            color: #635BFF;
+            border: 1px solid rgba(99, 91, 255, 0.2);
+        }
+
+        /* 诊断进度环 */
+        .diagnosis-progress-ring {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .progress-ring-circle {
+            width: 48px;
+            height: 48px;
+            position: relative;
+        }
+
+        .progress-ring-circle svg {
+            transform: rotate(-90deg);
+            width: 48px;
+            height: 48px;
+        }
+
+        .progress-ring-circle circle {
+            fill: none;
+            stroke-width: 4;
+        }
+
+        .progress-ring-bg {
+            stroke: #e2e8f0;
+        }
+
+        .progress-ring-fill {
+            stroke: #635BFF;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 0.5s ease;
+        }
+
+        .progress-ring-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 12px;
+            font-weight: 600;
+            color: #635BFF;
+        }
+
+        /* 快速操作区 */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .quick-action-card {
+            background: var(--white);
+            border: 1px solid rgba(0,0,0,0.06);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .quick-action-card:hover {
+            background: #fafafa;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+        }
+
+        .quick-action-icon {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .quick-action-text {
+            font-size: 14px;
+            font-weight: 500;
+            color: #0a2540;
         }
 
         .diagnosis-records {
             background: var(--white);
-            border: 1px solid var(--border);
-            border-radius: 12px;
+            border: 1px solid rgba(0,0,0,0.06);
+            border-radius: 16px;
             overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.04);
+            margin-bottom: 32px;
         }
 
         .diagnosis-records-header {
@@ -1733,13 +1866,21 @@
             align-items: center;
             justify-content: space-between;
             padding: 20px 24px;
-            border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid rgba(0,0,0,0.06);
         }
 
         .diagnosis-records-title {
             font-size: 16px;
             font-weight: 600;
-            color: var(--slate);
+            color: #0a2540;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .diagnosis-records-title::before {
+            content: '📋';
+            font-size: 18px;
         }
 
         .diagnosis-records-list {
@@ -1751,7 +1892,7 @@
             align-items: center;
             justify-content: space-between;
             padding: 16px 24px;
-            border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid rgba(0,0,0,0.04);
             transition: background 0.2s;
         }
 
@@ -1760,7 +1901,7 @@
         }
 
         .diagnosis-record-item:hover {
-            background: var(--bg);
+            background: #fafafa;
         }
 
         .record-info {
@@ -1770,8 +1911,8 @@
         }
 
         .record-date {
-            font-size: 14px;
-            color: var(--slate-light);
+            font-size: 13px;
+            color: #64748b;
             min-width: 80px;
         }
 
@@ -1781,29 +1922,129 @@
             gap: 6px;
             font-size: 15px;
             font-weight: 500;
-            color: var(--slate);
+            color: #0a2540;
         }
 
         .record-action {
             font-size: 14px;
-            color: var(--primary);
+            color: #635BFF;
             cursor: pointer;
             font-weight: 500;
-            transition: opacity 0.2s;
+            transition: all 0.2s;
+            padding: 6px 12px;
+            border-radius: 8px;
         }
 
         .record-action:hover {
-            opacity: 0.7;
+            background: rgba(99, 91, 255, 0.08);
         }
 
+        /* 空状态设计 */
         .empty-records {
-            padding: 48px 24px;
+            padding: 56px 24px;
             text-align: center;
-            color: var(--slate-light);
-            font-size: 14px;
         }
 
-        /* ========== 结果页 ========== */
+        .empty-records-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.9;
+        }
+
+        .empty-records-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #0a2540;
+            margin-bottom: 8px;
+        }
+
+        .empty-records-text {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 20px;
+        }
+
+        .empty-records-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #635BFF, #7C3AED);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .empty-records-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(99, 91, 255, 0.3);
+        }
+
+        /* 底部操作按钮 */
+        .user-center-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 16px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .action-btn-mentor {
+            background: linear-gradient(135deg, #10B981, #059669);
+            color: white;
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
+        }
+
+        .action-btn-mentor:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.35);
+        }
+
+        .action-btn-diagnosis {
+            background: linear-gradient(135deg, #635BFF, #7C3AED);
+            color: white;
+            box-shadow: 0 2px 8px rgba(99, 91, 255, 0.25);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-btn-diagnosis::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .action-btn-diagnosis:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(99, 91, 255, 0.35);
+        }
+
+        .action-btn-diagnosis:hover::before {
+            left: 100%;
+        }
+
+        /* ========== 结果页 ========== *//* ========== 结果页 ========== */
         .result-overlay {
             position: fixed;
             top: 0;
@@ -2275,6 +2516,34 @@
             .user-center-header {
                 flex-direction: column;
                 align-items: flex-start;
+                gap: 16px;
+            }
+
+            .user-center-link {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .quick-actions {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .record-info {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 4px;
+            }
+
+            .diagnosis-progress-ring {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .user-center-header {
+                flex-direction: column;
+                align-items: flex-start;
                 gap: 12px;
             }
 
@@ -2615,12 +2884,14 @@
         </footer>
     </div>
 
-    <!-- 用户中心视图 -->
+        <!-- 用户中心视图 -->
     <div id="user-center-view" style="display: none;">
         <section class="user-center">
             <div class="user-center-header">
                 <h1 class="user-center-title">我的账户</h1>
-                <a href="#" class="user-center-link" onclick="switchView(`home`); return false;">← 返回首页</a>
+                <a href="#" class="user-center-link" onclick="switchView('home'); return false;">
+                    ← 返回首页
+                </a>
             </div>
 
             <!-- 状态卡片 -->
@@ -2636,9 +2907,35 @@
                 <div class="status-card">
                     <div class="status-card-label">备考数据</div>
                     <div class="status-card-value" id="lastDiagnosisDisplay">
-                        <span>尚未完成诊断</span>
+                        <div class="diagnosis-progress-ring">
+                            <div class="progress-ring-circle">
+                                <svg viewBox="0 0 48 48">
+                                    <circle class="progress-ring-bg" cx="24" cy="24" r="20"/>
+                                    <circle class="progress-ring-fill" cx="24" cy="24" r="20" 
+                                            stroke-dasharray="125.6" stroke-dashoffset="125.6" id="progressRing"/>
+                                </svg>
+                                <span class="progress-ring-text" id="progressText">0/3</span>
+                            </div>
+                            <span id="diagnosisStatus">尚未完成诊断</span>
+                        </div>
                     </div>
                     <div class="status-card-meta" id="diagnosisCountDisplay">诊断次数：0次</div>
+                </div>
+            </div>
+
+            <!-- 快速操作区 -->
+            <div class="quick-actions">
+                <div class="quick-action-card" onclick="switchView('home'); setTimeout(() => document.getElementById('chatContainer').scrollIntoView({behavior: 'smooth'}), 100);">
+                    <div class="quick-action-icon">📊</div>
+                    <div class="quick-action-text">查看报告</div>
+                </div>
+                <div class="quick-action-card" onclick="handleMentorChat()">
+                    <div class="quick-action-icon">💬</div>
+                    <div class="quick-action-text">问学长</div>
+                </div>
+                <div class="quick-action-card" onclick="openChat('upgrade')">
+                    <div class="quick-action-icon">⬆️</div>
+                    <div class="quick-action-text">升级套餐</div>
                 </div>
             </div>
 
@@ -2648,19 +2945,23 @@
                     <span class="diagnosis-records-title">诊断记录</span>
                 </div>
                 <ul class="diagnosis-records-list" id="diagnosisRecordsList">
-                    <li class="empty-records">暂无诊断记录，开始你的第一次诊断吧</li>
+                    <li class="empty-records">
+                        <div class="empty-records-icon">🎯</div>
+                        <div class="empty-records-title">还没有诊断记录</div>
+                        <div class="empty-records-text">完成首次诊断，解锁你的备考人格</div>
+                        <button class="empty-records-btn" onclick="switchView('home'); setTimeout(() => openChat('diagnosis'), 300);">
+                            开始诊断 🚀
+                        </button>
+                    </li>
                 </ul>
             </div>
 
-            <!-- 聊天按钮区域 -->
-            <div style="text-align: center; margin-top: 24px;">
-                <button class="btn-primary" onclick="handleMentorChat()" id="mentorChatBtn" style="background: linear-gradient(135deg, #10B981, #059669);">
+            <!-- 底部操作按钮 -->
+            <div class="user-center-actions">
+                <button class="action-btn action-btn-mentor" onclick="handleMentorChat()" id="mentorChatBtn">
                     🤝 和学长聊天
                 </button>
-            </div>
-
-            <div style="text-align: center; margin-top: 16px;">
-                <button class="btn-primary" onclick="switchView(`home`); setTimeout(() => openChat('diagnosis'), 300);">
+                <button class="action-btn action-btn-diagnosis" onclick="switchView('home'); setTimeout(() => openChat('diagnosis'), 300);">
                     开始新诊断
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M3 8h10M9 4l4 4-4 4"/>
@@ -2668,9 +2969,7 @@
                 </button>
             </div>
         </section>
-    </div>
-
-    <!-- 结果页 -->
+    </div><!-- 结果页 -->
     <div class="result-overlay" id="resultOverlay">
         <div class="result-bg"></div>
         <div class="result-content">
@@ -3192,27 +3491,50 @@
             `;
             planMeta.textContent = isPaid ? "已解锁全部功能" : "基础功能可用";
 
-            // 更新备考数据
-            const lastDiagnosisDisplay = document.getElementById("lastDiagnosisDisplay");
+            // 更新备考数据 - 进度环
             const diagnosisCountDisplay = document.getElementById("diagnosisCountDisplay");
+            const progressRing = document.getElementById("progressRing");
+            const progressText = document.getElementById("progressText");
+            const diagnosisStatus = document.getElementById("diagnosisStatus");
 
-            diagnosisCountDisplay.textContent = `诊断次数：${data.diagnoseCount}次`;
+            const maxDiagnoses = isPaid ? 999 : 3;
+            const currentCount = data.diagnoseCount || 0;
+            const circumference = 2 * Math.PI * 20; // r=20
+            const progress = isPaid ? 1 : Math.min(currentCount / 3, 1);
+            const offset = circumference * (1 - progress);
 
-            if (data.diagnoses.length > 0) {
-                const last = data.diagnoses[0];
-                lastDiagnosisDisplay.innerHTML = `
-                    <span>${last.emoji}</span>
-                    <span>${last.type}</span>
-                `;
-            } else {
-                lastDiagnosisDisplay.innerHTML = `<span>尚未完成诊断</span>`;
+            if (progressRing) {
+                progressRing.style.strokeDashoffset = offset;
+            }
+            if (progressText) {
+                progressText.textContent = isPaid ? "∞" : `${currentCount}/3`;
+            }
+            if (diagnosisCountDisplay) {
+                diagnosisCountDisplay.textContent = `诊断次数：${currentCount}次`;
+            }
+            if (diagnosisStatus) {
+                if (currentCount > 0) {
+                    const last = data.diagnoses[0];
+                    diagnosisStatus.innerHTML = `<span style="font-size: 16px;">${last.emoji}</span> <span style="font-weight: 600;">${last.type}</span>`;
+                } else {
+                    diagnosisStatus.textContent = "快去测测你的备考人格吧";
+                }
             }
 
             // 更新诊断记录列表
             const recordsList = document.getElementById("diagnosisRecordsList");
             
             if (data.diagnoses.length === 0) {
-                recordsList.innerHTML = `<li class="empty-records">暂无诊断记录，开始你的第一次诊断吧</li>`;
+                recordsList.innerHTML = `
+                    <li class="empty-records">
+                        <div class="empty-records-icon">🎯</div>
+                        <div class="empty-records-title">还没有诊断记录</div>
+                        <div class="empty-records-text">完成首次诊断，解锁你的备考人格</div>
+                        <button class="empty-records-btn" onclick="switchView('home'); setTimeout(() => openChat('diagnosis'), 300);">
+                            开始诊断 🚀
+                        </button>
+                    </li>
+                `;
             } else {
                 recordsList.innerHTML = data.diagnoses.slice(0, 3).map(d => `
                     <li class="diagnosis-record-item">
@@ -3228,7 +3550,6 @@
             // 更新学长聊天按钮
             updateMentorChatButton();
         }
-
         function viewDiagnosisReport(type) {
             const data = getUserData();
             const diagnosis = data.diagnoses.find(d => d.type === type);
