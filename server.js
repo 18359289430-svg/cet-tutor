@@ -2,6 +2,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const zlib = require('zlib');
 
 const PORT = process.env.PORT || 8080;
 
@@ -424,6 +425,35 @@ async function handleApi(req, res, pathname) {
 // 主服务器
 const html = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf-8');
 
+// 判断是否应该压缩（文件大于1KB且客户端支持gzip）
+function shouldCompress(req, contentLength) {
+    const acceptEncoding = req.headers['accept-encoding'] || '';
+    return acceptEncoding.includes('gzip') && contentLength > 1024;
+}
+
+// 发送HTML响应（支持gzip压缩）
+function sendHtml(res, htmlContent, req) {
+    const contentLength = Buffer.byteLength(htmlContent, 'utf-8');
+    res.setHeader('Content-Security-Policy', "default-src * 'unsafe-inline' 'unsafe-eval' data: blob: http: https: ws: wss:; script-src * 'unsafe-inline' 'unsafe-eval' data: blob: http: https:; style-src * 'unsafe-inline' data: blob:; img-src * data: blob: http: https:; connect-src * data: blob: http: https: ws: wss:; worker-src * blob: data: http: https:; media-src * blob: data: http: https:;");
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('Cache-Control', 'public, max-age=300'); // HTML短缓存5分钟
+    
+    if (shouldCompress(req, contentLength)) {
+        res.setHeader('Content-Type', 'text/html; charset=utf-8');
+        res.setHeader('Content-Encoding', 'gzip');
+        zlib.gzip(htmlContent, (err, compressed) => {
+            if (err) {
+                res.end(htmlContent);
+            } else {
+                res.end(compressed);
+            }
+        });
+    } else {
+        res.setHeader('Content-Type', 'text/html; charset=utf-8');
+        res.end(htmlContent);
+    }
+}
+
 const server = http.createServer((req, res) => {
     const url = new URL(req.url, `http://localhost:${PORT}`);
     const pathname = url.pathname;
@@ -436,19 +466,47 @@ const server = http.createServer((req, res) => {
 
     // 静态文件
     if (pathname === '/' || pathname === '/index.html') {
-        res.setHeader('Content-Security-Policy', "default-src * 'unsafe-inline' 'unsafe-eval' data: blob: http: https: ws: wss:; script-src * 'unsafe-inline' 'unsafe-eval' data: blob: http: https:; style-src * 'unsafe-inline' data: blob:; img-src * data: blob: http: https:; connect-src * data: blob: http: https: ws: wss:; worker-src * blob: data: http: https:; media-src * blob: data: http: https:;");
-        res.setHeader('X-Content-Type-Options', 'nosniff');
-        res.setHeader('Content-Type', 'text/html; charset=utf-8');
-        res.end(html);
+        sendHtml(res, html, req);
         return;
     }
 
     // 管理员页面
     if (pathname === '/admin-activate-cet4') {
+        const adminHtml = fs.readFileSync(path.join(__dirname, 'admin.html'), 'utf-8');
+        const adminContentLength = Buffer.byteLength(adminHtml, 'utf-8');
         res.setHeader('Content-Security-Policy', "default-src * 'unsafe-inline' 'unsafe-eval' data: blob: http: https: ws: wss:; script-src * 'unsafe-inline' 'unsafe-eval' data: blob: http: https:; style-src * 'unsafe-inline' data: blob:; img-src * data: blob: http: https:; connect-src * data: blob: http: https: ws: wss:; worker-src * blob: data: http: https:; media-src * blob: data: http: https:;");
-        res.setHeader('Content-Type', 'text/html; charset=utf-8');
-        res.end(fs.readFileSync(path.join(__dirname, 'admin.html'), 'utf-8'));
+        res.setHeader('Cache-Control', 'public, max-age=300');
+        if (shouldCompress(req, adminContentLength)) {
+            res.setHeader('Content-Type', 'text/html; charset=utf-8');
+            res.setHeader('Content-Encoding', 'gzip');
+            zlib.gzip(adminHtml, (err, compressed) => {
+                if (err) {
+                    res.end(adminHtml);
+                } else {
+                    res.end(compressed);
+                }
+            });
+        } else {
+            res.setHeader('Content-Type', 'text/html; charset=utf-8');
+            res.end(adminHtml);
+        }
         return;
+    }
+
+    // 静态资源（图片等）- 长缓存7天
+    const ext = path.extname(pathname).toLowerCase();
+    const imageExts = ['.jpg', '.jpeg', '.png', '.gif', '.svg', '.webp', '.ico', '.woff', '.woff2', '.ttf', '.otf'];
+    if (imageExts.includes(ext)) {
+        const filePath = path.join(__dirname, pathname);
+        if (fs.existsSync(filePath)) {
+            res.setHeader('Cache-Control', 'public, max-age=604800'); // 7天缓存
+            res.setHeader('Content-Type', ext === '.svg' ? 'image/svg+xml' : 
+                          ext === '.woff' || ext === '.woff2' ? 'font/woff' :
+                          ext === '.ttf' || ext === '.otf' ? 'font/truetype' :
+                          ext === '.jpg' ? 'image/jpeg' : 'image/' + ext.slice(1));
+            res.end(fs.readFileSync(filePath));
+            return;
+        }
     }
 
     // 404
