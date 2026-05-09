@@ -372,53 +372,33 @@
             justify-content: center;
         }
 
-/* ========== Hero区 - Vercel/Linear高级风格 ========== */
+/* ========== Hero区 ========== */
         .hero {
             min-height: 100vh;
-            padding: 100px 40px 100px;
+            padding: 100px 40px 80px;
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
-            background: linear-gradient(180deg, #FAFBFF 0%, #F8FAFC 100%);
+            background-image: 
+                linear-gradient(var(--grid-line) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+            background-size: 24px 24px;
             overflow: hidden;
         }
 
-        /* 顶部氛围光晕 */
+        /* 背景渐变光晕 */
         .hero::before {
             content: "";
             position: absolute;
-            top: -20%;
-            left: 10%;
-            width: 60%;
-            height: 60%;
-            background: radial-gradient(ellipse at center, rgba(99, 91, 255, 0.12) 0%, rgba(124, 58, 237, 0.08) 40%, transparent 70%);
-            filter: blur(60px);
-            pointer-events: none;
-            animation: heroGlow 8s ease-in-out infinite;
-        }
-
-        .hero::after {
-            content: "";
-            position: absolute;
             top: 0;
+            left: 0;
             right: 0;
-            width: 50%;
-            height: 70%;
-            background: radial-gradient(ellipse at center, rgba(6, 182, 212, 0.08) 0%, transparent 60%);
-            filter: blur(50px);
+            bottom: 0;
+            background: 
+                radial-gradient(ellipse 60% 40% at 20% 30%, rgba(99, 91, 255, 0.08), transparent),
+                radial-gradient(ellipse 50% 40% at 80% 70%, rgba(124, 58, 237, 0.06), transparent);
             pointer-events: none;
-            animation: heroGlow2 10s ease-in-out infinite;
-        }
-
-        @keyframes heroGlow {
-            0%, 100% { opacity: 0.8; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.1); }
-        }
-
-        @keyframes heroGlow2 {
-            0%, 100% { opacity: 0.6; transform: scale(1); }
-            50% { opacity: 0.9; transform: scale(1.15); }
         }
 
         .hero-container {
@@ -436,33 +416,24 @@
             .hero-container {
                 grid-template-columns: 1fr;
                 gap: 60px;
-                text-align: center;
             }
         }
 
         .hero-content {
-            max-width: 560px;
+            max-width: 520px;
         }
 
-        /* Badge标签 - 精致风格 */
         .hero-badge {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            background: linear-gradient(135deg, rgba(99, 91, 255, 0.08) 0%, rgba(124, 58, 237, 0.05) 100%);
-            border: 1px solid rgba(99, 91, 255, 0.15);
+            gap: 6px;
+            background: rgba(99, 91, 255, 0.08);
             color: var(--primary);
-            padding: 8px 16px;
-            border-radius: 24px;
+            padding: 6px 14px;
+            border-radius: 20px;
             font-size: 13px;
             font-weight: 500;
-            margin-bottom: 28px;
-            backdrop-filter: blur(10px);
-            animation: badgePulse 3s ease-in-out infinite;
-        }
-
-        .hero-badge-icon {
-            font-size: 14px;
+            margin-bottom: 24px;
         }
 
         .hero-badge-dot {
@@ -473,160 +444,72 @@
             animation: pulse 2s infinite;
         }
 
-        @keyframes badgePulse {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(99, 91, 255, 0.1); }
-            50% { box-shadow: 0 0 0 4px rgba(99, 91, 255, 0); }
-        }
-
         @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(0.9); }
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
         }
 
-        /* 标题渐变效果 */
         .hero-title {
-            font-size: 56px;
+            font-size: 48px;
             font-weight: 700;
-            letter-spacing: -0.04em;
-            line-height: 1.1;
+            letter-spacing: -0.03em;
+            line-height: 1.15;
             color: var(--slate);
-            margin-bottom: 24px;
-        }
-
-        .hero-title-gradient {
-            background: linear-gradient(135deg, #635BFF 0%, #7C3AED 50%, #06B6D4 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        @media (max-width: 768px) {
-            .hero-title {
-                font-size: 40px;
-            }
+            margin-bottom: 20px;
         }
 
         .hero-subtitle {
             font-size: 18px;
             color: var(--slate-light);
-            margin-bottom: 36px;
-            line-height: 1.7;
+            margin-bottom: 32px;
+            line-height: 1.6;
         }
 
-        /* CTA按钮 - Shimmer效果 */
         .hero-actions {
             display: flex;
             align-items: center;
             gap: 16px;
-            margin-bottom: 36px;
-        }
-
-        @media (max-width: 900px) {
-            .hero-actions {
-                justify-content: center;
-            }
+            margin-bottom: 32px;
         }
 
         .hero-actions .btn-primary {
-            padding: 18px 36px;
+            padding: 16px 32px;
             font-size: 16px;
-            font-weight: 600;
-            border-radius: 14px;
-            position: relative;
-            overflow: hidden;
-            background: linear-gradient(135deg, var(--primary) 0%, #7C3AED 100%);
-            border: none;
-            box-shadow: 0 4px 20px rgba(99, 91, 255, 0.3);
-            transition: all 0.3s ease;
         }
 
-        .hero-actions .btn-primary:hover {
-            transform: scale(1.02) translateY(-2px);
-            box-shadow: 0 8px 30px rgba(99, 91, 255, 0.4);
-        }
-
-        /* Shimmer动画 */
-        .btn-shimmer::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(
-                to right,
-                transparent 0%,
-                rgba(255,255,255,0.2) 50%,
-                transparent 100%
-            );
-            transform: rotate(30deg);
-            animation: shimmer 3s infinite;
-        }
-
-        @keyframes shimmer {
-            0% { transform: translateX(-100%) rotate(30deg); }
-            100% { transform: translateX(100%) rotate(30deg); }
-        }
-
-        /* 信任指标 - 现代风格 */
         .hero-trust {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 16px;
             font-size: 14px;
             color: var(--slate-muted);
-        }
-
-        @media (max-width: 900px) {
-            .hero-trust {
-                justify-content: center;
-            }
         }
 
         .hero-trust-item {
             display: flex;
             align-items: center;
-            gap: 8px;
-        }
-
-        .hero-trust-icon {
-            font-size: 16px;
+            gap: 6px;
         }
 
         .hero-trust-divider {
-            width: 1px;
-            height: 16px;
+            width: 4px;
+            height: 4px;
             background: var(--border);
+            border-radius: 50%;
         }
 
-        /* Hero右侧：高级对话预览 */
+        /* Hero右侧：对话预览 */
         .hero-visual {
             position: relative;
-            perspective: 1500px;
-        }
-
-        /* 外层毛玻璃卡片 */
-        .chat-preview-wrapper {
-            position: relative;
-            padding: 3px;
-            background: linear-gradient(135deg, rgba(99, 91, 255, 0.3), rgba(6, 182, 212, 0.3));
-            border-radius: 24px;
-            backdrop-filter: blur(20px);
-            animation: cardFloat 6s ease-in-out infinite;
-        }
-
-        @keyframes cardFloat {
-            0%, 100% { transform: translateY(0) rotateY(-4deg) rotateX(2deg); }
-            50% { transform: translateY(-8px) rotateY(-2deg) rotateX(1deg); }
         }
 
         .chat-preview {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 22px;
+            background: var(--white);
+            border-radius: 20px;
+            box-shadow: 0 4px 32px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.04);
             overflow: hidden;
-            transform: perspective(1000px) rotateY(-4deg) rotateX(2deg);
+            transform: perspective(1000px) rotateY(-5deg) rotateX(2deg);
             transition: transform 0.5s ease;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1), 0 8px 24px rgba(0, 0, 0, 0.05);
         }
 
         .chat-preview:hover {
@@ -634,33 +517,28 @@
         }
 
         @media (max-width: 900px) {
-            .chat-preview,
-            .chat-preview-wrapper {
+            .chat-preview {
                 transform: none;
-            }
-            .chat-preview-wrapper {
-                animation: none;
             }
         }
 
         .chat-preview-header {
-            background: linear-gradient(135deg, #635BFF 0%, #7C3AED 50%, #06B6D4 100%);
-            padding: 18px 22px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            padding: 16px 20px;
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 12px;
         }
 
         .chat-preview-avatar {
-            width: 40px;
-            height: 40px;
-            background: rgba(255, 255, 255, 0.25);
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
-            backdrop-filter: blur(10px);
+            font-size: 18px;
         }
 
         .chat-preview-info {
@@ -675,20 +553,19 @@
 
         .chat-preview-status {
             font-size: 12px;
-            color: rgba(255, 255, 255, 0.85);
+            color: rgba(255, 255, 255, 0.8);
         }
 
         .chat-preview-body {
             padding: 24px;
-            min-height: 340px;
-            background: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%);
+            min-height: 360px;
+            background: #F8FAFC;
         }
 
-        /* 气泡样式优化 */
         .chat-bubble {
             margin-bottom: 16px;
+            animation: fadeInUp 0.4s ease forwards;
             opacity: 0;
-            animation: fadeInUp 0.5s ease forwards;
         }
 
         .chat-bubble.bot {
@@ -698,29 +575,27 @@
         }
 
         .chat-bubble.bot .chat-avatar {
-            width: 30px;
-            height: 30px;
-            background: linear-gradient(135deg, var(--primary) 0%, #7C3AED 100%);
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 14px;
             flex-shrink: 0;
-            box-shadow: 0 2px 8px rgba(99, 91, 255, 0.3);
         }
 
         .chat-bubble.bot .chat-text {
-            background: #FFFFFF;
-            border: 1px solid rgba(0, 0, 0, 0.06);
-            border-left: 3px solid var(--primary);
-            border-radius: 4px 16px 16px 16px;
-            padding: 14px 18px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 16px 16px 16px 4px;
+            padding: 12px 16px;
             font-size: 14px;
-            line-height: 1.6;
+            line-height: 1.5;
             color: var(--slate);
             max-width: 85%;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
         }
 
         .chat-bubble.user {
@@ -728,41 +603,39 @@
         }
 
         .chat-bubble.user .chat-text {
-            background: linear-gradient(135deg, rgba(99, 91, 255, 0.95) 0%, rgba(124, 58, 237, 0.95) 100%);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
             border-radius: 16px 16px 4px 16px;
-            padding: 14px 18px;
+            padding: 12px 16px;
             font-size: 14px;
-            line-height: 1.6;
-            box-shadow: 0 4px 16px rgba(99, 91, 255, 0.25);
+            line-height: 1.5;
+            box-shadow: 0 2px 8px rgba(99, 91, 255, 0.2);
         }
 
-        .chat-bubble:nth-child(1) { animation-delay: 0.5s; }
-        .chat-bubble:nth-child(2) { animation-delay: 1.2s; }
-        .chat-bubble:nth-child(3) { animation-delay: 2.0s; }
-        .chat-bubble:nth-child(4) { animation-delay: 2.8s; }
+        .chat-bubble:nth-child(1) { animation-delay: 0.3s; }
+        .chat-bubble:nth-child(2) { animation-delay: 0.8s; }
+        .chat-bubble:nth-child(3) { animation-delay: 1.3s; }
+        .chat-bubble:nth-child(4) { animation-delay: 1.8s; }
 
-        /* 打字光标 - 流畅动画 */
         .chat-cursor {
             display: inline-block;
             width: 2px;
-            height: 18px;
-            background: linear-gradient(180deg, var(--primary) 0%, #7C3AED 100%);
+            height: 16px;
+            background: var(--primary);
             margin-left: 4px;
-            animation: cursorBlink 0.8s ease-in-out infinite;
+            animation: blink 1s infinite;
             vertical-align: middle;
-            border-radius: 1px;
         }
 
-        @keyframes cursorBlink {
+        @keyframes blink {
             0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
+            50% { opacity: 0; }
         }
 
         @keyframes fadeInUp {
             from {
                 opacity: 0;
-                transform: translateY(15px);
+                transform: translateY(10px);
             }
             to {
                 opacity: 1;
@@ -770,106 +643,17 @@
             }
         }
 
-        /* 浮动装饰元素 */
-        .floating-element {
-            position: absolute;
-            border-radius: 12px;
-            backdrop-filter: blur(12px);
-            background: rgba(255, 255, 255, 0.85);
-            border: 1px solid rgba(99, 91, 255, 0.1);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-            animation: float 4s ease-in-out infinite;
-        }
-
-        /* 雷达图装饰 */
-        .floating-radar {
-            top: -30px;
-            left: -50px;
-            width: 90px;
-            height: 90px;
-            padding: 12px;
-            animation-delay: 0s;
-        }
-
-        .floating-radar canvas {
-            width: 100%;
-            height: 100%;
-        }
-
-        /* 进度条装饰 */
-        .floating-progress {
-            bottom: 40px;
-            right: -40px;
-            width: 110px;
-            padding: 14px;
-            animation-delay: 1s;
-        }
-
-        .floating-progress-label {
-            font-size: 10px;
-            color: var(--slate-muted);
-            margin-bottom: 6px;
-        }
-
-        .floating-progress-bar {
-            height: 6px;
-            background: rgba(99, 91, 255, 0.1);
-            border-radius: 3px;
-            overflow: hidden;
-        }
-
-        .floating-progress-fill {
-            height: 100%;
-            width: 67%;
-            background: linear-gradient(90deg, var(--primary), #06B6D4);
-            border-radius: 3px;
-            animation: progressGrow 2s ease-out forwards;
-        }
-
-        .floating-progress-value {
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--primary);
-            margin-top: 6px;
-        }
-
-        /* AI标签装饰 */
-        .floating-ai-tag {
-            top: 20px;
-            right: -35px;
-            padding: 8px 12px;
-            animation-delay: 2s;
-        }
-
-        .floating-ai-tag span {
-            font-size: 11px;
-            font-weight: 600;
-            background: linear-gradient(135deg, var(--primary), #06B6D4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-12px); }
-        }
-
-        @keyframes progressGrow {
-            from { width: 0; }
-            to { width: 67%; }
-        }
-
         /* 入场动画 */
         .animate-in {
-            animation: fadeInUp 0.7s ease-out forwards;
+            animation: fadeInUp 0.6s ease-out forwards;
             opacity: 0;
         }
 
         .delay-1 { animation-delay: 0.1s; }
         .delay-2 { animation-delay: 0.2s; }
-        .delay-3 { animation-delay: 0.35s; }
-        .delay-4 { animation-delay: 0.5s; }
-        .delay-5 { animation-delay: 0.65s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+        .delay-5 { animation-delay: 0.5s; }
 
 /* ========== 功能卡片区 - Apple式精致浅色风格 ========== */
         .features-section {
@@ -2364,21 +2148,19 @@
 
 <!-- 首页视图 -->
     <div id="home-view">
-        <!-- Hero区 - Vercel风格 -->
+        <!-- Hero区 -->
         <section class="hero" id="hero">
             <div class="hero-container">
                 <!-- 左侧文字内容 -->
                 <div class="hero-content">
                     <div class="hero-badge animate-in delay-1">
-                        <span class="hero-badge-icon">✨</span>
-                        <span>AI驱动的新型备考方式</span>
+                        <span class="hero-badge-dot"></span>
+                        AI驱动的新型备考方式
                     </div>
-                    <h1 class="hero-title animate-in delay-2">
-                        测出你的<span class="hero-title-gradient">备考DNA</span>
-                    </h1>
+                    <h1 class="hero-title animate-in delay-2">测出你的四级备考DNA</h1>
                     <p class="hero-subtitle animate-in delay-3">3分钟AI对话诊断，精准识别你的备考短板，找到最适合你的备考方式</p>
                     <div class="hero-actions animate-in delay-4">
-                        <button class="btn-primary btn-shimmer" onclick="openChat('diagnosis')">
+                        <button class="btn-primary" onclick="openChat('diagnosis')">
                             开始免费诊断
                             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M3 8h10M9 4l4 4-4 4"/>
@@ -2386,69 +2168,42 @@
                         </button>
                     </div>
                     <div class="hero-trust animate-in delay-5">
-                        <span class="hero-trust-item">
-                            <span class="hero-trust-icon">⚡</span>
-                            <span>2min快速诊断</span>
-                        </span>
+                        <span class="hero-trust-item">2min快速诊断</span>
                         <span class="hero-trust-divider"></span>
-                        <span class="hero-trust-item">
-                            <span class="hero-trust-icon">🎯</span>
-                            <span>5维精准分析</span>
-                        </span>
+                        <span class="hero-trust-item">5维精准分析</span>
                         <span class="hero-trust-divider"></span>
-                        <span class="hero-trust-item">
-                            <span class="hero-trust-icon">🧬</span>
-                            <span>8种人格类型</span>
-                        </span>
+                        <span class="hero-trust-item">8种人格类型</span>
                     </div>
                 </div>
 
                 <!-- 右侧对话预览 -->
                 <div class="hero-visual animate-in delay-3">
-                    <!-- 浮动装饰元素 -->
-                    <div class="floating-element floating-radar">
-                        <canvas id="heroRadarCanvas" width="130" height="130"></canvas>
-                    </div>
-                    <div class="floating-element floating-progress">
-                        <div class="floating-progress-label">学习进度</div>
-                        <div class="floating-progress-bar">
-                            <div class="floating-progress-fill"></div>
-                        </div>
-                        <div class="floating-progress-value">67%</div>
-                    </div>
-                    <div class="floating-element floating-ai-tag">
-                        <span>AI-powered</span>
-                    </div>
-
-                    <!-- 主对话卡片 -->
-                    <div class="chat-preview-wrapper">
-                        <div class="chat-preview">
-                            <div class="chat-preview-header">
-                                <div class="chat-preview-avatar">🤖</div>
-                                <div class="chat-preview-info">
-                                    <div class="chat-preview-name">四级备考诊断师</div>
-                                    <div class="chat-preview-status">在线 · 随时为你服务</div>
-                                </div>
+                    <div class="chat-preview">
+                        <div class="chat-preview-header">
+                            <div class="chat-preview-avatar">🤖</div>
+                            <div class="chat-preview-info">
+                                <div class="chat-preview-name">四级备考诊断师</div>
+                                <div class="chat-preview-status">在线 · 随时为你服务</div>
                             </div>
-                            <div class="chat-preview-body">
-                                <div class="chat-bubble bot">
-                                    <div class="chat-avatar">🤖</div>
-                                    <div class="chat-text">四级阅读里，你最怕遇到哪种题型？😏</div>
-                                </div>
-                                <div class="chat-bubble user">
-                                    <div class="chat-text">我最怕同义替换，每次都选错 😩</div>
-                                </div>
-                                <div class="chat-bubble bot">
-                                    <div class="chat-avatar">🤖</div>
-                                    <div class="chat-text">哈哈，你的"换词雷达"需要升级了！来，我们测测看～</div>
-                                </div>
-                                <div class="chat-bubble user">
-                                    <div class="chat-text">好呀，开始吧！</div>
-                                </div>
-                                <div class="chat-bubble bot">
-                                    <div class="chat-avatar">🤖</div>
-                                    <div class="chat-text">那听力呢？你平时是怎么练听力的？<span class="chat-cursor"></span></div>
-                                </div>
+                        </div>
+                        <div class="chat-preview-body">
+                            <div class="chat-bubble bot">
+                                <div class="chat-avatar">🤖</div>
+                                <div class="chat-text">四级阅读里，你最怕遇到哪种题型？😏</div>
+                            </div>
+                            <div class="chat-bubble user">
+                                <div class="chat-text">我最怕同义替换，每次都选错 😩</div>
+                            </div>
+                            <div class="chat-bubble bot">
+                                <div class="chat-avatar">🤖</div>
+                                <div class="chat-text">哈哈，你的"换词雷达"需要升级了！来，我们测测看～</div>
+                            </div>
+                            <div class="chat-bubble user">
+                                <div class="chat-text">好呀，开始吧！</div>
+                            </div>
+                            <div class="chat-bubble bot">
+                                <div class="chat-avatar">🤖</div>
+                                <div class="chat-text">那听力呢？你平时是怎么练听力的？<span class="chat-cursor"></span></div>
                             </div>
                         </div>
                     </div>
@@ -4034,101 +3789,6 @@
                 menu.classList.contains('active')) {
                 closeMobileMenu();
             }
-        });
-
-
-        // Hero区雷达图初始化
-        function initHeroRadar() {
-            const canvas = document.getElementById('heroRadarCanvas');
-            if (!canvas) return;
-            
-            const ctx = canvas.getContext('2d');
-            const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2;
-            const radius = Math.min(centerX, centerY) - 15;
-            
-            const labels = ['听力', '阅读', '写作', '翻译', '词汇'];
-            const values = [0.75, 0.45, 0.6, 0.55, 0.7];
-            
-            function drawRadar() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                
-                // 绘制背景网格
-                ctx.strokeStyle = 'rgba(99, 91, 255, 0.1)';
-                ctx.lineWidth = 1;
-                
-                for (let i = 1; i <= 4; i++) {
-                    ctx.beginPath();
-                    for (let j = 0; j < 5; j++) {
-                        const angle = (Math.PI * 2 / 5) * j - Math.PI / 2;
-                        const r = radius * (i / 4);
-                        const x = centerX + r * Math.cos(angle);
-                        const y = centerY + r * Math.sin(angle);
-                        if (j === 0) ctx.moveTo(x, y);
-                        else ctx.lineTo(x, y);
-                    }
-                    ctx.closePath();
-                    ctx.stroke();
-                }
-                
-                // 绘制轴线
-                for (let i = 0; i < 5; i++) {
-                    const angle = (Math.PI * 2 / 5) * i - Math.PI / 2;
-                    ctx.beginPath();
-                    ctx.moveTo(centerX, centerY);
-                    ctx.lineTo(centerX + radius * Math.cos(angle), centerY + radius * Math.sin(angle));
-                    ctx.stroke();
-                }
-                
-                // 绘制数据区域
-                ctx.beginPath();
-                for (let i = 0; i < 5; i++) {
-                    const angle = (Math.PI * 2 / 5) * i - Math.PI / 2;
-                    const value = values[i];
-                    const x = centerX + radius * value * Math.cos(angle);
-                    const y = centerY + radius * value * Math.sin(angle);
-                    if (i === 0) ctx.moveTo(x, y);
-                    else ctx.lineTo(x, y);
-                }
-                ctx.closePath();
-                
-                // 渐变填充
-                const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-                gradient.addColorStop(0, 'rgba(99, 91, 255, 0.3)');
-                gradient.addColorStop(1, 'rgba(6, 182, 212, 0.3)');
-                ctx.fillStyle = gradient;
-                ctx.fill();
-                
-                // 数据点
-                for (let i = 0; i < 5; i++) {
-                    const angle = (Math.PI * 2 / 5) * i - Math.PI / 2;
-                    const value = values[i];
-                    const x = centerX + radius * value * Math.cos(angle);
-                    const y = centerY + radius * value * Math.sin(angle);
-                    
-                    ctx.beginPath();
-                    ctx.arc(x, y, 4, 0, Math.PI * 2);
-                    ctx.fillStyle = '#635BFF';
-                    ctx.fill();
-                }
-            }
-            
-            drawRadar();
-        }
-        
-        // 打字机效果增强
-        function enhanceTypingEffect() {
-            const typingElements = document.querySelectorAll('.chat-bubble.bot .chat-text');
-            typingElements.forEach(el => {
-                if (el.dataset.typed) return;
-                el.dataset.typed = 'true';
-            });
-        }
-
-        // 页面加载完成后初始化
-        document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(initHeroRadar, 500);
-            setTimeout(enhanceTypingEffect, 800);
         });
 
 </script>
