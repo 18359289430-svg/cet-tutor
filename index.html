@@ -1409,6 +1409,15 @@
 
         /* ========== Chat SDK 浮窗 ========== */
         /* chat-container已移除，SDK自己管理UI */
+        
+        /* ========== 升级引导按钮样式 ========== */
+        .upgrade-btn.primary {
+            background: linear-gradient(135deg, #10B981, #059669) !important;
+        }
+        
+        .upgrade-btn.primary:hover {
+            background: linear-gradient(135deg, #059669, #047857) !important;
+        }
 
         /* ========== 响应式 ========== */
         @media (max-width: 768px) {
@@ -1514,7 +1523,7 @@
         </div>
         <div class="nav-right">
             <a href="#" class="nav-link-user" onclick="switchView(`user`); return false;">我的</a>
-            <button class="btn-primary nav-cta" onclick="startDiagnosis()">开始诊断</button>
+            <button class="btn-primary nav-cta" onclick="openChat('diagnosis')">开始诊断</button>
         </div>
     </nav>
 
@@ -1532,7 +1541,7 @@
                     <h1 class="hero-title animate-in delay-2">测出你的四级备考DNA</h1>
                     <p class="hero-subtitle animate-in delay-3">3分钟AI对话诊断，精准识别你的备考短板，找到最适合你的备考方式</p>
                     <div class="hero-actions animate-in delay-4">
-                        <button class="btn-primary" onclick="startDiagnosis()">
+                        <button class="btn-primary" onclick="openChat('diagnosis')">
                             开始免费诊断
                             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M3 8h10M9 4l4 4-4 4"/>
@@ -1749,8 +1758,15 @@
                 </ul>
             </div>
 
-            <div style="text-align: center; margin-top: 32px;">
-                <button class="btn-primary" onclick="switchView(`home`); setTimeout(() => startDiagnosis(), 300);">
+            <!-- 聊天按钮区域 -->
+            <div style="text-align: center; margin-top: 24px;">
+                <button class="btn-primary" onclick="handleMentorChat()" id="mentorChatBtn" style="background: linear-gradient(135deg, #10B981, #059669);">
+                    🤝 和学长聊天
+                </button>
+            </div>
+
+            <div style="text-align: center; margin-top: 16px;">
+                <button class="btn-primary" onclick="switchView(`home`); setTimeout(() => openChat('diagnosis'), 300);">
                     开始新诊断
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M3 8h10M9 4l4 4-4 4"/>
@@ -1781,12 +1797,12 @@
                 
                 <h3 class="result-upgrade-title">想要更详细的备考方案？</h3>
                 <div class="upgrade-buttons">
-                    <button class="upgrade-btn secondary" onclick="handleUpgrade(`report`)">¥1 详细报告</button>
-                    <button class="upgrade-btn primary" onclick="handleUpgrade(`sprint`)">¥49 冲刺版</button>
-                    <button class="upgrade-btn secondary" onclick="handleUpgrade(`flagship`)">¥149 旗舰版</button>
+                    <button class="upgrade-btn secondary" onclick="openChat('diagnosis'); showToast('详细报告功能开发中')">¥1 详细报告</button>
+                    <button class="upgrade-btn primary" onclick="openChat('sprint')">¥49 和学长冲刺</button>
+                    <button class="upgrade-btn secondary" onclick="openChat('pro')">¥149 旗舰陪练</button>
                 </div>
                 
-                <span class="btn-retry" onclick="hideResult(); startDiagnosis();">再测一次</span>
+                <span class="btn-retry" onclick="hideResult(); openChat('diagnosis');">再测一次</span>
             </div>
         </div>
     </div>
@@ -1905,6 +1921,175 @@
             "sprint": "冲刺版",
             "flagship": "旗舰版"
         };
+
+        /* ========== Bot配置 ========== */
+        const BOT_CONFIG = {
+            diagnosis: { id: '7636289658620215331', title: '四级备考诊断师' },
+            sprint: { id: 'BOT_ID_SPRINT', title: '小过学长·冲刺版' },  // 待替换
+            pro: { id: 'BOT_ID_PRO', title: '小过学长·旗舰版' }         // 待替换
+        };
+        
+        // 当前聊天状态
+        let currentChatClient = null;
+        let currentBotType = null;
+
+        /* ========== 聊天切换函数 ========== */
+        
+        function openChat(botType) {
+            // 如果是免费用户想访问付费Bot，显示升级提示
+            const userData = getUserData();
+            const userPlan = userData.plan || 'free';
+            if ((botType === 'sprint' || botType === 'pro') && (userPlan === 'free' || userPlan === 'report')) {
+                showUpgradeModal(botType);
+                return;
+            }
+            
+            // 如果已经是同一个Bot，尝试展开已有的聊天面板
+            if (currentBotType === botType && currentChatClient) {
+                triggerChatOpen();
+                return;
+            }
+            
+            // 清理旧的SDK实例
+            cleanupCozeSDK();
+            
+            const config = BOT_CONFIG[botType];
+            
+            // 创建新的WebChatClient
+            currentChatClient = new CozeWebSDK.WebChatClient({
+                config: { bot_id: config.id },
+                componentProps: { title: config.title },
+                auth: {
+                    type: 'token',
+                    token: 'pat_hAOthvv429aDEqWspP4lITuL3DAU7VZJiGlVrnmA1zuoZ4IWW2kmxYzXUbGvZTYb',
+                    onRefreshToken: function() { return 'pat_hAOthvv429aDEqWspP4lITuL3DAU7VZJiGlVrnmA1zuoZ4IWW2kmxYzXUbGvZTYb'; }
+                }
+            });
+            
+            currentBotType = botType;
+            
+            // 监听消息
+            startMessageObserver();
+            
+            // 自动展开聊天面板
+            autoOpenChatPanel();
+        }
+
+        function cleanupCozeSDK() {
+            // 移除SDK创建的DOM元素
+            const sdkElements = document.querySelectorAll('[class*="coze"]');
+            sdkElements.forEach(el => {
+                const className = el.className || '';
+                if (className.includes('coze-web-chat') || className.includes('coze-fab') || className.includes('coze-chat')) {
+                    el.remove();
+                }
+            });
+            
+            // 移除可能残留的iframe
+            document.querySelectorAll('iframe').forEach(iframe => {
+                if (iframe.src && iframe.src.includes('coze')) {
+                    iframe.remove();
+                }
+            });
+            
+            currentChatClient = null;
+            currentBotType = null;
+            
+            if (messageObserver) {
+                messageObserver.disconnect();
+                messageObserver = null;
+            }
+        }
+
+        function autoOpenChatPanel() {
+            // 等待SDK渲染完成，然后自动点击FAB打开聊天面板
+            setTimeout(() => {
+                // 查找SDK创建的按钮
+                const fabSelectors = [
+                    'button[class*="fab"]',
+                    'div[class*="fab"][role="button"]',
+                    'button[class*="chat"]',
+                    '[class*="coze"] button',
+                    '[class*="chat-btn"]'
+                ];
+                
+                for (const selector of fabSelectors) {
+                    const fab = document.querySelector(selector);
+                    if (fab && fab.offsetParent !== null) {
+                        fab.click();
+                        break;
+                    }
+                }
+                
+                // 隐藏FAB（聊天面板已打开，不需要FAB了）
+                hideChatFab();
+            }, 800);
+        }
+
+        function hideChatFab() {
+            // 添加样式隐藏FAB但保持功能
+            const styleId = 'coze-fab-hide-style';
+            if (document.getElementById(styleId)) return;
+            
+            const style = document.createElement('style');
+            style.id = styleId;
+            style.textContent = `
+                /* 隐藏SDK悬浮球但保持可交互 */
+                button[class*="fab"],
+                div[class*="fab"][role="button"],
+                [class*="coze-fab-trigger"],
+                [class*="coze-web-chat-fab"] {
+                    opacity: 0 !important;
+                    pointer-events: none !important;
+                    width: 0 !important;
+                    height: 0 !important;
+                    overflow: hidden !important;
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        function triggerChatOpen() {
+            // 尝试点击SDK按钮展开面板
+            setTimeout(() => {
+                const fabSelectors = [
+                    'button[class*="fab"]',
+                    'div[class*="fab"][role="button"]',
+                    'button[class*="chat"]',
+                    '[class*="coze"] button'
+                ];
+                
+                for (const selector of fabSelectors) {
+                    const fab = document.querySelector(selector);
+                    if (fab && fab.offsetParent !== null) {
+                        fab.click();
+                        break;
+                    }
+                }
+            }, 300);
+        }
+
+        function showUpgradeModal(botType) {
+            const planName = botType === 'sprint' ? '冲刺版（¥49）' : '旗舰版（¥149）';
+            showToast(`升级${planName}即可解锁专属学长陪练！`);
+            // 滚动到定价区
+            setTimeout(() => {
+                document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' });
+            }, 500);
+        }
+
+        function handleMentorChat() {
+            const userData = getUserData();
+            const userPlan = userData.plan || 'free';
+            if (userPlan === 'pro' || userPlan === 'flagship') {
+                openChat('pro');
+            } else if (userPlan === 'sprint') {
+                openChat('sprint');
+            } else {
+                // 免费用户，引导升级
+                showUpgradeModal('sprint');
+            }
+        }
 
         /* ========== 全局变量 ========== */
         let chatClient = null;
@@ -2209,6 +2394,9 @@
                     </li>
                 `).join("");
             }
+            
+            // 更新学长聊天按钮
+            updateMentorChatButton();
         }
 
         function viewDiagnosisReport(type) {
@@ -2248,14 +2436,35 @@
             renderPricing();
             renderFAQs();
             setupScrollListener();
-            initCozeChat();
+            // 不再自动初始化Coze Chat，等待用户点击按钮
             updateUserCenter();
             updatePricingCards();
+            updateMentorChatButton();
             
             // 3秒后强制隐藏loading
             setTimeout(() => {
                 document.getElementById("loadingOverlay").classList.add("hidden");
             }, 3000);
+        }
+        
+        // 根据用户套餐更新"和学长聊天"按钮文案
+        function updateMentorChatButton() {
+            const btn = document.getElementById("mentorChatBtn");
+            if (!btn) return;
+            
+            const userData = getUserData();
+            const plan = userData.plan;
+            
+            if (plan === 'pro' || plan === 'flagship') {
+                btn.textContent = '🤝 和学长聊天（旗舰版）';
+                btn.style.background = 'linear-gradient(135deg, #10B981, #059669)';
+            } else if (plan === 'sprint') {
+                btn.textContent = '🤝 和学长聊天（冲刺版）';
+                btn.style.background = 'linear-gradient(135deg, #10B981, #059669)';
+            } else {
+                btn.textContent = '🤝 升级解锁学长陪练';
+                btn.style.background = 'linear-gradient(135deg, #6B7280, #4B5563)';
+            }
         }
 
         // 渲染人格预览
@@ -2364,11 +2573,16 @@
         // 处理定价按钮点击
         function handlePlanClick(planId) {
             if (planId === "free") {
-                startDiagnosis();
+                openChat('diagnosis');
             } else if (planId === "report") {
+                showUpgradeModal('diagnosis');
                 showToast("¥1解锁详细报告功能开发中");
+            } else if (planId === "sprint") {
+                openChat('sprint');
+            } else if (planId === "flagship") {
+                openChat('pro');
             } else {
-                showToast(`${planNames[planId]}购买功能开发中`);
+                showToast(`${planNames[planId] || planId}购买功能开发中`);
             }
         }
 
@@ -2408,35 +2622,8 @@
         }
 
         function startDiagnosis() {
-            // 点击SDK自带的浮窗按钮来打开聊天
-            // WebChatClient会在页面右下角创建一个按钮元素
-            const sdkBtn = document.querySelector('#coze-chat-btn') 
-                || document.querySelector('[class*="coze"] button')
-                || document.querySelector('button[class*="chat"]');
-            
-            if (sdkBtn) {
-                sdkBtn.click();
-            } else {
-                // 备选：找SDK创建的iframe容器并点击
-                const chatWidget = document.querySelector('[id*="coze"]') 
-                    || document.querySelector('[class*="coze-chat"]');
-                if (chatWidget) {
-                    const btn = chatWidget.querySelector('button');
-                    if (btn) btn.click();
-                } else {
-                    // 最后兜底：直接重新初始化SDK
-                    initCozeChat();
-                    setTimeout(() => {
-                        const retryBtn = document.querySelector('#coze-chat-btn') 
-                            || document.querySelector('[class*="coze"] button')
-                            || document.querySelector('button[class*="chat"]');
-                        if (retryBtn) retryBtn.click();
-                    }, 2000);
-                }
-            }
-
-            // 监听消息（监听整个body，因为SDK创建的元素不在chatContainer里）
-            startMessageObserver();
+            // 重定向到openChat
+            openChat('diagnosis');
         }
 
         function startMessageObserver() {
