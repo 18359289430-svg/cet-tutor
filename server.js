@@ -143,7 +143,7 @@ async function handleApi(req, res, pathname) {
 
             // 如果没有配置PayJS，返回模拟数据用于测试
             if (!PAYJS_MCHID || !PAYJS_KEY) {
-                const mockQrCode = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://example.com/pay?order=${orderId}`;
+                const mockQrCode = '/wechat-qr.jpg';
                 return sendJson(res, 200, {
                     order_id: orderId,
                     uid,
@@ -256,6 +256,21 @@ const server = http.createServer((req, res) => {
     // API路由
     if (pathname.startsWith('/api/')) {
         handleApi(req, res, pathname);
+        return;
+    }
+
+    // 微信收款码
+    if (pathname === '/wechat-qr.jpg') {
+        const qrPath = path.join(__dirname, 'wechat-qr.jpg');
+        try {
+            const qrData = fs.readFileSync(qrPath);
+            res.setHeader('Content-Type', 'image/jpeg');
+            res.setHeader('Cache-Control', 'public, max-age=86400');
+            res.end(qrData);
+        } catch (e) {
+            res.writeHead(404);
+            res.end('Not Found');
+        }
         return;
     }
 

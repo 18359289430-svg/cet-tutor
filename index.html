@@ -2906,7 +2906,7 @@
 
             planName.textContent = planDisplayNames[orderData.plan] || orderData.plan;
             amount.innerHTML = `¥${orderData.amount}<small>`;
-            qrImg.src = orderData.wechatQrUrl || 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=wechat-pay';
+            qrImg.src = '/wechat-qr.jpg';
             orderId.textContent = orderData.orderId;
             status.innerHTML = '';
             status.className = 'payment-status';
