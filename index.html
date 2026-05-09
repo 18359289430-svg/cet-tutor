@@ -1482,16 +1482,11 @@
             }
         }
 
-        /* 免费版卡片 - 绿色调 */
-        .plan-card[data-plan="free"] {
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.02) 0%, rgba(5, 150, 105, 0.02) 100%);
-        }
+        /* 免费版卡片 */
+        .plan-card[data-plan="free"] { }
 
         .plan-card[data-plan="free"] .plan-price {
-            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: #10B981;
         }
 
         .plan-card[data-plan="free"] .plan-features li::before {
@@ -1504,51 +1499,27 @@
         }
 
         .plan-card[data-plan="report"] .plan-features li::before {
-            color: #635BFF;
+            color: #10B981;
         }
 
-        /* 推荐卡片 - 紫色渐变边框突出 */
+        /* 推荐卡片 */
         .plan-card.recommended {
-            border: 2px solid transparent;
-            background: linear-gradient(#ffffff, #ffffff) padding-box,
-                        linear-gradient(135deg, #635BFF, #7C3AED) border-box;
-            background: linear-gradient(135deg, rgba(99, 91, 255, 0.02) 0%, rgba(124, 58, 237, 0.02) 100%), #ffffff;
-            box-shadow: 0 4px 16px rgba(99, 91, 255, 0.15);
+            border: 2px solid #635BFF;
             transform: scale(1.02);
         }
 
         .plan-card.recommended:hover {
-            transform: translateY(-6px) scale(1.02);
-            box-shadow: 0 12px 40px rgba(99, 91, 255, 0.25);
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 8px 24px rgba(99, 91, 255, 0.2);
         }
 
         .plan-card.recommended .plan-price {
-            background: linear-gradient(135deg, #635BFF, #7C3AED);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: #0a2540;
             font-size: 42px;
         }
 
         .plan-card.recommended .plan-features li::before {
-            color: #635BFF;
-        }
-
-        /* 推荐卡片呼吸光效 */
-        .plan-card.recommended::after {
-            content: '';
-            position: absolute;
-            inset: -2px;
-            border-radius: 22px;
-            background: linear-gradient(135deg, #635BFF, #7C3AED);
-            z-index: -1;
-            opacity: 0;
-            animation: pulseGlow 3s ease-in-out infinite;
-        }
-
-        @keyframes pulseGlow {
-            0%, 100% { opacity: 0; transform: scale(1); }
-            50% { opacity: 0.3; transform: scale(1.02); }
+            color: #10B981;
         }
 
         /* 旗舰版卡片 */
@@ -1557,7 +1528,7 @@
         }
 
         .plan-card[data-plan="flagship"] .plan-features li::before {
-            color: #635BFF;
+            color: #10B981;
         }
 
         /* 徽章样式 */
@@ -1665,41 +1636,27 @@
         }
 
         .btn-plan.primary {
-            background: linear-gradient(135deg, #635BFF, #7C3AED);
+            background: #635BFF;
             color: white;
-            box-shadow: 0 2px 8px rgba(99, 91, 255, 0.35), 0 4px 16px rgba(99, 91, 255, 0.15);
         }
 
         .btn-plan.primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(99, 91, 255, 0.45), 0 8px 24px rgba(99, 91, 255, 0.2);
+            box-shadow: 0 4px 12px rgba(99, 91, 255, 0.35);
         }
 
-        /* Shimmer动画 */
         .btn-plan.primary::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            animation: shimmer 3s infinite;
-        }
-
-        @keyframes shimmer {
-            0% { left: -100%; }
-            50%, 100% { left: 100%; }
+            display: none;
         }
 
         .btn-plan.outline {
             background: transparent;
-            color: #635BFF;
-            border: 2px solid #635BFF;
+            color: #0a2540;
+            border: 2px solid #0a2540;
         }
 
         .btn-plan.outline:hover {
-            background: #635BFF;
+            background: #0a2540;
             color: white;
         }
 
@@ -3820,9 +3777,6 @@
                 }
 
                 let flagshipBadge = "";
-                if (plan.id === "flagship") {
-                    flagshipBadge = `<div class="flagship-badge">最受欢迎的选择</div>`;
-                }
 
                 return `
                     <div class="${cardClass}" data-plan="${plan.id}">
