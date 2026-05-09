@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>四级备考搭子·金牌陪练</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { height: 100%; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: #f8f9fc;
+            color: #1a1a2e;
+            min-height: 100%;
+        }
+
+        /* 顶部渐变装饰 */
+        .top-gradient {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 400px;
+            background: linear-gradient(135deg, #eef1ff 0%, #f0e6ff 50%, #fef1f8 100%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* 导航 */
+        .nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 14px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(248, 249, 252, 0.9);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(0,0,0,0.04);
+        }
+
+        .nav-left { display: flex; align-items: center; gap: 10px; }
+
+        .logo {
+            width: 28px; height: 28px;
+            background: linear-gradient(135deg, #5b5bff, #7c5cbf);
+            border-radius: 7px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 13px; font-weight: 700; color: #fff;
+        }
+
+        .nav-title { font-size: 14px; font-weight: 600; color: #1a1a2e; }
+        .nav-badge {
+            font-size: 10px; font-weight: 600; color: #5b5bff;
+            background: rgba(91,91,255,0.08); border: 1px solid rgba(91,91,255,0.15);
+            padding: 2px 8px; border-radius: 20px;
+        }
+
+        /* Hero */
+        .hero {
+            position: relative; z-index: 1;
+            padding: 48px 24px 40px;
+            text-align: center;
+        }
+
+        .hero-tag {
+            display: inline-block;
+            font-size: 12px; font-weight: 600; color: #5b5bff;
+            background: rgba(91,91,255,0.06); border: 1px solid rgba(91,91,255,0.12);
+            padding: 4px 14px; border-radius: 20px;
+            margin-bottom: 20px;
+        }
+
+        .hero-title {
+            font-size: 32px; font-weight: 800; letter-spacing: -1px;
+            line-height: 1.2; margin-bottom: 12px;
+        }
+
+        .hero-title .accent {
+            background: linear-gradient(135deg, #5b5bff, #7c5cbf);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-desc {
+            font-size: 14px; color: #6b7080;
+            line-height: 1.7; max-width: 360px; margin: 0 auto 32px;
+        }
+
+        /* 数据条 */
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            margin-bottom: 40px;
+        }
+
+        .stat-item { text-align: center; }
+
+        .stat-num {
+            font-size: 24px; font-weight: 800;
+            background: linear-gradient(135deg, #5b5bff, #7c5cbf);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label { font-size: 11px; color: #8b8fa0; margin-top: 2px; }
+
+        /* 功能卡片 */
+        .features {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            max-width: 400px;
+            margin: 0 auto 40px;
+        }
+
+        .feature-card {
+            background: #fff;
+            border: 1px solid rgba(0,0,0,0.05);
+            border-radius: 12px;
+            padding: 14px;
+            display: flex; align-items: center; gap: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+        }
+
+        .feature-icon {
+            width: 30px; height: 30px;
+            background: linear-gradient(135deg, rgba(91,91,255,0.1), rgba(124,92,191,0.1));
+            border-radius: 7px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .feature-icon svg {
+            width: 15px; height: 15px;
+            stroke: #5b5bff; fill: none;
+            stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+        }
+
+        .feature-label { font-size: 13px; font-weight: 600; color: #2a2a3e; }
+        .feature-sub { font-size: 10px; color: #8b8fa0; margin-top: 1px; }
+
+        /* 学习流程 */
+        .how-section {
+            position: relative; z-index: 1;
+            padding: 0 24px 36px;
+        }
+
+        .section-title {
+            font-size: 16px; font-weight: 700;
+            text-align: center; margin-bottom: 20px;
+            letter-spacing: -0.3px;
+        }
+
+        .steps {
+            max-width: 400px; margin: 0 auto;
+            display: flex; flex-direction: column; gap: 10px;
+        }
+
+        .step {
+            display: flex; align-items: center; gap: 12px;
+            background: #fff;
+            border: 1px solid rgba(0,0,0,0.05);
+            border-radius: 10px;
+            padding: 12px 14px;
+        }
+
+        .step-num {
+            width: 26px; height: 26px;
+            background: linear-gradient(135deg, #5b5bff, #7c5cbf);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 12px; font-weight: 700; color: #fff;
+            flex-shrink: 0;
+        }
+
+        .step-text { font-size: 13px; font-weight: 500; color: #2a2a3e; }
+        .step-sub { font-size: 11px; color: #8b8fa0; margin-top: 1px; }
+
+        /* 用户评价 */
+        .testimonials {
+            position: relative; z-index: 1;
+            padding: 0 24px 36px;
+        }
+
+        .t-card {
+            max-width: 400px; margin: 0 auto 10px;
+            background: #fff;
+            border: 1px solid rgba(0,0,0,0.05);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: box-shadow 0.2s;
+        }
+        .t-card:hover { box-shadow: 0 2px 8px rgba(91,91,255,0.08); }
+        .t-pain {
+            padding: 14px 14px 0;
+            font-size: 14px; font-weight: 600; color: #1a1a2e;
+            line-height: 1.5;
+        }
+        .t-pain-icon { margin-right: 4px; }
+        .t-divider {
+            height: 1px; margin: 10px 14px;
+            background: linear-gradient(90deg, rgba(91,91,255,0.2), rgba(91,91,255,0.05));
+        }
+        .t-solution {
+            padding: 0 14px 14px;
+            display: flex; gap: 8px; align-items: flex-start;
+        }
+        .t-solution-badge {
+            flex-shrink: 0;
+            font-size: 9px; font-weight: 700; color: #fff;
+            background: linear-gradient(135deg, #5b5bff, #7c5cbf);
+            padding: 2px 6px; border-radius: 4px;
+            letter-spacing: 0.5px; margin-top: 2px;
+        }
+        .t-solution-text { font-size: 12px; color: #4a4a5e; line-height: 1.8; }
+        .t-result { color: #5b5bff; font-weight: 700; }
+        .t-footer {
+            padding: 0 14px 10px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .t-source { font-size: 10px; color: #b0b4c0; }
+        .t-collapse-btn {
+            max-width: 400px; margin: 4px auto 0;
+            display: block; width: 100%;
+            padding: 10px; text-align: center;
+            font-size: 12px; font-weight: 500; color: #5b5bff;
+            background: rgba(91,91,255,0.04);
+            border: 1px dashed rgba(91,91,255,0.2);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .t-collapse-btn:hover { background: rgba(91,91,255,0.08); }
+        .t-hidden { display: none; }
+        .t-disclaimer {
+            max-width: 400px; margin: 8px auto 0;
+            font-size: 9px; color: #c0c4d0; text-align: center;
+            line-height: 1.6;
+        }
+
+        /* CTA */
+        .cta-section {
+            position: relative; z-index: 1;
+            padding: 0 24px 32px;
+            text-align: center;
+        }
+
+        .cta-card {
+            max-width: 400px; margin: 0 auto;
+            background: linear-gradient(135deg, #5b5bff, #7c5cbf);
+            border-radius: 14px;
+            padding: 24px;
+            color: #fff;
+        }
+
+        .cta-title { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+        .cta-desc { font-size: 12px; opacity: 0.8; line-height: 1.6; margin-bottom: 14px; }
+        .cta-hint {
+            font-size: 11px; opacity: 0.6;
+            display: flex; align-items: center; justify-content: center; gap: 4px;
+        }
+
+        /* Footer */
+        .footer {
+            position: relative; z-index: 1;
+            text-align: center;
+            padding: 16px 24px 24px;
+            font-size: 10px; color: #b0b4c0;
+        }
+
+        /* Loading */
+        .loading-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: #f8f9fc;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            z-index: 9999;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+        }
+
+        .loading-overlay.hidden { opacity: 0; visibility: hidden; }
+
+        .loading-bar {
+            width: 100px; height: 2px;
+            background: rgba(91,91,255,0.1);
+            border-radius: 1px; overflow: hidden;
+        }
+
+        .loading-bar-inner {
+            width: 30%; height: 100%;
+            background: #5b5bff; border-radius: 1px;
+            animation: loading 1.2s ease-in-out infinite;
+        }
+
+        @keyframes loading {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(400%); }
+        }
+
+        .loading-text { margin-top: 14px; color: #8b8fa0; font-size: 12px; font-weight: 500; }
+
+        /* 响应式 */
+        @media (max-width: 380px) {
+            .hero-title { font-size: 26px; }
+            .stats-bar { gap: 20px; }
+            .stat-num { font-size: 20px; }
+        }
+
+        @media (min-width: 768px) {
+            .hero { padding: 64px 32px 48px; }
+            .hero-title { font-size: 44px; }
+            .features { grid-template-columns: repeat(4, 1fr); max-width: 600px; }
+            .steps { flex-direction: row; gap: 12px; }
+            .step { flex-direction: column; text-align: center; flex: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="top-gradient"></div>
+
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-bar"><div class="loading-bar-inner"></div></div>
+        <div class="loading-text">正在加载</div>
+    </div>
+
+    <nav class="nav">
+        <div class="nav-left">
+            <div class="logo">C4</div>
+            <div class="nav-title">四级备考搭子</div>
+        </div>
+        <div class="nav-badge">AI Tutor</div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-tag">CET-4 智能备考</div>
+        <div class="hero-title">过四级，<span class="accent">有方法</span></div>
+        <div class="hero-desc">AI 智能私教，基于你的薄弱点定制学习计划，精准攻克四级难点</div>
+
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-num">93%</div>
+                <div class="stat-label">用户提升通过率</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-num">24h</div>
+                <div class="stat-label">全天候在线陪练</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-num">30+</div>
+                <div class="stat-label">专项训练模块</div>
+            </div>
+        </div>
+
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                </div>
+                <div>
+                    <div class="feature-label">词汇特训</div>
+                    <div class="feature-sub">高频词精准打击</div>
+                </div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
+                </div>
+                <div>
+                    <div class="feature-label">听力突破</div>
+                    <div class="feature-sub">场景化精听训练</div>
+                </div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                </div>
+                <div>
+                    <div class="feature-label">阅读技巧</div>
+                    <div class="feature-sub">快速定位答案</div>
+                </div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+                </div>
+                <div>
+                    <div class="feature-label">写作提升</div>
+                    <div class="feature-sub">模板+批改双保险</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 学习流程 -->
+    <section class="how-section">
+        <div class="section-title">三步开启备考</div>
+        <div class="steps">
+            <div class="step">
+                <div class="step-num">1</div>
+                <div>
+                    <div class="step-text">AI 诊断薄弱点</div>
+                    <div class="step-sub">2 分钟智能测评，精准定位</div>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">2</div>
+                <div>
+                    <div class="step-text">定制学习计划</div>
+                    <div class="step-sub">针对弱项生成专属路径</div>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">3</div>
+                <div>
+                    <div class="step-text">每日陪练打卡</div>
+                    <div class="step-sub">互动式训练，直到过关</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 痛点场景 -->
+    <section class="testimonials">
+        <div class="section-title">你的痛点，AI私教都能解</div>
+
+        <!-- 痛点1：听力 -->
+        <div class="t-card">
+            <div class="t-pain"><span class="t-pain-icon">🎧</span>"听力像天书，每次只能蒙"</div>
+            <div class="t-divider"></div>
+            <div class="t-solution">
+                <div class="t-solution-badge">AI解法</div>
+                <div class="t-solution-text">逐句精听训练，连读弱读单独拆解反复练，一个月听力正确率翻倍，<span class="t-result">从只对8题到抓大半</span></div>
+            </div>
+            <div class="t-footer"><span class="t-source">改编自真实备考经历</span></div>
+        </div>
+
+        <!-- 痛点2：多次不过 -->
+        <div class="t-card">
+            <div class="t-pain"><span class="t-pain-icon">😭</span>"裸考三次，417、417、416，快崩溃了"</div>
+            <div class="t-divider"></div>
+            <div class="t-solution">
+                <div class="t-solution-badge">AI解法</div>
+                <div class="t-solution-text">每天推送针对性练习，背完单词当天复盘，考前真题估分追踪进度，<span class="t-result">第四次496过线</span></div>
+            </div>
+            <div class="t-footer"><span class="t-source">改编自真实备考经历</span></div>
+        </div>
+
+        <!-- 痛点3：刷题无效 -->
+        <div class="t-card">
+            <div class="t-pain"><span class="t-pain-icon">😤</span>"真题刷了3遍还是差2分过不了"</div>
+            <div class="t-divider"></div>
+            <div class="t-solution">
+                <div class="t-solution-badge">AI解法</div>
+                <div class="t-solution-text">AI诊断错题类型，精准复盘替代盲目刷题，把"转折词陷阱"等套路整理成表，<span class="t-result">正确率直接涨70%</span></div>
+            </div>
+            <div class="t-footer"><span class="t-source">改编自真实备考经历</span></div>
+        </div>
+
+        <!-- 痛点4：阅读做不完 - 折叠区 -->
+        <div class="t-card t-hidden t-extra">
+            <div class="t-pain"><span class="t-pain-icon">⏰</span>"阅读永远做不完，最后两篇全靠蒙"</div>
+            <div class="t-divider"></div>
+            <div class="t-solution">
+                <div class="t-solution-badge">AI解法</div>
+                <div class="t-solution-text">教你先读题干再回文定位，不用逐字翻译也能找答案，<span class="t-result">正确率60%→85%，还能提前5分钟做完</span></div>
+            </div>
+            <div class="t-footer"><span class="t-source">改编自真实备考经历</span></div>
+        </div>
+
+        <!-- 痛点5：考多次不过想放弃 -->
+        <div class="t-card t-hidden t-extra">
+            <div class="t-pain"><span class="t-pain-icon">💪</span>"考了四五次了，差几分就差几分，真想放弃"</div>
+            <div class="t-divider"></div>
+            <div class="t-solution">
+                <div class="t-solution-badge">AI解法</div>
+                <div class="t-solution-text">每天固定推送任务+鼓励陪伴，像有个真人在旁边盯你学，<span class="t-result">坚持下来，下次一定能过</span></div>
+            </div>
+            <div class="t-footer"><span class="t-source">改编自真实备考经历</span></div>
+        </div>
+
+        <!-- 痛点6：听力抓不到重点 -->
+        <div class="t-card t-hidden t-extra">
+            <div class="t-pain"><span class="t-pain-icon">👂</span>"听力一快就跟不上，关键信息全漏掉"</div>
+            <div class="t-divider"></div>
+            <div class="t-solution">
+                <div class="t-solution-badge">AI解法</div>
+                <div class="t-solution-text">训练"信号词定位法"，听到but、however后面往往是答案，逐句听写标注生词，<span class="t-result">听力从最弱项变成提分最快项</span></div>
+            </div>
+            <div class="t-footer"><span class="t-source">改编自真实备考经历</span></div>
+        </div>
+
+        <!-- 痛点7：坚持不下来 -->
+        <div class="t-card t-hidden t-extra">
+            <div class="t-pain"><span class="t-pain-icon">🫠</span>"买过课买过书全都吃灰，坚持不下来"</div>
+            <div class="t-divider"></div>
+            <div class="t-solution">
+                <div class="t-solution-badge">AI解法</div>
+                <div class="t-solution-text">AI每天主动推题+限时训练，培养考试节奏感，像有个学习搭子每天陪你练，<span class="t-result">28天没断过，比预期高50分</span></div>
+            </div>
+            <div class="t-footer"><span class="t-source">改编自真实备考经历</span></div>
+        </div>
+
+        <!-- 展开/收起按钮 -->
+        <div class="t-collapse-btn" id="toggleMore" onclick="toggleMore()">更多痛点 ▼</div>
+        <div class="t-disclaimer">*案例改编自公开备考经验，展示AI私教可提供的解决思路</div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section">
+        <div class="cta-card">
+            <div class="cta-title">开始你的四级逆袭</div>
+            <div class="cta-desc">点击右下角，和 AI 私教聊两句<br>2 分钟测出你的薄弱项</div>
+            <div class="cta-hint">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                点击右下角气泡开始对话
+            </div>
+        </div>
+    </section>
+
+    <div class="footer">四级备考搭子 · AI Private Tutor</div>
+
+    <script src="https://lf-cdn.coze.cn/obj/unpkg/flow-platform/chat-app-sdk/1.2.0-beta.20/libs/cn/index.js"></script>
+
+    <script>
+        // 更多痛点展开交互
+        let moreExpanded = false;
+        function toggleMore() {
+            moreExpanded = !moreExpanded;
+            const extras = document.querySelectorAll('.t-extra');
+            const btn = document.getElementById('toggleMore');
+            extras.forEach(el => {
+                if (moreExpanded) {
+                    el.classList.remove('t-hidden');
+                } else {
+                    el.classList.add('t-hidden');
+                }
+            });
+            btn.textContent = moreExpanded ? '收起 ▲' : '更多痛点 ▼';
+        }
+
+        const BOT_ID = '7636289658620215331';
+        const API_TOKEN = 'pat_hAOthvv429aDEqWspP4lITuL3DAU7VZJiGlVrnmA1zuoZ4IWW2kmxYzXUbGvZTYb';
+
+        function getUserId() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('uid') || 'guest';
+        }
+
+        function initCozeChat() {
+            const userId = getUserId();
+
+            try {
+                new CozeWebSDK.WebChatClient({
+                    config: {
+                        bot_id: BOT_ID,
+                    },
+                    componentProps: {
+                        title: '四级备考搭子·金牌陪练',
+                    },
+                    auth: {
+                        type: 'token',
+                        token: API_TOKEN,
+                        onRefreshToken: function () {
+                            return API_TOKEN;
+                        },
+                    },
+                    userInfo: {
+                        id: userId,
+                    },
+                    ui: {
+                        isFullScreen: true,
+                        isShowTitle: false,
+                    },
+                });
+
+                setTimeout(() => {
+                    hideLoading();
+                }, 3000);
+
+            } catch (error) {
+                showError('加载失败，请刷新页面');
+            }
+        }
+
+        function hideLoading() {
+            const overlay = document.getElementById('loadingOverlay');
+            if (overlay) overlay.classList.add('hidden');
+        }
+
+        function showError(message) {
+            const overlay = document.getElementById('loadingOverlay');
+            if (overlay) {
+                overlay.innerHTML = '<div style="text-align:center;color:#8b8fa0;padding:20px;"><p>' + message + '</p></div>';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof CozeWebSDK !== 'undefined') {
+                initCozeChat();
+            } else {
+                let retryCount = 0;
+                const checkSDK = setInterval(() => {
+                    retryCount++;
+                    if (typeof CozeWebSDK !== 'undefined') {
+                        clearInterval(checkSDK);
+                        initCozeChat();
+                    } else if (retryCount > 30) {
+                        clearInterval(checkSDK);
+                        showError('加载超时，请检查网络');
+                    }
+                }, 200);
+            }
+        });
+    </script>
+</body>
+</html>
