@@ -1059,156 +1059,206 @@
             border-top: 1px solid var(--border);
         }
 
-        /* ========== 用户中心 - Stripe Dashboard风格 ========== */
-        /* ========== 用户中心 - Stripe风格克制设计 ========== */
+        /* ========== 用户中心 - Vercel/Stripe风格 ========== */
         .user-center {
             padding: 80px 40px 80px;
             max-width: 900px;
             margin: 0 auto;
         }
 
-        /* 顶部头部 */
-        .uc-header {
+        /* 顶部欢迎区 */
+        .uc-welcome {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 40px;
+            margin-bottom: 32px;
         }
 
-        .uc-header-title {
+        .uc-welcome-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .uc-welcome-title {
             font-size: 24px;
             font-weight: 600;
             color: var(--slate);
             letter-spacing: -0.02em;
         }
 
-        .uc-header-back {
-            font-size: 14px;
+        .uc-plan-pill {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 12px;
+            background: #F1F5F9;
             color: var(--slate-light);
-            text-decoration: none;
-            transition: color 0.2s;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
         }
 
-        .uc-header-back:hover {
-            color: var(--slate);
+        .uc-plan-pill.paid {
+            background: rgba(99, 91, 255, 0.08);
+            color: var(--primary);
         }
 
-        .uc-header-divider {
-            height: 1px;
-            background: var(--border);
-            margin-bottom: 40px;
+        .uc-countdown-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--urgent-bg);
+            color: var(--urgent);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            border: 1px solid rgba(220, 38, 38, 0.15);
         }
 
-        /* 第一区块：账户概览 - 双列布局 */
-        .uc-overview {
+        .uc-countdown-pill .countdown-num {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        /* 数据卡片区 - 三列布局 */
+        .uc-stats-grid {
             display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 24px;
-            margin-bottom: 40px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
         }
 
-        .uc-card {
+        @media (max-width: 640px) {
+            .uc-stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .uc-stat-card {
             background: var(--white);
             border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 24px;
+            padding: 20px;
+            transition: all 0.2s ease;
         }
 
-        .uc-card-label {
+        .uc-stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .uc-stat-label {
             font-size: 12px;
             color: var(--slate-muted);
             font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            margin-bottom: 8px;
         }
 
-        .uc-plan-badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 4px 10px;
-            background: #F1F5F9;
-            color: var(--slate-light);
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 500;
-            text-transform: none;
-            letter-spacing: normal;
-        }
-
-        .uc-card-value {
-            font-size: 36px;
-            font-weight: 600;
+        .uc-stat-value {
+            font-size: 32px;
+            font-weight: 700;
             color: var(--slate);
             letter-spacing: -0.02em;
+            line-height: 1.2;
             margin-bottom: 4px;
         }
 
-        .uc-card-meta {
-            font-size: 14px;
-            color: var(--slate-light);
-        }
-
-        /* 第二区块：快速操作 */
-        .uc-actions {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 40px;
-        }
-
-        .uc-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-decoration: none;
-            border: none;
-        }
-
-        .uc-btn-primary {
-            background: var(--white);
+        .uc-stat-value.highlight {
             color: var(--primary);
-            border: 1px solid var(--primary);
         }
 
-        .uc-btn-primary:hover {
-            background: var(--primary);
-            color: var(--white);
-        }
-
-        .uc-btn-secondary {
-            background: #F1F5F9;
+        .uc-stat-meta {
+            font-size: 13px;
             color: var(--slate-light);
-            border: 1px solid transparent;
         }
 
-        .uc-btn-secondary:hover {
-            background: #E2E8F0;
-            color: var(--slate);
+        /* 进度条样式 */
+        .uc-progress-bar {
+            height: 4px;
+            background: #E5E7EB;
+            border-radius: 2px;
+            margin-top: 12px;
+            overflow: hidden;
         }
 
-        /* 第三区块：诊断记录 */
-        .uc-records {
+        .uc-progress-fill {
+            height: 100%;
+            background: var(--primary);
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+
+        .uc-progress-fill.depleted {
+            background: #D1D5DB;
+        }
+
+        /* 快速操作区 */
+        .uc-actions-list {
             background: var(--white);
             border: 1px solid var(--border);
             border-radius: 12px;
+            margin-bottom: 32px;
             overflow: hidden;
+        }
+
+        .uc-action-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: background 0.15s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .uc-action-item:last-child {
+            border-bottom: none;
+        }
+
+        .uc-action-item:hover {
+            background: var(--bg);
+        }
+
+        .uc-action-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .uc-action-text {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--slate);
+        }
+
+        .uc-action-text.primary {
+            color: var(--primary);
+        }
+
+        .uc-action-arrow {
+            color: var(--slate-muted);
+            transition: transform 0.2s ease;
+        }
+
+        .uc-action-item:hover .uc-action-arrow {
+            transform: translateX(4px);
+        }
+
+        /* 诊断记录区 */
+        .uc-records-section {
+            margin-bottom: 24px;
         }
 
         .uc-records-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 20px 24px;
-            border-bottom: 1px solid var(--border);
+            margin-bottom: 16px;
         }
 
         .uc-records-title {
@@ -1228,6 +1278,60 @@
             opacity: 0.7;
         }
 
+        .uc-records-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        /* 空状态 - 卡片式 */
+        .uc-empty-state {
+            padding: 48px 24px;
+            text-align: center;
+        }
+
+        .uc-empty-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 16px;
+            color: var(--slate-muted);
+        }
+
+        .uc-empty-title {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--slate);
+            margin-bottom: 6px;
+        }
+
+        .uc-empty-desc {
+            font-size: 13px;
+            color: var(--slate-light);
+            margin-bottom: 20px;
+        }
+
+        .uc-empty-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 20px;
+            background: var(--white);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .uc-empty-btn:hover {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        /* 诊断记录列表 */
         .uc-records-list {
             list-style: none;
         }
@@ -1236,7 +1340,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 16px 24px;
+            padding: 16px 20px;
             border-bottom: 1px solid var(--border);
         }
 
@@ -1251,47 +1355,78 @@
         }
 
         .uc-record-name {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 500;
             color: var(--slate);
-        }
-
-        .uc-record-date {
-            font-size: 14px;
-            color: var(--slate-light);
-        }
-
-        .uc-record-scores {
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
-        .uc-record-score {
+        .uc-record-emoji {
+            font-size: 18px;
+        }
+
+        .uc-record-date {
             font-size: 13px;
-            color: var(--slate-muted);
-        }
-
-        .uc-record-arrow {
-            font-size: 14px;
-            color: var(--slate-muted);
-            margin-left: 12px;
-        }
-
-        .uc-records-empty {
-            padding: 48px 24px;
-            text-align: center;
-        }
-
-        .uc-records-empty-title {
-            font-size: 16px;
             color: var(--slate-light);
-            margin-bottom: 8px;
         }
 
-        .uc-records-empty-desc {
+        .uc-record-action {
+            font-size: 13px;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .uc-record-action:hover {
+            opacity: 0.7;
+        }
+
+        /* 升级提示横幅 */
+        .uc-upgrade-banner {
+            background: #F8F9FA;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .uc-upgrade-text {
             font-size: 14px;
-            color: var(--slate-muted);
+            color: var(--slate);
+        }
+
+        .uc-upgrade-link {
+            font-size: 14px;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .uc-upgrade-link:hover {
+            opacity: 0.7;
+        }
+
+        @media (max-width: 640px) {
+            .uc-welcome {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .uc-upgrade-banner {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .user-center {
+                padding: 24px 16px 60px;
+            }
         }
 
         /* ========== 结果页 ========== */
@@ -1920,33 +2055,6 @@
                 flex-direction: column;
             }
 
-            .user-center {
-                padding: 24px 16px 60px;
-            }
-
-            .uc-overview {
-                grid-template-columns: 1fr;
-            }
-
-            .uc-actions {
-                flex-direction: column;
-            }
-
-            .uc-btn {
-                width: 100%;
-                justify-content: center;
-            }
-
-            .uc-record-item {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 12px;
-            }
-
-            .uc-record-scores {
-                flex-wrap: wrap;
-            }
-
             .faq-section {
                 padding: 60px 20px;
             }
@@ -2362,57 +2470,99 @@
     <!-- 用户中心视图 -->
     <div id="user-center-view" style="display: none;">
         <section class="user-center">
-            <!-- 顶部头部 -->
-            <div class="uc-header">
-                <h1 class="uc-header-title">我的账户</h1>
-                <a href="#" class="uc-header-back" onclick="switchView('home'); return false;">&larr; 返回首页</a>
+            <!-- 顶部欢迎区 -->
+            <div class="uc-welcome">
+                <div class="uc-welcome-left">
+                    <h1 class="uc-welcome-title">开始你的备考之旅</h1>
+                    <span class="uc-plan-pill" id="currentPlanDisplay">免费版</span>
+                </div>
+                <span class="uc-countdown-pill">
+                    <span class="countdown-num" id="examDaysDisplay">35</span> 天后考试
+                </span>
             </div>
-            <div class="uc-header-divider"></div>
 
-            <!-- 第一区块：账户概览 -->
-            <div class="uc-overview">
-                <!-- 左侧：诊断次数 -->
-                <div class="uc-card">
-                    <div class="uc-card-label">
-                        <span>当前方案</span>
-                        <span class="uc-plan-badge" id="currentPlanDisplay">免费版</span>
+            <!-- 数据卡片区 - 三列布局 -->
+            <div class="uc-stats-grid">
+                <!-- 卡片1：诊断次数 -->
+                <div class="uc-stat-card">
+                    <div class="uc-stat-label">剩余诊断</div>
+                    <div class="uc-stat-value highlight" id="remainingCount">3</div>
+                    <div class="uc-stat-meta" id="diagnosisMeta">免费版 · 3次机会</div>
+                    <div class="uc-progress-bar">
+                        <div class="uc-progress-fill" id="diagnosisProgress" style="width: 100%"></div>
                     </div>
-                    <div class="uc-card-value" id="diagnosisCountDisplay">0 / 3</div>
-                    <div class="uc-card-meta" id="currentPlanMeta">剩余诊断次数</div>
                 </div>
 
-                <!-- 右侧：考试倒计时 -->
-                <div class="uc-card">
-                    <div class="uc-card-label">
-                        <span>考试倒计时</span>
+                <!-- 卡片2：学习天数 -->
+                <div class="uc-stat-card">
+                    <div class="uc-stat-label">已学习</div>
+                    <div class="uc-stat-value" id="learningDays">0 天</div>
+                    <div class="uc-stat-meta">开始你的第一天</div>
+                    <div class="uc-progress-bar">
+                        <div class="uc-progress-fill" style="width: 0%"></div>
                     </div>
-                    <div class="uc-card-value" id="examDaysDisplay">35 天</div>
-                    <div class="uc-card-meta">距2026年6月13日</div>
+                </div>
+
+                <!-- 卡片3：备考状态 -->
+                <div class="uc-stat-card">
+                    <div class="uc-stat-label">当前状态</div>
+                    <div class="uc-stat-value" id="studyStatus">未开始</div>
+                    <div class="uc-stat-meta" id="studyStatusMeta">完成诊断解锁人格卡</div>
+                    <div class="uc-progress-bar">
+                        <div class="uc-progress-fill" style="width: 0%"></div>
+                    </div>
                 </div>
             </div>
 
-            <!-- 第二区块：快速操作 -->
-            <div class="uc-actions">
-                <button class="uc-btn uc-btn-primary" onclick="switchView('home'); setTimeout(() => openChat('diagnosis'), 300);">
-                    开始诊断
-                </button>
-                <button class="uc-btn uc-btn-secondary" onclick="openChat('sprint')">
-                    升级方案
-                </button>
+            <!-- 快速操作区 -->
+            <div class="uc-actions-list">
+                <a href="#" class="uc-action-item" onclick="switchView('home'); setTimeout(() => openChat('diagnosis'), 300); return false;">
+                    <div class="uc-action-content">
+                        <span class="uc-action-text primary">开始免费诊断</span>
+                    </div>
+                    <span class="uc-action-arrow">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 8h10M9 4l4 4-4 4"/>
+                        </svg>
+                    </span>
+                </a>
+                <a href="#pricing" class="uc-action-item" onclick="switchView('home'); document.getElementById('pricing')?.scrollIntoView({behavior: 'smooth'}); return false;">
+                    <div class="uc-action-content">
+                        <span class="uc-action-text">升级备考方案</span>
+                    </div>
+                    <span class="uc-action-arrow">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 8h10M9 4l4 4-4 4"/>
+                        </svg>
+                    </span>
+                </a>
+                <a href="#faq" class="uc-action-item" onclick="switchView('home'); document.getElementById('faq')?.scrollIntoView({behavior: 'smooth'}); return false;">
+                    <div class="uc-action-content">
+                        <span class="uc-action-text">查看备考攻略</span>
+                    </div>
+                    <span class="uc-action-arrow">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 8h10M9 4l4 4-4 4"/>
+                        </svg>
+                    </span>
+                </a>
             </div>
 
-            <!-- 第三区块：诊断记录 -->
-            <div class="uc-records">
+            <!-- 诊断记录区 -->
+            <div class="uc-records-section">
                 <div class="uc-records-header">
                     <span class="uc-records-title">诊断记录</span>
                     <a href="#" class="uc-records-link" onclick="showToast('历史记录功能开发中'); return false;">查看全部</a>
                 </div>
-                <ul class="uc-records-list" id="diagnosisRecordsList">
-                    <li class="uc-records-empty">
-                        <div class="uc-records-empty-title">暂无诊断记录</div>
-                        <div class="uc-records-empty-desc">完成诊断后，你的备考分析将显示在这里</div>
-                    </li>
-                </ul>
+                <div class="uc-records-card" id="diagnosisRecordsCard">
+                    <!-- 动态内容 -->
+                </div>
+            </div>
+
+            <!-- 升级提示横幅（仅免费版显示） -->
+            <div class="uc-upgrade-banner" id="upgradeBanner" style="display: none;">
+                <span class="uc-upgrade-text">升级冲刺版，获取30天专属备考计划</span>
+                <a href="#pricing" class="uc-upgrade-link" onclick="switchView('home'); document.getElementById('pricing')?.scrollIntoView({behavior: 'smooth'}); return false;">了解更多 →</a>
             </div>
         </section>
     </div>
@@ -2941,26 +3091,14 @@
         function updateUserCenter() {
             const data = getUserData();
             const plan = data.plan;
-
-            // 更新当前方案显示
-            const planDisplay = document.getElementById("currentPlanDisplay");
-            const planMeta = document.getElementById("currentPlanMeta");
-            const diagnosisCountDisplay = document.getElementById("diagnosisCountDisplay");
-            
-            const planName = planNames[plan] || "免费版";
             const isPaid = plan !== "free";
 
-            // 方案徽章
-            planDisplay.textContent = planName;
-            
-            // 诊断次数 - 根据方案显示不同格式
-            if (isPaid) {
-                diagnosisCountDisplay.textContent = "无限次";
-                planMeta.textContent = "已解锁全部功能";
-            } else {
-                const remaining = Math.max(0, 3 - data.diagnoseCount);
-                diagnosisCountDisplay.textContent = `${data.diagnoseCount} / 3`;
-                planMeta.textContent = "剩余诊断次数";
+            // 更新方案标签
+            const planDisplay = document.getElementById("currentPlanDisplay");
+            if (planDisplay) {
+                const planName = planNames[plan] || "免费版";
+                planDisplay.textContent = planName;
+                planDisplay.className = isPaid ? "uc-plan-pill paid" : "uc-plan-pill";
             }
 
             // 更新考试倒计时
@@ -2969,35 +3107,109 @@
             const daysLeft = Math.max(0, Math.ceil((examDate - now) / (1000 * 60 * 60 * 24)));
             const examDaysDisplay = document.getElementById("examDaysDisplay");
             if (examDaysDisplay) {
-                examDaysDisplay.textContent = `${daysLeft} 天`;
+                examDaysDisplay.textContent = daysLeft;
+            }
+
+            // 更新诊断次数卡片
+            const remainingCount = document.getElementById("remainingCount");
+            const diagnosisMeta = document.getElementById("diagnosisMeta");
+            const diagnosisProgress = document.getElementById("diagnosisProgress");
+
+            if (isPaid) {
+                // 付费版：无限次
+                if (remainingCount) remainingCount.textContent = "∞";
+                if (diagnosisMeta) diagnosisMeta.textContent = "已解锁全部功能";
+                if (diagnosisProgress) {
+                    diagnosisProgress.style.width = "100%";
+                    diagnosisProgress.className = "uc-progress-fill";
+                }
+            } else {
+                // 免费版：3次机会
+                const used = data.diagnoseCount || 0;
+                const remaining = Math.max(0, 3 - used);
+                const total = 3;
+                const usedPercent = (used / total) * 100;
+
+                if (remainingCount) remainingCount.textContent = remaining;
+                if (diagnosisMeta) diagnosisMeta.textContent = `免费版 · ${remaining}次机会`;
+                if (diagnosisProgress) {
+                    diagnosisProgress.style.width = `${100 - usedPercent}%`;
+                    diagnosisProgress.className = remaining === 0 ? "uc-progress-fill depleted" : "uc-progress-fill";
+                }
+            }
+
+            // 更新学习天数卡片
+            const learningDays = document.getElementById("learningDays");
+            if (learningDays) {
+                const startDate = data.activatedAt || data.diagnoses?.[0]?.timestamp;
+                if (startDate) {
+                    const days = Math.ceil((Date.now() - startDate) / (1000 * 60 * 60 * 24));
+                    learningDays.textContent = `${days} 天`;
+                } else {
+                    learningDays.textContent = "0 天";
+                }
+            }
+
+            // 更新备考状态卡片
+            const studyStatus = document.getElementById("studyStatus");
+            const studyStatusMeta = document.getElementById("studyStatusMeta");
+
+            if (data.diagnoses && data.diagnoses.length > 0) {
+                const latest = data.diagnoses[0];
+                const personality = personalities.find(p => p.type === latest.type);
+                if (studyStatus) studyStatus.textContent = personality ? personality.type : latest.type;
+                if (studyStatusMeta) studyStatusMeta.textContent = "已完成诊断";
+            } else {
+                if (studyStatus) studyStatus.textContent = "未开始";
+                if (studyStatusMeta) studyStatusMeta.textContent = "完成诊断解锁人格卡";
             }
 
             // 更新诊断记录列表
-            const recordsList = document.getElementById("diagnosisRecordsList");
+            const recordsCard = document.getElementById("diagnosisRecordsCard");
             
-            if (data.diagnoses.length === 0) {
-                recordsList.innerHTML = `
-                    <li class="uc-records-empty">
-                        <div class="uc-records-empty-title">暂无诊断记录</div>
-                        <div class="uc-records-empty-desc">完成诊断后，你的备考分析将显示在这里</div>
-                    </li>
+            if (!recordsCard) return;
+
+            if (data.diagnoses && data.diagnoses.length === 0) {
+                // 空状态 - 卡片式
+                recordsCard.innerHTML = `
+                    <div class="uc-empty-state">
+                        <svg class="uc-empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M9 12h6M12 9v6M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <div class="uc-empty-title">还没有诊断记录</div>
+                        <div class="uc-empty-desc">完成一次免费诊断，获取你的备考人格卡</div>
+                        <button class="uc-empty-btn" onclick="switchView('home'); setTimeout(() => openChat('diagnosis'), 300);">
+                            开始诊断
+                            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 8h10M9 4l4 4-4 4"/>
+                            </svg>
+                        </button>
+                    </div>
                 `;
             } else {
-                recordsList.innerHTML = data.diagnoses.slice(0, 3).map(d => {
-                    const scoreText = d.scores ? `推理${d.scores[0]} 词汇${d.scores[1]}` : '';
-                    return `
-                        <li class="uc-record-item">
-                            <div class="uc-record-info">
-                                <span class="uc-record-name">${d.type}</span>
-                                <span class="uc-record-date">${d.date}</span>
-                            </div>
-                            <div class="uc-record-scores">
-                                <span class="uc-record-score">${scoreText}</span>
-                                <span class="uc-record-arrow">&rarr;</span>
-                            </div>
-                        </li>
-                    `;
-                }).join("");
+                // 有记录时
+                recordsCard.innerHTML = `
+                    <ul class="uc-records-list">
+                        ${data.diagnoses.slice(0, 3).map(d => `
+                            <li class="uc-record-item">
+                                <div class="uc-record-info">
+                                    <span class="uc-record-name">
+                                        <span class="uc-record-emoji">${d.emoji || ''}</span>
+                                        ${d.type}
+                                    </span>
+                                    <span class="uc-record-date">${d.date}</span>
+                                </div>
+                                <a href="#" class="uc-record-action" onclick="viewDiagnosisReport('${d.type}'); return false;">查看详情 →</a>
+                            </li>
+                        `).join("")}
+                    </ul>
+                `;
+            }
+
+            // 更新升级横幅（仅免费版显示）
+            const upgradeBanner = document.getElementById("upgradeBanner");
+            if (upgradeBanner) {
+                upgradeBanner.style.display = isPaid ? "none" : "flex";
             }
             
             // 更新学长聊天按钮
