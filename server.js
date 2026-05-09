@@ -108,7 +108,10 @@ async function handleApi(req, res, pathname) {
             if (!planConfig.needPay) {
                 return sendJson(res, 200, {
                     order_id: orderId,
+                    orderId: orderId,
                     uid,
+                    plan: plan,
+                    amount: planConfig.price,
                     paid: true,
                     mock: true
                 });
@@ -146,7 +149,10 @@ async function handleApi(req, res, pathname) {
                 const mockQrCode = '/wechat-qr.jpg';
                 return sendJson(res, 200, {
                     order_id: orderId,
+                    orderId: orderId,
                     uid,
+                    plan: plan,
+                    amount: planConfig.price,
                     qr_code_url: mockQrCode,
                     mock: true
                 });
