@@ -1407,6 +1407,182 @@
             transform: translateX(-50%) translateY(0);
         }
 
+        /* ========== 支付弹窗 ========== */
+        .payment-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1001;
+            padding: 20px;
+        }
+
+        .payment-modal.active {
+            display: flex;
+        }
+
+        .payment-modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            max-width: 380px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+        }
+
+        .payment-modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: var(--bg);
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            color: var(--slate-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .payment-modal-close:hover {
+            background: var(--border);
+            color: var(--slate);
+        }
+
+        .payment-plan-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--slate);
+            margin-bottom: 8px;
+        }
+
+        .payment-amount {
+            font-size: 42px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 24px;
+        }
+
+        .payment-amount small {
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .payment-qr-container {
+            background: var(--bg);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .payment-qr {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 12px;
+        }
+
+        .payment-qr img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .payment-order-id {
+            background: rgba(99, 91, 255, 0.08);
+            color: var(--primary);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-family: monospace;
+            letter-spacing: 1px;
+        }
+
+        .payment-hint {
+            font-size: 13px;
+            color: var(--slate-light);
+            margin-bottom: 24px;
+        }
+
+        .payment-btn-paid {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #10B981, #059669);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .payment-btn-paid:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .payment-btn-paid:disabled {
+            background: var(--border);
+            color: var(--slate-light);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .payment-status {
+            margin-top: 16px;
+            font-size: 14px;
+            color: var(--slate-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .payment-status.waiting {
+            color: var(--warning);
+        }
+
+        .payment-status.success {
+            color: var(--success);
+        }
+
+        .payment-spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--border);
+            border-top-color: var(--warning);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ========== 管理员入口（隐藏） ========== */
+        .admin-link {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            font-size: 10px;
+            color: transparent;
+            text-decoration: none;
+            z-index: 50;
+        }
+
         /* ========== Chat SDK 浮窗 ========== */
         /* chat-container已移除，SDK自己管理UI */
         
@@ -1506,6 +1682,27 @@
 
     <!-- Toast提示 -->
     <div class="toast" id="toast"></div>
+
+    <!-- 支付弹窗 -->
+    <div class="payment-modal" id="paymentModal">
+        <div class="payment-modal-content">
+            <button class="payment-modal-close" onclick="closePaymentModal()">×</button>
+            <div class="payment-plan-name" id="paymentPlanName">冲刺版</div>
+            <div class="payment-amount" id="paymentAmount">¥49</div>
+            <div class="payment-qr-container">
+                <div class="payment-qr" id="paymentQr">
+                    <img src="" alt="收款码" id="paymentQrImg">
+                </div>
+                <div class="payment-order-id" id="paymentOrderId">CET4S123456789</div>
+            </div>
+            <div class="payment-hint">请使用微信/支付宝扫码支付，<strong>务必备注订单号</strong></div>
+            <button class="payment-btn-paid" id="paymentBtnPaid" onclick="onPaidClick()">我已付款</button>
+            <div class="payment-status" id="paymentStatus"></div>
+        </div>
+    </div>
+
+    <!-- 管理员入口（隐藏路径） -->
+    <a href="/admin-activate-cet4" class="admin-link" target="_blank">admin</a>
 
     <!-- 导航 -->
     <nav class="nav" id="nav">
@@ -1919,7 +2116,25 @@
             "free": "免费版",
             "report": "详细报告",
             "sprint": "冲刺版",
+            "flagship": "旗舰版",
+            "pro": "旗舰版"
+        };
+
+        // 套餐显示名称映射
+        const planDisplayNames = {
+            "free": "免费版",
+            "report": "详细报告",
+            "sprint": "冲刺版",
+            "pro": "旗舰版",
             "flagship": "旗舰版"
+        };
+
+        // Bot类型映射
+        const planToBotType = {
+            "report": "diagnosis",
+            "sprint": "sprint",
+            "pro": "pro",
+            "flagship": "pro"
         };
 
         /* ========== Bot配置 ========== */
@@ -2000,6 +2215,9 @@
                 openChat('pro');
             } else if (userPlan === 'sprint') {
                 openChat('sprint');
+            } else if (userPlan === 'report') {
+                // report用户可以解锁sprint或pro
+                showUpgradeModal('sprint');
             } else {
                 // 免费用户，引导升级
                 showUpgradeModal('sprint');
@@ -2490,12 +2708,11 @@
             if (planId === "free") {
                 openChat('diagnosis');
             } else if (planId === "report") {
-                showUpgradeModal('diagnosis');
-                showToast("¥1解锁详细报告功能开发中");
+                createOrder('report');
             } else if (planId === "sprint") {
-                openChat('sprint');
+                createOrder('sprint');
             } else if (planId === "flagship") {
-                openChat('pro');
+                createOrder('pro');
             } else {
                 showToast(`${planNames[planId] || planId}购买功能开发中`);
             }
@@ -2504,11 +2721,13 @@
         // 处理升级按钮
         function handleUpgrade(type) {
             if (type === "report") {
-                showToast("¥1解锁详细报告功能开发中");
+                createOrder('report');
             } else if (type === "sprint") {
-                showToast("¥49冲刺版购买功能开发中");
+                createOrder('sprint');
             } else if (type === "flagship") {
-                showToast("¥149旗舰版购买功能开发中");
+                createOrder('pro');
+            } else {
+                showToast("功能开发中");
             }
         }
 
@@ -2633,6 +2852,164 @@
             link.click();
 
             showToast("人格卡已保存");
+        }
+
+        /* ========== 支付相关函数 ========== */
+        
+        let currentOrderId = null;
+        let currentOrderPlan = null;
+        let pollingInterval = null;
+        let pollingCount = 0;
+        const MAX_POLLING_COUNT = 60; // 最多轮询60次（5分钟）
+
+        // 创建订单并打开支付弹窗
+        async function createOrder(planId) {
+            try {
+                const response = await fetch('/api/create-order', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ plan: planId })
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    showToast(data.error);
+                    return;
+                }
+
+                // 如果是免费版或已激活，直接处理
+                if (data.status === 'activated') {
+                    handleActivationSuccess(data.plan, data.token);
+                    return;
+                }
+
+                // 显示支付弹窗
+                currentOrderId = data.orderId;
+                currentOrderPlan = data.plan;
+                openPaymentModal(data);
+
+            } catch (error) {
+                console.error('创建订单失败:', error);
+                showToast('创建订单失败，请稍后重试');
+            }
+        }
+
+        // 打开支付弹窗
+        function openPaymentModal(orderData) {
+            const modal = document.getElementById('paymentModal');
+            const planName = document.getElementById('paymentPlanName');
+            const amount = document.getElementById('paymentAmount');
+            const qrImg = document.getElementById('paymentQrImg');
+            const orderId = document.getElementById('paymentOrderId');
+            const status = document.getElementById('paymentStatus');
+
+            planName.textContent = planDisplayNames[orderData.plan] || orderData.plan;
+            amount.innerHTML = `¥${orderData.amount}<small>`;
+            qrImg.src = orderData.wechatQrUrl || 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=wechat-pay';
+            orderId.textContent = orderData.orderId;
+            status.innerHTML = '';
+            status.className = 'payment-status';
+
+            modal.classList.add('active');
+        }
+
+        // 关闭支付弹窗
+        function closePaymentModal() {
+            const modal = document.getElementById('paymentModal');
+            modal.classList.remove('active');
+            stopPolling();
+            currentOrderId = null;
+            currentOrderPlan = null;
+        }
+
+        // 点击"我已付款"按钮
+        function onPaidClick() {
+            if (!currentOrderId) return;
+
+            const status = document.getElementById('paymentStatus');
+            const btn = document.getElementById('paymentBtnPaid');
+
+            btn.disabled = true;
+            status.innerHTML = '<div class="payment-spinner"></div> 正在确认付款...';
+            status.className = 'payment-status waiting';
+
+            pollingCount = 0;
+            startPolling();
+        }
+
+        // 开始轮询检查订单状态
+        function startPolling() {
+            stopPolling();
+            pollingInterval = setInterval(checkOrderStatus, 5000);
+            checkOrderStatus(); // 立即检查一次
+        }
+
+        // 停止轮询
+        function stopPolling() {
+            if (pollingInterval) {
+                clearInterval(pollingInterval);
+                pollingInterval = null;
+            }
+        }
+
+        // 检查订单状态
+        async function checkOrderStatus() {
+            if (!currentOrderId) return;
+
+            try {
+                const response = await fetch(`/api/check-order?order_id=${encodeURIComponent(currentOrderId)}`);
+                const data = await response.json();
+
+                pollingCount++;
+
+                if (data.status === 'activated') {
+                    // 激活成功
+                    stopPolling();
+                    handleActivationSuccess(currentOrderPlan, data.token);
+                    closePaymentModal();
+                    return;
+                }
+
+                if (pollingCount >= MAX_POLLING_COUNT) {
+                    // 超时
+                    stopPolling();
+                    const status = document.getElementById('paymentStatus');
+                    const btn = document.getElementById('paymentBtnPaid');
+                    status.innerHTML = '超时未确认，请联系管理员';
+                    status.className = 'payment-status';
+                    btn.disabled = false;
+                    showToast('支付确认超时，请联系客服');
+                }
+
+            } catch (error) {
+                console.error('检查订单状态失败:', error);
+            }
+        }
+
+        // 处理激活成功
+        function handleActivationSuccess(plan, token) {
+            // 保存到localStorage
+            const userData = getUserData();
+            userData.plan = plan;
+            userData.token = token;
+            userData.activatedAt = Date.now();
+            userData.orderId = currentOrderId;
+            saveUserData(userData);
+
+            // 更新UI
+            updateUserCenter();
+            updatePricingCards();
+            updateMentorChatButton();
+
+            // 显示成功提示
+            showToast(`${planDisplayNames[plan] || plan}激活成功！`);
+
+            // 自动打开对应Bot
+            const botType = planToBotType[plan] || 'diagnosis';
+            setTimeout(() => {
+                openChat(botType);
+            }, 500);
         }
 
         /* ========== 页面加载完成后初始化 ========== */
