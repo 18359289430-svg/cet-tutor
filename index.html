@@ -23,12 +23,15 @@
             --primary-dark: #7C3AED;
             --slate: #0A2540;
             --slate-light: #64748B;
+            --slate-muted: #94A3B8;
             --bg: #FAFAFA;
             --white: #FFFFFF;
             --border: #E5E7EB;
             --grid-line: rgba(0, 0, 0, 0.04);
             --success: #10B981;
+            --success-light: #34D399;
             --warning: #F59E0B;
+            --warning-light: #FBBF24;
             --error: #EF4444;
         }
 
@@ -118,47 +121,69 @@
             left: 0;
             right: 0;
             height: 64px;
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 24px;
+            padding: 0 40px;
             z-index: 1000;
-            border-bottom: 1px solid var(--border);
-            transition: box-shadow 0.2s ease;
+            border-bottom: 1px solid transparent;
+            transition: all 0.3s ease;
         }
 
         .nav.scrolled {
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            border-bottom-color: var(--border);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 40px;
         }
 
         .nav-logo {
             font-size: 18px;
-            font-weight: 600;
+            font-weight: 700;
             color: var(--slate);
             letter-spacing: -0.02em;
             cursor: pointer;
-        }
-
-        .nav-right {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 8px;
+        }
+
+        .nav-logo-icon {
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 32px;
         }
 
         .nav-link {
             font-size: 14px;
             font-weight: 500;
-            color: var(--primary);
+            color: var(--slate-light);
             text-decoration: none;
-            transition: opacity 0.2s;
+            transition: color 0.2s;
         }
 
         .nav-link:hover {
-            opacity: 0.7;
-            text-decoration: underline;
+            color: var(--slate);
         }
 
         .nav-link.active {
@@ -166,57 +191,22 @@
             font-weight: 600;
         }
 
-        /* ========== Hero区 ========== */
-        .hero {
-            min-height: 100vh;
+        .nav-right {
             display: flex;
-            flex-direction: column;
-            justify-content: center;
             align-items: center;
-            padding: 120px 24px 80px;
-            text-align: center;
-            position: relative;
-            /* Vercel微网格背景 */
-            background-image: 
-                linear-gradient(var(--grid-line) 1px, transparent 1px),
-                linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
-            background-size: 24px 24px;
+            gap: 16px;
         }
 
-        /* Stripe式淡紫渐变 */
-        .hero::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: 
-                radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99, 91, 255, 0.12), transparent),
-                radial-gradient(ellipse 60% 40% at 80% 50%, rgba(124, 58, 237, 0.08), transparent);
-            pointer-events: none;
-        }
-
-        .hero-content {
-            max-width: 640px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .hero-title {
-            font-size: 36px;
-            font-weight: 700;
-            letter-spacing: -0.02em;
-            line-height: 1.2;
-            color: var(--slate);
-            margin-bottom: 16px;
-        }
-
-        .hero-subtitle {
-            font-size: 18px;
+        .nav-link-user {
+            font-size: 14px;
+            font-weight: 500;
             color: var(--slate-light);
-            margin-bottom: 40px;
-            line-height: 1.6;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .nav-link-user:hover {
+            color: var(--primary);
         }
 
         /* CTA按钮 */
@@ -227,9 +217,9 @@
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
             border: none;
-            padding: 16px 32px;
+            padding: 12px 24px;
             border-radius: 8px;
-            font-size: 16px;
+            font-size: 14px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -241,51 +231,274 @@
             box-shadow: 0 2px 6px rgba(99, 91, 255, 0.4), 0 8px 20px rgba(99, 91, 255, 0.2);
         }
 
-        .hero-hint {
-            font-size: 14px;
-            color: var(--slate-light);
-            margin-top: 16px;
-            font-weight: 500;
+        .btn-primary.nav-cta {
+            padding: 10px 20px;
         }
 
-        /* 流程预览 */
-        .flow-preview {
+        /* ========== Hero区 ========== */
+        .hero {
+            min-height: 100vh;
+            padding: 100px 40px 80px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 12px;
-            margin-top: 60px;
-            font-size: 14px;
-            color: var(--slate-light);
+            position: relative;
+            background-image: 
+                linear-gradient(var(--grid-line) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+            background-size: 24px 24px;
+            overflow: hidden;
         }
 
-        .flow-step {
+        /* 背景渐变光晕 */
+        .hero::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(ellipse 60% 40% at 20% 30%, rgba(99, 91, 255, 0.08), transparent),
+                radial-gradient(ellipse 50% 40% at 80% 70%, rgba(124, 58, 237, 0.06), transparent);
+            pointer-events: none;
+        }
+
+        .hero-container {
+            max-width: 1200px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        @media (max-width: 900px) {
+            .hero-container {
+                grid-template-columns: 1fr;
+                gap: 60px;
+            }
+        }
+
+        .hero-content {
+            max-width: 520px;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(99, 91, 255, 0.08);
+            color: var(--primary);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 24px;
+        }
+
+        .hero-badge-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .hero-title {
+            font-size: 48px;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            line-height: 1.15;
+            color: var(--slate);
+            margin-bottom: 20px;
+        }
+
+        .hero-subtitle {
+            font-size: 18px;
+            color: var(--slate-light);
+            margin-bottom: 32px;
+            line-height: 1.6;
+        }
+
+        .hero-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .hero-actions .btn-primary {
+            padding: 16px 32px;
+            font-size: 16px;
+        }
+
+        .hero-trust {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 14px;
+            color: var(--slate-muted);
+        }
+
+        .hero-trust-item {
             display: flex;
             align-items: center;
             gap: 6px;
         }
 
-        .flow-dot {
-            width: 32px;
-            height: 32px;
-            background: rgba(99, 91, 255, 0.1);
+        .hero-trust-divider {
+            width: 4px;
+            height: 4px;
+            background: var(--border);
+            border-radius: 50%;
+        }
+
+        /* Hero右侧：对话预览 */
+        .hero-visual {
+            position: relative;
+        }
+
+        .chat-preview {
+            background: var(--white);
+            border-radius: 20px;
+            box-shadow: 0 4px 32px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.04);
+            overflow: hidden;
+            transform: perspective(1000px) rotateY(-5deg) rotateX(2deg);
+            transition: transform 0.5s ease;
+        }
+
+        .chat-preview:hover {
+            transform: perspective(1000px) rotateY(0deg) rotateX(0deg);
+        }
+
+        @media (max-width: 900px) {
+            .chat-preview {
+                transform: none;
+            }
+        }
+
+        .chat-preview-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .chat-preview-avatar {
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .chat-preview-info {
+            flex: 1;
+        }
+
+        .chat-preview-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .chat-preview-status {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .chat-preview-body {
+            padding: 24px;
+            min-height: 360px;
+            background: #F8FAFC;
+        }
+
+        .chat-bubble {
+            margin-bottom: 16px;
+            animation: fadeInUp 0.4s ease forwards;
+            opacity: 0;
+        }
+
+        .chat-bubble.bot {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+
+        .chat-bubble.bot .chat-avatar {
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 14px;
+            flex-shrink: 0;
         }
 
-        .flow-arrow {
-            color: var(--border);
-            font-size: 12px;
+        .chat-bubble.bot .chat-text {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 16px 16px 16px 4px;
+            padding: 12px 16px;
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--slate);
+            max-width: 85%;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
         }
 
-        /* ========== 入场动画 ========== */
+        .chat-bubble.user {
+            margin-left: 40px;
+        }
+
+        .chat-bubble.user .chat-text {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border-radius: 16px 16px 4px 16px;
+            padding: 12px 16px;
+            font-size: 14px;
+            line-height: 1.5;
+            box-shadow: 0 2px 8px rgba(99, 91, 255, 0.2);
+        }
+
+        .chat-bubble:nth-child(1) { animation-delay: 0.3s; }
+        .chat-bubble:nth-child(2) { animation-delay: 0.8s; }
+        .chat-bubble:nth-child(3) { animation-delay: 1.3s; }
+        .chat-bubble:nth-child(4) { animation-delay: 1.8s; }
+
+        .chat-cursor {
+            display: inline-block;
+            width: 2px;
+            height: 16px;
+            background: var(--primary);
+            margin-left: 4px;
+            animation: blink 1s infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
         @keyframes fadeInUp {
             from {
                 opacity: 0;
-                transform: translateY(20px);
+                transform: translateY(10px);
             }
             to {
                 opacity: 1;
@@ -293,6 +506,7 @@
             }
         }
 
+        /* 入场动画 */
         .animate-in {
             animation: fadeInUp 0.6s ease-out forwards;
             opacity: 0;
@@ -304,9 +518,216 @@
         .delay-4 { animation-delay: 0.4s; }
         .delay-5 { animation-delay: 0.5s; }
 
+        /* ========== 功能卡片区 ========== */
+        .features-section {
+            padding: 80px 40px;
+            background: var(--white);
+        }
+
+        .features-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .features-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .features-title {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--slate);
+            letter-spacing: -0.02em;
+            margin-bottom: 12px;
+        }
+
+        .features-subtitle {
+            font-size: 18px;
+            color: var(--slate-light);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        @media (max-width: 900px) {
+            .features-grid {
+                grid-template-columns: 1fr;
+                max-width: 480px;
+                margin: 0 auto;
+            }
+        }
+
+        .feature-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-card-accent {
+            height: 3px;
+        }
+
+        .feature-card-accent.purple {
+            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+        }
+
+        .feature-card-accent.green {
+            background: linear-gradient(90deg, var(--success), var(--success-light));
+        }
+
+        .feature-card-accent.yellow {
+            background: linear-gradient(90deg, var(--warning), var(--warning-light));
+        }
+
+        .feature-card-content {
+            padding: 28px;
+        }
+
+        .feature-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        .feature-card:nth-child(1) .feature-icon {
+            background: rgba(99, 91, 255, 0.1);
+        }
+
+        .feature-card:nth-child(2) .feature-icon {
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .feature-card:nth-child(3) .feature-icon {
+            background: rgba(245, 158, 11, 0.1);
+        }
+
+        .feature-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--slate);
+            margin-bottom: 8px;
+        }
+
+        .feature-desc {
+            font-size: 15px;
+            color: var(--slate-light);
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        /* 功能卡片底部预览 */
+        .feature-preview {
+            background: var(--bg);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 雷达图预览 */
+        .radar-preview {
+            width: 120px;
+            height: 120px;
+            position: relative;
+        }
+
+        .radar-preview svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* 进度条预览 */
+        .progress-preview {
+            width: 100%;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--slate-light);
+            margin-bottom: 8px;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success), var(--success-light));
+            border-radius: 4px;
+            transition: width 1s ease;
+        }
+
+        .progress-items {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 11px;
+            color: var(--slate-muted);
+        }
+
+        /* 分数提升预览 */
+        .score-preview {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .score-from, .score-to {
+            text-align: center;
+        }
+
+        .score-value {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .score-from .score-value {
+            color: var(--slate-light);
+        }
+
+        .score-to .score-value {
+            background: linear-gradient(135deg, var(--warning), var(--warning-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .score-label {
+            font-size: 12px;
+            color: var(--slate-muted);
+        }
+
+        .score-arrow {
+            font-size: 24px;
+            color: var(--success);
+        }
+
         /* ========== 人格预览区 ========== */
         .section {
-            padding: 80px 24px;
+            padding: 80px 40px;
             max-width: 1200px;
             margin: 0 auto;
         }
@@ -395,7 +816,7 @@
 
         /* ========== 定价区 - Coze风格 ========== */
         .pricing-section {
-            padding: 80px 24px;
+            padding: 80px 40px;
             background-image: 
                 linear-gradient(var(--grid-line) 1px, transparent 1px),
                 linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
@@ -573,9 +994,72 @@
             transform: none;
         }
 
+        /* ========== FAQ区 ========== */
+        .faq-section {
+            padding: 80px 40px;
+            max-width: 640px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            border-bottom: 1px solid var(--border);
+        }
+
+        .faq-question {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--slate);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .faq-question:hover {
+            color: var(--primary);
+        }
+
+        .faq-icon {
+            font-size: 20px;
+            color: var(--slate-light);
+            transition: transform 0.3s ease;
+        }
+
+        .faq-item.active .faq-icon {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 200px;
+            padding-bottom: 20px;
+        }
+
+        .faq-answer p {
+            font-size: 14px;
+            color: var(--slate-light);
+            line-height: 1.7;
+        }
+
+        /* ========== Footer ========== */
+        .footer {
+            text-align: center;
+            padding: 24px 40px;
+            font-size: 14px;
+            color: var(--slate-light);
+            border-top: 1px solid var(--border);
+        }
+
         /* ========== 用户中心 ========== */
         .user-center {
-            padding: 80px 24px;
+            padding: 80px 40px;
             max-width: 1000px;
             margin: 0 auto;
         }
@@ -604,7 +1088,6 @@
 
         .user-center-link:hover {
             opacity: 0.7;
-            text-decoration: underline;
         }
 
         .user-status-cards {
@@ -749,69 +1232,6 @@
             text-align: center;
             color: var(--slate-light);
             font-size: 14px;
-        }
-
-        /* ========== FAQ区 ========== */
-        .faq-section {
-            padding: 80px 24px;
-            max-width: 640px;
-            margin: 0 auto;
-        }
-
-        .faq-item {
-            border-bottom: 1px solid var(--border);
-        }
-
-        .faq-question {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 20px 0;
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--slate);
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-
-        .faq-question:hover {
-            color: var(--primary);
-        }
-
-        .faq-icon {
-            font-size: 20px;
-            color: var(--slate-light);
-            transition: transform 0.3s ease;
-        }
-
-        .faq-item.active .faq-icon {
-            transform: rotate(45deg);
-        }
-
-        .faq-answer {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease, padding 0.3s ease;
-        }
-
-        .faq-item.active .faq-answer {
-            max-height: 200px;
-            padding-bottom: 20px;
-        }
-
-        .faq-answer p {
-            font-size: 14px;
-            color: var(--slate-light);
-            line-height: 1.7;
-        }
-
-        /* ========== Footer ========== */
-        .footer {
-            text-align: center;
-            padding: 24px;
-            font-size: 14px;
-            color: var(--slate-light);
-            border-top: 1px solid var(--border);
         }
 
         /* ========== 结果页 ========== */
@@ -1000,28 +1420,34 @@
             display: block;
         }
 
-        /* ========== 视图切换动画 ========== */
-        .view-fade-enter {
-            opacity: 0;
-        }
-
-        .view-fade-enter-active {
-            opacity: 1;
-            transition: opacity 0.3s ease;
-        }
-
         /* ========== 响应式 ========== */
-        @media (max-width: 480px) {
+        @media (max-width: 768px) {
+            .nav {
+                padding: 0 20px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
             .hero {
                 padding: 100px 20px 60px;
             }
 
             .hero-title {
-                font-size: 28px;
+                font-size: 32px;
             }
 
             .hero-subtitle {
                 font-size: 16px;
+            }
+
+            .features-section {
+                padding: 60px 20px;
+            }
+
+            .features-title {
+                font-size: 28px;
             }
 
             .section {
@@ -1030,6 +1456,10 @@
 
             .section-title {
                 font-size: 24px;
+            }
+
+            .pricing-section {
+                padding: 60px 20px;
             }
 
             .plan-price {
@@ -1055,6 +1485,14 @@
                 align-items: flex-start;
                 gap: 4px;
             }
+
+            .faq-section {
+                padding: 60px 20px;
+            }
+
+            .footer {
+                padding: 24px 20px;
+            }
         }
     </style>
 </head>
@@ -1072,10 +1510,21 @@
 
     <!-- 导航 -->
     <nav class="nav" id="nav">
-        <div class="nav-logo" onclick="switchView(`home`)">四级备考搭子</div>
+        <div class="nav-left">
+            <div class="nav-logo" onclick="switchView(`home`)">
+                <div class="nav-logo-icon">CET</div>
+                <span>四级备考搭子</span>
+            </div>
+            <div class="nav-links">
+                <a href="#features" class="nav-link">功能</a>
+                <a href="#personalities" class="nav-link">人格</a>
+                <a href="#pricing" class="nav-link">定价</a>
+                <a href="#faq" class="nav-link">FAQ</a>
+            </div>
+        </div>
         <div class="nav-right">
-            <a href="#pricing" class="nav-link" id="navPricing">定价</a>
-            <a href="#" class="nav-link" id="navUser" onclick="switchView(`user`); return false;">我的</a>
+            <a href="#" class="nav-link-user" onclick="switchView(`user`); return false;">我的</a>
+            <button class="btn-primary nav-cta" onclick="startDiagnosis()">开始诊断</button>
         </div>
     </nav>
 
@@ -1083,32 +1532,151 @@
     <div id="home-view">
         <!-- Hero区 -->
         <section class="hero" id="hero">
-            <div class="hero-content">
-                <h1 class="hero-title animate-in delay-1">测测你的四级备考人格</h1>
-                <p class="hero-subtitle animate-in delay-2">3分钟跟AI聊天，找到最适合你的备考方式</p>
-                <button class="btn-primary animate-in delay-3" onclick="startDiagnosis()">
-                    开始免费诊断
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M3 8h10M9 4l4 4-4 4"/>
-                    </svg>
-                </button>
-                <p class="hero-hint animate-in delay-4">免费 · 无需注册 · 3分钟出结果</p>
-                
-                <!-- 流程预览 -->
-                <div class="flow-preview animate-in delay-5">
-                    <div class="flow-step">
-                        <span class="flow-dot">💬</span>
-                        <span>跟AI聊天</span>
+            <div class="hero-container">
+                <!-- 左侧文字内容 -->
+                <div class="hero-content">
+                    <div class="hero-badge animate-in delay-1">
+                        <span class="hero-badge-dot"></span>
+                        AI驱动的新型备考方式
                     </div>
-                    <span class="flow-arrow">→</span>
-                    <div class="flow-step">
-                        <span class="flow-dot">🎯</span>
-                        <span>发现人格</span>
+                    <h1 class="hero-title animate-in delay-2">测出你的四级备考DNA</h1>
+                    <p class="hero-subtitle animate-in delay-3">3分钟AI对话诊断，精准识别你的备考短板，找到最适合你的备考方式</p>
+                    <div class="hero-actions animate-in delay-4">
+                        <button class="btn-primary" onclick="startDiagnosis()">
+                            开始免费诊断
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 8h10M9 4l4 4-4 4"/>
+                            </svg>
+                        </button>
                     </div>
-                    <span class="flow-arrow">→</span>
-                    <div class="flow-step">
-                        <span class="flow-dot">🖼️</span>
-                        <span>获取建议</span>
+                    <div class="hero-trust animate-in delay-5">
+                        <span class="hero-trust-item">2min快速诊断</span>
+                        <span class="hero-trust-divider"></span>
+                        <span class="hero-trust-item">5维精准分析</span>
+                        <span class="hero-trust-divider"></span>
+                        <span class="hero-trust-item">8种人格类型</span>
+                    </div>
+                </div>
+
+                <!-- 右侧对话预览 -->
+                <div class="hero-visual animate-in delay-3">
+                    <div class="chat-preview">
+                        <div class="chat-preview-header">
+                            <div class="chat-preview-avatar">🤖</div>
+                            <div class="chat-preview-info">
+                                <div class="chat-preview-name">四级备考诊断师</div>
+                                <div class="chat-preview-status">在线 · 随时为你服务</div>
+                            </div>
+                        </div>
+                        <div class="chat-preview-body">
+                            <div class="chat-bubble bot">
+                                <div class="chat-avatar">🤖</div>
+                                <div class="chat-text">四级阅读里，你最怕遇到哪种题型？😏</div>
+                            </div>
+                            <div class="chat-bubble user">
+                                <div class="chat-text">我最怕同义替换，每次都选错 😩</div>
+                            </div>
+                            <div class="chat-bubble bot">
+                                <div class="chat-avatar">🤖</div>
+                                <div class="chat-text">哈哈，你的"换词雷达"需要升级了！来，我们测测看～</div>
+                            </div>
+                            <div class="chat-bubble user">
+                                <div class="chat-text">好呀，开始吧！</div>
+                            </div>
+                            <div class="chat-bubble bot">
+                                <div class="chat-avatar">🤖</div>
+                                <div class="chat-text">那听力呢？你平时是怎么练听力的？<span class="chat-cursor"></span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 功能卡片区 -->
+        <section class="features-section" id="features">
+            <div class="features-container">
+                <div class="features-header">
+                    <h2 class="features-title animate-in">AI驱动的备考，不止是刷题</h2>
+                    <p class="features-subtitle animate-in delay-1">从诊断到提分，每一步都有AI陪伴</p>
+                </div>
+
+                <div class="features-grid">
+                    <!-- 诊断卡片 -->
+                    <div class="feature-card animate-in delay-2">
+                        <div class="feature-card-accent purple"></div>
+                        <div class="feature-card-content">
+                            <div class="feature-icon">💬</div>
+                            <h3 class="feature-title">AI对话诊断</h3>
+                            <p class="feature-desc">3分钟聊天，AI精准识别你的备考短板，发现专属你的备考人格</p>
+                            <div class="feature-preview">
+                                <div class="radar-preview">
+                                    <svg viewBox="0 0 100 100">
+                                        <!-- 背景网格 -->
+                                        <polygon points="50,15 79,32 79,68 50,85 21,68 21,32" fill="none" stroke="#E5E7EB" stroke-width="1"/>
+                                        <polygon points="50,25 71,37 71,63 50,75 29,63 29,37" fill="none" stroke="#E5E7EB" stroke-width="1"/>
+                                        <polygon points="50,35 64,42 64,58 50,65 36,58 36,42" fill="none" stroke="#E5E7EB" stroke-width="1"/>
+                                        <!-- 数据区域 -->
+                                        <polygon points="50,20 78,35 65,60 45,70 30,45 35,30" fill="rgba(99,91,255,0.2)" stroke="#635BFF" stroke-width="2"/>
+                                        <!-- 顶点 -->
+                                        <circle cx="50" cy="20" r="3" fill="#635BFF"/>
+                                        <circle cx="78" cy="35" r="3" fill="#635BFF"/>
+                                        <circle cx="65" cy="60" r="3" fill="#635BFF"/>
+                                        <circle cx="45" cy="70" r="3" fill="#635BFF"/>
+                                        <circle cx="30" cy="45" r="3" fill="#635BFF"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 训练卡片 -->
+                    <div class="feature-card animate-in delay-3">
+                        <div class="feature-card-accent green"></div>
+                        <div class="feature-card-content">
+                            <div class="feature-icon">🎯</div>
+                            <h3 class="feature-title">智能备考计划</h3>
+                            <p class="feature-desc">根据你的弱项，AI定制30天冲刺方案，每天精准练习</p>
+                            <div class="feature-preview">
+                                <div class="progress-preview">
+                                    <div class="progress-label">
+                                        <span>今日进度</span>
+                                        <span>67%</span>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 67%"></div>
+                                    </div>
+                                    <div class="progress-items">
+                                        <span>听力专项</span>
+                                        <span>阅读强化</span>
+                                        <span>作文练习</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 提分卡片 -->
+                    <div class="feature-card animate-in delay-4">
+                        <div class="feature-card-accent yellow"></div>
+                        <div class="feature-card-content">
+                            <div class="feature-icon">📈</div>
+                            <h3 class="feature-title">实战模拟提分</h3>
+                            <p class="feature-desc">全真模拟+AI作文批改，针对性突破瓶颈，快速提分</p>
+                            <div class="feature-preview">
+                                <div class="score-preview">
+                                    <div class="score-from">
+                                        <div class="score-value">380</div>
+                                        <div class="score-label">诊断时</div>
+                                    </div>
+                                    <div class="score-arrow">→</div>
+                                    <div class="score-to">
+                                        <div class="score-value">520</div>
+                                        <div class="score-label">目标分数</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1138,7 +1706,7 @@
         </section>
 
         <!-- FAQ区 -->
-        <section class="faq-section">
+        <section class="faq-section" id="faq">
             <div class="section-header">
                 <h2 class="section-title animate-in">常见问题</h2>
             </div>
@@ -1590,20 +2158,14 @@
         function switchView(view) {
             const homeView = document.getElementById("home-view");
             const userView = document.getElementById("user-center-view");
-            const navPricing = document.getElementById("navPricing");
-            const navUser = document.getElementById("navUser");
 
             if (view === "user") {
                 homeView.style.display = "none";
                 userView.style.display = "block";
-                navPricing.classList.remove("active");
-                navUser.classList.add("active");
                 window.scrollTo({ top: 0, behavior: "smooth" });
             } else {
                 userView.style.display = "none";
                 homeView.style.display = "block";
-                navUser.classList.remove("active");
-                navPricing.classList.add("active");
             }
         }
 
