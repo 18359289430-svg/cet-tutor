@@ -2413,7 +2413,7 @@
                     }
                 });
 
-                chatClient.on("message", handleBotMessage);
+                // WebChatClient不支持.on()事件监听，改用MutationObserver监听消息
             } catch (e) {
                 console.error("Coze Chat SDK init error:", e);
             }
