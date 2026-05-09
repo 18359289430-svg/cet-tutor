@@ -519,6 +519,7 @@
         .delay-5 { animation-delay: 0.5s; }
 
         /* ========== 功能卡片区 ========== */
+                /* ========== 动态功能卡片区 ========== */
         .features-section {
             padding: 80px 40px;
             background: var(--white);
@@ -561,39 +562,61 @@
             }
         }
 
+        /* 动态功能卡片 */
         .feature-card {
             background: var(--white);
             border: 1px solid var(--border);
             border-radius: 16px;
             overflow: hidden;
             transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
         }
+
+        .feature-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .feature-card:nth-child(1) { transition-delay: 0s; }
+        .feature-card:nth-child(2) { transition-delay: 0.15s; }
+        .feature-card:nth-child(3) { transition-delay: 0.3s; }
 
         .feature-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
         }
 
+        /* 动态装饰条 */
         .feature-card-accent {
-            height: 3px;
+            height: 4px;
+            background-size: 200% 100%;
+            animation: gradientFlow 3s ease infinite;
         }
 
         .feature-card-accent.purple {
-            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+            background: linear-gradient(90deg, #7C3AED, #A855F7, #7C3AED);
         }
 
-        .feature-card-accent.green {
-            background: linear-gradient(90deg, var(--success), var(--success-light));
+        .feature-card-accent.cyan {
+            background: linear-gradient(90deg, #06B6D4, #22D3EE, #06B6D4);
         }
 
-        .feature-card-accent.yellow {
-            background: linear-gradient(90deg, var(--warning), var(--warning-light));
+        .feature-card-accent.orange {
+            background: linear-gradient(90deg, #F97316, #FB923C, #F97316);
+        }
+
+        @keyframes gradientFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         .feature-card-content {
-            padding: 28px;
+            padding: 32px;
         }
 
+        /* 图标样式 */
         .feature-icon {
             width: 56px;
             height: 56px;
@@ -606,15 +629,20 @@
         }
 
         .feature-card:nth-child(1) .feature-icon {
-            background: rgba(99, 91, 255, 0.1);
+            background: rgba(124, 58, 237, 0.1);
         }
 
         .feature-card:nth-child(2) .feature-icon {
-            background: rgba(16, 185, 129, 0.1);
+            background: rgba(6, 182, 212, 0.1);
         }
 
         .feature-card:nth-child(3) .feature-icon {
-            background: rgba(245, 158, 11, 0.1);
+            background: rgba(249, 115, 22, 0.1);
+        }
+
+        .feature-icon svg {
+            width: 28px;
+            height: 28px;
         }
 
         .feature-title {
@@ -635,72 +663,134 @@
         .feature-preview {
             background: var(--bg);
             border-radius: 12px;
-            padding: 16px;
+            padding: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
+            min-height: 140px;
         }
 
-        /* 雷达图预览 */
+        /* ===== 雷达图样式 ===== */
         .radar-preview {
-            width: 120px;
-            height: 120px;
+            width: 140px;
+            height: 140px;
             position: relative;
         }
 
-        .radar-preview svg {
+        .radar-preview canvas {
             width: 100%;
             height: 100%;
         }
 
-        /* 进度条预览 */
+        .radar-labels {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .radar-label {
+            position: absolute;
+            font-size: 10px;
+            color: var(--slate-muted);
+            white-space: nowrap;
+            transform: translate(-50%, -50%);
+        }
+
+        /* ===== 进度条样式 ===== */
         .progress-preview {
             width: 100%;
         }
 
-        .progress-label {
+        .progress-header {
             display: flex;
             justify-content: space-between;
-            font-size: 12px;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .progress-label {
+            font-size: 14px;
             color: var(--slate-light);
-            margin-bottom: 8px;
+        }
+
+        .progress-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #06B6D4;
+        }
+
+        .progress-bar-container {
+            height: 12px;
+            background: var(--border);
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 16px;
         }
 
         .progress-bar {
-            height: 8px;
-            background: var(--border);
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, var(--success), var(--success-light));
-            border-radius: 4px;
-            transition: width 1s ease;
+            border-radius: 6px;
+            background: linear-gradient(90deg, #06B6D4, #22D3EE);
+            width: 0;
+            box-shadow: 0 0 12px rgba(6, 182, 212, 0.5);
+            transition: width 1s ease-out;
         }
 
         .progress-items {
             display: flex;
             justify-content: space-between;
-            margin-top: 8px;
-            font-size: 11px;
-            color: var(--slate-muted);
+            gap: 8px;
         }
 
-        /* 分数提升预览 */
+        .progress-item {
+            font-size: 11px;
+            color: var(--slate-muted);
+            padding: 6px 10px;
+            background: var(--white);
+            border-radius: 6px;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.4s ease;
+        }
+
+        .progress-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .progress-item:nth-child(1) { transition-delay: 0.6s; }
+        .progress-item:nth-child(2) { transition-delay: 0.75s; }
+        .progress-item:nth-child(3) { transition-delay: 0.9s; }
+
+        /* ===== 分数对比样式 ===== */
         .score-preview {
             display: flex;
             align-items: center;
-            gap: 24px;
+            justify-content: center;
+            gap: 20px;
+            width: 100%;
         }
 
-        .score-from, .score-to {
+        .score-box {
             text-align: center;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.5s ease;
         }
+
+        .score-box.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .score-box:nth-child(1) { transition-delay: 0.2s; }
+        .score-box:nth-child(3) { transition-delay: 0.6s; }
 
         .score-value {
-            font-size: 28px;
+            font-size: 32px;
             font-weight: 700;
         }
 
@@ -709,23 +799,66 @@
         }
 
         .score-to .score-value {
-            background: linear-gradient(135deg, var(--warning), var(--warning-light));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: #F97316;
         }
 
         .score-label {
             font-size: 12px;
             color: var(--slate-muted);
+            margin-top: 4px;
         }
 
         .score-arrow {
+            position: relative;
             font-size: 24px;
-            color: var(--success);
+            color: #10B981;
+            opacity: 0;
+            transition: all 0.5s ease;
         }
 
-        /* ========== 人格预览区 ========== */
+        .score-arrow.visible {
+            opacity: 1;
+        }
+
+        .score-arrow::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 40px;
+            height: 40px;
+            background: rgba(16, 185, 129, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            animation: pulse 1.5s ease-out infinite;
+        }
+
+        .score-arrow.visible::after {
+            animation: pulse 1.5s ease-out infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(2); opacity: 0; }
+        }
+
+        /* prefers-reduced-motion 降级 */
+        @media (prefers-reduced-motion: reduce) {
+            .feature-card-accent {
+                animation: none;
+            }
+            .feature-card {
+                transition: none;
+            }
+            .progress-bar {
+                transition: none;
+            }
+            .score-arrow::after {
+                animation: none;
+            }
+        }
+
+        /* ========== 人格预览区 ========== *//* ========== 人格预览区 ========== */
         .section {
             padding: 80px 40px;
             max-width: 1200px;
@@ -1797,77 +1930,88 @@
                     <p class="features-subtitle animate-in delay-1">从诊断到提分，每一步都有AI陪伴</p>
                 </div>
 
-                <div class="features-grid">
-                    <!-- 诊断卡片 -->
-                    <div class="feature-card animate-in delay-2">
+                <div class="features-grid" id="featuresGrid">
+                    <!-- 卡片1: AI对话诊断 -->
+                    <div class="feature-card" data-animate="true">
                         <div class="feature-card-accent purple"></div>
                         <div class="feature-card-content">
-                            <div class="feature-icon">💬</div>
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                                    <circle cx="12" cy="10" r="1" fill="#7C3AED"></circle>
+                                    <circle cx="8" cy="10" r="1" fill="#7C3AED"></circle>
+                                    <circle cx="16" cy="10" r="1" fill="#7C3AED"></circle>
+                                </svg>
+                            </div>
                             <h3 class="feature-title">AI对话诊断</h3>
                             <p class="feature-desc">3分钟聊天，AI精准识别你的备考短板，发现专属你的备考人格</p>
                             <div class="feature-preview">
                                 <div class="radar-preview">
-                                    <svg viewBox="0 0 100 100">
-                                        <!-- 背景网格 -->
-                                        <polygon points="50,15 79,32 79,68 50,85 21,68 21,32" fill="none" stroke="#E5E7EB" stroke-width="1"/>
-                                        <polygon points="50,25 71,37 71,63 50,75 29,63 29,37" fill="none" stroke="#E5E7EB" stroke-width="1"/>
-                                        <polygon points="50,35 64,42 64,58 50,65 36,58 36,42" fill="none" stroke="#E5E7EB" stroke-width="1"/>
-                                        <!-- 数据区域 -->
-                                        <polygon points="50,20 78,35 65,60 45,70 30,45 35,30" fill="rgba(99,91,255,0.2)" stroke="#635BFF" stroke-width="2"/>
-                                        <!-- 顶点 -->
-                                        <circle cx="50" cy="20" r="3" fill="#635BFF"/>
-                                        <circle cx="78" cy="35" r="3" fill="#635BFF"/>
-                                        <circle cx="65" cy="60" r="3" fill="#635BFF"/>
-                                        <circle cx="45" cy="70" r="3" fill="#635BFF"/>
-                                        <circle cx="30" cy="45" r="3" fill="#635BFF"/>
-                                    </svg>
+                                    <canvas id="featureRadarCanvas" width="280" height="280"></canvas>
+                                    <div class="radar-labels">
+                                        <span class="radar-label" style="top: 2%; left: 50%;">听力</span>
+                                        <span class="radar-label" style="top: 25%; left: 88%;">阅读</span>
+                                        <span class="radar-label" style="top: 75%; left: 88%;">写作</span>
+                                        <span class="radar-label" style="top: 25%; left: 12%;">翻译</span>
+                                        <span class="radar-label" style="top: 75%; left: 12%;">词汇</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- 训练卡片 -->
-                    <div class="feature-card animate-in delay-3">
-                        <div class="feature-card-accent green"></div>
+                    <!-- 卡片2: 智能备考计划 -->
+                    <div class="feature-card" data-animate="true">
+                        <div class="feature-card-accent cyan"></div>
                         <div class="feature-card-content">
-                            <div class="feature-icon">🎯</div>
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="#06B6D4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <circle cx="12" cy="12" r="6"></circle>
+                                    <circle cx="12" cy="12" r="2"></circle>
+                                </svg>
+                            </div>
                             <h3 class="feature-title">智能备考计划</h3>
                             <p class="feature-desc">根据你的弱项，AI定制30天冲刺方案，每天精准练习</p>
                             <div class="feature-preview">
                                 <div class="progress-preview">
-                                    <div class="progress-label">
-                                        <span>今日进度</span>
-                                        <span>67%</span>
+                                    <div class="progress-header">
+                                        <span class="progress-label">今日进度</span>
+                                        <span class="progress-value" id="progressValue">0%</span>
                                     </div>
-                                    <div class="progress-bar">
-                                        <div class="progress-fill" style="width: 67%"></div>
+                                    <div class="progress-bar-container">
+                                        <div class="progress-bar" id="progressBar"></div>
                                     </div>
                                     <div class="progress-items">
-                                        <span>听力专项</span>
-                                        <span>阅读强化</span>
-                                        <span>作文练习</span>
+                                        <span class="progress-item">听力专项</span>
+                                        <span class="progress-item">阅读强化</span>
+                                        <span class="progress-item">作文练习</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- 提分卡片 -->
-                    <div class="feature-card animate-in delay-4">
-                        <div class="feature-card-accent yellow"></div>
+                    <!-- 卡片3: 实战模拟提分 -->
+                    <div class="feature-card" data-animate="true">
+                        <div class="feature-card-accent orange"></div>
                         <div class="feature-card-content">
-                            <div class="feature-icon">📈</div>
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="#F97316" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                                </svg>
+                            </div>
                             <h3 class="feature-title">实战模拟提分</h3>
                             <p class="feature-desc">全真模拟+AI作文批改，针对性突破瓶颈，快速提分</p>
                             <div class="feature-preview">
                                 <div class="score-preview">
-                                    <div class="score-from">
-                                        <div class="score-value">380</div>
+                                    <div class="score-box">
+                                        <div class="score-value" id="scoreFrom">0</div>
                                         <div class="score-label">诊断时</div>
                                     </div>
                                     <div class="score-arrow">→</div>
-                                    <div class="score-to">
-                                        <div class="score-value">520</div>
+                                    <div class="score-box">
+                                        <div class="score-value" id="scoreTo">0</div>
                                         <div class="score-label">目标分数</div>
                                     </div>
                                 </div>
@@ -3014,6 +3158,275 @@
 
         /* ========== 页面加载完成后初始化 ========== */
         document.addEventListener("DOMContentLoaded", initPage);
-    </script>
+    
+        /* ========== 动态功能卡片动画 ========== */
+        
+        // 雷达图数据
+        const radarTargetValues = [0.85, 0.72, 0.68, 0.55, 0.78]; // 5个维度的目标值
+        const radarLabels = ['听力', '阅读', '写作', '翻译', '词汇'];
+        const radarColor = '#7C3AED';
+        
+        // 绘制雷达图
+        function drawRadarChart(canvas, values, color) {
+            const ctx = canvas.getContext('2d');
+            const dpr = window.devicePixelRatio || 1;
+            const width = 140;
+            const height = 140;
+            
+            canvas.width = width * dpr;
+            canvas.height = height * dpr;
+            canvas.style.width = width + 'px';
+            canvas.style.height = height + 'px';
+            ctx.scale(dpr, dpr);
+            
+            const centerX = width / 2;
+            const centerY = height / 2;
+            const maxRadius = 55;
+            const levels = 3;
+            const angleStep = (Math.PI * 2) / 5;
+            const startAngle = -Math.PI / 2;
+            
+            // 清除画布
+            ctx.clearRect(0, 0, width, height);
+            
+            // 绘制背景网格
+            for (let i = 1; i <= levels; i++) {
+                const radius = (maxRadius / levels) * i;
+                ctx.beginPath();
+                for (let j = 0; j <= 5; j++) {
+                    const angle = startAngle + j * angleStep;
+                    const x = centerX + Math.cos(angle) * radius;
+                    const y = centerY + Math.sin(angle) * radius;
+                    if (j === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                }
+                ctx.closePath();
+                ctx.strokeStyle = '#E5E7EB';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            }
+            
+            // 绘制轴线
+            for (let i = 0; i < 5; i++) {
+                const angle = startAngle + i * angleStep;
+                const x = centerX + Math.cos(angle) * maxRadius;
+                const y = centerY + Math.sin(angle) * maxRadius;
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.lineTo(x, y);
+                ctx.strokeStyle = '#E5E7EB';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            }
+            
+            // 绘制数据区域（带动画）
+            function animateData(progress) {
+                ctx.clearRect(0, 0, width, height);
+                
+                // 重新绘制网格
+                for (let i = 1; i <= levels; i++) {
+                    const radius = (maxRadius / levels) * i;
+                    ctx.beginPath();
+                    for (let j = 0; j <= 5; j++) {
+                        const angle = startAngle + j * angleStep;
+                        const x = centerX + Math.cos(angle) * radius;
+                        const y = centerY + Math.sin(angle) * radius;
+                        if (j === 0) {
+                            ctx.moveTo(x, y);
+                        } else {
+                            ctx.lineTo(x, y);
+                        }
+                    }
+                    ctx.closePath();
+                    ctx.strokeStyle = '#E5E7EB';
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
+                }
+                
+                // 重新绘制轴线
+                for (let i = 0; i < 5; i++) {
+                    const angle = startAngle + i * angleStep;
+                    const x = centerX + Math.cos(angle) * maxRadius;
+                    const y = centerY + Math.sin(angle) * maxRadius;
+                    ctx.beginPath();
+                    ctx.moveTo(centerX, centerY);
+                    ctx.lineTo(x, y);
+                    ctx.strokeStyle = '#E5E7EB';
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
+                }
+                
+                // 应用缓动效果
+                const easedProgress = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+                
+                // 绘制数据区域
+                ctx.beginPath();
+                for (let i = 0; i < 5; i++) {
+                    const angle = startAngle + i * angleStep;
+                    const value = values[i] * easedProgress;
+                    const x = centerX + Math.cos(angle) * maxRadius * value;
+                    const y = centerY + Math.sin(angle) * maxRadius * value;
+                    if (i === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                }
+                ctx.closePath();
+                ctx.fillStyle = 'rgba(124, 58, 237, 0.2)';
+                ctx.fill();
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                // 绘制数据点
+                for (let i = 0; i < 5; i++) {
+                    const angle = startAngle + i * angleStep;
+                    const value = values[i] * easedProgress;
+                    const x = centerX + Math.cos(angle) * maxRadius * value;
+                    const y = centerY + Math.sin(angle) * maxRadius * value;
+                    ctx.beginPath();
+                    ctx.arc(x, y, 4, 0, Math.PI * 2);
+                    ctx.fillStyle = color;
+                    ctx.fill();
+                }
+            }
+            
+            // 执行动画
+            const duration = 1500;
+            const startTime = performance.now();
+            
+            function animate(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                animateData(progress);
+                
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                }
+            }
+            
+            // 检查是否支持 prefers-reduced-motion
+            const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (prefersReducedMotion) {
+                animateData(1);
+            } else {
+                requestAnimationFrame(animate);
+            }
+        }
+        
+        // 数字滚动动画
+        function animateNumber(element, target, duration, suffix = '') {
+            const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            
+            if (prefersReducedMotion) {
+                element.textContent = target + suffix;
+                return;
+            }
+            
+            const start = 0;
+            const startTime = performance.now();
+            
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const easedProgress = 1 - Math.pow(1 - progress, 3);
+                const current = Math.round(start + (target - start) * easedProgress);
+                element.textContent = current + suffix;
+                
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+            
+            requestAnimationFrame(update);
+        }
+        
+        // 初始化功能卡片动画
+        function initFeatureCards() {
+            const cards = document.querySelectorAll('.feature-card[data-animate="true"]');
+            const progressBar = document.getElementById('progressBar');
+            const progressValue = document.getElementById('progressValue');
+            const scoreFrom = document.getElementById('scoreFrom');
+            const scoreTo = document.getElementById('scoreTo');
+            const radarCanvas = document.getElementById('radarCanvas');
+            
+            let radarAnimated = false;
+            let progressAnimated = false;
+            let scoreAnimated = false;
+            
+            // 创建 IntersectionObserver
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const card = entry.target;
+                        const index = Array.from(cards).indexOf(card);
+                        
+                        // 卡片淡入动画
+                        setTimeout(() => {
+                            card.classList.add('visible');
+                        }, index * 150);
+                        
+                        // 根据卡片类型触发动画
+                        if (index === 0 && !radarAnimated) {
+                            radarAnimated = true;
+                            setTimeout(() => {
+                                drawRadarChart(document.getElementById('featureRadarCanvas'), radarTargetValues, radarColor);
+                            }, 300);
+                        }
+                        
+                        if (index === 1 && !progressAnimated) {
+                            progressAnimated = true;
+                            setTimeout(() => {
+                                // 进度条动画
+                                progressBar.style.width = '67%';
+                                // 数字动画
+                                animateNumber(progressValue, 67, 1000, '%');
+                                // 进度项淡入
+                                setTimeout(() => {
+                                    document.querySelectorAll('.progress-item').forEach(item => {
+                                        item.classList.add('visible');
+                                    });
+                                }, 600);
+                            }, 300);
+                        }
+                        
+                        if (index === 2 && !scoreAnimated) {
+                            scoreAnimated = true;
+                            setTimeout(() => {
+                                // 分数动画
+                                document.querySelectorAll('.score-box').forEach(box => {
+                                    box.classList.add('visible');
+                                });
+                                document.querySelector('.score-arrow').classList.add('visible');
+                                
+                                // 数字动画
+                                animateNumber(scoreFrom, 380, 1000);
+                                animateNumber(scoreTo, 520, 1200);
+                            }, 200);
+                        }
+                    }
+                });
+            }, {
+                threshold: 0.3,
+                rootMargin: '0px 0px -50px 0px'
+            });
+            
+            // 观察每个卡片
+            cards.forEach(card => {
+                observer.observe(card);
+            });
+        }
+        
+        // 在页面加载完成后初始化
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initFeatureCards);
+        } else {
+            initFeatureCards();
+        }
+</script>
 </body>
 </html>
