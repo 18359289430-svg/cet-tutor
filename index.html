@@ -2167,204 +2167,36 @@
             }
         }
 
-        /* ========== 用户评价区（暂时隐藏） ========== */
-        /*
-        .testimonials-section {
-            padding: 100px 40px;
-            background: var(--white);
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* 背景装饰光晕 */
-        .testimonials-section::before {
-            content: "";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 800px;
-            height: 400px;
-            background: radial-gradient(ellipse at center, rgba(99, 91, 255, 0.04) 0%, transparent 70%);
-            pointer-events: none;
-        }
-
-        .testimonials-container {
-            max-width: 1100px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 1;
-        }
-
-        .testimonials-header {
-            text-align: center;
-            margin-bottom: 60px;
-        }
-
-        .testimonials-title {
-            font-size: 38px;
-            font-weight: 700;
-            color: var(--slate);
-            letter-spacing: -0.03em;
-            margin-bottom: 12px;
-        }
-
-        .testimonials-subtitle {
-            font-size: 16px;
-            color: var(--slate-muted);
-        }
-
-        .testimonials-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
-        }
-
-        @media (max-width: 900px) {
-            .testimonials-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 640px) {
-            .testimonials-grid {
-                grid-template-columns: 1fr;
-                max-width: 480px;
-                margin: 0 auto;
-            }
-        }
-
-        .testimonial-card {
-            background: var(--white);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 24px;
-            position: relative;
-            transition: all 0.25s ease;
-            overflow: hidden;
-        }
-
-        .testimonial-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-        }
-
-        /* 引号装饰 */
-        .testimonial-quote {
-            position: absolute;
-            bottom: 12px;
-            right: 16px;
-            font-size: 48px;
-            color: rgba(99, 91, 255, 0.08);
-            font-family: Georgia, serif;
-            line-height: 1;
-            pointer-events: none;
-        }
-
-        .testimonial-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 12px;
-        }
-
-        .testimonial-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            font-weight: 600;
-            color: white;
-            flex-shrink: 0;
-        }
-
-        .testimonial-avatar.blue-purple { background: linear-gradient(135deg, #3B82F6, #8B5CF6); }
-        .testimonial-avatar.pink-orange { background: linear-gradient(135deg, #EC4899, #F97316); }
-        .testimonial-avatar.green-cyan { background: linear-gradient(135deg, #10B981, #06B6D4); }
-        .testimonial-avatar.purple-pink { background: linear-gradient(135deg, #8B5CF6, #EC4899); }
-        .testimonial-avatar.orange-yellow { background: linear-gradient(135deg, #F97316, #EAB308); }
-        .testimonial-avatar.cyan-blue { background: linear-gradient(135deg, #06B6D4, #3B82F6); }
-
-        .testimonial-user-info {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .testimonial-name {
-            font-size: 15px;
-            font-weight: 600;
-            color: var(--slate);
-            margin-bottom: 2px;
-        }
-
-        .testimonial-meta {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .testimonial-school {
-            font-size: 12px;
-            color: var(--slate-muted);
-        }
-
-        .testimonial-tag {
-            display: inline-flex;
-            align-items: center;
-            padding: 2px 8px;
-            background: rgba(99, 91, 255, 0.08);
-            color: var(--primary);
-            font-size: 11px;
-            font-weight: 500;
-            border-radius: 4px;
-        }
-
-        .testimonial-stars {
-            display: flex;
-            gap: 2px;
-            margin-bottom: 12px;
-        }
-
-        .testimonial-star {
-            color: #FBBF24;
-            font-size: 14px;
-        }
-
-        .testimonial-text {
-            font-size: 14px;
-            color: var(--slate-light);
-            line-height: 1.7;
-            position: relative;
-            z-index: 1;
-        }
-
-        @media (max-width: 768px) {
-            .testimonials-section {
-                padding: 60px 20px;
-            }
-
-            .testimonials-title {
-                font-size: 28px;
-            }
-
-            .testimonials-header {
-                margin-bottom: 40px;
-            }
-        }
-        */
-
         /* ========== 响应式 ========== */
         @media (max-width: 768px) {
             .nav {
-                padding: 0 20px;
+                padding: 0 16px;
+            }
+
+            .nav-logo span {
+                display: none;
             }
 
             .nav-links {
                 display: none;
+            }
+
+            .nav-link-user {
+                display: none;
+            }
+
+            .nav-right {
+                gap: 8px;
+            }
+
+            .countdown-badge {
+                font-size: 11px;
+                padding: 4px 10px;
+            }
+
+            .nav-cta {
+                font-size: 13px;
+                padding: 6px 14px;
             }
 
             .hero {
@@ -2457,6 +2289,10 @@
         
         /* 375px 及以下屏幕适配 (iPhone SE) */
         @media (max-width: 375px) {
+            .countdown-badge {
+                display: none;
+            }
+
             .features-section {
                 padding: 40px 12px;
             }
