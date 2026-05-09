@@ -1,0 +1,12 @@
+{
+  "build": {
+    "builder": "static"
+  },
+  "routes": [
+    {
+      "path": "/*",
+      "handler": "rewrite",
+      "dest": "/index.html"
+    }
+  ]
+}
