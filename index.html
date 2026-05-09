@@ -2892,7 +2892,7 @@
                 <button class="upgrade-main-cta" onclick="openPaymentModal({plan: 'sprint', amount: 49})">
                     解锁完整提升方案 → 冲刺版¥49
                 </button>
-                <p class="upgrade-sub-text">含30天备考计划 + AI无限答疑 + 作文批改</p>
+                <p class="upgrade-sub-text">只想试一下？<span style="color: var(--primary); cursor: pointer; font-weight: 500;" onclick="openPaymentModal({plan: 'trial', amount: 4.9})">体验版 ¥4.9</span></p>
                 
                 <span class="btn-retry" onclick="hideResult(); openChat('diagnosis');">再测一次</span>
             </div>
@@ -2948,28 +2948,28 @@
                 features: [
                     "AI对话诊断",
                     "备考人格标签",
-                    "专属人格卡",
-                    "5维雷达图"
+                    "五维雷达图 + 分数",
+                    "AI神评",
+                    "专属人格卡"
                 ], 
                 btnText: "开始诊断", 
                 btnClass: "outline" 
             },
             { 
-                id: "report",
-                name: "详细报告", 
-                price: "¥1", 
-                originalPrice: "¥9.9", 
+                id: "trial",
+                name: "体验版", 
+                price: "¥4.9", 
+                originalPrice: "¥19.9", 
                 priceClass: "", 
-                badge: "", 
+                badge: "体验", 
                 isRecommended: false,
                 features: [
                     "免费版全部权益",
-                    "5维详细分析报告",
-                    "短板精准定位",
-                    "预估分数区间",
-                    "备考方向建议"
+                    "冲刺版Bot 1天体验",
+                    "1次作文批改",
+                    "1天备考计划预览"
                 ], 
-                btnText: "解锁报告", 
+                btnText: "试一下", 
                 btnClass: "outline" 
             },
             { 
@@ -2981,9 +2981,9 @@
                 badge: "推荐", 
                 isRecommended: true,
                 features: [
-                    "详细报告全部权益",
+                    "免费版全部权益",
                     "AI无限答疑",
-                    "作文智能批改",
+                    "作文批改（每天1次）",
                     "30天备考计划",
                     "3次全真模拟",
                     "学习打卡提醒"
@@ -3001,9 +3001,11 @@
                 isRecommended: false,
                 features: [
                     "冲刺版全部权益",
-                    "无限次AI答疑",
+                    "作文批改（无限次）",
                     "深度1对1辅导",
                     "专属资料包",
+                    "考前7天冲刺规划",
+                    "六级衔接规划",
                     "优先客服通道"
                 ], 
                 btnText: "选择旗舰", 
@@ -3015,8 +3017,8 @@
         const faqs = [
             { question: "这个诊断需要多长时间？", answer: "大约3分钟。我们通过轻松对话了解你的备考习惯，比传统测试有趣多了。" },
             { question: "人格诊断结果准吗？", answer: "基于你的答题风格和偏好，AI会给出个性化分析。仅供参考，备考还需结合真题练习。" },
-            { question: "免费诊断包含什么？", answer: "包含人格类型、五维分析、AI神评和一张专属人格卡。如需详细提升方案可升级冲刺版。" },
-            { question: "如何获取更多备考帮助？", answer: "升级到冲刺版或旗舰版，享受AI私教全程陪练到考前。" }
+            { question: "免费诊断包含什么？", answer: "包含人格类型、五维分析、AI神评和一张专属人格卡。想提升弱项可以试试体验版。" },
+            { question: "体验版和冲刺版有什么区别？", answer: "体验版是冲刺版的1天试用，包含1次批改和1天计划预览。冲刺版提供完整30天计划、每天批改和无限答疑到考前。" }
         ];
 
         // 雷达图维度名称
@@ -3025,7 +3027,7 @@
         // 套餐名称映射
         const planNames = {
             "free": "免费版",
-            "report": "详细报告",
+            "trial": "体验版",
             "sprint": "冲刺版",
             "flagship": "旗舰版",
             "pro": "旗舰版"
@@ -3034,7 +3036,7 @@
         // 套餐显示名称映射
         const planDisplayNames = {
             "free": "免费版",
-            "report": "详细报告",
+            "trial": "体验版",
             "sprint": "冲刺版",
             "pro": "旗舰版",
             "flagship": "旗舰版"
@@ -3042,7 +3044,8 @@
 
         // Bot类型映射
         const planToBotType = {
-            "report": "diagnosis",
+            "report": "diagnosis",  // 兼容旧数据
+            "trial": "sprint",
             "sprint": "sprint",
             "pro": "pro",
             "flagship": "pro"
@@ -3062,10 +3065,10 @@
         /* ========== 聊天切换函数（使用SDK官方API） ========== */
         
         function openChat(botType) {
-            // 如果是免费用户想访问付费Bot，显示升级提示
+            // 如果是免费/体验用户想访问付费Bot，显示升级提示
             const userData = getUserData();
             const userPlan = userData.plan || 'free';
-            if ((botType === 'sprint' || botType === 'pro') && (userPlan === 'free' || userPlan === 'report')) {
+            if ((botType === 'sprint' || botType === 'pro') && (userPlan === 'free' || userPlan === 'trial')) {
                 showUpgradeModal(botType);
                 return;
             }
@@ -3126,11 +3129,8 @@
                 openChat('pro');
             } else if (userPlan === 'sprint') {
                 openChat('sprint');
-            } else if (userPlan === 'report') {
-                // report用户可以解锁sprint或pro
-                showUpgradeModal('sprint');
             } else {
-                // 免费用户，引导升级
+                // 免费/体验用户，引导升级
                 showUpgradeModal('sprint');
             }
         }
@@ -3719,8 +3719,8 @@
         function handlePlanClick(planId) {
             if (planId === "free") {
                 openChat('diagnosis');
-            } else if (planId === "report") {
-                createOrder('report');
+            } else if (planId === "trial") {
+                createOrder('trial');
             } else if (planId === "sprint") {
                 createOrder('sprint');
             } else if (planId === "flagship") {
@@ -3732,8 +3732,8 @@
 
         // 处理升级按钮
         function handleUpgrade(type) {
-            if (type === "report") {
-                createOrder('report');
+            if (type === "trial") {
+                createOrder('trial');
             } else if (type === "sprint") {
                 createOrder('sprint');
             } else if (type === "flagship") {

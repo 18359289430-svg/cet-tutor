@@ -24,10 +24,10 @@ const BOT_ID_PRO = '7637815810610036774';
 
 // 套餐配置（4层定价）
 const PLANS = {
-    free: { name: '免费诊断', price: 0, uidPrefix: 'CET4D', botId: BOT_ID_DIAGNOSIS, needPay: false },
-    report: { name: '详细报告', price: 1, uidPrefix: 'CET4R', botId: BOT_ID_DIAGNOSIS, needPay: true },
+    free: { name: '免费版', price: 0, uidPrefix: 'CET4D', botId: BOT_ID_DIAGNOSIS, needPay: false },
+    trial: { name: '体验版', price: 4.9, uidPrefix: 'CET4T', botId: BOT_ID_SPRINT, needPay: true },
     sprint: { name: '冲刺版', price: 49, uidPrefix: 'CET4S', botId: BOT_ID_SPRINT, needPay: true },
-    pro: { name: '旗舰版', price: 149, uidPrefix: 'CET4P', botId: BOT_ID_PRO, needPay: true }
+    pro: { name: '旗舰版', price: 149, uidPrefix: 'CET4F', botId: BOT_ID_PRO, needPay: true }
 };
 
 // 内存订单存储
@@ -195,12 +195,15 @@ async function handleApi(req, res, pathname) {
             }
 
             // 检查是否是预生成的激活码（面包多自动发货格式）
-            // 激活码格式: CET4S-XXXXX / CET4P-XXXXX / CET4R-XXXXX
-            const planMatch = codeTrimmed.match(/^(CET4S|CET4P|CET4R)-([A-Z0-9]+)$/);
+            // 激活码格式: CET4T-XXXXX（体验¥4.9）/ CET4S-XXXXX（冲刺¥49）/ CET4F-XXXXX（旗舰¥149）
+            // 兼容旧格式: CET4R-XXXXX（报告¥1）→ 体验版 / CET4P-XXXXX（旗舰¥149）
+            const planMatch = codeTrimmed.match(/^(CET4T|CET4S|CET4F|CET4R|CET4P)-([A-Z0-9]+)$/);
             if (planMatch) {
-                let plan = 'sprint';
-                if (planMatch[1] === 'CET4P') plan = 'pro';
-                else if (planMatch[1] === 'CET4R') plan = 'report';
+                let plan = 'trial';
+                if (planMatch[1] === 'CET4S') plan = 'sprint';
+                else if (planMatch[1] === 'CET4F') plan = 'pro';
+                else if (planMatch[1] === 'CET4P') plan = 'pro';
+                // CET4T 和 CET4R 都是 trial
 
                 // 检查是否已存在此激活码的订单
                 const existingOrder = orders.get(codeTrimmed);
