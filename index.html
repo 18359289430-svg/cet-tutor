@@ -55,6 +55,7 @@
             line-height: 1.7;
             font-weight: 400;
             -webkit-font-smoothing: antialiased;
+            overflow-x: hidden; /* 防止水平滚动 */
         }
 
         /* ========== 加载动画 ========== */
@@ -278,7 +279,18 @@
         @media (max-width: 900px) {
             .hero-container {
                 grid-template-columns: 1fr;
-                gap: 60px;
+                gap: 40px;
+            }
+            
+            /* 手机端对话预览缩小 */
+            .hero-visual {
+                max-width: 320px;
+                margin: 0 auto;
+            }
+            
+            .chat-preview {
+                transform: scale(0.85);
+                transform-origin: top center;
             }
         }
 
@@ -382,6 +394,77 @@
         @media (max-width: 900px) {
             .chat-preview {
                 transform: none;
+            }
+        }
+        
+        @media (max-width: 640px) {
+            .hero {
+                padding: 80px 20px 60px;
+                min-height: auto;
+            }
+            
+            .hero-content {
+                text-align: center;
+            }
+            
+            .hero-title {
+                font-size: 28px;
+            }
+            
+            .hero-subtitle {
+                font-size: 16px;
+            }
+            
+            .hero-actions {
+                justify-content: center;
+            }
+            
+            .hero-trust {
+                justify-content: center;
+            }
+            
+            /* 手机端对话预览进一步缩小 */
+            .hero-visual {
+                max-width: 280px;
+            }
+            
+            .chat-preview {
+                transform: scale(0.75);
+                transform-origin: top center;
+                margin-bottom: -40px; /* 补偿缩放后的空白 */
+            }
+        }
+        
+        /* 极小屏幕适配 iPhone SE (375px) */
+        @media (max-width: 375px) {
+            .hero {
+                padding: 70px 16px 50px;
+            }
+            
+            .hero-title {
+                font-size: 24px;
+            }
+            
+            .hero-subtitle {
+                font-size: 14px;
+            }
+            
+            .hero-actions {
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .hero-actions .btn-primary {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .hero-visual {
+                max-width: 260px;
+            }
+            
+            .chat-preview {
+                transform: scale(0.7);
             }
         }
 
@@ -760,6 +843,14 @@
         @media (max-width: 768px) {
             .personality-grid {
                 grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 640px) {
+            .personality-grid {
+                grid-template-columns: 1fr;
+                max-width: 320px;
+                margin: 0 auto;
             }
         }
 
@@ -2322,6 +2413,77 @@
 
             .footer {
                 padding: 24px 20px;
+            }
+        }
+        
+        /* 640px 及以下屏幕适配 */
+        @media (max-width: 640px) {
+            .features-section {
+                padding: 50px 16px;
+            }
+            
+            .features-title {
+                font-size: 24px;
+            }
+            
+            .features-subtitle {
+                font-size: 15px;
+            }
+            
+            .features-grid {
+                gap: 16px;
+            }
+            
+            .section {
+                padding: 50px 16px;
+            }
+            
+            .section-title {
+                font-size: 22px;
+            }
+            
+            .pricing-section {
+                padding: 50px 16px;
+            }
+            
+            .faq-section {
+                padding: 50px 16px;
+            }
+            
+            .personality-card {
+                padding: 20px 16px;
+            }
+        }
+        
+        /* 375px 及以下屏幕适配 (iPhone SE) */
+        @media (max-width: 375px) {
+            .features-section {
+                padding: 40px 12px;
+            }
+            
+            .features-title {
+                font-size: 22px;
+            }
+            
+            .section {
+                padding: 40px 12px;
+            }
+            
+            .section-title {
+                font-size: 20px;
+            }
+            
+            .pricing-section {
+                padding: 40px 12px;
+            }
+            
+            .faq-section {
+                padding: 40px 12px;
+            }
+            
+            .footer {
+                padding: 20px 12px;
+                font-size: 13px;
             }
         }
     </style>
