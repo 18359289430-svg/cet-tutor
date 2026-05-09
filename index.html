@@ -4,631 +4,588 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>四级备考搭子·金牌陪练</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Coze Chat SDK -->
+    <script src="https://lf-cdn.coze.cn/obj/unpkg/flow-platform/chat-app-sdk/1.2.0-beta.20/libs/cn/index.js"></script>
+    
+    <!-- html2canvas for personality card generation -->
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        /* ========== 基础变量 ========== */
+        :root {
+            --primary: #635BFF;
+            --primary-dark: #7C3AED;
+            --slate: #0A2540;
+            --slate-light: #64748B;
+            --bg: #FAFAFA;
+            --white: #FFFFFF;
+            --border: #E5E7EB;
+            --grid-line: rgba(0, 0, 0, 0.04);
+            --success: #10B981;
+            --warning: #F59E0B;
+            --error: #EF4444;
+        }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        /* ========== 基础重置 ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-        html { height: 100%; }
+        html {
+            height: 100%;
+            scroll-behavior: smooth;
+        }
+
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
-            background: #f8f9fc;
-            color: #1a1a2e;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            background: var(--bg);
+            color: var(--slate);
             min-height: 100%;
+            line-height: 1.7;
+            font-weight: 400;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* 顶部渐变装饰 */
-        .top-gradient {
+        /* ========== 加载动画 ========== */
+        .loading-overlay {
             position: fixed;
-            top: 0; left: 0; right: 0;
-            height: 400px;
-            background: linear-gradient(135deg, #eef1ff 0%, #f0e6ff 50%, #fef1f8 100%);
-            pointer-events: none;
-            z-index: 0;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--white);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 99999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
         }
 
-        /* 导航 */
+        .loading-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .loading-logo {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 16px;
+        }
+
+        .loading-bar {
+            width: 120px;
+            height: 2px;
+            background: rgba(99, 91, 255, 0.1);
+            border-radius: 1px;
+            overflow: hidden;
+        }
+
+        .loading-bar-inner {
+            width: 40%;
+            height: 100%;
+            background: var(--primary);
+            border-radius: 1px;
+            animation: loading 1.2s ease-in-out infinite;
+        }
+
+        @keyframes loading {
+            0% { transform: translateX(-150%); }
+            100% { transform: translateX(350%); }
+        }
+
+        /* ========== 导航 ========== */
         .nav {
-            position: sticky;
+            position: fixed;
             top: 0;
-            z-index: 100;
-            padding: 14px 24px;
+            left: 0;
+            right: 0;
+            height: 64px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: rgba(248, 249, 252, 0.9);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-bottom: 1px solid rgba(0,0,0,0.04);
+            padding: 0 24px;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border);
+            transition: box-shadow 0.2s ease;
         }
 
-        .nav-left { display: flex; align-items: center; gap: 10px; }
-
-        .logo {
-            width: 28px; height: 28px;
-            background: linear-gradient(135deg, #5b5bff, #7c5cbf);
-            border-radius: 7px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 13px; font-weight: 700; color: #fff;
+        .nav.scrolled {
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
         }
 
-        .nav-title { font-size: 14px; font-weight: 600; color: #1a1a2e; }
-        .nav-badge {
-            font-size: 10px; font-weight: 600; color: #5b5bff;
-            background: rgba(91,91,255,0.08); border: 1px solid rgba(91,91,255,0.15);
-            padding: 2px 8px; border-radius: 20px;
+        .nav-logo {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--slate);
+            letter-spacing: -0.02em;
         }
 
-        /* Hero */
+        .nav-link {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--primary);
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        .nav-link:hover {
+            opacity: 0.7;
+            text-decoration: underline;
+        }
+
+        /* ========== Hero区 ========== */
         .hero {
-            position: relative; z-index: 1;
-            padding: 48px 24px 40px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 120px 24px 80px;
             text-align: center;
+            position: relative;
+            /* Vercel微网格背景 */
+            background-image: 
+                linear-gradient(var(--grid-line) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+            background-size: 24px 24px;
         }
 
-        .hero-tag {
-            display: inline-block;
-            font-size: 12px; font-weight: 600; color: #5b5bff;
-            background: rgba(91,91,255,0.06); border: 1px solid rgba(91,91,255,0.12);
-            padding: 4px 14px; border-radius: 20px;
-            margin-bottom: 20px;
+        /* Stripe式淡紫渐变 */
+        .hero::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99, 91, 255, 0.12), transparent),
+                radial-gradient(ellipse 60% 40% at 80% 50%, rgba(124, 58, 237, 0.08), transparent);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            max-width: 640px;
+            position: relative;
+            z-index: 1;
         }
 
         .hero-title {
-            font-size: 32px; font-weight: 800; letter-spacing: -1px;
-            line-height: 1.2; margin-bottom: 12px;
+            font-size: 36px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+            color: var(--slate);
+            margin-bottom: 16px;
         }
 
-        .hero-title .accent {
-            background: linear-gradient(135deg, #5b5bff, #7c5cbf);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .hero-desc {
-            font-size: 14px; color: #6b7080;
-            line-height: 1.7; max-width: 360px; margin: 0 auto 32px;
-        }
-
-        /* Hero CTA按钮 */
-        .hero-cta-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: linear-gradient(135deg, #5b5bff, #7c5cbf);
-            color: #fff;
-            border: none;
-            padding: 14px 32px;
-            border-radius: 50px;
-            font-size: 16px; font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 4px 16px rgba(91,91,255,0.3);
-            margin-bottom: 24px;
-        }
-
-        .hero-cta-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(91,91,255,0.4);
-        }
-
-        .hero-cta-hint {
-            font-size: 12px; color: #8b8fa0;
-        }
-
-        /* 数据条 */
-        .stats-bar {
-            display: flex;
-            justify-content: center;
-            gap: 32px;
+        .hero-subtitle {
+            font-size: 18px;
+            color: var(--slate-light);
             margin-bottom: 40px;
-        }
-
-        .stat-item { text-align: center; }
-
-        .stat-num {
-            font-size: 24px; font-weight: 800;
-            background: linear-gradient(135deg, #5b5bff, #7c5cbf);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .stat-label { font-size: 11px; color: #8b8fa0; margin-top: 2px; }
-
-        /* 功能卡片 */
-        .features {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            max-width: 400px;
-            margin: 0 auto 40px;
-        }
-
-        .feature-card {
-            background: #fff;
-            border: 1px solid rgba(0,0,0,0.05);
-            border-radius: 12px;
-            padding: 14px;
-            display: flex; align-items: center; gap: 10px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.03);
-        }
-
-        .feature-icon {
-            width: 30px; height: 30px;
-            background: linear-gradient(135deg, rgba(91,91,255,0.1), rgba(124,92,191,0.1));
-            border-radius: 7px;
-            display: flex; align-items: center; justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .feature-icon svg {
-            width: 15px; height: 15px;
-            stroke: #5b5bff; fill: none;
-            stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
-        }
-
-        .feature-label { font-size: 13px; font-weight: 600; color: #2a2a3e; }
-        .feature-sub { font-size: 10px; color: #8b8fa0; margin-top: 1px; }
-
-        /* 学习流程 */
-        .how-section {
-            position: relative; z-index: 1;
-            padding: 0 24px 36px;
-        }
-
-        .section-title {
-            font-size: 16px; font-weight: 700;
-            text-align: center; margin-bottom: 20px;
-            letter-spacing: -0.3px;
-        }
-
-        .steps {
-            max-width: 400px; margin: 0 auto;
-            display: flex; flex-direction: column; gap: 10px;
-        }
-
-        .step {
-            display: flex; align-items: center; gap: 12px;
-            background: #fff;
-            border: 1px solid rgba(0,0,0,0.05);
-            border-radius: 10px;
-            padding: 12px 14px;
-        }
-
-        .step-num {
-            width: 26px; height: 26px;
-            background: linear-gradient(135deg, #5b5bff, #7c5cbf);
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 12px; font-weight: 700; color: #fff;
-            flex-shrink: 0;
-        }
-
-        .step-text { font-size: 13px; font-weight: 500; color: #2a2a3e; }
-        .step-sub { font-size: 11px; color: #8b8fa0; margin-top: 1px; }
-
-        /* 用户评价 */
-        .testimonials {
-            position: relative; z-index: 1;
-            padding: 0 24px 36px;
-        }
-
-        .t-card {
-            max-width: 400px; margin: 0 auto 10px;
-            background: #fff;
-            border: 1px solid rgba(0,0,0,0.05);
-            border-radius: 12px;
-            overflow: hidden;
-            transition: box-shadow 0.2s;
-        }
-        .t-card:hover { box-shadow: 0 2px 8px rgba(91,91,255,0.08); }
-        .t-pain {
-            padding: 14px 14px 0;
-            font-size: 14px; font-weight: 600; color: #1a1a2e;
-            line-height: 1.5;
-        }
-        .t-pain-icon { margin-right: 4px; }
-        .t-divider {
-            height: 1px; margin: 10px 14px;
-            background: linear-gradient(90deg, rgba(91,91,255,0.2), rgba(91,91,255,0.05));
-        }
-        .t-solution {
-            padding: 0 14px 14px;
-            display: flex; gap: 8px; align-items: flex-start;
-        }
-        .t-solution-badge {
-            flex-shrink: 0;
-            font-size: 9px; font-weight: 700; color: #fff;
-            background: linear-gradient(135deg, #5b5bff, #7c5cbf);
-            padding: 2px 6px; border-radius: 4px;
-            letter-spacing: 0.5px; margin-top: 2px;
-        }
-        .t-solution-text { font-size: 12px; color: #4a4a5e; line-height: 1.8; }
-        .t-result { color: #5b5bff; font-weight: 700; }
-        .t-footer {
-            padding: 0 14px 10px;
-            display: flex; align-items: center; justify-content: space-between;
-        }
-        .t-source { font-size: 10px; color: #b0b4c0; }
-        .t-collapse-btn {
-            max-width: 400px; margin: 4px auto 0;
-            display: block; width: 100%;
-            padding: 10px; text-align: center;
-            font-size: 12px; font-weight: 500; color: #5b5bff;
-            background: rgba(91,91,255,0.04);
-            border: 1px dashed rgba(91,91,255,0.2);
-            border-radius: 10px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .t-collapse-btn:hover { background: rgba(91,91,255,0.08); }
-        .t-hidden { display: none; }
-        .t-disclaimer {
-            max-width: 400px; margin: 8px auto 0;
-            font-size: 9px; color: #c0c4d0; text-align: center;
             line-height: 1.6;
         }
 
-        /* ========== 套餐定价区 ========== */
+        /* CTA按钮 */
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 3px rgba(99, 91, 255, 0.3), 0 4px 12px rgba(99, 91, 255, 0.15);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 6px rgba(99, 91, 255, 0.4), 0 8px 20px rgba(99, 91, 255, 0.2);
+        }
+
+        .hero-hint {
+            font-size: 14px;
+            color: var(--slate-light);
+            margin-top: 16px;
+            font-weight: 500;
+        }
+
+        /* 流程预览 */
+        .flow-preview {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 60px;
+            font-size: 14px;
+            color: var(--slate-light);
+        }
+
+        .flow-step {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .flow-dot {
+            width: 32px;
+            height: 32px;
+            background: rgba(99, 91, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .flow-arrow {
+            color: var(--border);
+            font-size: 12px;
+        }
+
+        /* ========== 入场动画 ========== */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-in {
+            animation: fadeInUp 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+        .delay-5 { animation-delay: 0.5s; }
+
+        /* ========== 人格预览区 ========== */
+        .section {
+            padding: 80px 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .section-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--slate);
+            letter-spacing: -0.02em;
+            margin-bottom: 8px;
+        }
+
+        .section-subtitle {
+            font-size: 16px;
+            color: var(--slate-light);
+        }
+
+        /* 人格网格 */
+        .personality-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .personality-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .personality-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .personality-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .personality-card::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: var(--accent-color, var(--primary));
+            border-radius: 12px 0 0 12px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .personality-card:hover::before {
+            opacity: 1;
+        }
+
+        .personality-emoji {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+
+        .personality-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--slate);
+            margin-bottom: 4px;
+        }
+
+        .personality-slogan {
+            font-size: 13px;
+            color: var(--slate-light);
+            line-height: 1.5;
+        }
+
+        /* ========== 定价区 ========== */
         .pricing-section {
-            position: relative; z-index: 1;
-            padding: 0 24px 36px;
+            padding: 80px 24px;
+            background-image: 
+                linear-gradient(var(--grid-line) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+            background-size: 24px 24px;
+            background-color: var(--bg);
         }
 
         .pricing-grid {
-            max-width: 420px; margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 900px) {
+            .pricing-grid {
+                grid-template-columns: 1fr;
+                max-width: 400px;
+            }
         }
 
         .plan-card {
-            background: #fff;
-            border: 1px solid rgba(0,0,0,0.06);
-            border-radius: 14px;
-            padding: 18px 16px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
             position: relative;
-            transition: all 0.2s;
+            transition: all 0.2s ease;
         }
 
         .plan-card:hover {
-            border-color: rgba(91,91,255,0.2);
-            box-shadow: 0 4px 16px rgba(91,91,255,0.08);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         }
 
-        /* 免费诊断卡片 - 最大最突出 */
-        .plan-card.free-plan {
-            border: 2px solid #10B981;
-            background: linear-gradient(180deg, #f0fdf4 0%, #fff 100%);
-            padding: 24px 20px;
-        }
-
-        .plan-card.free-plan .plan-badge {
-            background: linear-gradient(135deg, #10B981, #059669);
-        }
-
-        .plan-card.report-plan {
-            border: 1px dashed #F59E0B;
-            background: linear-gradient(180deg, #fffbeb 0%, #fff 100%);
-        }
-
-        .plan-card.report-plan .plan-name {
-            color: #F59E0B;
-        }
-
-        .plan-card.report-plan .plan-price {
-            background: linear-gradient(135deg, #F59E0B, #D97706);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-
-        .plan-card.sprint-plan {
-            border: 2px solid #5b5bff;
-            background: linear-gradient(180deg, #f8f9ff 0%, #fff 100%);
-        }
-
-        .plan-card.pro-plan {
-            background: linear-gradient(135deg, #1a1a2e, #2a2a4e);
-            color: #fff;
-        }
-
-        .plan-card.pro-plan .plan-name,
-        .plan-card.pro-plan .plan-features li {
-            color: #fff;
-        }
-
-        .plan-card.pro-plan .plan-features li::before {
-            color: #a5b4fc;
+        .plan-card.featured {
+            border: 2px solid var(--primary);
         }
 
         .plan-badge {
             position: absolute;
-            top: -10px; right: 16px;
-            background: linear-gradient(135deg, #5b5bff, #7c5cbf);
-            color: #fff;
-            font-size: 10px; font-weight: 700;
-            padding: 4px 10px;
-            border-radius: 10px;
-            letter-spacing: 0.5px;
-        }
-
-        .plan-badge.hot {
-            background: linear-gradient(135deg, #EF4444, #DC2626);
-        }
-
-        .plan-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 12px;
+            top: -10px;
+            right: 16px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 12px;
+            letter-spacing: 0.02em;
         }
 
         .plan-name {
-            font-size: 16px; font-weight: 700;
-            color: #1a1a2e;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--slate);
+            margin-bottom: 4px;
         }
 
         .plan-price {
-            font-size: 22px; font-weight: 800;
-            background: linear-gradient(135deg, #5b5bff, #7c5cbf);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            background-clip: text;
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--slate);
+            letter-spacing: -0.02em;
+            line-height: 1;
         }
 
         .plan-price .yuan {
-            font-size: 14px; font-weight: 600;
+            font-size: 20px;
+            font-weight: 500;
+        }
+
+        .plan-price.free {
+            color: var(--success);
         }
 
         .plan-features {
             list-style: none;
-            margin-bottom: 14px;
+            margin: 20px 0;
         }
 
         .plan-features li {
-            font-size: 12px; color: #5a5a6e;
-            line-height: 1.8;
-            padding-left: 16px;
+            font-size: 14px;
+            color: var(--slate-light);
+            padding: 8px 0;
+            padding-left: 20px;
             position: relative;
         }
 
         .plan-features li::before {
-            content: '✓';
+            content: "✓";
             position: absolute;
             left: 0;
-            color: #5b5bff;
-            font-weight: 700;
+            color: var(--primary);
+            font-weight: 600;
         }
 
-        .plan-btn {
+        .btn-plan {
             width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 10px;
-            font-size: 14px; font-weight: 600;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.2s ease;
+            border: none;
         }
 
-        .plan-btn.primary {
-            background: linear-gradient(135deg, #5b5bff, #7c5cbf);
-            color: #fff;
+        .btn-plan.primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 1px 3px rgba(99, 91, 255, 0.3), 0 4px 12px rgba(99, 91, 255, 0.15);
         }
 
-        .plan-btn.primary:hover {
+        .btn-plan.primary:hover {
             transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(91,91,255,0.3);
+            box-shadow: 0 2px 6px rgba(99, 91, 255, 0.4), 0 8px 20px rgba(99, 91, 255, 0.2);
         }
 
-        .plan-btn.secondary {
-            background: rgba(91,91,255,0.08);
-            color: #5b5bff;
+        .btn-plan.outline {
+            background: transparent;
+            color: var(--primary);
+            border: 1px solid var(--primary);
         }
 
-        .plan-btn.secondary:hover {
-            background: rgba(91,91,255,0.15);
+        .btn-plan.outline:hover {
+            background: rgba(99, 91, 255, 0.05);
         }
 
-        .plan-btn.green {
-            background: linear-gradient(135deg, #10B981, #059669);
-            color: #fff;
+        /* ========== FAQ区 ========== */
+        .faq-section {
+            padding: 80px 24px;
+            max-width: 640px;
+            margin: 0 auto;
         }
 
-        .plan-btn.green:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(16,185,129,0.3);
+        .faq-item {
+            border-bottom: 1px solid var(--border);
         }
 
-        .plan-btn.orange {
-            background: linear-gradient(135deg, #F59E0B, #D97706);
-            color: #fff;
-        }
-
-        .plan-btn.orange:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(245,158,11,0.3);
-        }
-
-        .plan-btn.dark {
-            background: linear-gradient(135deg, #4f46e5, #6366f1);
-            color: #fff;
-        }
-
-        .plan-btn.dark:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(91,91,255,0.4);
-        }
-
-        .pricing-disclaimer {
-            max-width: 420px; margin: 12px auto 0;
-            font-size: 10px; color: #a0a4b0;
-            text-align: center;
-            line-height: 1.6;
-        }
-
-        /* ========== 诊断测试系统 ========== */
-        .quiz-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: #f8f9fc;
-            z-index: 1000;
-            display: none;
-            flex-direction: column;
-        }
-
-        .quiz-overlay.active {
-            display: flex;
-        }
-
-        .quiz-header {
-            padding: 16px 20px;
+        .faq-question {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: #fff;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
-        }
-
-        .quiz-close {
-            width: 32px; height: 32px;
-            border: none;
-            background: rgba(0,0,0,0.05);
-            border-radius: 50%;
+            padding: 20px 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--slate);
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            color: #666;
+            transition: color 0.2s;
         }
 
-        .quiz-progress {
-            flex: 1;
-            margin: 0 16px;
+        .faq-question:hover {
+            color: var(--primary);
         }
 
-        .quiz-progress-text {
-            font-size: 12px; color: #8b8fa0;
-            text-align: center;
-            margin-bottom: 6px;
+        .faq-icon {
+            font-size: 20px;
+            color: var(--slate-light);
+            transition: transform 0.3s ease;
         }
 
-        .quiz-progress-bar {
-            height: 4px;
-            background: rgba(91,91,255,0.1);
-            border-radius: 2px;
+        .faq-item.active .faq-icon {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
             overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
         }
 
-        .quiz-progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #5b5bff, #7c5cbf);
-            border-radius: 2px;
-            transition: width 0.3s ease;
+        .faq-item.active .faq-answer {
+            max-height: 200px;
+            padding-bottom: 20px;
         }
 
-        .quiz-content {
-            flex: 1;
-            padding: 24px 20px;
-            overflow-y: auto;
+        .faq-answer p {
+            font-size: 14px;
+            color: var(--slate-light);
+            line-height: 1.7;
         }
 
-        .quiz-dimension {
-            font-size: 11px; font-weight: 600;
-            color: #5b5bff;
-            background: rgba(91,91,255,0.08);
-            padding: 4px 10px;
-            border-radius: 20px;
-            display: inline-block;
-            margin-bottom: 12px;
+        /* ========== Footer ========== */
+        .footer {
+            text-align: center;
+            padding: 24px;
+            font-size: 14px;
+            color: var(--slate-light);
+            border-top: 1px solid var(--border);
         }
 
-        .quiz-question {
-            font-size: 16px; font-weight: 600;
-            color: #1a1a2e;
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-
-        .quiz-options {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .quiz-option {
-            padding: 14px 16px;
-            background: #fff;
-            border: 2px solid rgba(0,0,0,0.08);
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .quiz-option:hover {
-            border-color: #5b5bff;
-            background: rgba(91,91,255,0.02);
-        }
-
-        .quiz-option.selected {
-            border-color: #5b5bff;
-            background: rgba(91,91,255,0.08);
-        }
-
-        .quiz-option-letter {
-            width: 28px; height: 28px;
-            background: rgba(91,91,255,0.08);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 13px; font-weight: 700;
-            color: #5b5bff;
-            flex-shrink: 0;
-        }
-
-        .quiz-option.selected .quiz-option-letter {
-            background: #5b5bff;
-            color: #fff;
-        }
-
-        .quiz-option-text {
-            font-size: 14px; color: #2a2a3e;
-            line-height: 1.5;
-        }
-
-        .quiz-next-btn {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #5b5bff, #7c5cbf);
-            color: #fff;
-            border: none;
-            border-radius: 12px;
-            font-size: 15px; font-weight: 600;
-            cursor: pointer;
-            margin-top: 20px;
-            opacity: 0.5;
-            pointer-events: none;
-            transition: all 0.2s;
-        }
-
-        .quiz-next-btn.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .quiz-next-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(91,91,255,0.3);
-        }
-
-        /* ========== 结果页面 ========== */
+        /* ========== 结果页 ========== */
         .result-overlay {
             position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: #f8f9fc;
-            z-index: 1000;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--bg);
+            z-index: 2000;
             display: none;
             flex-direction: column;
             overflow-y: auto;
@@ -638,20 +595,33 @@
             display: flex;
         }
 
-        .result-header {
-            padding: 24px 20px;
-            text-align: center;
-            background: linear-gradient(180deg, var(--result-bg, #eef1ff) 0%, #f8f9fc 100%);
+        .result-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 400px;
+            background: 
+                radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99, 91, 255, 0.12), transparent),
+                radial-gradient(ellipse 60% 40% at 80% 50%, rgba(124, 58, 237, 0.08), transparent);
+            pointer-events: none;
         }
 
-        .result-badge {
-            font-size: 11px; font-weight: 600;
-            background: rgba(91,91,255,0.1);
-            color: #5b5bff;
-            padding: 4px 12px;
-            border-radius: 20px;
-            display: inline-block;
-            margin-bottom: 16px;
+        .result-content {
+            position: relative;
+            z-index: 1;
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 80px 24px 40px;
+            width: 100%;
+        }
+
+        .result-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 32px;
+            text-align: center;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
         }
 
         .result-emoji {
@@ -659,529 +629,119 @@
             margin-bottom: 8px;
         }
 
-        .result-title {
-            font-size: 28px; font-weight: 800;
-            color: #1a1a2e;
+        .result-name {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--result-color, var(--primary));
             margin-bottom: 8px;
         }
 
         .result-slogan {
-            font-size: 14px; color: #6b7080;
-            max-width: 300px;
-            margin: 0 auto;
+            font-size: 18px;
+            color: var(--slate-light);
+            margin-bottom: 32px;
         }
 
-        .result-score-section {
-            padding: 20px;
-            background: #fff;
-            margin: 16px;
-            border-radius: 14px;
-            text-align: center;
+        .result-radar {
+            margin: 24px 0;
         }
 
-        .result-score-label {
-            font-size: 12px; color: #8b8fa0;
-            margin-bottom: 8px;
-        }
-
-        .result-score-value {
-            font-size: 36px; font-weight: 800;
-            background: linear-gradient(135deg, #5b5bff, #7c5cbf);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .result-score-hint {
-            font-size: 11px; color: #b0b4c0;
-            margin-top: 4px;
-        }
-
-        .result-radar-section {
-            padding: 20px;
-            background: #fff;
-            margin: 0 16px 16px;
-            border-radius: 14px;
-        }
-
-        .result-radar-title {
-            font-size: 14px; font-weight: 700;
-            color: #1a1a2e;
-            text-align: center;
-            margin-bottom: 16px;
-        }
-
-        .result-radar-canvas {
+        .result-radar canvas {
             display: block;
             margin: 0 auto;
-            max-width: 100%;
         }
 
-        .result-dimensions {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 8px;
-            margin-top: 16px;
+        .btn-save-card {
+            width: 100%;
+            padding: 14px;
+            background: rgba(99, 91, 255, 0.1);
+            color: var(--primary);
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 24px;
+            transition: all 0.2s ease;
         }
 
-        .result-dim-item {
-            text-align: center;
+        .btn-save-card:hover {
+            background: rgba(99, 91, 255, 0.15);
         }
 
-        .result-dim-label {
-            font-size: 9px; color: #8b8fa0;
-            margin-bottom: 2px;
-        }
-
-        .result-dim-bar {
-            height: 4px;
-            background: rgba(91,91,255,0.1);
-            border-radius: 2px;
-            overflow: hidden;
-            margin-bottom: 2px;
-        }
-
-        .result-dim-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #5b5bff, #7c5cbf);
-            border-radius: 2px;
-        }
-
-        .result-dim-value {
-            font-size: 10px; font-weight: 600;
-            color: #5b5bff;
-        }
-
-        /* 升级引导 */
-        .result-upgrade {
-            padding: 20px;
-            background: linear-gradient(135deg, #fffbeb, #fef3c7);
-            margin: 0 16px 16px;
-            border-radius: 14px;
-            border: 1px dashed #F59E0B;
+        .result-divider {
+            height: 1px;
+            background: var(--border);
+            margin: 32px 0;
         }
 
         .result-upgrade-title {
-            font-size: 14px; font-weight: 700;
-            color: #F59E0B;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .result-upgrade-text {
-            font-size: 12px; color: #92400e;
-            line-height: 1.6;
-            margin-bottom: 12px;
-        }
-
-        .result-upgrade-btn {
-            width: 100%;
-            padding: 12px;
-            background: linear-gradient(135deg, #F59E0B, #D97706);
-            color: #fff;
-            border: none;
-            border-radius: 10px;
-            font-size: 14px; font-weight: 600;
-            cursor: pointer;
-        }
-
-        .result-upgrade-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(245,158,11,0.3);
-        }
-
-        /* 结果页底部按钮 */
-        .result-actions {
-            padding: 16px 20px;
-            background: #fff;
-            display: flex;
-            gap: 10px;
-            margin-top: auto;
-        }
-
-        .result-action-btn {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 10px;
-            font-size: 13px; font-weight: 600;
-            cursor: pointer;
-            text-align: center;
-        }
-
-        .result-action-btn.share {
-            background: rgba(91,91,255,0.08);
-            color: #5b5bff;
-        }
-
-        .result-action-btn.chat {
-            background: linear-gradient(135deg, #5b5bff, #7c5cbf);
-            color: #fff;
-        }
-
-        /* ========== 详细报告页面 ========== */
-        .detail-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: #f8f9fc;
-            z-index: 1100;
-            display: none;
-            flex-direction: column;
-            overflow-y: auto;
-        }
-
-        .detail-overlay.active {
-            display: flex;
-        }
-
-        .detail-header {
-            padding: 16px 20px;
-            background: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
-        }
-
-        .detail-back {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 14px; color: #5b5bff;
-            background: none; border: none;
-            cursor: pointer;
-        }
-
-        .detail-title {
-            font-size: 16px; font-weight: 700;
-            color: #1a1a2e;
-        }
-
-        .detail-content {
-            padding: 20px;
-            flex: 1;
-        }
-
-        .detail-card {
-            background: #fff;
-            border-radius: 14px;
-            padding: 20px;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--slate);
             margin-bottom: 16px;
         }
 
-        .detail-card-title {
-            font-size: 14px; font-weight: 700;
-            color: #1a1a2e;
-            margin-bottom: 12px;
+        .upgrade-buttons {
             display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .detail-dim-analysis {
-            display: flex;
-            flex-direction: column;
             gap: 12px;
         }
 
-        .detail-dim-item {
+        .upgrade-btn {
+            flex: 1;
             padding: 12px;
-            background: rgba(91,91,255,0.04);
-            border-radius: 10px;
-        }
-
-        .detail-dim-name {
-            font-size: 12px; font-weight: 600;
-            color: #5b5bff;
-            margin-bottom: 4px;
-        }
-
-        .detail-dim-desc {
-            font-size: 12px; color: #6b7080;
-            line-height: 1.5;
-        }
-
-        .detail-weaknesses {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .detail-weak-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 13px; color: #4a4a5e;
-        }
-
-        .detail-weak-icon {
+            border-radius: 8px;
             font-size: 14px;
-        }
-
-        .detail-plan {
-            background: linear-gradient(135deg, #f8f9ff, #f0e6ff);
-            border-radius: 10px;
-            padding: 14px;
-        }
-
-        .detail-plan-text {
-            font-size: 13px; color: #4a4a5e;
-            line-height: 1.7;
-        }
-
-        .detail-upgrade-section {
-            padding: 20px;
-            background: linear-gradient(135deg, #5b5bff, #7c5cbf);
-            color: #fff;
-            text-align: center;
-            margin: 0 16px 16px;
-            border-radius: 14px;
-        }
-
-        .detail-upgrade-title {
-            font-size: 16px; font-weight: 700;
-            margin-bottom: 6px;
-        }
-
-        .detail-upgrade-desc {
-            font-size: 12px; opacity: 0.8;
-            margin-bottom: 14px;
-        }
-
-        .detail-upgrade-btn {
-            width: 100%;
-            padding: 12px;
-            background: #fff;
-            color: #5b5bff;
-            border: none;
-            border-radius: 10px;
-            font-size: 14px; font-weight: 600;
+            font-weight: 600;
             cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
         }
 
-        /* ========== 人格卡生成 ========== */
-        .personality-card {
-            width: 750px;
-            max-width: 100%;
-            background: #fff;
-            padding: 0;
-            font-family: 'Inter', sans-serif;
+        .upgrade-btn.primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .upgrade-btn.secondary {
+            background: var(--bg);
+            color: var(--slate);
+            border: 1px solid var(--border);
+        }
+
+        .btn-retry {
+            display: inline-block;
+            margin-top: 24px;
+            font-size: 14px;
+            color: var(--slate-light);
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .btn-retry:hover {
+            color: var(--primary);
+        }
+
+        /* ========== 人格卡（Canvas绘制） ========== */
+        .personality-card-canvas {
             display: none;
         }
 
-        .personality-card canvas {
-            display: block;
-        }
-
-        /* ========== 支付弹窗 ========== */
-        .pay-modal-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 10000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s;
-            padding: 20px;
-        }
-
-        .pay-modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .pay-modal {
-            background: #fff;
-            border-radius: 16px;
-            width: 100%;
-            max-width: 320px;
-            padding: 24px;
-            text-align: center;
-            transform: scale(0.9);
-            transition: transform 0.3s;
-            position: relative;
-        }
-
-        .pay-modal-overlay.active .pay-modal {
-            transform: scale(1);
-        }
-
-        .pay-modal-close {
-            position: absolute;
-            top: 12px; right: 12px;
-            width: 28px; height: 28px;
-            border: none;
-            background: rgba(0,0,0,0.05);
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            color: #666;
-        }
-
-        .pay-modal-plan {
-            font-size: 14px; color: #666;
-            margin-bottom: 4px;
-        }
-
-        .pay-modal-price {
-            font-size: 28px; font-weight: 800;
-            background: linear-gradient(135deg, #5b5bff, #7c5cbf);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 20px;
-        }
-
-        .pay-modal-qr {
-            background: #f8f9fc;
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 16px;
-        }
-
-        .pay-modal-qr img {
-            width: 180px; height: 180px;
-            display: block;
-            margin: 0 auto;
-        }
-
-        .pay-modal-hint {
-            font-size: 12px; color: #8b8fa0;
-            margin-bottom: 12px;
-        }
-
-        .pay-modal-status {
-            font-size: 14px; font-weight: 600;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 12px;
-        }
-
-        .pay-modal-status.waiting {
-            background: rgba(91,91,255,0.08);
-            color: #5b5bff;
-        }
-
-        .pay-modal-status.success {
-            background: rgba(34,197,94,0.1);
-            color: #22c55e;
-        }
-
-        .pay-modal-methods {
-            display: flex;
-            justify-content: center;
-            gap: 16px;
-            margin-bottom: 8px;
-        }
-
-        .pay-method {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            font-size: 11px; color: #666;
-        }
-
-        .pay-method svg {
-            width: 16px; height: 16px;
-        }
-
-        .pay-loading {
-            display: inline-block;
-            width: 16px; height: 16px;
-            border: 2px solid rgba(91,91,255,0.2);
-            border-top-color: #5b5bff;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin-right: 6px;
-            vertical-align: middle;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* CTA */
-        .cta-section {
-            position: relative; z-index: 1;
-            padding: 0 24px 32px;
-            text-align: center;
-        }
-
-        .cta-card {
-            max-width: 400px; margin: 0 auto;
-            background: linear-gradient(135deg, #5b5bff, #7c5cbf);
-            border-radius: 14px;
-            padding: 24px;
-            color: #fff;
-        }
-
-        .cta-title { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
-        .cta-desc { font-size: 12px; opacity: 0.8; line-height: 1.6; margin-bottom: 14px; }
-        .cta-hint {
-            font-size: 11px; opacity: 0.6;
-            display: flex; align-items: center; justify-content: center; gap: 4px;
-        }
-
-        /* Footer */
-        .footer {
-            position: relative; z-index: 1;
-            text-align: center;
-            padding: 16px 24px 24px;
-            font-size: 10px; color: #b0b4c0;
-        }
-
-        /* Loading */
-        .loading-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: #f8f9fc;
-            display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
-            z-index: 9999;
-            transition: opacity 0.6s ease, visibility 0.6s ease;
-        }
-
-        .loading-overlay.hidden { opacity: 0; visibility: hidden; }
-
-        .loading-bar {
-            width: 100px; height: 2px;
-            background: rgba(91,91,255,0.1);
-            border-radius: 1px; overflow: hidden;
-        }
-
-        .loading-bar-inner {
-            width: 30%; height: 100%;
-            background: #5b5bff; border-radius: 1px;
-            animation: loading 1.2s ease-in-out infinite;
-        }
-
-        @keyframes loading {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(400%); }
-        }
-
-        .loading-text { margin-top: 14px; color: #8b8fa0; font-size: 12px; font-weight: 500; }
-
-        /* Toast提示 */
+        /* ========== Toast ========== */
         .toast {
             position: fixed;
-            bottom: 100px;
+            bottom: 24px;
             left: 50%;
-            transform: translateX(-50%) translateY(20px);
-            background: rgba(0,0,0,0.8);
-            color: #fff;
-            padding: 10px 20px;
+            transform: translateX(-50%) translateY(100px);
+            background: rgba(10, 37, 64, 0.9);
+            color: white;
+            padding: 12px 24px;
             border-radius: 8px;
-            font-size: 13px;
+            font-size: 14px;
+            font-weight: 500;
             z-index: 10001;
             opacity: 0;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
             pointer-events: none;
         }
 
@@ -1190,1474 +750,659 @@
             transform: translateX(-50%) translateY(0);
         }
 
-        /* 响应式 */
-        @media (max-width: 380px) {
-            .hero-title { font-size: 26px; }
-            .stats-bar { gap: 20px; }
-            .stat-num { font-size: 20px; }
+        /* ========== Chat SDK 浮窗 ========== */
+        .chat-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 9000;
+            display: none;
         }
 
-        @media (min-width: 768px) {
-            .hero { padding: 64px 32px 48px; }
-            .hero-title { font-size: 44px; }
-            .features { grid-template-columns: repeat(4, 1fr); max-width: 600px; }
-            .steps { flex-direction: row; gap: 12px; }
-            .step { flex-direction: column; text-align: center; flex: 1; }
-            .pricing-grid { max-width: 900px; flex-direction: row; flex-wrap: wrap; }
-            .plan-card { flex: 1; min-width: 240px; }
-            .plan-card.free-plan { transform: scale(1.05); z-index: 1; }
-            .result-dimensions { grid-template-columns: repeat(5, 1fr); }
+        .chat-container.active {
+            display: block;
+        }
+
+        /* ========== 响应式 ========== */
+        @media (max-width: 480px) {
+            .hero {
+                padding: 100px 20px 60px;
+            }
+
+            .hero-title {
+                font-size: 28px;
+            }
+
+            .hero-subtitle {
+                font-size: 16px;
+            }
+
+            .section {
+                padding: 60px 20px;
+            }
+
+            .section-title {
+                font-size: 24px;
+            }
+
+            .plan-price {
+                font-size: 40px;
+            }
+
+            .upgrade-buttons {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="top-gradient"></div>
-
+    <!-- 加载遮罩 -->
     <div class="loading-overlay" id="loadingOverlay">
-        <div class="loading-bar"><div class="loading-bar-inner"></div></div>
-        <div class="loading-text">正在加载</div>
+        <div class="loading-logo">CET</div>
+        <div class="loading-bar">
+            <div class="loading-bar-inner"></div>
+        </div>
     </div>
 
     <!-- Toast提示 -->
     <div class="toast" id="toast"></div>
 
-    <nav class="nav">
-        <div class="nav-left">
-            <div class="logo">C4</div>
-            <div class="nav-title">四级备考搭子</div>
-        </div>
-        <div class="nav-badge">AI Tutor</div>
+    <!-- 导航 -->
+    <nav class="nav" id="nav">
+        <div class="nav-logo">四级备考搭子</div>
+        <a href="#pricing" class="nav-link">定价</a>
     </nav>
 
-    <!-- Hero -->
-    <section class="hero">
-        <div class="hero-tag">CET-4 智能备考</div>
-        <div class="hero-title">测测你是哪种<span class="accent">四级备考人格</span></div>
-        <div class="hero-desc">2分钟免费测试，测完生成你的专属备考人格卡，发现你的独特备考优势</div>
-
-        <button class="hero-cta-btn" onclick="startQuiz()">
-            🎯 免费开始测试
-        </button>
-        <div class="hero-cta-hint">15道题，测出你的备考人格</div>
-
-        <div class="stats-bar">
-            <div class="stat-item">
-                <div class="stat-num">2min</div>
-                <div class="stat-label">快速出结果</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-num">5维</div>
-                <div class="stat-label">能力精准诊断</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-num">8种</div>
-                <div class="stat-label">专属备考人格</div>
-            </div>
-        </div>
-
-        <div class="features">
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-                </div>
-                <div>
-                    <div class="feature-label">人格诊断</div>
-                    <div class="feature-sub">发现你的备考风格</div>
-                </div>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <svg viewBox="0 0 24 24"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
-                </div>
-                <div>
-                    <div class="feature-label">AI答疑</div>
-                    <div class="feature-sub">24h无限次对话</div>
-                </div>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-                </div>
-                <div>
-                    <div class="feature-label">雷达图分析</div>
-                    <div class="feature-sub">5维能力可视化</div>
-                </div>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <svg viewBox="0 0 24 24"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
-                </div>
-                <div>
-                    <div class="feature-label">专属计划</div>
-                    <div class="feature-sub">针对弱项定制</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 学习流程 -->
-    <section class="how-section">
-        <div class="section-title">三步开启备考</div>
-        <div class="steps">
-            <div class="step">
-                <div class="step-num">1</div>
-                <div>
-                    <div class="step-text">免费诊断人格</div>
-                    <div class="step-sub">2分钟测出你的备考类型</div>
-                </div>
-            </div>
-            <div class="step">
-                <div class="step-num">2</div>
-                <div>
-                    <div class="step-text">解锁详细报告</div>
-                    <div class="step-sub">¥1看透你的薄弱点</div>
-                </div>
-            </div>
-            <div class="step">
-                <div class="step-num">3</div>
-                <div>
-                    <div class="step-text">AI陪练冲刺</div>
-                    <div class="step-sub">冲刺版带你过四级</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 痛点场景 -->
-    <section class="testimonials">
-        <div class="section-title">你的痛点，AI私教都能解</div>
-
-        <!-- 痛点1：听力 -->
-        <div class="t-card">
-            <div class="t-pain"><span class="t-pain-icon">🎧</span>"听力像天书，每次只能蒙"</div>
-            <div class="t-divider"></div>
-            <div class="t-solution">
-                <div class="t-solution-badge">AI解法</div>
-                <div class="t-solution-text">逐句精听训练，连读弱读单独拆解反复练，一个月听力正确率翻倍，<span class="t-result">从只对8题到抓大半</span></div>
-            </div>
-            <div class="t-footer"><span class="t-source">改编自真实备考经历</span></div>
-        </div>
-
-        <!-- 痛点2：多次不过 -->
-        <div class="t-card">
-            <div class="t-pain"><span class="t-pain-icon">😭</span>"裸考三次，417、417、416，快崩溃了"</div>
-            <div class="t-divider"></div>
-            <div class="t-solution">
-                <div class="t-solution-badge">AI解法</div>
-                <div class="t-solution-text">每天推送针对性练习，背完单词当天复盘，考前真题估分追踪进度，<span class="t-result">第四次496过线</span></div>
-            </div>
-            <div class="t-footer"><span class="t-source">改编自真实备考经历</span></div>
-        </div>
-
-        <!-- 痛点3：刷题无效 -->
-        <div class="t-card">
-            <div class="t-pain"><span class="t-pain-icon">😤</span>"真题刷了3遍还是差2分过不了"</div>
-            <div class="t-divider"></div>
-            <div class="t-solution">
-                <div class="t-solution-badge">AI解法</div>
-                <div class="t-solution-text">AI诊断错题类型，精准复盘替代盲目刷题，把"转折词陷阱"等套路整理成表，<span class="t-result">正确率直接涨70%</span></div>
-            </div>
-            <div class="t-footer"><span class="t-source">改编自真实备考经历</span></div>
-        </div>
-
-        <!-- 痛点4：阅读做不完 - 折叠区 -->
-        <div class="t-card t-hidden t-extra">
-            <div class="t-pain"><span class="t-pain-icon">⏰</span>"阅读永远做不完，最后两篇全靠蒙"</div>
-            <div class="t-divider"></div>
-            <div class="t-solution">
-                <div class="t-solution-badge">AI解法</div>
-                <div class="t-solution-text">教你先读题干再回文定位，不用逐字翻译也能找答案，<span class="t-result">正确率60%→85%，还能提前5分钟做完</span></div>
-            </div>
-            <div class="t-footer"><span class="t-source">改编自真实备考经历</span></div>
-        </div>
-
-        <!-- 痛点5：考多次不过想放弃 -->
-        <div class="t-card t-hidden t-extra">
-            <div class="t-pain"><span class="t-pain-icon">💪</span>"考了四五次了，差几分就差几分，真想放弃"</div>
-            <div class="t-divider"></div>
-            <div class="t-solution">
-                <div class="t-solution-badge">AI解法</div>
-                <div class="t-solution-text">每天固定推送任务+鼓励陪伴，像有个真人在旁边盯你学，<span class="t-result">坚持下来，下次一定能过</span></div>
-            </div>
-            <div class="t-footer"><span class="t-source">改编自真实备考经历</span></div>
-        </div>
-
-        <!-- 痛点6：听力抓不到重点 -->
-        <div class="t-card t-hidden t-extra">
-            <div class="t-pain"><span class="t-pain-icon">👂</span>"听力一快就跟不上，关键信息全漏掉"</div>
-            <div class="t-divider"></div>
-            <div class="t-solution">
-                <div class="t-solution-badge">AI解法</div>
-                <div class="t-solution-text">训练"信号词定位法"，听到but、however后面往往是答案，逐句听写标注生词，<span class="t-result">听力从最弱项变成提分最快项</span></div>
-            </div>
-            <div class="t-footer"><span class="t-source">改编自真实备考经历</span></div>
-        </div>
-
-        <!-- 痛点7：坚持不下来 -->
-        <div class="t-card t-hidden t-extra">
-            <div class="t-pain"><span class="t-pain-icon">🫠</span>"买过课买过书全都吃灰，坚持不下来"</div>
-            <div class="t-divider"></div>
-            <div class="t-solution">
-                <div class="t-solution-badge">AI解法</div>
-                <div class="t-solution-text">AI每天主动推题+限时训练，培养考试节奏感，像有个学习搭子每天陪你练，<span class="t-result">28天没断过，比预期高50分</span></div>
-            </div>
-            <div class="t-footer"><span class="t-source">改编自真实备考经历</span></div>
-        </div>
-
-        <!-- 展开/收起按钮 -->
-        <div class="t-collapse-btn" id="toggleMore" onclick="toggleMore()">更多痛点 ▼</div>
-        <div class="t-disclaimer">*案例改编自公开备考经验，展示AI私教可提供的解决思路</div>
-    </section>
-
-    <!-- ========== 套餐定价区 ========== -->
-    <section class="pricing-section">
-        <div class="section-title">选择你的备考方案</div>
-        
-        <div class="pricing-grid">
-            <!-- 免费诊断（最突出） -->
-            <div class="plan-card free-plan">
-                <div class="plan-badge">最受欢迎</div>
-                <div class="plan-header">
-                    <div class="plan-name">🎯 免费诊断</div>
-                    <div class="plan-price"><span class="yuan">¥</span>0</div>
-                </div>
-                <ul class="plan-features">
-                    <li>15题精准能力诊断</li>
-                    <li>生成专属人格标签</li>
-                    <li>神评+5维雷达图</li>
-                    <li>专属人格卡分享</li>
-                    <li>免费和AI聊5句</li>
-                </ul>
-                <button class="plan-btn green" onclick="startQuiz()">免费开始测试</button>
-            </div>
-
-            <!-- ¥1详细报告（升级引导） -->
-            <div class="plan-card report-plan">
-                <div class="plan-header">
-                    <div class="plan-name">🔓 详细报告</div>
-                    <div class="plan-price"><span class="yuan">¥</span>1</div>
-                </div>
-                <ul class="plan-features">
-                    <li>5维详细能力分析</li>
-                    <li>短板精确定位</li>
-                    <li>错题类型归类</li>
-                    <li>专属备考方向指导</li>
-                    <li>预估四级分数</li>
-                </ul>
-                <button class="plan-btn orange" onclick="showReportHint()">解锁详细报告</button>
-            </div>
-
-            <!-- 冲刺版 -->
-            <div class="plan-card sprint-plan">
-                <div class="plan-header">
-                    <div class="plan-name">⚡ 冲刺版</div>
-                    <div class="plan-price"><span class="yuan">¥</span>49</div>
-                </div>
-                <ul class="plan-features">
-                    <li>AI无限次答疑</li>
-                    <li>作文+翻译精批</li>
-                    <li>30天冲刺计划</li>
-                    <li>每日打卡监督</li>
-                    <li>3次全真模拟</li>
-                </ul>
-                <button class="plan-btn primary" onclick="openPayModal('sprint')">立即购买</button>
-            </div>
-
-            <!-- 旗舰版 -->
-            <div class="plan-card pro-plan">
-                <div class="plan-header">
-                    <div class="plan-name">🚀 旗舰版</div>
-                    <div class="plan-price" style="background: linear-gradient(135deg, #a5b4fc, #c4b5fd); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"><span class="yuan">¥</span>149</div>
-                </div>
-                <ul class="plan-features">
-                    <li>冲刺版全部功能</li>
-                    <li>无限次AI答疑</li>
-                    <li>深度1v1辅导</li>
-                    <li>专属资料包</li>
-                    <li>优先响应通道</li>
-                </ul>
-                <button class="plan-btn dark" onclick="openPayModal('pro')">立即购买</button>
-            </div>
-        </div>
-
-        <div class="pricing-disclaimer">
-            ¥1报告解锁后不支持退款<br>
-            ¥49/¥149为虚拟服务，使用后不支持退款
-        </div>
-    </section>
-
-    <!-- CTA -->
-    <section class="cta-section">
-        <div class="cta-card">
-            <div class="cta-title">开始你的四级逆袭</div>
-            <div class="cta-desc">点击右下角，和 AI 私教聊两句<br>2 分钟测出你的薄弱项</div>
-            <div class="cta-hint">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                点击右下角气泡开始对话
-            </div>
-        </div>
-    </section>
-
-    <div class="footer">四级备考搭子 · AI Private Tutor</div>
-
-    <!-- ========== 诊断测试界面 ========== -->
-    <div class="quiz-overlay" id="quizOverlay">
-        <div class="quiz-header">
-            <button class="quiz-close" onclick="closeQuiz()">×</button>
-            <div class="quiz-progress">
-                <div class="quiz-progress-text" id="quizProgressText">第 1/15 题</div>
-                <div class="quiz-progress-bar">
-                    <div class="quiz-progress-fill" id="quizProgressFill" style="width: 6.67%"></div>
-                </div>
-            </div>
-            <div style="width: 32px;"></div>
-        </div>
-
-        <div class="quiz-content">
-            <div class="quiz-dimension" id="quizDimension">细节定位</div>
-            <div class="quiz-question" id="quizQuestion">加载中...</div>
-            <div class="quiz-options" id="quizOptions"></div>
-            <button class="quiz-next-btn" id="quizNextBtn" onclick="nextQuestion()">下一题</button>
-        </div>
-    </div>
-
-    <!-- ========== 结果页面 ========== -->
-    <div class="result-overlay" id="resultOverlay">
-        <div class="result-header" id="resultHeader">
-            <div class="result-badge">你的备考人格</div>
-            <div class="result-emoji" id="resultEmoji">🏆</div>
-            <div class="result-title" id="resultTitle">全对卷王</div>
-            <div class="result-slogan" id="resultSlogan">别测了，去给同学讲课吧</div>
-        </div>
-
-        <div class="result-score-section">
-            <div class="result-score-label">预估四级成绩</div>
-            <div class="result-score-value" id="resultScore">520</div>
-            <div class="result-score-hint">基于5维能力综合评估 · 满分710 · 425过线</div>
-        </div>
-
-        <div class="result-radar-section">
-            <div class="result-radar-title">5维能力雷达图</div>
-            <canvas id="radarCanvas" class="result-radar-canvas" width="280" height="280"></canvas>
-            <div class="result-dimensions" id="resultDimensions"></div>
-        </div>
-
-        <div class="result-upgrade" id="resultUpgrade">
-            <div class="result-upgrade-title">
-                🔓 解锁详细报告 ¥1
-            </div>
-            <div class="result-upgrade-text" id="resultUpgradeText">
-                想知道你的同义替换只有33%具体弱在哪？怎么补？
-            </div>
-            <button class="result-upgrade-btn" onclick="openPayModal('report')">立即解锁详细分析</button>
-        </div>
-
-        <div class="result-actions">
-            <button class="result-action-btn share" onclick="saveAndShare()">📥 保存人格卡</button>
-            <button class="result-action-btn chat" onclick="startChat()">💬 开始聊天</button>
-        </div>
-    </div>
-
-    <!-- ========== 详细报告页面 ========== -->
-    <div class="detail-overlay" id="detailOverlay">
-        <div class="detail-header">
-            <button class="detail-back" onclick="closeDetail()">
-                ← 返回
+    <!-- Hero区 -->
+    <section class="hero" id="hero">
+        <div class="hero-content">
+            <h1 class="hero-title animate-in delay-1">测测你的四级备考人格</h1>
+            <p class="hero-subtitle animate-in delay-2">3分钟跟AI聊天，找到最适合你的备考方式</p>
+            <button class="btn-primary animate-in delay-3" onclick="startDiagnosis()">
+                开始免费诊断
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 8h10M9 4l4 4-4 4"/>
+                </svg>
             </button>
-            <div class="detail-title">详细分析报告</div>
-            <div style="width: 60px;"></div>
-        </div>
-
-        <div class="detail-content">
-            <div class="detail-card">
-                <div class="detail-card-title">
-                    📊 5维能力详细分析
-                </div>
-                <div class="detail-dim-analysis" id="detailAnalysis"></div>
-            </div>
-
-            <div class="detail-card">
-                <div class="detail-card-title">
-                    🎯 短板精确定位
-                </div>
-                <div class="detail-weaknesses" id="detailWeaknesses"></div>
-            </div>
-
-            <div class="detail-card">
-                <div class="detail-card-title">
-                    📋 专属备考方向
-                </div>
-                <div class="detail-plan">
-                    <div class="detail-plan-text" id="detailPlan"></div>
-                </div>
-            </div>
-
-            <div class="detail-upgrade-section">
-                <div class="detail-upgrade-title">想要更高效的备考？</div>
-                <div class="detail-upgrade-desc">冲刺版包含AI无限答疑+作文批改+30天计划</div>
-                <button class="detail-upgrade-btn" onclick="closeDetail(); openPayModal('sprint')">升级冲刺版 ¥49</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ========== 人格卡Canvas（用于生成图片） ========== -->
-    <canvas id="cardCanvas" width="750" height="1334" style="display:none;"></canvas>
-
-    <!-- ========== 支付弹窗 ========== -->
-    <div class="pay-modal-overlay" id="payModal">
-        <div class="pay-modal">
-            <button class="pay-modal-close" onclick="closePayModal()">×</button>
-            <div class="pay-modal-plan" id="payPlanName">详细报告</div>
-            <div class="pay-modal-price">¥<span id="payPrice">1</span></div>
+            <p class="hero-hint animate-in delay-4">免费 · 无需注册 · 3分钟出结果</p>
             
-            <div class="pay-modal-qr">
-                <img id="payQrCode" src="" alt="支付二维码">
-            </div>
-
-            <div class="pay-modal-methods">
-                <div class="pay-method">
-                    <svg viewBox="0 0 24 24" fill="#07C160"><path d="M4.5 4.5a1 1 0 0 0-1 1v13a1 1 0 0 0 1 1h15a1 1 0 0 0 1-1v-13a1 1 0 0 0-1-1h-15zm.5 2h14v10h-14v-10z"/><path d="M7.5 7.5h9v1h-9z"/></svg>
-                    微信
+            <!-- 流程预览 -->
+            <div class="flow-preview animate-in delay-5">
+                <div class="flow-step">
+                    <span class="flow-dot">💬</span>
+                    <span>跟AI聊天</span>
                 </div>
-                <div class="pay-method">
-                    <svg viewBox="0 0 24 24" fill="#1677FF"><path d="M3.667 12c0-1.035.228-2.002.618-2.849L8.24 5.5C8.088 5.17 8 4.826 8 4.472c0-.895.72-1.62 1.61-1.62 1.78 0 2.39 2.39 4.78 2.39 1.78 0 3-.72 3-1.61 0-.354-.088-.698-.24-1.028l3.955 3.65c.39.847.618 1.814.618 2.849 0 3.63-3 6.667-6.667 6.667S3.667 15.63 3.667 12z"/></svg>
-                    支付宝
+                <span class="flow-arrow">→</span>
+                <div class="flow-step">
+                    <span class="flow-dot">🎯</span>
+                    <span>发现人格</span>
+                </div>
+                <span class="flow-arrow">→</span>
+                <div class="flow-step">
+                    <span class="flow-dot">🖼️</span>
+                    <span>获取建议</span>
                 </div>
             </div>
+        </div>
+    </section>
 
-            <div class="pay-modal-status waiting" id="payStatus">
-                <span class="pay-loading"></span>等待支付中...
-            </div>
+    <!-- 人格预览区 -->
+    <section class="section" id="personalities">
+        <div class="section-header">
+            <h2 class="section-title animate-in">8种备考人格，你是哪一种？</h2>
+            <p class="section-subtitle animate-in delay-1">每个四级考生都有专属的备考DNA</p>
+        </div>
+        
+        <div class="personality-grid" id="personalityGrid">
+            <!-- 动态生成 -->
+        </div>
+    </section>
 
-            <div class="pay-modal-hint">
-                请使用微信或支付宝扫描二维码支付<br>
-                支付完成后页面将自动跳转
+    <!-- 定价区 -->
+    <section class="pricing-section" id="pricing">
+        <div class="section-header">
+            <h2 class="section-title animate-in">选择你的备考方案</h2>
+        </div>
+        
+        <div class="pricing-grid" id="pricingGrid">
+            <!-- 动态生成 -->
+        </div>
+    </section>
+
+    <!-- FAQ区 -->
+    <section class="faq-section">
+        <div class="section-header">
+            <h2 class="section-title animate-in">常见问题</h2>
+        </div>
+        
+        <div class="faq-list" id="faqList">
+            <!-- 动态生成 -->
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        © 2026 四级备考搭子 · 备考辅助工具，非官方考试机构
+    </footer>
+
+    <!-- 结果页 -->
+    <div class="result-overlay" id="resultOverlay">
+        <div class="result-bg"></div>
+        <div class="result-content">
+            <div class="result-card">
+                <div class="result-emoji" id="resultEmoji">🏆</div>
+                <h2 class="result-name" id="resultName">全对卷王</h2>
+                <p class="result-slogan" id="resultSlogan">别测了，去给同学讲课吧</p>
+                
+                <div class="result-radar">
+                    <canvas id="radarCanvas" width="200" height="200"></canvas>
+                </div>
+                
+                <button class="btn-save-card" onclick="savePersonalityCard()">
+                    保存人格卡
+                </button>
+                
+                <div class="result-divider"></div>
+                
+                <h3 class="result-upgrade-title">想要更详细的备考方案？</h3>
+                <div class="upgrade-buttons">
+                    <button class="upgrade-btn secondary" onclick="showToast(`¥1解锁详细报告`);">¥1 详细报告</button>
+                    <button class="upgrade-btn primary" onclick="showToast(`¥49冲刺版`);">¥49 冲刺版</button>
+                    <button class="upgrade-btn secondary" onclick="showToast(`¥149旗舰版`);">¥149 旗舰版</button>
+                </div>
+                
+                <span class="btn-retry" onclick="hideResult(); startDiagnosis();">再测一次</span>
             </div>
         </div>
     </div>
 
-    <script src="https://lf-cdn.coze.cn/obj/unpkg/flow-platform/chat-app-sdk/1.2.0-beta.20/libs/cn/index.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <!-- Chat容器 -->
+    <div class="chat-container" id="chatContainer"></div>
+
+    <!-- 人格卡Canvas（隐藏，用于生成图片） -->
+    <canvas id="cardCanvas" class="personality-card-canvas" width="750" height="1334"></canvas>
 
     <script>
-        // ========== 全局变量 ==========
-        let cozeChatInstance = null;
-        let currentBotId = null;
-
-        // Bot ID 配置
-        const BOT_ID_DIAGNOSIS = '7636289658620215331';
-        const BOT_ID_SPRINT = '7636289658620215331';
-        const BOT_ID_PRO = '7636289658620215331';
-
-        // 套餐配置
-        const PLAN_CONFIG = {
-            free: { name: '免费诊断', price: 0, botId: BOT_ID_DIAGNOSIS, uidPrefix: 'CET4D' },
-            report: { name: '详细报告', price: 1, botId: BOT_ID_DIAGNOSIS, uidPrefix: 'CET4R' },
-            sprint: { name: '冲刺版', price: 49, botId: BOT_ID_SPRINT, uidPrefix: 'CET4S' },
-            pro: { name: '旗舰版', price: 149, botId: BOT_ID_PRO, uidPrefix: 'CET4P' }
-        };
-
-        // 8种备考人格配置
-        const PERSONALITIES = {
-            '全对卷王': {
-                emoji: '🏆', slogan: '别测了，去给同学讲课吧',
-                color: '#10B981', bgGradient: 'linear-gradient(135deg, #10B981, #059669)'
-            },
-            '吗喽型选手': {
-                emoji: '🐒', slogan: '你的弱项比强项多，但至少弱得均匀',
-                color: '#F59E0B', bgGradient: 'linear-gradient(135deg, #F59E0B, #D97706)'
-            },
-            '脑补大师': {
-                emoji: '🧠', slogan: '阅读理解满分，可惜是自己的理解',
-                color: '#8B5CF6', bgGradient: 'linear-gradient(135deg, #8B5CF6, #7C3AED)'
-            },
-            '换词狂魔': {
-                emoji: '🔄', slogan: '出题人的换词术在你面前透明',
-                color: '#3B82F6', bgGradient: 'linear-gradient(135deg, #3B82F6, #2563EB)'
-            },
-            '审题跳读型': {
-                emoji: '🔍', slogan: '你不是审题粗心，你是根本没审',
-                color: '#EF4444', bgGradient: 'linear-gradient(135deg, #EF4444, #DC2626)'
-            },
-            '词汇薄弱型': {
-                emoji: '📖', slogan: '单词量限制了你的想象力',
-                color: '#F97316', bgGradient: 'linear-gradient(135deg, #F97316, #EA580C)'
-            },
-            '脆皮大学生': {
-                emoji: '🎧', slogan: '耳朵王者，眼睛青铜',
-                color: '#06B6D4', bgGradient: 'linear-gradient(135deg, #06B6D4, #0891B2)'
-            },
-            '单声道战神': {
-                emoji: '👁️', slogan: '眼睛铜铃，耳朵棉花',
-                color: '#EC4899', bgGradient: 'linear-gradient(135deg, #EC4899, #DB2777)'
-            }
-        };
-
-        // 维度配置
-        const DIMENSIONS = ['细节定位', '推理判断', '同义替换', '主旨归纳', '态度判断'];
-
-        // 15道题（每维度3题）
-        const QUIZ_QUESTIONS = [
-            // 细节定位（1-3）
-            {
-                dimension: '细节定位',
-                question: '看到 "The meeting has been postponed till Friday." 这句话，以下哪个选项最能对应 "postponed" 的含义？',
-                options: [
-                    { text: 'A. 提前到周五', letter: 'A' },
-                    { text: 'B. 推迟到周五', letter: 'B' },
-                    { text: 'C. 取消周五', letter: 'C' },
-                    { text: 'D. 改成周五', letter: 'D' }
-                ],
-                correct: 1
-            },
-            {
-                dimension: '细节定位',
-                question: '听力原文中说 "Prof. Smith will give the lecture instead of Dr. Brown." 谁会做演讲？',
-                options: [
-                    { text: 'A. Dr. Brown', letter: 'A' },
-                    { text: 'B. Prof. Smith', letter: 'B' },
-                    { text: 'C. 两人一起', letter: 'C' },
-                    { text: 'D. 不确定', letter: 'D' }
-                ],
-                correct: 1
-            },
-            {
-                dimension: '细节定位',
-                question: '阅读文章说 "The library closes at 9 PM on weekdays and 5 PM on weekends." 周末几点关门？',
-                options: [
-                    { text: 'A. 下午5点', letter: 'A' },
-                    { text: 'B. 下午9点', letter: 'B' },
-                    { text: 'C. 下午6点', letter: 'C' },
-                    { text: 'D. 不关门', letter: 'D' }
-                ],
-                correct: 0
-            },
-            // 推理判断（4-6）
-            {
-                dimension: '推理判断',
-                question: `原文说 "John didn't go to the party. He said he was tired, but everyone knows he just doesn't like crowded places." 可以推断出？`,
-                options: [
-                    { text: 'A. John 真的很累', letter: 'A' },
-                    { text: 'B. John 找借口不去派对', letter: 'B' },
-                    { text: 'C. John 去了派对', letter: 'C' },
-                    { text: 'D. John 喜欢拥挤的地方', letter: 'D' }
-                ],
-                correct: 1
-            },
-            {
-                dimension: '推理判断',
-                question: '文章说 "Despite the heavy rain, the concert attracted thousands of fans." 这句话暗示什么？',
-                options: [
-                    { text: 'A. 粉丝们不喜欢下雨', letter: 'A' },
-                    { text: 'B. 粉丝们对音乐非常热情', letter: 'B' },
-                    { text: 'C. 演唱会取消了', letter: 'C' },
-                    { text: 'D. 雨很快就停了', letter: 'D' }
-                ],
-                correct: 1
-            },
-            {
-                dimension: '推理判断',
-                question: `老师说 "I don't think it's a good idea to stay up late the night before the exam." 老师的言外之意是？`,
-                options: [
-                    { text: 'A. 熬夜完全没问题', letter: 'A' },
-                    { text: 'B. 建议早睡休息好', letter: 'B' },
-                    { text: 'C. 考试不重要', letter: 'C' },
-                    { text: 'D. 让学生熬夜学习', letter: 'D' }
-                ],
-                correct: 1
-            },
-            // 同义替换（7-9）
-            {
-                dimension: '同义替换',
-                question: '"The project turned out to be a huge success." 哪个选项意思最接近？',
-                options: [
-                    { text: 'A. 项目彻底失败了', letter: 'A' },
-                    { text: 'B. 项目取得了巨大成功', letter: 'B' },
-                    { text: 'C. 项目还在进行中', letter: 'C' },
-                    { text: 'D. 项目刚刚开始', letter: 'D' }
-                ],
-                correct: 1
-            },
-            {
-                dimension: '同义替换',
-                question: '"Due to the bad weather, the flight was cancelled." 哪个选项意思相同？',
-                options: [
-                    { text: 'A. 因为天气好，航班照常', letter: 'A' },
-                    { text: 'B. 由于天气糟糕，航班被取消', letter: 'B' },
-                    { text: 'C. 天气糟糕但航班延误', letter: 'C' },
-                    { text: 'D. 航班改签了', letter: 'D' }
-                ],
-                correct: 1
-            },
-            {
-                dimension: '同义替换',
-                question: '"She majors in Computer Science." "majors in" 可以被哪个替换？',
-                options: [
-                    { text: 'A. drops out of', letter: 'A' },
-                    { text: 'B. specializes in', letter: 'B' },
-                    { text: 'C. drops in on', letter: 'C' },
-                    { text: 'D. majors out of', letter: 'D' }
-                ],
-                correct: 1
-            },
-            // 主旨归纳（10-12）
-            {
-                dimension: '主旨归纳',
-                question: '一篇文章讨论了大学生面临的压力、解决方法、以及学校提供的支持服务。这篇文章主要讲的是？',
-                options: [
-                    { text: 'A. 大学生的经济问题', letter: 'A' },
-                    { text: 'B. 如何应对学业压力', letter: 'B' },
-                    { text: 'C. 大学生的恋爱问题', letter: 'C' },
-                    { text: 'D. 大学的课程设置', letter: 'D' }
-                ],
-                correct: 1
-            },
-            {
-                dimension: '主旨归纳',
-                question: '听力材料中，教授花大量时间讲解一个实验的步骤、原因和结果。这堂课的主题是？',
-                options: [
-                    { text: 'A. 实验室的安全规则', letter: 'A' },
-                    { text: 'B. 一个科学实验的过程', letter: 'B' },
-                    { text: 'C. 实验室设备介绍', letter: 'C' },
-                    { text: 'D. 科学家的故事', letter: 'D' }
-                ],
-                correct: 1
-            },
-            {
-                dimension: '主旨归纳',
-                question: '阅读理解全文描述了一个小镇从繁荣到衰落再到复兴的过程。核心话题是？',
-                options: [
-                    { text: 'A. 小镇的人口变化', letter: 'A' },
-                    { text: 'B. 小镇的历史发展', letter: 'B' },
-                    { text: 'C. 小镇的地理位置', letter: 'C' },
-                    { text: 'D. 小镇的名人', letter: 'D' }
-                ],
-                correct: 1
-            },
-            // 态度判断（13-15）
-            {
-                dimension: '态度判断',
-                question: `说话者说 "Well, I guess that's one way to look at it. But have you considered...?" 他的态度是？`,
-                options: [
-                    { text: 'A. 完全同意对方', letter: 'A' },
-                    { text: 'B. 礼貌地提出不同意见', letter: 'B' },
-                    { text: 'C. 完全不关心', letter: 'C' },
-                    { text: 'D. 非常生气', letter: 'D' }
-                ],
-                correct: 1
-            },
-            {
-                dimension: '态度判断',
-                question: '作者在文章结尾写道 "Only time will tell whether this technology will truly change our lives." 作者的态度是？',
-                options: [
-                    { text: 'A. 完全乐观', letter: 'A' },
-                    { text: 'B. 完全悲观', letter: 'B' },
-                    { text: 'C. 谨慎观望', letter: 'C' },
-                    { text: 'D. 完全不关心', letter: 'D' }
-                ],
-                correct: 2
-            },
-            {
-                dimension: '态度判断',
-                question: `教授在讲到某个话题时突然叹了口气说 "Anyway, let's move on." 教授对这个话题的态度可能是？`,
-                options: [
-                    { text: 'A. 非常感兴趣想继续讲', letter: 'A' },
-                    { text: 'B. 不太想继续讨论', letter: 'B' },
-                    { text: 'C. 完全忘记要讲什么', letter: 'C' },
-                    { text: 'D. 要考试的重点', letter: 'D' }
-                ],
-                correct: 1
-            }
+        /* ========== 数据定义 ========== */
+        
+        // 8种人格数据
+        const personalities = [
+            { type: "全对卷王", emoji: "🏆", slogan: "别测了，去给同学讲课吧", color: "#10B981", scores: [85, 80, 85, 80, 82] },
+            { type: "吗喽型选手", emoji: "🐒", slogan: "均衡地弱，但吗喽也有春天", color: "#F59E0B", scores: [45, 42, 40, 43, 44] },
+            { type: "脑补大师", emoji: "🧠", slogan: "你跟作者，有一个想多了", color: "#8B5CF6", scores: [55, 82, 45, 70, 50] },
+            { type: "换词狂魔", emoji: "🔄", slogan: "出题人的换词术在你面前透明", color: "#3B82F6", scores: [85, 55, 60, 50, 58] },
+            { type: "审题跳读型", emoji: "🔍", slogan: "放大镜拿反了", color: "#EF4444", scores: [55, 45, 30, 60, 65] },
+            { type: "词汇薄弱型", emoji: "📖", slogan: "单词量限制了你的想象力", color: "#F97316", scores: [30, 50, 40, 45, 55] },
+            { type: "脆皮大学生", emoji: "🎧", slogan: "耳朵王者，眼睛青铜", color: "#06B6D4", scores: [45, 40, 50, 80, 42] },
+            { type: "单声道战神", emoji: "👁️", slogan: "眼睛铜铃，耳朵棉花", color: "#EC4899", scores: [70, 65, 72, 25, 60] }
         ];
 
-        // 测试状态
-        let currentQuestion = 0;
-        let answers = [];
-        let scores = { '细节定位': 0, '推理判断': 0, '同义替换': 0, '主旨归纳': 0, '态度判断': 0 };
-        let userResult = null;
+        // 定价数据
+        const plans = [
+            { name: "免费诊断", price: "¥0", priceClass: "free", badge: "", features: ["AI对话诊断", "人格标签", "人格卡"], btnText: "开始诊断", btnClass: "outline" },
+            { name: "详细报告", price: "¥1", priceClass: "", badge: "", features: ["5维详细分析", "短板定位", "预估分数"], btnText: "立即解锁", btnClass: "outline" },
+            { name: "冲刺版", price: "¥49", priceClass: "", badge: "推荐", features: ["AI无限答疑", "作文批改", "30天备考计划", "3次模拟测试"], btnText: "立即购买", btnClass: "primary" },
+            { name: "旗舰版", price: "¥149", priceClass: "", badge: "", features: ["冲刺版全部", "深度辅导", "专属资料包", "优先答疑"], btnText: "立即购买", btnClass: "outline" }
+        ];
 
-        // ========== ref参数处理 ==========
-        function getRef() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const ref = urlParams.get('ref');
-            if (ref) {
-                localStorage.setItem('cet4_ref', ref);
-            }
-            return localStorage.getItem('cet4_ref') || '';
-        }
+        // FAQ数据
+        const faqs = [
+            { question: "这个诊断需要多长时间？", answer: "大约3分钟。我们通过轻松对话了解你的备考习惯，比传统测试有趣多了。" },
+            { question: "人格诊断结果准吗？", answer: "基于你的答题风格和偏好，AI会给出个性化分析。仅供参考，备考还需结合真题练习。" },
+            { question: "免费诊断包含什么？", answer: "包含人格类型、雷达图分析和一张精美人格卡。如需详细报告可¥1解锁。" },
+            { question: "如何获取更多备考帮助？", answer: "升级到冲刺版或旗舰版，享受AI私教全程陪练到考前。" }
+        ];
 
-        function getRefForShare() {
-            const userId = getUserId();
-            const ref = getRef() || `CET4D_${userId}`;
-            return ref;
-        }
+        // 雷达图维度名称
+        const dimensionNames = ["同义替换", "推理判断", "细节定位", "态度判断", "主旨大意"];
 
-        // ========== 更多痛点展开 ==========
-        let moreExpanded = false;
-        function toggleMore() {
-            moreExpanded = !moreExpanded;
-            const extras = document.querySelectorAll('.t-extra');
-            const btn = document.getElementById('toggleMore');
-            extras.forEach(el => {
-                if (moreExpanded) {
-                    el.classList.remove('t-hidden');
-                } else {
-                    el.classList.add('t-hidden');
-                }
-            });
-            btn.textContent = moreExpanded ? '收起 ▲' : '更多痛点 ▼';
-        }
+        /* ========== 全局变量 ========== */
+        let chatClient = null;
+        let currentPersonality = null;
+        let messageObserver = null;
 
-        // ========== 用户ID管理 ==========
+        /* ========== 工具函数 ========== */
+        
+        // 获取用户ID
         function getUserId() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const urlUid = urlParams.get('uid');
-            if (urlUid) {
-                localStorage.setItem('cet4_userId', urlUid);
-                return urlUid;
+            let uid = localStorage.getItem("cet4_uid");
+            if (!uid) {
+                const params = new URLSearchParams(window.location.search);
+                uid = params.get("uid") || "CET4D" + Date.now() + Math.random().toString(36).substr(2, 6);
+                localStorage.setItem("cet4_uid", uid);
             }
-            const storedId = localStorage.getItem('cet4_userId');
-            if (storedId) return storedId;
-            const tempId = `guest_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
-            localStorage.setItem('cet4_userId', tempId);
-            return tempId;
+            return uid;
         }
 
-        function setUserId(uid) {
-            localStorage.setItem('cet4_userId', uid);
-        }
-
-        // ========== Toast提示 ==========
+        // 显示Toast
         function showToast(message) {
-            const toast = document.getElementById('toast');
+            const toast = document.getElementById("toast");
             toast.textContent = message;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 2000);
+            toast.classList.add("show");
+            setTimeout(() => toast.classList.remove("show"), 3000);
         }
 
-        // ========== 诊断测试流程 ==========
-        function startQuiz() {
-            currentQuestion = 0;
-            answers = [];
-            scores = { '细节定位': 0, '推理判断': 0, '同义替换': 0, '主旨归纳': 0, '态度判断': 0 };
-            document.getElementById('quizOverlay').classList.add('active');
-            renderQuestion();
-        }
-
-        function closeQuiz() {
-            if (confirm('确定要退出测试吗？进度将不会保存')) {
-                document.getElementById('quizOverlay').classList.remove('active');
-            }
-        }
-
-        function renderQuestion() {
-            const q = QUIZ_QUESTIONS[currentQuestion];
-            document.getElementById('quizProgressText').textContent = `第 ${currentQuestion + 1}/15 题`;
-            document.getElementById('quizProgressFill').style.width = `${((currentQuestion + 1) / 15) * 100}%`;
-            document.getElementById('quizDimension').textContent = q.dimension;
-            document.getElementById('quizQuestion').textContent = q.question;
-
-            const optionsContainer = document.getElementById('quizOptions');
-            optionsContainer.innerHTML = q.options.map((opt, idx) => `
-                <div class="quiz-option" onclick="selectOption(${idx})" data-index="${idx}">
-                    <div class="quiz-option-letter">${opt.letter}</div>
-                    <div class="quiz-option-text">${opt.text}</div>
-                </div>
-            `).join('');
-
-            document.getElementById('quizNextBtn').classList.remove('active');
-        }
-
-        function selectOption(idx) {
-            const options = document.querySelectorAll('.quiz-option');
-            options.forEach((opt, i) => {
-                opt.classList.toggle('selected', i === idx);
-            });
-            document.getElementById('quizNextBtn').classList.add('active');
-
-            // 保存答案
-            answers[currentQuestion] = idx;
-            const q = QUIZ_QUESTIONS[currentQuestion];
-            if (idx === q.correct) {
-                scores[q.dimension] += 33.33; // 每题满分33.33
-            }
-        }
-
-        function nextQuestion() {
-            if (answers[currentQuestion] === undefined) {
-                showToast('请选择一个答案');
-                return;
-            }
-
-            currentQuestion++;
-            if (currentQuestion >= 15) {
-                calculateResult();
-            } else {
-                renderQuestion();
-            }
-        }
-
-        function calculateResult() {
-            document.getElementById('quizOverlay').classList.remove('active');
-
-            // 规范化分数到0-100
-            const normalizedScores = {};
-            for (const dim in scores) {
-                normalizedScores[dim] = Math.min(100, Math.round(scores[dim]));
-            }
-
-            // 匹配人格
-            const personality = matchPersonality(normalizedScores);
-            userResult = {
-                personality: personality,
-                scores: normalizedScores,
-                estimatedScore: calculateEstimatedScore(normalizedScores)
-            };
-
-            // 保存到localStorage
-            localStorage.setItem('cet4_quiz_result', JSON.stringify(userResult));
-
-            // 生成免费用户ID
-            const freeUid = `CET4D${Date.now()}${Math.random().toString(36).substr(2, 6).toUpperCase()}`;
-            if (!localStorage.getItem('cet4_userId')?.startsWith('CET4')) {
-                setUserId(freeUid);
-            }
-
-            // 显示结果
-            showResult(userResult);
-        }
-
-        function matchPersonality(scores) {
-            const dims = DIMENSIONS.map(d => ({ name: d, score: scores[d] }));
-            const maxScore = Math.max(...dims.map(d => d.score));
-            const minScore = Math.min(...dims.map(d => d.score));
-            const avgScore = dims.reduce((a, b) => a + b.score, 0) / 5;
-            const maxDim = dims.reduce((a, b) => a.score >= b.score ? a : b);
-            const minDim = dims.reduce((a, b) => a.score <= b.score ? a : b);
-
-            const reasonDim = dims.find(d => d.name === '推理判断');
-            const vocabDim = dims.find(d => d.name === '同义替换');
-            const detailDim = dims.find(d => d.name === '细节定位');
-            const attitudeDim = dims.find(d => d.name === '态度判断');
-            const mainDim = dims.find(d => d.name === '主旨归纳');
-
-            // 全对卷王：均分>=60且最低维度>=33
-            if (avgScore >= 60 && minScore >= 33) {
-                return '全对卷王';
-            }
-
-            // 换词狂魔：同义替换最高且>=67
-            if (vocabDim && vocabDim.score >= 67 && vocabDim.score === maxScore) {
-                return '换词狂魔';
-            }
-
-            // 脑补大师：推理判断最高但<=33，说明推理虽是相对强项但实际很弱（容易脑补）
-            if (reasonDim && reasonDim.score >= 33 && reasonDim.score <= 67 && reasonDim.score === maxScore && maxScore < 100) {
-                return '脑补大师';
-            }
-
-            // 审题跳读型：细节定位最低且<=33
-            if (detailDim && detailDim.score <= 33 && detailDim.score === minScore) {
-                return '审题跳读型';
-            }
-
-            // 词汇薄弱型：同义替换+态度判断都低
-            if (vocabDim && attitudeDim && vocabDim.score <= 33 && attitudeDim.score <= 33) {
-                return '词汇薄弱型';
-            }
-
-            // 脆皮大学生：态度判断最高但推理低
-            if (attitudeDim && attitudeDim.score >= 67 && attitudeDim.score === maxScore) {
-                if (reasonDim && reasonDim.score < 50) {
-                    return '脆皮大学生';
-                }
-            }
-
-            // 单声道战神：态度判断最低且<=0
-            if (attitudeDim && attitudeDim.score <= 0) {
-                return '单声道战神';
-            }
-
-            // 吗喽型选手：没有明显特征，分数分散
-            return '吗喽型选手';
-        }
-
-        function calculateEstimatedScore(scores) {
-            // 基于5维分数估算四级成绩
-            // 四级各题型分值比例：听力35%，阅读35%，翻译15%，写作15%
-            // 这里简化为综合评估
-            const total = Object.values(scores).reduce((a, b) => a + b, 0);
-            const avg = total / 5;
-
-            // 映射到710满分，425过线
-            // 假设avg=100对应550分，avg=0对应280分
-            const estimated = Math.round(280 + (avg / 100) * 270);
-            return Math.max(280, Math.min(550, estimated));
-        }
-
-        function showResult(result) {
-            const p = PERSONALITIES[result.personality];
-            document.getElementById('resultEmoji').textContent = p.emoji;
-            document.getElementById('resultTitle').textContent = result.personality;
-            document.getElementById('resultSlogan').textContent = p.slogan;
-            document.getElementById('resultScore').textContent = result.estimatedScore;
-            document.getElementById('resultHeader').style.setProperty('--result-bg', p.color + '22');
-
-            // 根据人格生成个性化升级引导
-            const upgradeText = generateUpgradeText(result);
-            document.getElementById('resultUpgradeText').textContent = upgradeText;
-
-            // 渲染雷达图
-            renderRadarChart(result.scores);
-
-            // 渲染维度条
-            renderDimensionBars(result.scores);
-
-            document.getElementById('resultOverlay').classList.add('active');
-        }
-
-        function generateUpgradeText(result) {
-            const dims = DIMENSIONS.map(d => ({ name: d, score: result.scores[d] }));
-            const lowest = dims.sort((a, b) => a.score - b.score)[0];
-            const secondLowest = dims.sort((a, b) => a.score - b.score)[1];
-
-            const tips = {
-                '细节定位': '细节定位',
-                '推理判断': '推理判断',
-                '同义替换': '同义替换',
-                '主旨归纳': '主旨归纳',
-                '态度判断': '态度判断'
-            };
-
-            return `你的${tips[lowest.name]}只有${lowest.score}%——想知道具体哪里弱、怎么补？`;
-        }
-
-        function renderRadarChart(scores) {
-            const canvas = document.getElementById('radarCanvas');
-            const ctx = canvas.getContext('2d');
+        // 绘制雷达图
+        function drawRadar(canvasId, scores, color) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext("2d");
             const centerX = canvas.width / 2;
             const centerY = canvas.height / 2;
-            const radius = 100;
+            const radius = 70;
+            const sides = 5;
+            const angleStep = (Math.PI * 2) / sides;
+            const startAngle = -Math.PI / 2;
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // 绘制背景五边形
-            ctx.strokeStyle = 'rgba(91, 91, 255, 0.1)';
-            ctx.lineWidth = 1;
-            for (let i = 1; i <= 5; i++) {
-                const r = radius * (i / 5);
+            // 绘制背景同心多边形
+            for (let level = 1; level <= 5; level++) {
+                const r = radius * (level / 5);
                 ctx.beginPath();
-                for (let j = 0; j < 5; j++) {
-                    const angle = (j * 72 - 90) * Math.PI / 180;
+                for (let i = 0; i <= sides; i++) {
+                    const angle = startAngle + i * angleStep;
                     const x = centerX + r * Math.cos(angle);
                     const y = centerY + r * Math.sin(angle);
-                    if (j === 0) ctx.moveTo(x, y);
+                    if (i === 0) ctx.moveTo(x, y);
                     else ctx.lineTo(x, y);
                 }
                 ctx.closePath();
-                ctx.stroke();
-            }
-
-            // 绘制轴线
-            ctx.strokeStyle = 'rgba(91, 91, 255, 0.2)';
-            for (let i = 0; i < 5; i++) {
-                const angle = (i * 72 - 90) * Math.PI / 180;
-                ctx.beginPath();
-                ctx.moveTo(centerX, centerY);
-                ctx.lineTo(centerX + radius * Math.cos(angle), centerY + radius * Math.sin(angle));
+                ctx.strokeStyle = "rgba(0, 0, 0, 0.06)";
+                ctx.lineWidth = 1;
                 ctx.stroke();
             }
 
             // 绘制数据区域
-            ctx.fillStyle = 'rgba(91, 91, 255, 0.3)';
-            ctx.strokeStyle = '#5b5bff';
-            ctx.lineWidth = 2;
             ctx.beginPath();
-            for (let i = 0; i < 5; i++) {
-                const dimName = DIMENSIONS[i];
-                const value = scores[dimName] / 100;
-                const angle = (i * 72 - 90) * Math.PI / 180;
-                const x = centerX + radius * value * Math.cos(angle);
-                const y = centerY + radius * value * Math.sin(angle);
+            for (let i = 0; i < sides; i++) {
+                const score = scores[i] / 100;
+                const angle = startAngle + i * angleStep;
+                const x = centerX + radius * score * Math.cos(angle);
+                const y = centerY + radius * score * Math.sin(angle);
                 if (i === 0) ctx.moveTo(x, y);
                 else ctx.lineTo(x, y);
             }
             ctx.closePath();
+            ctx.fillStyle = color.replace(")", ", 0.2)").replace("rgb", "rgba");
             ctx.fill();
+
+            // 绘制数据边框
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2;
             ctx.stroke();
 
-            // 绘制数据点
-            ctx.fillStyle = '#5b5bff';
-            for (let i = 0; i < 5; i++) {
-                const dimName = DIMENSIONS[i];
-                const value = scores[dimName] / 100;
-                const angle = (i * 72 - 90) * Math.PI / 180;
-                const x = centerX + radius * value * Math.cos(angle);
-                const y = centerY + radius * value * Math.sin(angle);
+            // 绘制顶点圆点
+            for (let i = 0; i < sides; i++) {
+                const score = scores[i] / 100;
+                const angle = startAngle + i * angleStep;
+                const x = centerX + radius * score * Math.cos(angle);
+                const y = centerY + radius * score * Math.sin(angle);
                 ctx.beginPath();
                 ctx.arc(x, y, 4, 0, Math.PI * 2);
+                ctx.fillStyle = color;
                 ctx.fill();
             }
 
             // 绘制标签
-            ctx.fillStyle = '#4a4a5e';
-            ctx.font = '11px Inter, sans-serif';
-            ctx.textAlign = 'center';
-            const labels = ['细节定位', '推理判断', '同义替换', '主旨归纳', '态度判断'];
-            for (let i = 0; i < 5; i++) {
-                const angle = (i * 72 - 90) * Math.PI / 180;
-                const x = centerX + (radius + 20) * Math.cos(angle);
-                const y = centerY + (radius + 20) * Math.sin(angle);
-                ctx.fillText(labels[i], x, y + 4);
+            ctx.font = "12px Inter, sans-serif";
+            ctx.fillStyle = "#64748B";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            for (let i = 0; i < sides; i++) {
+                const angle = startAngle + i * angleStep;
+                const labelRadius = radius + 24;
+                const x = centerX + labelRadius * Math.cos(angle);
+                const y = centerY + labelRadius * Math.sin(angle);
+                ctx.fillText(dimensionNames[i], x, y);
             }
         }
 
-        function renderDimensionBars(scores) {
-            const container = document.getElementById('resultDimensions');
-            container.innerHTML = DIMENSIONS.map(dim => `
-                <div class="result-dim-item">
-                    <div class="result-dim-label">${dim.slice(0, 2)}</div>
-                    <div class="result-dim-bar">
-                        <div class="result-dim-fill" style="width: ${scores[dim]}%"></div>
-                    </div>
-                    <div class="result-dim-value">${scores[dim]}%</div>
-                </div>
-            `).join('');
-        }
+        // 绘制人格卡（Canvas）
+        function drawPersonalityCard(p) {
+            const canvas = document.getElementById("cardCanvas");
+            const ctx = canvas.getContext("2d");
+            const w = 750;
+            const h = 1334;
 
-        // ========== 人格卡保存与分享 ==========
-        async function saveAndShare() {
-            if (!userResult) {
-                showToast('请先完成测试');
-                return;
-            }
-
-            const p = PERSONALITIES[userResult.personality];
-            const userId = getUserId();
-            const ref = getRefForShare();
-            const shareUrl = `${window.location.origin}?ref=${ref}`;
-            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(shareUrl)}`;
-
-            // 创建人格卡Canvas
-            const canvas = document.getElementById('cardCanvas');
-            const ctx = canvas.getContext('2d');
-
-            // 渐变背景
-            const gradient = ctx.createLinearGradient(0, 0, 750, 1334);
-            gradient.addColorStop(0, '#f8f9fc');
-            gradient.addColorStop(0.3, p.color + '22');
-            gradient.addColorStop(1, '#f8f9fc');
+            // 背景渐变
+            const gradient = ctx.createLinearGradient(0, 0, 0, h);
+            gradient.addColorStop(0, p.color);
+            gradient.addColorStop(1, p.color + "80");
             ctx.fillStyle = gradient;
-            ctx.fillRect(0, 0, 750, 1334);
+            ctx.fillRect(0, 0, w, h);
 
-            // 顶部色带
-            const topGradient = ctx.createLinearGradient(0, 0, 750, 200);
-            topGradient.addColorStop(0, p.color);
-            topGradient.addColorStop(1, p.color + '88');
-            ctx.fillStyle = topGradient;
-            ctx.fillRect(0, 0, 750, 200);
-
-            // 品牌标识
-            ctx.fillStyle = '#fff';
-            ctx.font = 'bold 20px Inter, sans-serif';
-            ctx.fillText('四级备考搭子', 30, 60);
-
-            ctx.fillStyle = 'rgba(255,255,255,0.7)';
-            ctx.font = '14px Inter, sans-serif';
-            ctx.fillText('AI Private Tutor', 30, 85);
-
-            // 分割线
-            ctx.fillStyle = 'rgba(255,255,255,0.3)';
-            ctx.fillRect(30, 110, 100, 2);
-
-            // emoji
-            ctx.font = '100px sans-serif';
-            ctx.textAlign = 'center';
-            ctx.fillText(p.emoji, 375, 420);
+            // 顶部emoji
+            ctx.font = "120px sans-serif";
+            ctx.textAlign = "center";
+            ctx.fillText(p.emoji, w / 2, 200);
 
             // 人格名称
-            ctx.fillStyle = '#1a1a2e';
-            ctx.font = 'bold 48px Inter, sans-serif';
-            ctx.fillText(userResult.personality, 375, 520);
+            ctx.font = "bold 48px Inter, sans-serif";
+            ctx.fillStyle = "#FFFFFF";
+            ctx.fillText(p.type, w / 2, 350);
 
-            // 神评
-            ctx.fillStyle = '#6b7080';
-            ctx.font = '24px Inter, sans-serif';
-            ctx.fillText(p.slogan, 375, 590);
+            // slogan
+            ctx.font = "24px Inter, sans-serif";
+            ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+            ctx.fillText(p.slogan, w / 2, 410);
 
-            // 雷达图（简化版）
-            const radarCenterX = 375;
-            const radarCenterY = 820;
+            // 迷你雷达图区域
+            const radarCenterX = w / 2;
+            const radarCenterY = 650;
             const radarRadius = 120;
+            const sides = 5;
+            const angleStep = (Math.PI * 2) / sides;
+            const startAngle = -Math.PI / 2;
 
-            // 背景圆
-            ctx.strokeStyle = 'rgba(91,91,255,0.1)';
-            ctx.lineWidth = 1;
-            for (let i = 1; i <= 4; i++) {
+            // 绘制雷达图背景
+            for (let level = 1; level <= 5; level++) {
+                const r = radarRadius * (level / 5);
                 ctx.beginPath();
-                ctx.arc(radarCenterX, radarCenterY, radarRadius * (i / 4), 0, Math.PI * 2);
+                for (let i = 0; i <= sides; i++) {
+                    const angle = startAngle + i * angleStep;
+                    const x = radarCenterX + r * Math.cos(angle);
+                    const y = radarCenterY + r * Math.sin(angle);
+                    if (i === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.closePath();
+                ctx.strokeStyle = "rgba(255, 255, 255, 0.2)";
+                ctx.lineWidth = 1;
                 ctx.stroke();
             }
 
-            // 数据区域
-            ctx.fillStyle = p.color + '44';
-            ctx.strokeStyle = p.color;
-            ctx.lineWidth = 2;
+            // 绘制数据
             ctx.beginPath();
-            for (let i = 0; i < 5; i++) {
-                const dimName = DIMENSIONS[i];
-                const value = userResult.scores[dimName] / 100;
-                const angle = (i * 72 - 90) * Math.PI / 180;
-                const x = radarCenterX + radarRadius * value * Math.cos(angle);
-                const y = radarCenterY + radarRadius * value * Math.sin(angle);
+            for (let i = 0; i < sides; i++) {
+                const score = p.scores[i] / 100;
+                const angle = startAngle + i * angleStep;
+                const x = radarCenterX + radarRadius * score * Math.cos(angle);
+                const y = radarCenterY + radarRadius * score * Math.sin(angle);
                 if (i === 0) ctx.moveTo(x, y);
                 else ctx.lineTo(x, y);
             }
             ctx.closePath();
+            ctx.fillStyle = "rgba(255, 255, 255, 0.3)";
             ctx.fill();
+            ctx.strokeStyle = "#FFFFFF";
+            ctx.lineWidth = 2;
             ctx.stroke();
 
             // 维度标签
-            ctx.fillStyle = '#4a4a5e';
-            ctx.font = '14px Inter, sans-serif';
-            const labels = ['细节', '推理', '同义', '主旨', '态度'];
-            for (let i = 0; i < 5; i++) {
-                const angle = (i * 72 - 90) * Math.PI / 180;
-                const x = radarCenterX + (radarRadius + 30) * Math.cos(angle);
-                const y = radarCenterY + (radarRadius + 30) * Math.sin(angle);
-                ctx.textAlign = 'center';
-                ctx.fillText(labels[i], x, y + 5);
+            ctx.font = "14px Inter, sans-serif";
+            ctx.fillStyle = "rgba(255, 255, 255, 0.7)";
+            for (let i = 0; i < sides; i++) {
+                const angle = startAngle + i * angleStep;
+                const labelRadius = radarRadius + 30;
+                const x = radarCenterX + labelRadius * Math.cos(angle);
+                const y = radarCenterY + labelRadius * Math.sin(angle);
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.fillText(dimensionNames[i], x, y);
+                ctx.fillText(p.scores[i], x, y + 18);
             }
 
-            // 分数
-            ctx.fillStyle = p.color;
-            ctx.font = 'bold 72px Inter, sans-serif';
-            ctx.textAlign = 'center';
-            ctx.fillText(userResult.estimatedScore, 375, 1100);
+            // 底部文字
+            ctx.font = "16px Inter, sans-serif";
+            ctx.fillStyle = "rgba(255, 255, 255, 0.6)";
+            ctx.fillText("四级备考搭子 · 测测你的备考人格", w / 2, h - 60);
 
-            ctx.fillStyle = '#8b8fa0';
-            ctx.font = '18px Inter, sans-serif';
-            ctx.fillText('预估四级成绩 · 满分710 · 425过线', 375, 1140);
-
-            // 二维码
-            const qrImage = new Image();
-            qrImage.crossOrigin = 'anonymous';
-            qrImage.src = qrUrl;
-            await new Promise(resolve => { qrImage.onload = resolve; });
-            ctx.drawImage(qrImage, 540, 1150, 120, 120);
-
-            // 底部提示
-            ctx.fillStyle = '#b0b4c0';
-            ctx.font = '14px Inter, sans-serif';
-            ctx.textAlign = 'left';
-            ctx.fillText('扫码免费测你是哪种备考人格', 80, 1230);
-
-            // 品牌
-            ctx.fillStyle = '#8b8fa0';
-            ctx.font = '16px Inter, sans-serif';
-            ctx.textAlign = 'center';
-            ctx.fillText('四级备考搭子 · 金牌陪练', 375, 1310);
-
-            // 转换为图片并下载
-            const link = document.createElement('a');
-            link.download = `四级备考人格_${userResult.personality}.png`;
-            link.href = canvas.toDataURL('image/png');
-            link.click();
-
-            showToast('人格卡已保存');
+            return canvas;
         }
 
-        // ========== 开始聊天 ==========
-        function startChat() {
-            document.getElementById('resultOverlay').classList.remove('active');
-            initCozeChat(BOT_ID_DIAGNOSIS);
+        /* ========== 页面初始化 ========== */
+        
+        function initPage() {
+            renderPersonalities();
+            renderPricing();
+            renderFAQs();
+            setupScrollListener();
+            initCozeChat();
+            
+            // 3秒后强制隐藏loading
+            setTimeout(() => {
+                document.getElementById("loadingOverlay").classList.add("hidden");
+            }, 3000);
         }
 
-        // ========== 报告提示 ==========
-        function showReportHint() {
-            if (localStorage.getItem('cet4_quiz_result')) {
-                openPayModal('report');
-            } else {
-                showToast('请先完成免费诊断测试');
-                startQuiz();
-            }
-        }
-
-        // ========== 详细报告 ==========
-        function showDetailReport() {
-            if (!userResult) return;
-
-            const container = document.getElementById('detailAnalysis');
-            container.innerHTML = DIMENSIONS.map(dim => {
-                const score = userResult.scores[dim];
-                const level = score >= 70 ? '优秀' : score >= 50 ? '中等' : '需加强';
-                const advice = getDimensionAdvice(dim, score);
-                return `
-                    <div class="detail-dim-item">
-                        <div class="detail-dim-name">${dim}：${score}%（${level}）</div>
-                        <div class="detail-dim-desc">${advice}</div>
-                    </div>
-                `;
-            }).join('');
-
-            // 短板定位
-            const sortedDims = DIMENSIONS.map(d => ({ name: d, score: userResult.scores[d] })).sort((a, b) => a.score - b.score);
-            const weaknesses = sortedDims.slice(0, 2);
-            document.getElementById('detailWeaknesses').innerHTML = weaknesses.map(w => `
-                <div class="detail-weak-item">
-                    <span class="detail-weak-icon">⚠️</span>
-                    <span>${w.name}较弱（${w.score}%），需要重点训练</span>
+        // 渲染人格预览
+        function renderPersonalities() {
+            const grid = document.getElementById("personalityGrid");
+            grid.innerHTML = personalities.map((p, i) => `
+                <div class="personality-card animate-in delay-${i % 5 + 1}" style="--accent-color: ${p.color}">
+                    <div class="personality-emoji">${p.emoji}</div>
+                    <div class="personality-name">${p.type}</div>
+                    <div class="personality-slogan">${p.slogan}</div>
                 </div>
-            `).join('');
-
-            // 备考方向
-            document.getElementById('detailPlan').innerHTML = generateStudyPlan(userResult);
-
-            document.getElementById('detailOverlay').classList.add('active');
+            `).join("");
         }
 
-        function getDimensionAdvice(dim, score) {
-            const advice = {
-                '细节定位': score < 50 ? '建议练习"关键词定位法"，先看题干再回文找对应句子，注意同义替换。' : '细节定位能力不错，继续保持精度。',
-                '推理判断': score < 50 ? '多做推理题，学会"上下文推断"，注意but/however等转折词后的信息。' : '推理能力良好，注意排除干扰选项。',
-                '同义替换': score < 50 ? '词汇量是硬伤，建议每天背30个高频词，配合语境记忆。' : '词汇基础扎实，可以挑战更高难度词汇。',
-                '主旨归纳': score < 50 ? '练习"首尾句法"，重点关注段落开头和结尾，学会概括而非细节。' : '主旨把握准确，注意不要过度推断。',
-                '态度判断': score < 50 ? '听力需要多练，注意说话者的语气和态度词，这是得分的突破口。' : '态度判断能力强，可以尝试更高难度听力材料。'
-            };
-            return advice[dim] || '';
+        // 渲染定价卡片
+        function renderPricing() {
+            const grid = document.getElementById("pricingGrid");
+            grid.innerHTML = plans.map((plan, i) => `
+                <div class="plan-card animate-in delay-${i % 4 + 1} ${plan.badge === "推荐" ? "featured" : ""}">
+                    ${plan.badge ? `<span class="plan-badge">${plan.badge}</span>` : ""}
+                    <div class="plan-name">${plan.name}</div>
+                    <div class="plan-price ${plan.priceClass}">${plan.price.replace("¥0", "免费")}</div>
+                    <ul class="plan-features">
+                        ${plan.features.map(f => `<li>${f}</li>`).join("")}
+                    </ul>
+                    <button class="btn-plan ${plan.btnClass}" onclick="handlePlanClick('${plan.name}')">${plan.btnText}</button>
+                </div>
+            `).join("");
         }
 
-        function generateStudyPlan(result) {
-            const lowest = DIMENSIONS.map(d => ({ name: d, score: result.scores[d] })).sort((a, b) => a.score - b.score)[0];
-            const plans = {
-                '细节定位': '接下来2周，每天做3篇仔细阅读，练习"题干→定位→同义替换"三步法。重点训练转折词、比较级后的信息定位。',
-                '推理判断': '每天做5道推理判断题，总结常见干扰项特征（无中生有、过度推断、偷换概念）。注意but/however/although后的内容。',
-                '同义替换': '每天背30个高频词根词缀，用Anki或Quizlet记忆。配合做真题，把不认识的同义替换词记录下来。',
-                '主旨归纳': '每天读1篇英语短文练习概括，尝试用一句话总结每段大意。重点训练文章标题和最佳主旨题。',
-                '态度判断': '每天精听1篇短文，注意语气词和态度词（unfortunately/fortunately/unbelievable等）。做听力时先预判态度方向。'
-            };
-            return plans[lowest.name] || '建议每天保持2小时学习时间，重点突破薄弱环节。';
+        // 渲染FAQ
+        function renderFAQs() {
+            const list = document.getElementById("faqList");
+            list.innerHTML = faqs.map((faq, i) => `
+                <div class="faq-item animate-in delay-${i % 3 + 1}">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>${faq.question}</span>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>${faq.answer}</p>
+                    </div>
+                </div>
+            `).join("");
         }
 
-        function closeDetail() {
-            document.getElementById('detailOverlay').classList.remove('active');
-        }
-
-        // ========== Coze Chat 初始化 ==========
-        function initCozeChat(botId) {
-            const userId = getUserId();
-            currentBotId = botId;
-
-            if (cozeChatInstance) {
-                cozeChatInstance.destroy();
-                cozeChatInstance = null;
-            }
-
-            try {
-                cozeChatInstance = new CozeWebSDK.WebChatClient({
-                    config: {
-                        bot_id: botId,
-                    },
-                    componentProps: {
-                        title: '四级备考搭子·金牌陪练',
-                    },
-                    auth: {
-                        type: 'token',
-                        token: 'pat_hAOthvv429aDEqWspP4lITuL3DAU7VZJiGlVrnmA1zuoZ4IWW2kmxYzXUbGvZTYb',
-                        onRefreshToken: function () {
-                            return 'pat_hAOthvv429aDEqWspP4lITuL3DAU7VZJiGlVrnmA1zuoZ4IWW2kmxYzXUbGvZTYb';
-                        },
-                    },
-                    userInfo: {
-                        id: userId,
-                    },
-                    ui: {
-                        isFullScreen: true,
-                        isShowTitle: false,
-                    },
-                });
-
-                setTimeout(() => {
-                    hideLoading();
-                }, 3000);
-
-            } catch (error) {
-                showError('加载失败，请刷新页面');
-            }
-        }
-
-        // ========== 加载状态 ==========
-        function hideLoading() {
-            const overlay = document.getElementById('loadingOverlay');
-            if (overlay) overlay.classList.add('hidden');
-        }
-
-        function showError(message) {
-            const overlay = document.getElementById('loadingOverlay');
-            if (overlay) {
-                overlay.innerHTML = '<div style="text-align:center;color:#8b8fa0;padding:20px;"><p>' + message + '</p></div>';
-            }
-        }
-
-        // ========== 支付相关 ==========
-        let currentOrderId = null;
-        let checkOrderTimer = null;
-        let pendingPlan = null;
-
-        function openPayModal(plan) {
-            const config = PLAN_CONFIG[plan];
-            if (!config) return;
-
-            // 如果是report但没有测试结果
-            if (plan === 'report' && !localStorage.getItem('cet4_quiz_result')) {
-                showToast('请先完成免费诊断');
-                return;
-            }
-
-            pendingPlan = plan;
-            document.getElementById('payPlanName').textContent = config.name;
-            document.getElementById('payPrice').textContent = config.price;
-            document.getElementById('payStatus').className = 'pay-modal-status waiting';
-            document.getElementById('payStatus').innerHTML = '<span class="pay-loading"></span>正在创建订单...';
-            document.getElementById('payQrCode').src = '';
-            document.getElementById('payModal').classList.add('active');
-
-            createOrder(plan);
-        }
-
-        function closePayModal() {
-            document.getElementById('payModal').classList.remove('active');
-            if (checkOrderTimer) {
-                clearInterval(checkOrderTimer);
-                checkOrderTimer = null;
-            }
-        }
-
-        async function createOrder(plan) {
-            try {
-                const ref = getRef();
-                const response = await fetch('/api/create-order', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ plan, ref })
-                });
-
-                const data = await response.json();
-
-                if (data.error) {
-                    document.getElementById('payStatus').innerHTML = '创建订单失败';
-                    return;
+        // 滚动监听
+        function setupScrollListener() {
+            window.addEventListener("scroll", () => {
+                const nav = document.getElementById("nav");
+                if (window.scrollY > 10) {
+                    nav.classList.add("scrolled");
+                } else {
+                    nav.classList.remove("scrolled");
                 }
 
-                currentOrderId = data.order_id;
-                document.getElementById('payQrCode').src = data.qr_code_url;
-                document.getElementById('payStatus').innerHTML = '<span class="pay-loading"></span>等待支付中...';
-
-                // 启动轮询
-                startOrderCheck(data.uid, data.plan || plan);
-
-            } catch (error) {
-                console.error('创建订单失败:', error);
-                document.getElementById('payStatus').innerHTML = '网络错误，请重试';
-            }
-        }
-
-        function startOrderCheck(uid, plan) {
-            if (checkOrderTimer) {
-                clearInterval(checkOrderTimer);
-            }
-
-            checkOrderTimer = setInterval(async () => {
-                if (!currentOrderId) return;
-
-                try {
-                    const response = await fetch(`/api/check-order?order_id=${currentOrderId}`);
-                    const data = await response.json();
-
-                    if (data.paid) {
-                        clearInterval(checkOrderTimer);
-                        checkOrderTimer = null;
-
-                        document.getElementById('payStatus').className = 'pay-modal-status success';
-                        document.getElementById('payStatus').textContent = '✓ 支付成功！';
-
-                        setUserId(uid);
-                        localStorage.setItem('cet4_paid_plan', plan);
-                        localStorage.setItem('cet4_paid_time', Date.now());
-
-                        setTimeout(() => {
-                            closePayModal();
-
-                            // 如果是report套餐，显示详细报告
-                            if (plan === 'report') {
-                                showDetailReport();
-                            } else {
-                                // 其他套餐重新初始化聊天
-                                const planConfig = PLAN_CONFIG[plan];
-                                const botId = planConfig ? planConfig.botId : currentBotId || BOT_ID_SPRINT;
-                                initCozeChat(botId);
-                            }
-                        }, 1500);
-
+                // 触发入场动画
+                document.querySelectorAll(".animate-in").forEach(el => {
+                    const rect = el.getBoundingClientRect();
+                    if (rect.top < window.innerHeight * 0.85) {
+                        el.style.opacity = "1";
                     }
-                } catch (error) {
-                    console.error('查询订单失败:', error);
+                });
+            });
+        }
+
+        // 切换FAQ
+        function toggleFAQ(el) {
+            const item = el.parentElement;
+            item.classList.toggle("active");
+        }
+
+        // 处理定价按钮点击
+        function handlePlanClick(planName) {
+            if (planName === "免费诊断") {
+                startDiagnosis();
+            } else if (planName === "详细报告") {
+                showToast("¥1解锁详细报告功能开发中");
+            } else {
+                showToast(`${planName}购买功能开发中`);
+            }
+        }
+
+        /* ========== Coze Chat SDK ========== */
+        
+        function initCozeChat() {
+            try {
+                chatClient = new CozeWebSDK.WebChatClient({
+                    bot_id: "7636289658620215331",
+                    auth: {
+                        type: "token",
+                        token: "pat_hAOthvv429aDEqWspP4lITuL3DAU7VZJiGlVrnmA1zuoZ4IWW2kmxYzXUbGvZTYb",
+                        onRefreshToken: async () => "pat_hAOthvv429aDEqWspP4lITuL3DAU7VZJiGlVrnmA1zuoZ4IWW2kmxYzXUbGvZTYb"
+                    },
+                    userInfo: { id: getUserId() },
+                    componentProps: { title: "四级备考诊断师" },
+                    ui: {
+                        isFullScreen: false,
+                        isShowTitle: true
+                    }
+                });
+
+                chatClient.on("message", handleBotMessage);
+            } catch (e) {
+                console.error("Coze Chat SDK init error:", e);
+            }
+        }
+
+        function startDiagnosis() {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+            
+            const container = document.getElementById("chatContainer");
+            container.classList.add("active");
+
+            // 等待SDK渲染
+            setTimeout(() => {
+                const chatFrame = container.querySelector("iframe");
+                if (chatFrame) {
+                    chatFrame.style.width = "100%";
+                    chatFrame.style.height = "600px";
+                    chatFrame.style.borderRadius = "16px";
+                    chatFrame.style.border = "none";
+                    chatFrame.style.boxShadow = "0 4px 24px rgba(0, 0, 0, 0.1)";
                 }
+            }, 1000);
+
+            // 监听消息
+            startMessageObserver();
+        }
+
+        function startMessageObserver() {
+            if (messageObserver) messageObserver.disconnect();
+
+            messageObserver = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    mutation.addedNodes.forEach((node) => {
+                        if (node.nodeType === 1) {
+                            const text = node.textContent || node.innerText || "";
+                            if (text.includes("[RESULT:")) {
+                                parseAndShowResult(text);
+                            }
+                            // 也检查子元素
+                            const allText = node.querySelector ? node.querySelector("*") : null;
+                            if (allText) {
+                                const inner = allText.textContent || "";
+                                if (inner.includes("[RESULT:")) {
+                                    parseAndShowResult(inner);
+                                }
+                            }
+                        }
+                    });
+                });
+            });
+
+            setTimeout(() => {
+                const chatArea = document.querySelector("#chatContainer") || document.body;
+                messageObserver.observe(chatArea, { childList: true, subtree: true });
             }, 2000);
         }
 
-        // 点击弹窗背景关闭
-        document.getElementById('payModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closePayModal();
+        function handleBotMessage(message) {
+            const content = message.content || "";
+            if (content.includes("[RESULT:")) {
+                parseAndShowResult(content);
             }
-        });
+        }
 
-        // ========== 页面初始化 ==========
-        document.addEventListener('DOMContentLoaded', () => {
-            // 处理ref参数
-            getRef();
+        function parseAndShowResult(text) {
+            // 解析RESULT格式: [RESULT:type=换词狂魔|同义替换=85|推理判断=55|细节定位=60|态度判断=50|主旨大意=58]
+            const match = text.match(/\[RESULT:type=([^|]+)\|同义替换=(\d+)\|推理判断=(\d+)\|细节定位=(\d+)\|态度判断=(\d+)\|主旨大意=(\d+)\]/);
+            
+            if (match) {
+                const type = match[1];
+                const scores = [
+                    parseInt(match[2]),
+                    parseInt(match[3]),
+                    parseInt(match[4]),
+                    parseInt(match[5]),
+                    parseInt(match[6])
+                ];
 
-            // 检查是否有已保存的测试结果
-            const savedResult = localStorage.getItem('cet4_quiz_result');
-            if (savedResult) {
-                userResult = JSON.parse(savedResult);
-            }
-
-            // 检查是否已付费用户
-            const paidPlan = localStorage.getItem('cet4_paid_plan');
-            const paidTime = localStorage.getItem('cet4_paid_time');
-            const currentId = getUserId();
-
-            let initBotId = BOT_ID_DIAGNOSIS;
-
-            if (paidPlan && paidTime && !currentId.startsWith('guest_')) {
-                const planConfig = PLAN_CONFIG[paidPlan];
-                if (planConfig) {
-                    initBotId = planConfig.botId;
+                const personality = personalities.find(p => p.type === type);
+                if (personality) {
+                    currentPersonality = personality;
+                    currentPersonality.scores = scores;
+                    showResult(personality);
                 }
             }
+        }
 
-            // 3秒后强制隐藏loading，不等SDK
-            setTimeout(hideLoading, 3000);
-
-            // 初始化Coze Chat（后台加载，不阻塞页面）
-            if (typeof CozeWebSDK !== 'undefined') {
-                initCozeChat(initBotId);
-            } else {
-                let retryCount = 0;
-                const checkSDK = setInterval(() => {
-                    retryCount++;
-                    if (typeof CozeWebSDK !== 'undefined') {
-                        clearInterval(checkSDK);
-                        initCozeChat(initBotId);
-                    } else if (retryCount > 30) {
-                        clearInterval(checkSDK);
-                        // SDK加载失败不影响页面使用
-                    }
-                }, 200);
+        function showResult(p) {
+            // 关闭Chat浮窗
+            document.getElementById("chatContainer").classList.remove("active");
+            if (messageObserver) {
+                messageObserver.disconnect();
+                messageObserver = null;
             }
-        });
+
+            // 更新结果页内容
+            document.getElementById("resultEmoji").textContent = p.emoji;
+            document.getElementById("resultName").textContent = p.type;
+            document.getElementById("resultName").style.color = p.color;
+            document.getElementById("resultSlogan").textContent = p.slogan;
+
+            // 显示结果页
+            const overlay = document.getElementById("resultOverlay");
+            overlay.classList.add("active");
+
+            // 绘制雷达图
+            setTimeout(() => {
+                drawRadar("radarCanvas", p.scores, p.color);
+            }, 100);
+
+            // 滚动到顶部
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+
+        function hideResult() {
+            document.getElementById("resultOverlay").classList.remove("active");
+        }
+
+        function savePersonalityCard() {
+            if (!currentPersonality) {
+                showToast("请先完成诊断");
+                return;
+            }
+
+            const canvas = drawPersonalityCard(currentPersonality);
+            
+            // 下载图片
+            const link = document.createElement("a");
+            link.download = `四级备考人格_${currentPersonality.type}.png`;
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+
+            showToast("人格卡已保存");
+        }
+
+        /* ========== 页面加载完成后初始化 ========== */
+        document.addEventListener("DOMContentLoaded", initPage);
     </script>
 </body>
 </html>
