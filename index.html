@@ -2184,6 +2184,193 @@
                 padding: 24px 20px;
             }
         }
+
+        /* ========== 使用流程区 ========== */
+        .how-it-works-section {
+            padding: 100px 40px;
+            background: var(--white);
+        }
+
+        .how-it-works-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .steps-grid {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            max-width: 900px;
+            margin: 48px auto 0;
+            position: relative;
+        }
+
+        .step-item {
+            text-align: center;
+            position: relative;
+            flex: 1;
+            max-width: 260px;
+        }
+
+        .step-number {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            font-size: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+
+        .step-connector {
+            position: absolute;
+            top: 24px;
+            left: calc(50% + 30px);
+            width: calc(100% - 60px);
+            height: 1px;
+            background: var(--border);
+        }
+
+        .step-item:last-child .step-connector {
+            display: none;
+        }
+
+        .step-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--slate);
+            margin-bottom: 8px;
+        }
+
+        .step-desc {
+            font-size: 14px;
+            color: var(--slate-light);
+            line-height: 1.6;
+        }
+
+        /* ========== 底部CTA区 ========== */
+        .final-cta-section {
+            padding: 120px 40px;
+            background: rgba(99, 95, 255, 0.03);
+            text-align: center;
+        }
+
+        .final-cta-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .final-cta-title {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--slate);
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+        }
+
+        .final-cta-days {
+            color: var(--primary);
+        }
+
+        .final-cta-subtitle {
+            font-size: 20px;
+            color: var(--slate-light);
+            margin-bottom: 40px;
+        }
+
+        .btn-lg {
+            padding: 16px 40px;
+            font-size: 16px;
+            border-radius: 12px;
+        }
+
+        .final-cta-hint {
+            margin-top: 16px;
+            font-size: 13px;
+            color: var(--slate-muted);
+        }
+
+        /* ========== Footer ========== */
+        .site-footer {
+            background: var(--slate);
+            color: rgba(255, 255, 255, 0.7);
+            padding: 64px 40px 32px;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-top {
+            display: flex;
+            justify-content: space-between;
+            gap: 64px;
+            padding-bottom: 40px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-brand {
+            max-width: 300px;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .footer-brand-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .footer-desc {
+            font-size: 14px;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .footer-links-group {
+            display: flex;
+            gap: 64px;
+        }
+
+        .footer-col-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 16px;
+        }
+
+        .footer-link {
+            display: block;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.5);
+            text-decoration: none;
+            margin-bottom: 10px;
+            transition: color 0.2s;
+        }
+
+        .footer-link:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            padding-top: 24px;
+            text-align: center;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.3);
+        }
     </style>
 </head>
 <body>
@@ -2248,6 +2435,7 @@
             </div>
             <div class="nav-links">
                 <a href="#features" class="nav-link">功能</a>
+                <a href="#how-it-works" class="nav-link">流程</a>
                 <a href="#personalities" class="nav-link">人格</a>
                 <!-- <a href="#testimonials" class="nav-link">评价</a> -->
                 <a href="#pricing" class="nav-link">定价</a>
@@ -2413,6 +2601,33 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 使用流程区 -->
+        <section class="how-it-works-section" id="how-it-works">
+            <div class="how-it-works-container">
+                <h2 class="section-title animate-in">3步开始你的备考之旅</h2>
+                <p class="section-subtitle animate-in delay-1">从诊断到提分，每一步都有AI陪着你</p>
+                <div class="steps-grid">
+                    <div class="step-item animate-in delay-2">
+                        <div class="step-number">1</div>
+                        <div class="step-connector"></div>
+                        <h3 class="step-title">AI对话诊断</h3>
+                        <p class="step-desc">3分钟聊天，精准识别你的备考短板</p>
+                    </div>
+                    <div class="step-item animate-in delay-3">
+                        <div class="step-number">2</div>
+                        <div class="step-connector"></div>
+                        <h3 class="step-title">获取专属方案</h3>
+                        <p class="step-desc">拿到你的备考人格卡和个性化提升方案</p>
+                    </div>
+                    <div class="step-item animate-in delay-4">
+                        <div class="step-number">3</div>
+                        <h3 class="step-title">AI陪练冲刺</h3>
+                        <p class="step-desc">每天按计划练习，AI批改答疑直到考前</p>
                     </div>
                 </div>
             </div>
@@ -2604,8 +2819,18 @@
             </div>
         </section>
 
+        <!-- 底部CTA区 -->
+        <section class="final-cta-section">
+            <div class="final-cta-container">
+                <h2 class="final-cta-title animate-in">距四级仅 <span id="finalCtaDays" class="final-cta-days">35</span> 天</h2>
+                <p class="final-cta-subtitle animate-in delay-1">现在开始，一切还来得及</p>
+                <button class="btn-primary btn-lg animate-in delay-2" onclick="openChat('diagnosis')">免费诊断，3分钟开始</button>
+                <p class="final-cta-hint animate-in delay-3">无需注册，直接对话AI</p>
+            </div>
+        </section>
+
         <!-- Footer -->
-        <footer class="footer">
+        <footer class="site-footer">
             © 2026 四级备考搭子 · 备考辅助工具，非官方考试机构
         </footer>
     </div>
@@ -2766,6 +2991,9 @@
             if (countdownText) {
                 countdownText.innerHTML = `CET-4 · <span class="countdown-num">${daysLeft}</span> 天`;
             }
+            // 同步更新底部CTA的天数
+            const finalCtaDays = document.getElementById('finalCtaDays');
+            if (finalCtaDays) finalCtaDays.textContent = daysLeft;
         }
         
         // 初始化倒计时
