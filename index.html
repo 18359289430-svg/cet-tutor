@@ -1383,184 +1383,346 @@
             line-height: 1.5;
         }
 
-        /* ========== 定价区 - Coze风格 ========== */
+        /* ========== 定价区 - Stripe/Vercel高级风格 ========== */
         .pricing-section {
-            padding: 80px 40px;
-            background-image: 
-                linear-gradient(var(--grid-line) 1px, transparent 1px),
-                linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
-            background-size: 24px 24px;
-            background-color: var(--bg);
+            padding: 100px 40px 120px;
+            background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pricing-section::before {
+            content: '';
+            position: absolute;
+            top: -200px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 800px;
+            height: 400px;
+            background: radial-gradient(ellipse at center, rgba(99, 91, 255, 0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .pricing-section .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .pricing-section .section-title {
+            font-size: 36px;
+            font-weight: 700;
+            color: #0a2540;
+            margin-bottom: 12px;
+        }
+
+        .pricing-subtitle {
+            font-size: 16px;
+            color: #64748b;
+            font-weight: 400;
         }
 
         .pricing-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-            max-width: 1100px;
+            gap: 24px;
+            max-width: 1200px;
             margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
 
-        @media (max-width: 900px) {
+        @media (max-width: 1100px) {
             .pricing-grid {
-                grid-template-columns: 1fr;
-                max-width: 400px;
+                grid-template-columns: repeat(2, 1fr);
+                max-width: 700px;
             }
         }
 
-        /* Coze风格定价卡 */
+        @media (max-width: 600px) {
+            .pricing-grid {
+                grid-template-columns: 1fr;
+                max-width: 420px;
+            }
+        }
+
+        /* 高级定价卡通用样式 */
         .plan-card {
-            background: var(--white);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 28px 24px;
+            background: #ffffff;
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            border-radius: 20px;
+            padding: 32px;
             position: relative;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
             display: flex;
             flex-direction: column;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.06);
         }
 
         .plan-card:hover {
-            transform: translateY(-2px);
+            transform: translateY(-4px);
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
         }
 
+        /* 入场动画 */
+        .plan-card.animate-in {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: pricingFadeIn 0.5s ease forwards;
+        }
+
+        .plan-card.animate-in.delay-1 { animation-delay: 0s; }
+        .plan-card.animate-in.delay-2 { animation-delay: 0.1s; }
+        .plan-card.animate-in.delay-3 { animation-delay: 0.2s; }
+        .plan-card.animate-in.delay-4 { animation-delay: 0.3s; }
+
+        @keyframes pricingFadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 免费版卡片 - 绿色调 */
+        .plan-card[data-plan="free"] {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.02) 0%, rgba(5, 150, 105, 0.02) 100%);
+        }
+
+        .plan-card[data-plan="free"] .plan-price {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .plan-card[data-plan="free"] .plan-features li::before {
+            color: #10B981;
+        }
+
+        /* ¥1 详细报告卡片 - Outline风格 */
+        .plan-card[data-plan="report"] .plan-price {
+            color: #0a2540;
+        }
+
+        .plan-card[data-plan="report"] .plan-features li::before {
+            color: #635BFF;
+        }
+
+        /* 推荐卡片 - 紫色渐变边框突出 */
         .plan-card.recommended {
-            border: 2px solid var(--primary);
-            border-left-width: 4px;
+            border: 2px solid transparent;
+            background: linear-gradient(#ffffff, #ffffff) padding-box,
+                        linear-gradient(135deg, #635BFF, #7C3AED) border-box;
+            background: linear-gradient(135deg, rgba(99, 91, 255, 0.02) 0%, rgba(124, 58, 237, 0.02) 100%), #ffffff;
+            box-shadow: 0 4px 16px rgba(99, 91, 255, 0.15);
+            transform: scale(1.02);
         }
 
-        .plan-card.current-plan {
-            background: linear-gradient(135deg, rgba(99, 91, 255, 0.04), rgba(124, 58, 237, 0.04));
+        .plan-card.recommended:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 0 12px 40px rgba(99, 91, 255, 0.25);
         }
 
+        .plan-card.recommended .plan-price {
+            background: linear-gradient(135deg, #635BFF, #7C3AED);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 42px;
+        }
+
+        .plan-card.recommended .plan-features li::before {
+            color: #635BFF;
+        }
+
+        /* 推荐卡片呼吸光效 */
+        .plan-card.recommended::after {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 22px;
+            background: linear-gradient(135deg, #635BFF, #7C3AED);
+            z-index: -1;
+            opacity: 0;
+            animation: pulseGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(1.02); }
+        }
+
+        /* 旗舰版卡片 */
+        .plan-card[data-plan="flagship"] .plan-price {
+            color: #0a2540;
+        }
+
+        .plan-card[data-plan="flagship"] .plan-features li::before {
+            color: #635BFF;
+        }
+
+        /* 徽章样式 */
         .plan-badge-recommended {
             position: absolute;
             top: -1px;
-            right: 20px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #635BFF, #7C3AED);
             color: white;
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 600;
-            padding: 5px 14px;
-            border-radius: 0 0 12px 12px;
-            letter-spacing: 0.02em;
+            padding: 6px 20px;
+            border-radius: 0 0 16px 16px;
+            letter-spacing: 0.03em;
+            box-shadow: 0 4px 12px rgba(99, 91, 255, 0.3);
         }
 
         .plan-badge-current {
             position: absolute;
             top: -1px;
-            right: 20px;
-            background: var(--success);
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #10B981, #059669);
             color: white;
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 600;
-            padding: 5px 14px;
-            border-radius: 0 0 12px 12px;
-            letter-spacing: 0.02em;
+            padding: 6px 20px;
+            border-radius: 0 0 16px 16px;
+            letter-spacing: 0.03em;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
         }
 
         .plan-name {
             font-size: 16px;
             font-weight: 600;
-            color: var(--slate);
-            margin-bottom: 12px;
+            color: #374151;
+            margin-bottom: 16px;
+            text-align: center;
         }
 
         .plan-price-wrapper {
-            margin-bottom: 20px;
+            margin-bottom: 24px;
+            text-align: center;
         }
 
         .plan-price {
-            font-size: 48px;
+            font-size: 36px;
             font-weight: 700;
-            color: var(--slate);
             letter-spacing: -0.02em;
             line-height: 1;
+            margin-bottom: 8px;
         }
 
         .plan-price .yuan {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 500;
         }
 
-        .plan-price.free {
-            color: var(--success);
-        }
-
         .plan-original-price {
-            font-size: 14px;
-            color: var(--slate-light);
+            font-size: 15px;
+            color: #9ca3af;
             text-decoration: line-through;
-            margin-top: 4px;
         }
 
+        /* 权益列表 */
         .plan-features {
             list-style: none;
-            margin: 0 0 24px 0;
+            margin: 0 0 28px 0;
             flex: 1;
         }
 
         .plan-features li {
             font-size: 14px;
-            color: var(--slate-light);
-            padding: 8px 0;
-            padding-left: 24px;
+            color: #374151;
+            padding: 10px 0;
+            padding-left: 28px;
             position: relative;
             display: flex;
-            align-items: flex-start;
-            gap: 8px;
+            align-items: center;
+            gap: 10px;
+            line-height: 1.4;
         }
 
         .plan-features li::before {
-            content: "✓";
+            content: '✓';
             position: absolute;
             left: 0;
-            color: var(--success);
-            font-weight: 600;
+            font-weight: 700;
             font-size: 14px;
         }
 
+        /* 按钮样式 */
         .btn-plan {
             width: 100%;
-            padding: 14px;
-            border-radius: 8px;
+            padding: 14px 20px;
+            border-radius: 12px;
             font-size: 15px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s ease;
             border: none;
+            position: relative;
+            overflow: hidden;
         }
 
         .btn-plan.primary {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            background: linear-gradient(135deg, #635BFF, #7C3AED);
             color: white;
-            box-shadow: 0 1px 3px rgba(99, 91, 255, 0.3), 0 4px 12px rgba(99, 91, 255, 0.15);
+            box-shadow: 0 2px 8px rgba(99, 91, 255, 0.35), 0 4px 16px rgba(99, 91, 255, 0.15);
         }
 
         .btn-plan.primary:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 2px 6px rgba(99, 91, 255, 0.4), 0 8px 20px rgba(99, 91, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(99, 91, 255, 0.45), 0 8px 24px rgba(99, 91, 255, 0.2);
+        }
+
+        /* Shimmer动画 */
+        .btn-plan.primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            50%, 100% { left: 100%; }
         }
 
         .btn-plan.outline {
             background: transparent;
-            color: var(--primary);
-            border: 1px solid var(--primary);
+            color: #635BFF;
+            border: 2px solid #635BFF;
         }
 
         .btn-plan.outline:hover {
-            background: rgba(99, 91, 255, 0.05);
+            background: #635BFF;
+            color: white;
         }
 
         .btn-plan.current {
-            background: var(--border);
-            color: var(--slate-light);
+            background: #f1f5f9;
+            color: #64748b;
             cursor: default;
+            border: none;
         }
 
         .btn-plan.current:hover {
             transform: none;
+        }
+
+        /* 旗舰版底部标记 */
+        .plan-card[data-plan="flagship"] .flagship-badge {
+            text-align: center;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(0, 0, 0, 0.06);
+            font-size: 12px;
+            color: #94a3b8;
+            font-weight: 500;
         }
 
         /* ========== FAQ区 ========== */
@@ -2856,10 +3018,11 @@
             </div>
         </section>
 
-        <!-- 定价区 - Coze风格 -->
+        <!-- 定价区 - Stripe/Vercel高级风格 -->
         <section class="pricing-section" id="pricing">
             <div class="section-header">
                 <h2 class="section-title animate-in">选择你的备考方案</h2>
+                <p class="pricing-subtitle">从免费诊断到全程陪练，选最适合你的</p>
             </div>
             
             <div class="pricing-grid" id="pricingGrid">
@@ -3648,27 +3811,32 @@
                     badgeHtml = `<span class="plan-badge-current">当前</span>`;
                 }
 
-                let cardClass = "plan-card";
+                let cardClass = `plan-card animate-in delay-${i % 4 + 1}`;
                 if (plan.isRecommended) cardClass += " recommended";
-                if (isCurrent) cardClass += " current-plan";
 
                 let originalPriceHtml = "";
                 if (plan.originalPrice) {
                     originalPriceHtml = `<div class="plan-original-price">${plan.originalPrice}</div>`;
                 }
 
+                let flagshipBadge = "";
+                if (plan.id === "flagship") {
+                    flagshipBadge = `<div class="flagship-badge">最受欢迎的选择</div>`;
+                }
+
                 return `
-                    <div class="${cardClass} animate-in delay-${i % 4 + 1}">
+                    <div class="${cardClass}" data-plan="${plan.id}">
                         ${badgeHtml}
                         <div class="plan-name">${plan.name}</div>
                         <div class="plan-price-wrapper">
-                            <div class="plan-price ${plan.priceClass}">${plan.price === "¥0" ? "免费" : plan.price}</div>
+                            <div class="plan-price ${plan.priceClass || ''}">${plan.price === "¥0" ? "免费" : plan.price}</div>
                             ${originalPriceHtml}
                         </div>
                         <ul class="plan-features">
                             ${plan.features.map(f => `<li>${f}</li>`).join("")}
                         </ul>
                         <button class="btn-plan ${btnClass}" ${isCurrent ? "disabled" : `onclick="handlePlanClick('${plan.id}')"`}>${btnText}</button>
+                        ${flagshipBadge}
                     </div>
                 `;
             }).join("");
