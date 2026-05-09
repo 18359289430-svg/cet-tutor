@@ -1408,17 +1408,7 @@
         }
 
         /* ========== Chat SDK 浮窗 ========== */
-        .chat-container {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            z-index: 9000;
-            display: none;
-        }
-
-        .chat-container.active {
-            display: block;
-        }
+        /* chat-container已移除，SDK自己管理UI */
 
         /* ========== 响应式 ========== */
         @media (max-width: 768px) {
@@ -1801,8 +1791,7 @@
         </div>
     </div>
 
-    <!-- Chat容器 -->
-    <div class="chat-container" id="chatContainer"></div>
+    <!-- WebChatClient会自动创建浮窗，不需要自定义容器 -->
 
     <!-- 人格卡Canvas（隐藏，用于生成图片） -->
     <canvas id="cardCanvas" class="personality-card-canvas" width="750" height="1334"></canvas>
@@ -2420,24 +2409,34 @@
         }
 
         function startDiagnosis() {
-            window.scrollTo({ top: 0, behavior: "smooth" });
+            // 点击SDK自带的浮窗按钮来打开聊天
+            // WebChatClient会在页面右下角创建一个按钮元素
+            const sdkBtn = document.querySelector('#coze-chat-btn') 
+                || document.querySelector('[class*="coze"] button')
+                || document.querySelector('button[class*="chat"]');
             
-            const container = document.getElementById("chatContainer");
-            container.classList.add("active");
-
-            // 等待SDK渲染
-            setTimeout(() => {
-                const chatFrame = container.querySelector("iframe");
-                if (chatFrame) {
-                    chatFrame.style.width = "100%";
-                    chatFrame.style.height = "600px";
-                    chatFrame.style.borderRadius = "16px";
-                    chatFrame.style.border = "none";
-                    chatFrame.style.boxShadow = "0 4px 24px rgba(0, 0, 0, 0.1)";
+            if (sdkBtn) {
+                sdkBtn.click();
+            } else {
+                // 备选：找SDK创建的iframe容器并点击
+                const chatWidget = document.querySelector('[id*="coze"]') 
+                    || document.querySelector('[class*="coze-chat"]');
+                if (chatWidget) {
+                    const btn = chatWidget.querySelector('button');
+                    if (btn) btn.click();
+                } else {
+                    // 最后兜底：直接重新初始化SDK
+                    initCozeChat();
+                    setTimeout(() => {
+                        const retryBtn = document.querySelector('#coze-chat-btn') 
+                            || document.querySelector('[class*="coze"] button')
+                            || document.querySelector('button[class*="chat"]');
+                        if (retryBtn) retryBtn.click();
+                    }, 2000);
                 }
-            }, 1000);
+            }
 
-            // 监听消息
+            // 监听消息（监听整个body，因为SDK创建的元素不在chatContainer里）
             startMessageObserver();
         }
 
@@ -2466,8 +2465,7 @@
             });
 
             setTimeout(() => {
-                const chatArea = document.querySelector("#chatContainer") || document.body;
-                messageObserver.observe(chatArea, { childList: true, subtree: true });
+                messageObserver.observe(document.body, { childList: true, subtree: true });
             }, 2000);
         }
 
@@ -2506,8 +2504,10 @@
         }
 
         function showResult(p) {
-            // 关闭Chat浮窗
-            document.getElementById("chatContainer").classList.remove("active");
+            // 关闭Chat浮窗：点击SDK的关闭按钮
+            const closeBtn = document.querySelector('[class*="coze"] [class*="close"]')
+                || document.querySelector('[class*="coze-chat"] button[class*="close"]');
+            if (closeBtn) closeBtn.click();
             if (messageObserver) {
                 messageObserver.disconnect();
                 messageObserver = null;
