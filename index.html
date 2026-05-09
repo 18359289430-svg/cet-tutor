@@ -2638,7 +2638,10 @@
                 }
             }
 
-            // 初始化Coze Chat
+            // 3秒后强制隐藏loading，不等SDK
+            setTimeout(hideLoading, 3000);
+
+            // 初始化Coze Chat（后台加载，不阻塞页面）
             if (typeof CozeWebSDK !== 'undefined') {
                 initCozeChat(initBotId);
             } else {
@@ -2650,7 +2653,7 @@
                         initCozeChat(initBotId);
                     } else if (retryCount > 30) {
                         clearInterval(checkSDK);
-                        showError('加载超时，请检查网络');
+                        // SDK加载失败不影响页面使用
                     }
                 }, 200);
             }
