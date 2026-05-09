@@ -1755,6 +1755,101 @@
             color: var(--success);
         }
 
+        /* ========== 支付Tab切换 ========== */
+        .payment-tabs {
+            display: flex;
+            gap: 0;
+            margin: 16px 0;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .payment-tab {
+            flex: 1;
+            padding: 10px;
+            background: none;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--slate-muted);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .payment-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .payment-tab:not(.active):hover {
+            background: rgba(99, 91, 255, 0.05);
+            color: var(--slate);
+        }
+
+        .payment-tab-content {
+            transition: opacity 0.2s;
+        }
+
+        /* ========== 激活码输入 ========== */
+        .activation-input-group {
+            display: flex;
+            gap: 8px;
+            margin: 20px 0 12px;
+        }
+
+        .activation-input {
+            flex: 1;
+            padding: 12px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+            font-family: monospace;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .activation-input:focus {
+            border-color: var(--primary);
+        }
+
+        .activation-input::placeholder {
+            text-transform: none;
+            letter-spacing: normal;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", sans-serif;
+        }
+
+        .activation-btn {
+            padding: 12px 24px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            white-space: nowrap;
+        }
+
+        .activation-btn:hover {
+            opacity: 0.9;
+        }
+
+        .activation-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .activation-hint {
+            font-size: 12px;
+            color: var(--slate-muted);
+            text-align: center;
+            margin-top: 8px;
+        }
+
         .payment-spinner {
             width: 16px;
             height: 16px;
@@ -2107,15 +2202,35 @@
             <button class="payment-modal-close" onclick="closePaymentModal()">×</button>
             <div class="payment-plan-name" id="paymentPlanName">冲刺版</div>
             <div class="payment-amount" id="paymentAmount">¥49</div>
-            <div class="payment-qr-container">
-                <div class="payment-qr" id="paymentQr">
-                    <img src="" alt="收款码" id="paymentQrImg">
-                </div>
-                <div class="payment-order-id" id="paymentOrderId">CET4S123456789</div>
+            
+            <!-- 模式切换Tab -->
+            <div class="payment-tabs">
+                <button class="payment-tab active" onclick="switchPaymentTab('qr')">扫码支付</button>
+                <button class="payment-tab" onclick="switchPaymentTab('code')">激活码激活</button>
             </div>
-            <div class="payment-hint">请使用微信/支付宝扫码支付，<strong>务必备注订单号</strong></div>
-            <button class="payment-btn-paid" id="paymentBtnPaid" onclick="onPaidClick()">我已付款</button>
-            <div class="payment-status" id="paymentStatus"></div>
+            
+            <!-- 扫码支付区 -->
+            <div class="payment-tab-content" id="paymentTabQr">
+                <div class="payment-qr-container">
+                    <div class="payment-qr" id="paymentQr">
+                        <img src="" alt="收款码" id="paymentQrImg">
+                    </div>
+                    <div class="payment-order-id" id="paymentOrderId">CET4S123456789</div>
+                </div>
+                <div class="payment-hint">请使用微信扫码支付，<strong>务必备注订单号</strong></div>
+                <button class="payment-btn-paid" id="paymentBtnPaid" onclick="onPaidClick()">我已付款</button>
+                <div class="payment-status" id="paymentStatus"></div>
+            </div>
+            
+            <!-- 激活码输入区 -->
+            <div class="payment-tab-content" id="paymentTabCode" style="display:none;">
+                <div class="activation-input-group">
+                    <input type="text" class="activation-input" id="activationCodeInput" placeholder="请输入激活码" maxlength="30">
+                    <button class="activation-btn" id="activationBtn" onclick="activateWithCode()">激活</button>
+                </div>
+                <div class="activation-hint">付款后将收到激活码，在此输入即可解锁</div>
+                <div class="payment-status" id="activationStatus"></div>
+            </div>
         </div>
     </div>
 
@@ -2553,6 +2668,16 @@
                 <a href="#pricing" class="uc-action-item" onclick="switchView('home'); document.getElementById('pricing')?.scrollIntoView({behavior: 'smooth'}); return false;">
                     <div class="uc-action-content">
                         <span class="uc-action-text">升级备考方案</span>
+                    </div>
+                    <span class="uc-action-arrow">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 8h10M9 4l4 4-4 4"/>
+                        </svg>
+                    </span>
+                </a>
+                <a href="#" class="uc-action-item" onclick="showActivationInput(); return false;">
+                    <div class="uc-action-content">
+                        <span class="uc-action-text">输入激活码</span>
                     </div>
                     <span class="uc-action-arrow">
                         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
@@ -3614,10 +3739,13 @@
 
             planName.textContent = planDisplayNames[orderData.plan] || orderData.plan;
             amount.innerHTML = `¥${orderData.amount}<small>`;
-            qrImg.src = orderData.wechatQrUrl || 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=wechat-pay';
+            qrImg.src = orderData.wechatQrUrl || '/wechat-qr.jpg';
             orderId.textContent = orderData.orderId;
             status.innerHTML = '';
             status.className = 'payment-status';
+
+            // 重置弹窗状态：默认显示扫码支付Tab
+            switchPaymentTab('qr');
 
             modal.classList.add('active');
         }
@@ -3629,6 +3757,106 @@
             stopPolling();
             currentOrderId = null;
             currentOrderPlan = null;
+        }
+
+        // 切换支付Tab
+        function switchPaymentTab(tab) {
+            const tabQr = document.getElementById('paymentTabQr');
+            const tabCode = document.getElementById('paymentTabCode');
+            const tabs = document.querySelectorAll('.payment-tab');
+            const planName = document.getElementById('paymentPlanName');
+            const amount = document.getElementById('paymentAmount');
+            
+            tabs.forEach(t => t.classList.remove('active'));
+            
+            if (tab === 'qr') {
+                tabQr.style.display = 'block';
+                tabCode.style.display = 'none';
+                tabs[0].classList.add('active');
+            } else {
+                tabQr.style.display = 'none';
+                tabCode.style.display = 'block';
+                tabs[1].classList.add('active');
+                
+                // 切换到激活码Tab时，显示通用标题
+                planName.textContent = '激活码激活';
+                amount.innerHTML = '';
+            }
+        }
+
+        // 显示激活码输入弹窗（从用户中心入口进入）
+        function showActivationInput() {
+            const modal = document.getElementById('paymentModal');
+            if (!modal) return;
+            
+            // 重置弹窗状态
+            const planName = document.getElementById('paymentPlanName');
+            const amount = document.getElementById('paymentAmount');
+            const status = document.getElementById('activationStatus');
+            
+            planName.textContent = '激活码激活';
+            amount.innerHTML = '';
+            status.textContent = '';
+            status.className = 'payment-status';
+            
+            // 清空输入框
+            const codeInput = document.getElementById('activationCodeInput');
+            if (codeInput) codeInput.value = '';
+            
+            // 切换到激活码Tab
+            modal.classList.add('active');
+            setTimeout(() => switchPaymentTab('code'), 100);
+        }
+
+        // 激活码激活
+        async function activateWithCode() {
+            const codeInput = document.getElementById('activationCodeInput');
+            const status = document.getElementById('activationStatus');
+            const btn = document.getElementById('activationBtn');
+            const code = codeInput.value.trim();
+            
+            if (!code) {
+                status.textContent = '请输入激活码';
+                status.style.color = '#dc2626';
+                return;
+            }
+            
+            btn.disabled = true;
+            status.textContent = '验证中...';
+            status.style.color = 'var(--slate-muted)';
+            
+            try {
+                const response = await fetch('/api/activate-with-code', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ code })
+                });
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    status.textContent = data.error;
+                    status.style.color = '#dc2626';
+                    btn.disabled = false;
+                    return;
+                }
+                
+                // 激活成功
+                status.textContent = '✓ 激活成功！';
+                status.style.color = '#16a34a';
+                
+                // 保存订单ID到全局（handleActivationSuccess需要）
+                currentOrderId = data.orderId;
+                
+                handleActivationSuccess(data.plan, data.token);
+                closePaymentModal();
+                
+            } catch (error) {
+                console.error('激活失败:', error);
+                status.textContent = '激活失败，请稍后重试';
+                status.style.color = '#dc2626';
+                btn.disabled = false;
+            }
         }
 
         // 点击"我已付款"按钮
