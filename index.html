@@ -1107,18 +1107,19 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: var(--urgent-bg);
-            color: var(--urgent);
+            background: rgba(99, 95, 255, 0.06);
+            color: var(--slate);
             padding: 6px 14px;
             border-radius: 20px;
             font-size: 13px;
-            font-weight: 600;
-            border: 1px solid rgba(220, 38, 38, 0.15);
+            font-weight: 500;
+            border: 1px solid rgba(99, 95, 255, 0.12);
         }
 
         .uc-countdown-pill .countdown-num {
             font-size: 16px;
             font-weight: 700;
+            color: var(--primary);
         }
 
         /* 数据卡片区 - 三列布局 */
@@ -1794,26 +1795,49 @@
         .countdown-badge {
             display: inline-flex;
             align-items: center;
-            gap: 4px;
-            background: var(--urgent-bg);
-            color: var(--urgent);
-            padding: 4px 10px;
+            gap: 6px;
+            background: rgba(99, 95, 255, 0.06);
+            color: var(--slate);
+            padding: 5px 12px;
             border-radius: 20px;
             font-size: 12px;
-            font-weight: 600;
-            letter-spacing: 0.01em;
-            border: 1px solid rgba(220, 38, 38, 0.15);
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            border: 1px solid rgba(99, 95, 255, 0.12);
             white-space: nowrap;
+            transition: background 0.2s;
         }
 
-        .countdown-badge .fire {
-            font-size: 11px;
+        .countdown-badge:hover {
+            background: rgba(99, 95, 255, 0.1);
+        }
+
+        .countdown-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--primary);
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .countdown-badge .countdown-num {
+            font-weight: 700;
+            color: var(--primary);
         }
 
         @media (max-width: 768px) {
             .countdown-badge {
                 font-size: 11px;
-                padding: 3px 8px;
+                padding: 4px 8px;
+            }
+            .countdown-dot {
+                width: 5px;
+                height: 5px;
             }
         }
 
@@ -2115,8 +2139,8 @@
         </div>
         <div class="nav-right">
             <span class="countdown-badge" id="countdownBadge">
-                <span class="fire">🔥</span>
-                <span id="countdownText">距四级仅 XX 天</span>
+                <span class="countdown-dot"></span>
+                <span id="countdownText">CET-4 · <span class="countdown-num">XX</span> 天</span>
             </span>
             <a href="#" class="nav-link-user" onclick="switchView(`user`); return false;">登录</a>
             <button class="btn-primary nav-cta" onclick="openChat('diagnosis')">开始诊断</button>
@@ -2611,7 +2635,7 @@
             const daysLeft = Math.ceil((examDate - now) / (1000 * 60 * 60 * 24));
             const countdownText = document.getElementById('countdownText');
             if (countdownText) {
-                countdownText.textContent = `距四级仅 ${daysLeft} 天`;
+                countdownText.innerHTML = `CET-4 · <span class="countdown-num">${daysLeft}</span> 天`;
             }
         }
         
