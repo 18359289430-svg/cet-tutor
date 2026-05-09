@@ -33,6 +33,8 @@
             --warning: #F59E0B;
             --warning-light: #FBBF24;
             --error: #EF4444;
+            --urgent: #DC2626;
+            --urgent-bg: #FEF2F2;
         }
 
         /* ========== 基础重置 ========== */
@@ -114,7 +116,7 @@
             100% { transform: translateX(350%); }
         }
 
-        /* ========== 导航（Stripe风格） ========== */
+        /* ========== 导航 ========== */
         .nav {
             position: fixed;
             top: 0;
@@ -124,66 +126,48 @@
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding: 0 40px;
             z-index: 100;
+            border-bottom: 1px solid transparent;
             transition: all 0.3s ease;
         }
 
-        /* 底部渐变条 - Stripe标志性设计 */
-        .nav::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, #635BFF, #7C3AED, #06B6D4, #f97316);
-            opacity: 0.6;
-            transition: opacity 0.3s ease;
-        }
-
-        /* 滚动后加阴影 */
         .nav.scrolled {
-            background: rgba(255, 255, 255, 0.98);
-            box-shadow: 0 1px 12px rgba(0, 0, 0, 0.08);
-        }
-
-        .nav.scrolled::after {
-            opacity: 0.8;
+            border-bottom-color: var(--border);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         }
 
         .nav-left {
             display: flex;
             align-items: center;
-            gap: 48px;
+            gap: 40px;
         }
 
         .nav-logo {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--slate);
+            letter-spacing: -0.02em;
+            cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 10px;
-            cursor: pointer;
-            font-weight: 700;
-            font-size: 18px;
-            color: #0a2540;
-            letter-spacing: -0.02em;
+            gap: 8px;
         }
 
         .nav-logo-icon {
-            width: 32px;
-            height: 32px;
-            background: linear-gradient(135deg, #635BFF, #7C3AED);
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             border-radius: 8px;
-            color: white;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 12px;
             font-weight: 700;
+            color: white;
         }
 
         .nav-links {
@@ -193,71 +177,46 @@
         }
 
         .nav-link {
-            color: #4a5568;
-            text-decoration: none;
             font-size: 14px;
             font-weight: 500;
-            position: relative;
+            color: var(--slate-light);
+            text-decoration: none;
             transition: color 0.2s;
         }
 
         .nav-link:hover {
-            color: #0a2540;
-        }
-
-        /* 下划线hover动画 */
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: -4px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: #635BFF;
-            transition: width 0.3s ease;
-        }
-
-        .nav-link:hover::after {
-            width: 100%;
+            color: var(--slate);
         }
 
         .nav-link.active {
-            color: #0a2540;
-        }
-
-        .nav-link.active::after {
-            width: 100%;
+            color: var(--slate);
+            font-weight: 600;
         }
 
         .nav-right {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 16px;
         }
 
-        /* 登录按钮 - 浅灰风格 */
         .nav-link-user {
-            padding: 8px 16px;
-            border-radius: 8px;
-            color: #4a5568;
             font-size: 14px;
             font-weight: 500;
+            color: var(--slate-light);
             text-decoration: none;
-            transition: all 0.2s;
-            background: transparent;
+            transition: color 0.2s;
         }
 
         .nav-link-user:hover {
-            background: rgba(0, 0, 0, 0.04);
-            color: #0a2540;
+            color: var(--primary);
         }
 
-        /* CTA按钮 - 渐变风格 */
+        /* CTA按钮 */
         .btn-primary {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: linear-gradient(135deg, #635BFF, #7C3AED);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
             border: none;
             padding: 12px 24px;
@@ -266,159 +225,45 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s ease;
-            box-shadow: 0 2px 8px rgba(99, 91, 255, 0.25);
+            box-shadow: 0 1px 3px rgba(99, 91, 255, 0.3), 0 4px 12px rgba(99, 91, 255, 0.15);
         }
 
         .btn-primary:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 16px rgba(99, 91, 255, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 2px 6px rgba(99, 91, 255, 0.4), 0 8px 20px rgba(99, 91, 255, 0.2);
         }
 
         .btn-primary.nav-cta {
-            padding: 8px 20px;
+            padding: 10px 20px;
         }
 
-        /* 汉堡菜单按钮 */
-        .nav-hamburger {
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            gap: 5px;
-            width: 40px;
-            height: 40px;
-            padding: 8px;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            border-radius: 8px;
-            transition: background 0.2s;
-        }
-
-        .nav-hamburger:hover {
-            background: rgba(0, 0, 0, 0.04);
-        }
-
-        .nav-hamburger span {
-            display: block;
-            width: 20px;
-            height: 2px;
-            background: #0a2540;
-            border-radius: 1px;
-            transition: all 0.3s ease;
-        }
-
-        .nav-hamburger.active span:nth-child(1) {
-            transform: rotate(45deg) translate(5px, 5px);
-        }
-
-        .nav-hamburger.active span:nth-child(2) {
-            opacity: 0;
-        }
-
-        .nav-hamburger.active span:nth-child(3) {
-            transform: rotate(-45deg) translate(5px, -5px);
-        }
-
-        /* 移动端菜单 */
-        .nav-mobile-menu {
-            display: none;
-            position: fixed;
-            top: 64px;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: white;
-            padding: 20px;
-            z-index: 99;
-            flex-direction: column;
-            gap: 8px;
-            animation: slideDown 0.3s ease;
-        }
-
-        .nav-mobile-menu.active {
-            display: flex;
-        }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .nav-mobile-menu .nav-link {
-            padding: 12px 16px;
-            font-size: 16px;
-            border-radius: 8px;
-        }
-
-        .nav-mobile-menu .nav-link:hover {
-            background: rgba(99, 91, 255, 0.08);
-        }
-
-        .nav-mobile-menu .nav-link::after {
-            display: none;
-        }
-
-        .nav-mobile-menu .nav-cta {
-            margin-top: 16px;
-            padding: 14px 24px;
-            font-size: 16px;
-            width: 100%;
-            justify-content: center;
-        }
-
-/* ========== Hero区 - Vercel/Linear高级风格 ========== */
+        /* ========== Hero区 ========== */
         .hero {
             min-height: 100vh;
-            padding: 100px 40px 100px;
+            padding: 100px 40px 80px;
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
-            background: linear-gradient(180deg, #FAFBFF 0%, #F8FAFC 100%);
+            background-image: 
+                linear-gradient(var(--grid-line) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+            background-size: 24px 24px;
             overflow: hidden;
         }
 
-        /* 顶部氛围光晕 */
+        /* 背景渐变光晕 */
         .hero::before {
             content: "";
             position: absolute;
-            top: -20%;
-            left: 10%;
-            width: 60%;
-            height: 60%;
-            background: radial-gradient(ellipse at center, rgba(99, 91, 255, 0.12) 0%, rgba(124, 58, 237, 0.08) 40%, transparent 70%);
-            filter: blur(60px);
-            pointer-events: none;
-            animation: heroGlow 8s ease-in-out infinite;
-        }
-
-        .hero::after {
-            content: "";
-            position: absolute;
             top: 0;
+            left: 0;
             right: 0;
-            width: 50%;
-            height: 70%;
-            background: radial-gradient(ellipse at center, rgba(6, 182, 212, 0.08) 0%, transparent 60%);
-            filter: blur(50px);
+            bottom: 0;
+            background: 
+                radial-gradient(ellipse 60% 40% at 20% 30%, rgba(99, 91, 255, 0.08), transparent),
+                radial-gradient(ellipse 50% 40% at 80% 70%, rgba(124, 58, 237, 0.06), transparent);
             pointer-events: none;
-            animation: heroGlow2 10s ease-in-out infinite;
-        }
-
-        @keyframes heroGlow {
-            0%, 100% { opacity: 0.8; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.1); }
-        }
-
-        @keyframes heroGlow2 {
-            0%, 100% { opacity: 0.6; transform: scale(1); }
-            50% { opacity: 0.9; transform: scale(1.15); }
         }
 
         .hero-container {
@@ -436,33 +281,24 @@
             .hero-container {
                 grid-template-columns: 1fr;
                 gap: 60px;
-                text-align: center;
             }
         }
 
         .hero-content {
-            max-width: 560px;
+            max-width: 520px;
         }
 
-        /* Badge标签 - 精致风格 */
         .hero-badge {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            background: linear-gradient(135deg, rgba(99, 91, 255, 0.08) 0%, rgba(124, 58, 237, 0.05) 100%);
-            border: 1px solid rgba(99, 91, 255, 0.15);
+            gap: 6px;
+            background: rgba(99, 91, 255, 0.08);
             color: var(--primary);
-            padding: 8px 16px;
-            border-radius: 24px;
+            padding: 6px 14px;
+            border-radius: 20px;
             font-size: 13px;
             font-weight: 500;
-            margin-bottom: 28px;
-            backdrop-filter: blur(10px);
-            animation: badgePulse 3s ease-in-out infinite;
-        }
-
-        .hero-badge-icon {
-            font-size: 14px;
+            margin-bottom: 24px;
         }
 
         .hero-badge-dot {
@@ -473,160 +309,72 @@
             animation: pulse 2s infinite;
         }
 
-        @keyframes badgePulse {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(99, 91, 255, 0.1); }
-            50% { box-shadow: 0 0 0 4px rgba(99, 91, 255, 0); }
-        }
-
         @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(0.9); }
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
         }
 
-        /* 标题渐变效果 */
         .hero-title {
-            font-size: 56px;
+            font-size: 48px;
             font-weight: 700;
-            letter-spacing: -0.04em;
-            line-height: 1.1;
+            letter-spacing: -0.03em;
+            line-height: 1.15;
             color: var(--slate);
-            margin-bottom: 24px;
-        }
-
-        .hero-title-gradient {
-            background: linear-gradient(135deg, #635BFF 0%, #7C3AED 50%, #06B6D4 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        @media (max-width: 768px) {
-            .hero-title {
-                font-size: 40px;
-            }
+            margin-bottom: 20px;
         }
 
         .hero-subtitle {
             font-size: 18px;
             color: var(--slate-light);
-            margin-bottom: 36px;
-            line-height: 1.7;
+            margin-bottom: 32px;
+            line-height: 1.6;
         }
 
-        /* CTA按钮 - Shimmer效果 */
         .hero-actions {
             display: flex;
             align-items: center;
             gap: 16px;
-            margin-bottom: 36px;
-        }
-
-        @media (max-width: 900px) {
-            .hero-actions {
-                justify-content: center;
-            }
+            margin-bottom: 32px;
         }
 
         .hero-actions .btn-primary {
-            padding: 18px 36px;
+            padding: 16px 32px;
             font-size: 16px;
-            font-weight: 600;
-            border-radius: 14px;
-            position: relative;
-            overflow: hidden;
-            background: linear-gradient(135deg, var(--primary) 0%, #7C3AED 100%);
-            border: none;
-            box-shadow: 0 4px 20px rgba(99, 91, 255, 0.3);
-            transition: all 0.3s ease;
         }
 
-        .hero-actions .btn-primary:hover {
-            transform: scale(1.02) translateY(-2px);
-            box-shadow: 0 8px 30px rgba(99, 91, 255, 0.4);
-        }
-
-        /* Shimmer动画 */
-        .btn-shimmer::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(
-                to right,
-                transparent 0%,
-                rgba(255,255,255,0.2) 50%,
-                transparent 100%
-            );
-            transform: rotate(30deg);
-            animation: shimmer 3s infinite;
-        }
-
-        @keyframes shimmer {
-            0% { transform: translateX(-100%) rotate(30deg); }
-            100% { transform: translateX(100%) rotate(30deg); }
-        }
-
-        /* 信任指标 - 现代风格 */
         .hero-trust {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 16px;
             font-size: 14px;
             color: var(--slate-muted);
-        }
-
-        @media (max-width: 900px) {
-            .hero-trust {
-                justify-content: center;
-            }
         }
 
         .hero-trust-item {
             display: flex;
             align-items: center;
-            gap: 8px;
-        }
-
-        .hero-trust-icon {
-            font-size: 16px;
+            gap: 6px;
         }
 
         .hero-trust-divider {
-            width: 1px;
-            height: 16px;
+            width: 4px;
+            height: 4px;
             background: var(--border);
+            border-radius: 50%;
         }
 
-        /* Hero右侧：高级对话预览 */
+        /* Hero右侧：对话预览 */
         .hero-visual {
             position: relative;
-            perspective: 1500px;
-        }
-
-        /* 外层毛玻璃卡片 */
-        .chat-preview-wrapper {
-            position: relative;
-            padding: 3px;
-            background: linear-gradient(135deg, rgba(99, 91, 255, 0.3), rgba(6, 182, 212, 0.3));
-            border-radius: 24px;
-            backdrop-filter: blur(20px);
-            animation: cardFloat 6s ease-in-out infinite;
-        }
-
-        @keyframes cardFloat {
-            0%, 100% { transform: translateY(0) rotateY(-4deg) rotateX(2deg); }
-            50% { transform: translateY(-8px) rotateY(-2deg) rotateX(1deg); }
         }
 
         .chat-preview {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 22px;
+            background: var(--white);
+            border-radius: 20px;
+            box-shadow: 0 4px 32px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.04);
             overflow: hidden;
-            transform: perspective(1000px) rotateY(-4deg) rotateX(2deg);
+            transform: perspective(1000px) rotateY(-5deg) rotateX(2deg);
             transition: transform 0.5s ease;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1), 0 8px 24px rgba(0, 0, 0, 0.05);
         }
 
         .chat-preview:hover {
@@ -634,33 +382,28 @@
         }
 
         @media (max-width: 900px) {
-            .chat-preview,
-            .chat-preview-wrapper {
+            .chat-preview {
                 transform: none;
-            }
-            .chat-preview-wrapper {
-                animation: none;
             }
         }
 
         .chat-preview-header {
-            background: linear-gradient(135deg, #635BFF 0%, #7C3AED 50%, #06B6D4 100%);
-            padding: 18px 22px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            padding: 16px 20px;
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 12px;
         }
 
         .chat-preview-avatar {
-            width: 40px;
-            height: 40px;
-            background: rgba(255, 255, 255, 0.25);
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
-            backdrop-filter: blur(10px);
+            font-size: 18px;
         }
 
         .chat-preview-info {
@@ -675,20 +418,19 @@
 
         .chat-preview-status {
             font-size: 12px;
-            color: rgba(255, 255, 255, 0.85);
+            color: rgba(255, 255, 255, 0.8);
         }
 
         .chat-preview-body {
             padding: 24px;
-            min-height: 340px;
-            background: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%);
+            min-height: 360px;
+            background: #F8FAFC;
         }
 
-        /* 气泡样式优化 */
         .chat-bubble {
             margin-bottom: 16px;
+            animation: fadeInUp 0.4s ease forwards;
             opacity: 0;
-            animation: fadeInUp 0.5s ease forwards;
         }
 
         .chat-bubble.bot {
@@ -698,29 +440,27 @@
         }
 
         .chat-bubble.bot .chat-avatar {
-            width: 30px;
-            height: 30px;
-            background: linear-gradient(135deg, var(--primary) 0%, #7C3AED 100%);
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 14px;
             flex-shrink: 0;
-            box-shadow: 0 2px 8px rgba(99, 91, 255, 0.3);
         }
 
         .chat-bubble.bot .chat-text {
-            background: #FFFFFF;
-            border: 1px solid rgba(0, 0, 0, 0.06);
-            border-left: 3px solid var(--primary);
-            border-radius: 4px 16px 16px 16px;
-            padding: 14px 18px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 16px 16px 16px 4px;
+            padding: 12px 16px;
             font-size: 14px;
-            line-height: 1.6;
+            line-height: 1.5;
             color: var(--slate);
             max-width: 85%;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
         }
 
         .chat-bubble.user {
@@ -728,41 +468,39 @@
         }
 
         .chat-bubble.user .chat-text {
-            background: linear-gradient(135deg, rgba(99, 91, 255, 0.95) 0%, rgba(124, 58, 237, 0.95) 100%);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
             border-radius: 16px 16px 4px 16px;
-            padding: 14px 18px;
+            padding: 12px 16px;
             font-size: 14px;
-            line-height: 1.6;
-            box-shadow: 0 4px 16px rgba(99, 91, 255, 0.25);
+            line-height: 1.5;
+            box-shadow: 0 2px 8px rgba(99, 91, 255, 0.2);
         }
 
-        .chat-bubble:nth-child(1) { animation-delay: 0.5s; }
-        .chat-bubble:nth-child(2) { animation-delay: 1.2s; }
-        .chat-bubble:nth-child(3) { animation-delay: 2.0s; }
-        .chat-bubble:nth-child(4) { animation-delay: 2.8s; }
+        .chat-bubble:nth-child(1) { animation-delay: 0.3s; }
+        .chat-bubble:nth-child(2) { animation-delay: 0.8s; }
+        .chat-bubble:nth-child(3) { animation-delay: 1.3s; }
+        .chat-bubble:nth-child(4) { animation-delay: 1.8s; }
 
-        /* 打字光标 - 流畅动画 */
         .chat-cursor {
             display: inline-block;
             width: 2px;
-            height: 18px;
-            background: linear-gradient(180deg, var(--primary) 0%, #7C3AED 100%);
+            height: 16px;
+            background: var(--primary);
             margin-left: 4px;
-            animation: cursorBlink 0.8s ease-in-out infinite;
+            animation: blink 1s infinite;
             vertical-align: middle;
-            border-radius: 1px;
         }
 
-        @keyframes cursorBlink {
+        @keyframes blink {
             0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
+            50% { opacity: 0; }
         }
 
         @keyframes fadeInUp {
             from {
                 opacity: 0;
-                transform: translateY(15px);
+                transform: translateY(10px);
             }
             to {
                 opacity: 1;
@@ -770,147 +508,27 @@
             }
         }
 
-        /* 浮动装饰元素 */
-        .floating-element {
-            position: absolute;
-            border-radius: 12px;
-            backdrop-filter: blur(12px);
-            background: rgba(255, 255, 255, 0.85);
-            border: 1px solid rgba(99, 91, 255, 0.1);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-            animation: float 4s ease-in-out infinite;
-        }
-
-        /* 雷达图装饰 */
-        .floating-radar {
-            top: -30px;
-            left: -50px;
-            width: 90px;
-            height: 90px;
-            padding: 12px;
-            animation-delay: 0s;
-        }
-
-        .floating-radar canvas {
-            width: 100%;
-            height: 100%;
-        }
-
-        /* 进度条装饰 */
-        .floating-progress {
-            bottom: 40px;
-            right: -40px;
-            width: 110px;
-            padding: 14px;
-            animation-delay: 1s;
-        }
-
-        .floating-progress-label {
-            font-size: 10px;
-            color: var(--slate-muted);
-            margin-bottom: 6px;
-        }
-
-        .floating-progress-bar {
-            height: 6px;
-            background: rgba(99, 91, 255, 0.1);
-            border-radius: 3px;
-            overflow: hidden;
-        }
-
-        .floating-progress-fill {
-            height: 100%;
-            width: 67%;
-            background: linear-gradient(90deg, var(--primary), #06B6D4);
-            border-radius: 3px;
-            animation: progressGrow 2s ease-out forwards;
-        }
-
-        .floating-progress-value {
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--primary);
-            margin-top: 6px;
-        }
-
-        /* AI标签装饰 */
-        .floating-ai-tag {
-            top: 20px;
-            right: -35px;
-            padding: 8px 12px;
-            animation-delay: 2s;
-        }
-
-        .floating-ai-tag span {
-            font-size: 11px;
-            font-weight: 600;
-            background: linear-gradient(135deg, var(--primary), #06B6D4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-12px); }
-        }
-
-        @keyframes progressGrow {
-            from { width: 0; }
-            to { width: 67%; }
-        }
-
         /* 入场动画 */
         .animate-in {
-            animation: fadeInUp 0.7s ease-out forwards;
+            animation: fadeInUp 0.6s ease-out forwards;
             opacity: 0;
         }
 
         .delay-1 { animation-delay: 0.1s; }
         .delay-2 { animation-delay: 0.2s; }
-        .delay-3 { animation-delay: 0.35s; }
-        .delay-4 { animation-delay: 0.5s; }
-        .delay-5 { animation-delay: 0.65s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+        .delay-5 { animation-delay: 0.5s; }
 
-/* ========== 功能卡片区 - Apple式精致浅色风格 ========== */
+        /* ========== 功能卡片区 ========== */
         .features-section {
-            padding: 100px 40px;
-            background: #FFFFFF;
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* 极淡网格背景 */
-        .features-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: 
-                linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
-            background-size: 60px 60px;
-            pointer-events: none;
-        }
-
-        /* 顶部渐变过渡 */
-        .features-section::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 80px;
-            background: linear-gradient(180deg, rgba(0,0,0,0.02) 0%, transparent 100%);
-            pointer-events: none;
+            padding: 80px 40px;
+            background: var(--white);
         }
 
         .features-container {
             max-width: 1200px;
             margin: 0 auto;
-            position: relative;
-            z-index: 1;
         }
 
         .features-header {
@@ -921,20 +539,20 @@
         .features-title {
             font-size: 36px;
             font-weight: 700;
-            color: #1a1a2e;
+            color: var(--slate);
             letter-spacing: -0.02em;
             margin-bottom: 12px;
         }
 
         .features-subtitle {
             font-size: 18px;
-            color: #6b7280;
+            color: var(--slate-light);
         }
 
         .features-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 28px;
+            gap: 24px;
         }
 
         @media (max-width: 900px) {
@@ -945,356 +563,171 @@
             }
         }
 
-        /* 高级浅色功能卡片 */
         .feature-card {
-            background: #FFFFFF;
-            border: 1px solid rgba(0,0,0,0.06);
-            border-radius: 20px;
-            padding: 32px;
-            position: relative;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 16px;
             overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            opacity: 0;
-            transform: translateY(30px);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.06);
+            transition: all 0.3s ease;
         }
-
-        .feature-card.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .feature-card:nth-child(1) { transition-delay: 0s; }
-        .feature-card:nth-child(2) { transition-delay: 0.15s; }
-        .feature-card:nth-child(3) { transition-delay: 0.3s; }
 
         .feature-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 12px 32px rgba(0,0,0,0.1);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
         }
 
-        /* 移除旧光晕效果 */
-        .feature-glow,
-        .feature-border-glow,
-        .features-glow-bottom {
-            display: none;
+        .feature-card-accent {
+            height: 3px;
         }
 
-        /* 卡片左上角标签 */
-        .feature-tag {
-            display: inline-flex;
-            align-items: center;
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: 600;
-            margin-bottom: 20px;
+        .feature-card-accent.purple {
+            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
         }
 
-        .feature-card:nth-child(1) .feature-tag {
-            background: rgba(124, 58, 237, 0.1);
-            color: #7C3AED;
+        .feature-card-accent.green {
+            background: linear-gradient(90deg, var(--success), var(--success-light));
         }
 
-        .feature-card:nth-child(2) .feature-tag {
-            background: rgba(6, 182, 212, 0.1);
-            color: #06B6D4;
+        .feature-card-accent.yellow {
+            background: linear-gradient(90deg, var(--warning), var(--warning-light));
         }
 
-        .feature-card:nth-child(3) .feature-tag {
-            background: rgba(249, 115, 22, 0.1);
-            color: #f97316;
+        .feature-card-content {
+            padding: 28px;
         }
 
-        /* 图标样式 - 精致线条风格 */
         .feature-icon {
-            width: 48px;
-            height: 48px;
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 28px;
             margin-bottom: 20px;
-            position: relative;
         }
 
-        .feature-icon svg {
-            width: 28px;
-            height: 28px;
-            position: relative;
-            z-index: 1;
+        .feature-card:nth-child(1) .feature-icon {
+            background: rgba(99, 91, 255, 0.1);
         }
 
-        .feature-card:nth-child(1) .feature-icon svg {
-            stroke: #7C3AED;
+        .feature-card:nth-child(2) .feature-icon {
+            background: rgba(16, 185, 129, 0.1);
         }
 
-        .feature-card:nth-child(2) .feature-icon svg {
-            stroke: #06B6D4;
-        }
-
-        .feature-card:nth-child(3) .feature-icon svg {
-            stroke: #f97316;
+        .feature-card:nth-child(3) .feature-icon {
+            background: rgba(245, 158, 11, 0.1);
         }
 
         .feature-title {
             font-size: 20px;
             font-weight: 600;
-            color: #1a1a2e;
-            margin-bottom: 10px;
-            letter-spacing: -0.01em;
+            color: var(--slate);
+            margin-bottom: 8px;
         }
 
         .feature-desc {
-            font-size: 14px;
-            color: #6b7280;
-            line-height: 1.7;
-            margin-bottom: 28px;
+            font-size: 15px;
+            color: var(--slate-light);
+            line-height: 1.6;
+            margin-bottom: 24px;
         }
 
         /* 功能卡片底部预览 */
         .feature-preview {
-            background: rgba(0,0,0,0.03);
+            background: var(--bg);
             border-radius: 12px;
-            padding: 24px;
+            padding: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 160px;
         }
 
-        /* ===== 雷达图样式 - 浅色精致版 ===== */
+        /* 雷达图预览 */
         .radar-preview {
-            width: 150px;
-            height: 150px;
+            width: 120px;
+            height: 120px;
             position: relative;
-            background: #FFFFFF;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
         }
 
-        .radar-preview canvas {
+        .radar-preview svg {
             width: 100%;
             height: 100%;
         }
 
-        .radar-labels {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-        }
-
-        .radar-label {
-            position: absolute;
-            font-size: 11px;
-            color: #9ca3af;
-            white-space: nowrap;
-            transform: translate(-50%, -50%);
-            font-weight: 500;
-        }
-
-        /* ===== 进度条样式 - 浅色精致版 ===== */
+        /* 进度条预览 */
         .progress-preview {
             width: 100%;
         }
 
-        .progress-header {
+        .progress-label {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-
-        .progress-label {
-            font-size: 13px;
-            color: #9ca3af;
-        }
-
-        .progress-value {
-            font-size: 36px;
-            font-weight: 700;
-            color: #06B6D4;
-        }
-
-        .progress-bar-container {
-            height: 8px;
-            background: rgba(0,0,0,0.06);
-            border-radius: 4px;
-            overflow: hidden;
-            margin-bottom: 20px;
-            position: relative;
+            font-size: 12px;
+            color: var(--slate-light);
+            margin-bottom: 8px;
         }
 
         .progress-bar {
-            height: 100%;
+            height: 8px;
+            background: var(--border);
             border-radius: 4px;
-            background: linear-gradient(90deg, #06B6D4, #22d3ee);
-            width: 0;
-            transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success), var(--success-light));
+            border-radius: 4px;
+            transition: width 1s ease;
         }
 
         .progress-items {
             display: flex;
             justify-content: space-between;
-            gap: 12px;
+            margin-top: 8px;
+            font-size: 11px;
+            color: var(--slate-muted);
         }
 
-        .progress-item {
-            font-size: 12px;
-            color: #06B6D4;
-            padding: 8px 14px;
-            background: rgba(6, 182, 212, 0.1);
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            opacity: 0;
-            transform: translateY(10px) scale(0.9);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .progress-item::before {
-            content: '';
-            width: 6px;
-            height: 6px;
-            background: #06B6D4;
-            border-radius: 50%;
-        }
-
-        .progress-item.visible {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-        }
-
-        .progress-item:nth-child(1) { transition-delay: 0.6s; }
-        .progress-item:nth-child(2) { transition-delay: 0.75s; }
-        .progress-item:nth-child(3) { transition-delay: 0.9s; }
-
-        /* ===== 分数对比样式 - 浅色精致版 ===== */
+        /* 分数提升预览 */
         .score-preview {
             display: flex;
             align-items: center;
-            justify-content: center;
             gap: 24px;
-            width: 100%;
-            position: relative;
         }
 
-        .score-box {
+        .score-from, .score-to {
             text-align: center;
-            opacity: 0;
-            transform: translateY(10px);
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
-        .score-box.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .score-box:nth-child(1) { transition-delay: 0.1s; }
-        .score-box:nth-child(3) { transition-delay: 0.5s; }
 
         .score-value {
-            font-size: 36px;
+            font-size: 28px;
             font-weight: 700;
         }
 
         .score-from .score-value {
-            color: #9ca3af;
-            font-size: 28px;
+            color: var(--slate-light);
         }
 
         .score-to .score-value {
-            color: #f97316;
+            background: linear-gradient(135deg, var(--warning), var(--warning-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .score-label {
             font-size: 12px;
-            color: #9ca3af;
-            margin-top: 6px;
+            color: var(--slate-muted);
         }
 
         .score-arrow {
-            position: relative;
-            font-size: 28px;
-            opacity: 0;
-            transition: all 0.5s ease;
+            font-size: 24px;
+            color: var(--success);
         }
 
-        .score-arrow.visible {
-            opacity: 1;
-        }
-
-        .score-arrow svg {
-            width: 40px;
-            height: 40px;
-        }
-
-        .score-arrow .arrow-gradient {
-            stroke: url(#arrowGradient);
-        }
-
-        .score-arrow .arrow-pulse {
-            display: none;
-        }
-
-        /* 底部微型折线图 */
-        .score-sparkline {
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 200px;
-            height: 40px;
-            opacity: 0;
-            transition: opacity 0.8s ease;
-        }
-
-        .score-sparkline.visible {
-            opacity: 1;
-        }
-
-        .score-sparkline svg {
-            width: 100%;
-            height: 100%;
-        }
-
-        .sparkline-path {
-            fill: none;
-            stroke: rgba(34,197,94,0.6);
-            stroke-width: 2;
-            stroke-linecap: round;
-        }
-
-        .sparkline-area {
-            fill: url(#sparklineGradient);
-            opacity: 0.2;
-        }
-
-        /* prefers-reduced-motion 降级 */
-        @media (prefers-reduced-motion: reduce) {
-            .feature-card {
-                transition: none;
-            }
-            .feature-card.visible {
-                transform: none;
-            }
-            .feature-card:hover {
-                transform: none;
-            }
-            .progress-bar {
-                transition: none;
-            }
-            .score-arrow .arrow-pulse {
-                animation: none;
-            }
-        }
-
-        /* ========== 人格预览区 ========== *//* ========== 人格预览区 ========== */
+        /* ========== 人格预览区 ========== */
         .section {
             padding: 80px 40px;
             max-width: 1200px;
@@ -1383,303 +816,184 @@
             line-height: 1.5;
         }
 
-        /* ========== 定价区 - Stripe/Vercel高级风格 ========== */
+        /* ========== 定价区 - Coze风格 ========== */
         .pricing-section {
-            padding: 100px 40px 120px;
-            background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .pricing-section::before {
-            content: '';
-            position: absolute;
-            top: -200px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 800px;
-            height: 400px;
-            background: radial-gradient(ellipse at center, rgba(99, 91, 255, 0.08) 0%, transparent 70%);
-            pointer-events: none;
-        }
-
-        .pricing-section .section-header {
-            text-align: center;
-            margin-bottom: 60px;
-        }
-
-        .pricing-section .section-title {
-            font-size: 36px;
-            font-weight: 700;
-            color: #0a2540;
-            margin-bottom: 12px;
-        }
-
-        .pricing-subtitle {
-            font-size: 16px;
-            color: #64748b;
-            font-weight: 400;
+            padding: 80px 40px;
+            background-image: 
+                linear-gradient(var(--grid-line) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+            background-size: 24px 24px;
+            background-color: var(--bg);
         }
 
         .pricing-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 24px;
-            max-width: 1200px;
+            gap: 20px;
+            max-width: 1100px;
             margin: 0 auto;
-            position: relative;
-            z-index: 1;
         }
 
-        @media (max-width: 1100px) {
-            .pricing-grid {
-                grid-template-columns: repeat(2, 1fr);
-                max-width: 700px;
-            }
-        }
-
-        @media (max-width: 600px) {
+        @media (max-width: 900px) {
             .pricing-grid {
                 grid-template-columns: 1fr;
-                max-width: 420px;
+                max-width: 400px;
             }
         }
 
-        /* 高级定价卡通用样式 */
+        /* Coze风格定价卡 */
         .plan-card {
-            background: #ffffff;
-            border: 1px solid rgba(0, 0, 0, 0.06);
-            border-radius: 20px;
-            padding: 32px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 28px 24px;
             position: relative;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.06);
         }
 
         .plan-card:hover {
-            transform: translateY(-4px);
+            transform: translateY(-2px);
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
         }
 
-        /* 入场动画 */
-        .plan-card.animate-in {
-            opacity: 0;
-            transform: translateY(20px);
-            animation: pricingFadeIn 0.5s ease forwards;
-        }
-
-        .plan-card.animate-in.delay-1 { animation-delay: 0s; }
-        .plan-card.animate-in.delay-2 { animation-delay: 0.1s; }
-        .plan-card.animate-in.delay-3 { animation-delay: 0.2s; }
-        .plan-card.animate-in.delay-4 { animation-delay: 0.3s; }
-
-        @keyframes pricingFadeIn {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* 免费版卡片 */
-        .plan-card[data-plan="free"] { }
-
-        .plan-card[data-plan="free"] .plan-price {
-            color: #10B981;
-        }
-
-        .plan-card[data-plan="free"] .plan-features li::before {
-            color: #10B981;
-        }
-
-        /* ¥1 详细报告卡片 - Outline风格 */
-        .plan-card[data-plan="report"] .plan-price {
-            color: #0a2540;
-        }
-
-        .plan-card[data-plan="report"] .plan-features li::before {
-            color: #10B981;
-        }
-
-        /* 推荐卡片 */
         .plan-card.recommended {
-            border: 2px solid #635BFF;
-            transform: scale(1.02);
+            border: 2px solid var(--primary);
+            border-left-width: 4px;
         }
 
-        .plan-card.recommended:hover {
-            transform: translateY(-4px) scale(1.02);
-            box-shadow: 0 8px 24px rgba(99, 91, 255, 0.2);
+        .plan-card.current-plan {
+            background: linear-gradient(135deg, rgba(99, 91, 255, 0.04), rgba(124, 58, 237, 0.04));
         }
 
-        .plan-card.recommended .plan-price {
-            color: #0a2540;
-            font-size: 42px;
-        }
-
-        .plan-card.recommended .plan-features li::before {
-            color: #10B981;
-        }
-
-        /* 旗舰版卡片 */
-        .plan-card[data-plan="flagship"] .plan-price {
-            color: #0a2540;
-        }
-
-        .plan-card[data-plan="flagship"] .plan-features li::before {
-            color: #10B981;
-        }
-
-        /* 徽章样式 */
         .plan-badge-recommended {
             position: absolute;
             top: -1px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: linear-gradient(135deg, #635BFF, #7C3AED);
+            right: 20px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
-            padding: 6px 20px;
-            border-radius: 0 0 16px 16px;
-            letter-spacing: 0.03em;
-            box-shadow: 0 4px 12px rgba(99, 91, 255, 0.3);
+            padding: 5px 14px;
+            border-radius: 0 0 12px 12px;
+            letter-spacing: 0.02em;
         }
 
         .plan-badge-current {
             position: absolute;
             top: -1px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: linear-gradient(135deg, #10B981, #059669);
+            right: 20px;
+            background: var(--success);
             color: white;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
-            padding: 6px 20px;
-            border-radius: 0 0 16px 16px;
-            letter-spacing: 0.03em;
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            padding: 5px 14px;
+            border-radius: 0 0 12px 12px;
+            letter-spacing: 0.02em;
         }
 
         .plan-name {
             font-size: 16px;
             font-weight: 600;
-            color: #374151;
-            margin-bottom: 16px;
-            text-align: center;
+            color: var(--slate);
+            margin-bottom: 12px;
         }
 
         .plan-price-wrapper {
-            margin-bottom: 24px;
-            text-align: center;
+            margin-bottom: 20px;
         }
 
         .plan-price {
-            font-size: 36px;
+            font-size: 48px;
             font-weight: 700;
+            color: var(--slate);
             letter-spacing: -0.02em;
             line-height: 1;
-            margin-bottom: 8px;
         }
 
         .plan-price .yuan {
-            font-size: 18px;
+            font-size: 20px;
             font-weight: 500;
         }
 
-        .plan-original-price {
-            font-size: 15px;
-            color: #9ca3af;
-            text-decoration: line-through;
+        .plan-price.free {
+            color: var(--success);
         }
 
-        /* 权益列表 */
+        .plan-original-price {
+            font-size: 14px;
+            color: var(--slate-light);
+            text-decoration: line-through;
+            margin-top: 4px;
+        }
+
         .plan-features {
             list-style: none;
-            margin: 0 0 28px 0;
+            margin: 0 0 24px 0;
             flex: 1;
         }
 
         .plan-features li {
             font-size: 14px;
-            color: #374151;
-            padding: 10px 0;
-            padding-left: 28px;
+            color: var(--slate-light);
+            padding: 8px 0;
+            padding-left: 24px;
             position: relative;
             display: flex;
-            align-items: center;
-            gap: 10px;
-            line-height: 1.4;
+            align-items: flex-start;
+            gap: 8px;
         }
 
         .plan-features li::before {
-            content: '✓';
+            content: "✓";
             position: absolute;
             left: 0;
-            font-weight: 700;
+            color: var(--success);
+            font-weight: 600;
             font-size: 14px;
         }
 
-        /* 按钮样式 */
         .btn-plan {
             width: 100%;
-            padding: 14px 20px;
-            border-radius: 12px;
+            padding: 14px;
+            border-radius: 8px;
             font-size: 15px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s ease;
             border: none;
-            position: relative;
-            overflow: hidden;
         }
 
         .btn-plan.primary {
-            background: #635BFF;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
+            box-shadow: 0 1px 3px rgba(99, 91, 255, 0.3), 0 4px 12px rgba(99, 91, 255, 0.15);
         }
 
         .btn-plan.primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(99, 91, 255, 0.35);
-        }
-
-        .btn-plan.primary::before {
-            display: none;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(99, 91, 255, 0.4), 0 8px 20px rgba(99, 91, 255, 0.2);
         }
 
         .btn-plan.outline {
             background: transparent;
-            color: #0a2540;
-            border: 2px solid #0a2540;
+            color: var(--primary);
+            border: 1px solid var(--primary);
         }
 
         .btn-plan.outline:hover {
-            background: #0a2540;
-            color: white;
+            background: rgba(99, 91, 255, 0.05);
         }
 
         .btn-plan.current {
-            background: #f1f5f9;
-            color: #64748b;
+            background: var(--border);
+            color: var(--slate-light);
             cursor: default;
-            border: none;
         }
 
         .btn-plan.current:hover {
             transform: none;
-        }
-
-        /* 旗舰版底部标记 */
-        .plan-card[data-plan="flagship"] .flagship-badge {
-            text-align: center;
-            margin-top: 16px;
-            padding-top: 16px;
-            border-top: 1px solid rgba(0, 0, 0, 0.06);
-            font-size: 12px;
-            color: #94a3b8;
-            font-weight: 500;
         }
 
         /* ========== FAQ区 ========== */
@@ -1745,60 +1059,37 @@
             border-top: 1px solid var(--border);
         }
 
-                /* ========== 用户中心 - Stripe Dashboard 风格 ========== */
+        /* ========== 用户中心 ========== */
         .user-center {
             padding: 80px 40px;
             max-width: 1000px;
             margin: 0 auto;
-            background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
-            min-height: calc(100vh - 200px);
-            position: relative;
-        }
-
-        .user-center::before {
-            content: '';
-            position: absolute;
-            top: -100px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 800px;
-            height: 400px;
-            background: radial-gradient(ellipse at center top, rgba(99, 91, 255, 0.08) 0%, transparent 70%);
-            pointer-events: none;
         }
 
         .user-center-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 40px;
+            margin-bottom: 32px;
         }
 
         .user-center-title {
             font-size: 28px;
             font-weight: 700;
-            color: #0a2540;
+            color: var(--slate);
             letter-spacing: -0.02em;
         }
 
         .user-center-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 16px;
-            background: rgba(99, 91, 255, 0.08);
-            color: #635BFF;
+            font-size: 14px;
+            color: var(--primary);
             text-decoration: none;
             font-weight: 500;
-            font-size: 14px;
-            border-radius: 20px;
-            transition: all 0.2s ease;
-            border: 1px solid rgba(99, 91, 255, 0.12);
+            transition: opacity 0.2s;
         }
 
         .user-center-link:hover {
-            background: rgba(99, 91, 255, 0.12);
-            transform: translateX(-2px);
+            opacity: 0.7;
         }
 
         .user-status-cards {
@@ -1816,168 +1107,58 @@
 
         .status-card {
             background: var(--white);
-            border: 1px solid rgba(0,0,0,0.06);
-            border-radius: 16px;
-            padding: 28px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.04);
-            transition: all 0.25s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .status-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, transparent, rgba(99, 91, 255, 0.3), transparent);
-            opacity: 0;
-            transition: opacity 0.25s ease;
-        }
-
-        .status-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.08);
-        }
-
-        .status-card:hover::before {
-            opacity: 1;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
         }
 
         .status-card-label {
             font-size: 13px;
-            color: #64748b;
-            margin-bottom: 12px;
+            color: var(--slate-light);
+            margin-bottom: 8px;
             font-weight: 500;
-            letter-spacing: 0.02em;
         }
 
         .status-card-value {
             font-size: 20px;
             font-weight: 600;
-            color: #0a2540;
+            color: var(--slate);
             display: flex;
             align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
+            gap: 8px;
         }
 
         .status-card-meta {
             font-size: 13px;
-            color: #64748b;
-            margin-top: 8px;
+            color: var(--slate-light);
+            margin-top: 4px;
         }
 
         .plan-status-badge {
             display: inline-flex;
             align-items: center;
             gap: 4px;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
         }
 
         .plan-status-badge.free {
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(5, 150, 105, 0.12));
-            color: #059669;
-            border: 1px solid rgba(16, 185, 129, 0.2);
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
         }
 
         .plan-status-badge.paid {
-            background: linear-gradient(135deg, rgba(99, 91, 255, 0.12), rgba(124, 58, 237, 0.12));
-            color: #635BFF;
-            border: 1px solid rgba(99, 91, 255, 0.2);
-        }
-
-        /* 诊断进度环 */
-        .diagnosis-progress-ring {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .progress-ring-circle {
-            width: 48px;
-            height: 48px;
-            position: relative;
-        }
-
-        .progress-ring-circle svg {
-            transform: rotate(-90deg);
-            width: 48px;
-            height: 48px;
-        }
-
-        .progress-ring-circle circle {
-            fill: none;
-            stroke-width: 4;
-        }
-
-        .progress-ring-bg {
-            stroke: #e2e8f0;
-        }
-
-        .progress-ring-fill {
-            stroke: #635BFF;
-            stroke-linecap: round;
-            transition: stroke-dashoffset 0.5s ease;
-        }
-
-        .progress-ring-text {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 12px;
-            font-weight: 600;
-            color: #635BFF;
-        }
-
-        /* 快速操作区 */
-        .quick-actions {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-            margin-bottom: 32px;
-        }
-
-        .quick-action-card {
-            background: var(--white);
-            border: 1px solid rgba(0,0,0,0.06);
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .quick-action-card:hover {
-            background: #fafafa;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-        }
-
-        .quick-action-icon {
-            font-size: 28px;
-            margin-bottom: 8px;
-        }
-
-        .quick-action-text {
-            font-size: 14px;
-            font-weight: 500;
-            color: #0a2540;
+            background: rgba(99, 91, 255, 0.1);
+            color: var(--primary);
         }
 
         .diagnosis-records {
             background: var(--white);
-            border: 1px solid rgba(0,0,0,0.06);
-            border-radius: 16px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.04);
-            margin-bottom: 32px;
         }
 
         .diagnosis-records-header {
@@ -1985,21 +1166,13 @@
             align-items: center;
             justify-content: space-between;
             padding: 20px 24px;
-            border-bottom: 1px solid rgba(0,0,0,0.06);
+            border-bottom: 1px solid var(--border);
         }
 
         .diagnosis-records-title {
             font-size: 16px;
             font-weight: 600;
-            color: #0a2540;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .diagnosis-records-title::before {
-            content: '📋';
-            font-size: 18px;
+            color: var(--slate);
         }
 
         .diagnosis-records-list {
@@ -2011,7 +1184,7 @@
             align-items: center;
             justify-content: space-between;
             padding: 16px 24px;
-            border-bottom: 1px solid rgba(0,0,0,0.04);
+            border-bottom: 1px solid var(--border);
             transition: background 0.2s;
         }
 
@@ -2020,7 +1193,7 @@
         }
 
         .diagnosis-record-item:hover {
-            background: #fafafa;
+            background: var(--bg);
         }
 
         .record-info {
@@ -2030,8 +1203,8 @@
         }
 
         .record-date {
-            font-size: 13px;
-            color: #64748b;
+            font-size: 14px;
+            color: var(--slate-light);
             min-width: 80px;
         }
 
@@ -2041,129 +1214,29 @@
             gap: 6px;
             font-size: 15px;
             font-weight: 500;
-            color: #0a2540;
+            color: var(--slate);
         }
 
         .record-action {
             font-size: 14px;
-            color: #635BFF;
+            color: var(--primary);
             cursor: pointer;
             font-weight: 500;
-            transition: all 0.2s;
-            padding: 6px 12px;
-            border-radius: 8px;
+            transition: opacity 0.2s;
         }
 
         .record-action:hover {
-            background: rgba(99, 91, 255, 0.08);
+            opacity: 0.7;
         }
 
-        /* 空状态设计 */
         .empty-records {
-            padding: 56px 24px;
+            padding: 48px 24px;
             text-align: center;
-        }
-
-        .empty-records-icon {
-            font-size: 64px;
-            margin-bottom: 16px;
-            opacity: 0.9;
-        }
-
-        .empty-records-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: #0a2540;
-            margin-bottom: 8px;
-        }
-
-        .empty-records-text {
+            color: var(--slate-light);
             font-size: 14px;
-            color: #64748b;
-            margin-bottom: 20px;
         }
 
-        .empty-records-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 20px;
-            background: linear-gradient(135deg, #635BFF, #7C3AED);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .empty-records-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(99, 91, 255, 0.3);
-        }
-
-        /* 底部操作按钮 */
-        .user-center-actions {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .action-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            padding: 16px 24px;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.25s ease;
-        }
-
-        .action-btn-mentor {
-            background: linear-gradient(135deg, #10B981, #059669);
-            color: white;
-            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
-        }
-
-        .action-btn-mentor:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.35);
-        }
-
-        .action-btn-diagnosis {
-            background: linear-gradient(135deg, #635BFF, #7C3AED);
-            color: white;
-            box-shadow: 0 2px 8px rgba(99, 91, 255, 0.25);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .action-btn-diagnosis::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .action-btn-diagnosis:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(99, 91, 255, 0.35);
-        }
-
-        .action-btn-diagnosis:hover::before {
-            left: 100%;
-        }
-
-        /* ========== 结果页 ========== *//* ========== 结果页 ========== */
+        /* ========== 结果页 ========== */
         .result-overlay {
             position: fixed;
             top: 0;
@@ -2524,62 +1597,223 @@
             background: linear-gradient(135deg, #059669, #047857) !important;
         }
 
-        
-        /* ========== 响应式 ========== */
+        /* ========== 考试倒计时标签 ========== */
+        .countdown-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: var(--urgent-bg);
+            color: var(--urgent);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+            border: 1px solid rgba(220, 38, 38, 0.15);
+            white-space: nowrap;
+        }
+
+        .countdown-badge .fire {
+            font-size: 11px;
+        }
+
         @media (max-width: 768px) {
-            .nav {
-                padding: 0 20px;
+            .countdown-badge {
+                font-size: 11px;
+                padding: 3px 8px;
             }
+        }
 
-            .nav-links {
-                display: none;
+        /* ========== 用户评价区 ========== */
+        .testimonials-section {
+            padding: 100px 40px;
+            background: var(--white);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 背景装饰光晕 */
+        .testimonials-section::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 800px;
+            height: 400px;
+            background: radial-gradient(ellipse at center, rgba(99, 91, 255, 0.04) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .testimonials-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .testimonials-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .testimonials-title {
+            font-size: 38px;
+            font-weight: 700;
+            color: var(--slate);
+            letter-spacing: -0.03em;
+            margin-bottom: 12px;
+        }
+
+        .testimonials-subtitle {
+            font-size: 16px;
+            color: var(--slate-muted);
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        @media (max-width: 900px) {
+            .testimonials-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
+        }
 
-            .nav-hamburger {
-                display: flex;
+        @media (max-width: 640px) {
+            .testimonials-grid {
+                grid-template-columns: 1fr;
+                max-width: 480px;
+                margin: 0 auto;
             }
+        }
 
-            .nav-link-user {
-                display: none;
-            }
+        .testimonial-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            position: relative;
+            transition: all 0.25s ease;
+            overflow: hidden;
+        }
 
-            .nav-cta {
-                display: none;
-            }
+        .testimonial-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        }
 
-            .nav-right {
-                gap: 8px;
-            }
+        /* 引号装饰 */
+        .testimonial-quote {
+            position: absolute;
+            bottom: 12px;
+            right: 16px;
+            font-size: 48px;
+            color: rgba(99, 91, 255, 0.08);
+            font-family: Georgia, serif;
+            line-height: 1;
+            pointer-events: none;
+        }
 
-            .hero {
-                padding: 100px 20px 60px;
-            }
+        .testimonial-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
 
-            .hero-title {
-                font-size: 32px;
-            }
+        .testimonial-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+            flex-shrink: 0;
+        }
 
-            .hero-subtitle {
-                font-size: 16px;
-            }
+        .testimonial-avatar.blue-purple { background: linear-gradient(135deg, #3B82F6, #8B5CF6); }
+        .testimonial-avatar.pink-orange { background: linear-gradient(135deg, #EC4899, #F97316); }
+        .testimonial-avatar.green-cyan { background: linear-gradient(135deg, #10B981, #06B6D4); }
+        .testimonial-avatar.purple-pink { background: linear-gradient(135deg, #8B5CF6, #EC4899); }
+        .testimonial-avatar.orange-yellow { background: linear-gradient(135deg, #F97316, #EAB308); }
+        .testimonial-avatar.cyan-blue { background: linear-gradient(135deg, #06B6D4, #3B82F6); }
 
-            .features-section {
+        .testimonial-user-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .testimonial-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--slate);
+            margin-bottom: 2px;
+        }
+
+        .testimonial-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .testimonial-school {
+            font-size: 12px;
+            color: var(--slate-muted);
+        }
+
+        .testimonial-tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 8px;
+            background: rgba(99, 91, 255, 0.08);
+            color: var(--primary);
+            font-size: 11px;
+            font-weight: 500;
+            border-radius: 4px;
+        }
+
+        .testimonial-stars {
+            display: flex;
+            gap: 2px;
+            margin-bottom: 12px;
+        }
+
+        .testimonial-star {
+            color: #FBBF24;
+            font-size: 14px;
+        }
+
+        .testimonial-text {
+            font-size: 14px;
+            color: var(--slate-light);
+            line-height: 1.7;
+            position: relative;
+            z-index: 1;
+        }
+
+        @media (max-width: 768px) {
+            .testimonials-section {
                 padding: 60px 20px;
             }
 
-            .features-title {
+            .testimonials-title {
                 font-size: 28px;
             }
 
-            .section {
-                padding: 60px 20px;
-            }
-
-            .section-title {
-                font-size: 24px;
+            .testimonials-header {
+                margin-bottom: 40px;
             }
         }
-@media (max-width: 768px) {
+
+        /* ========== 响应式 ========== */
+        @media (max-width: 768px) {
             .nav {
                 padding: 0 20px;
             }
@@ -2630,34 +1864,6 @@
 
             .user-center {
                 padding: 60px 20px;
-            }
-
-            .user-center-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 16px;
-            }
-
-            .user-center-link {
-                width: 100%;
-                justify-content: center;
-            }
-
-            .quick-actions {
-                grid-template-columns: 1fr;
-                gap: 12px;
-            }
-
-            .record-info {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 4px;
-            }
-
-            .diagnosis-progress-ring {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 8px;
             }
 
             .user-center-header {
@@ -2715,58 +1921,46 @@
     <!-- 管理员入口（隐藏路径） -->
     <a href="/admin-activate-cet4" class="admin-link" target="_blank">admin</a>
 
-    <!-- 导航（Stripe风格） -->
+    <!-- 导航 -->
     <nav class="nav" id="nav">
         <div class="nav-left">
-            <div class="nav-logo" onclick="switchView('home')">
+            <div class="nav-logo" onclick="switchView(`home`)">
                 <div class="nav-logo-icon">CET</div>
                 <span>四级备考搭子</span>
             </div>
             <div class="nav-links">
                 <a href="#features" class="nav-link">功能</a>
                 <a href="#personalities" class="nav-link">人格</a>
+                <a href="#testimonials" class="nav-link">评价</a>
                 <a href="#pricing" class="nav-link">定价</a>
                 <a href="#faq" class="nav-link">FAQ</a>
             </div>
         </div>
         <div class="nav-right">
-            <a href="#" class="nav-link-user" onclick="switchView('user'); return false;">登录</a>
+            <span class="countdown-badge" id="countdownBadge">
+                <span class="fire">🔥</span>
+                <span id="countdownText">距四级仅 XX 天</span>
+            </span>
+            <a href="#" class="nav-link-user" onclick="switchView(`user`); return false;">登录</a>
             <button class="btn-primary nav-cta" onclick="openChat('diagnosis')">开始诊断</button>
-            <button class="nav-hamburger" id="navHamburger" onclick="toggleMobileMenu()">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
         </div>
     </nav>
 
-    <!-- 移动端菜单 -->
-    <div class="nav-mobile-menu" id="navMobileMenu">
-        <a href="#features" class="nav-link" onclick="closeMobileMenu()">功能</a>
-        <a href="#personalities" class="nav-link" onclick="closeMobileMenu()">人格</a>
-        <a href="#pricing" class="nav-link" onclick="closeMobileMenu()">定价</a>
-        <a href="#faq" class="nav-link" onclick="closeMobileMenu()">FAQ</a>
-        <a href="#" class="nav-link-user" onclick="switchView('user'); closeMobileMenu(); return false;">我的</a>
-        <button class="btn-primary nav-cta" onclick="openChat('diagnosis'); closeMobileMenu();">开始诊断</button>
-    </div>
-
-<!-- 首页视图 -->
+    <!-- 首页视图 -->
     <div id="home-view">
-        <!-- Hero区 - Vercel风格 -->
+        <!-- Hero区 -->
         <section class="hero" id="hero">
             <div class="hero-container">
                 <!-- 左侧文字内容 -->
                 <div class="hero-content">
                     <div class="hero-badge animate-in delay-1">
-                        <span class="hero-badge-icon">✨</span>
-                        <span>AI驱动的新型备考方式</span>
+                        <span class="hero-badge-dot"></span>
+                        AI驱动的新型备考方式
                     </div>
-                    <h1 class="hero-title animate-in delay-2">
-                        测出你的<span class="hero-title-gradient">备考DNA</span>
-                    </h1>
+                    <h1 class="hero-title animate-in delay-2">测出你的四级备考DNA</h1>
                     <p class="hero-subtitle animate-in delay-3">3分钟AI对话诊断，精准识别你的备考短板，找到最适合你的备考方式</p>
                     <div class="hero-actions animate-in delay-4">
-                        <button class="btn-primary btn-shimmer" onclick="openChat('diagnosis')">
+                        <button class="btn-primary" onclick="openChat('diagnosis')">
                             开始免费诊断
                             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M3 8h10M9 4l4 4-4 4"/>
@@ -2774,187 +1968,130 @@
                         </button>
                     </div>
                     <div class="hero-trust animate-in delay-5">
-                        <span class="hero-trust-item">
-                            <span class="hero-trust-icon">⚡</span>
-                            <span>2min快速诊断</span>
-                        </span>
+                        <span class="hero-trust-item">2min快速诊断</span>
                         <span class="hero-trust-divider"></span>
-                        <span class="hero-trust-item">
-                            <span class="hero-trust-icon">🎯</span>
-                            <span>5维精准分析</span>
-                        </span>
+                        <span class="hero-trust-item">5维精准分析</span>
                         <span class="hero-trust-divider"></span>
-                        <span class="hero-trust-item">
-                            <span class="hero-trust-icon">🧬</span>
-                            <span>8种人格类型</span>
-                        </span>
+                        <span class="hero-trust-item">8种人格类型</span>
                     </div>
                 </div>
 
                 <!-- 右侧对话预览 -->
                 <div class="hero-visual animate-in delay-3">
-                    <!-- 浮动装饰元素 -->
-                    <div class="floating-element floating-radar">
-                        <canvas id="heroRadarCanvas" width="130" height="130"></canvas>
-                    </div>
-                    <div class="floating-element floating-progress">
-                        <div class="floating-progress-label">学习进度</div>
-                        <div class="floating-progress-bar">
-                            <div class="floating-progress-fill"></div>
-                        </div>
-                        <div class="floating-progress-value">67%</div>
-                    </div>
-                    <div class="floating-element floating-ai-tag">
-                        <span>AI-powered</span>
-                    </div>
-
-                    <!-- 主对话卡片 -->
-                    <div class="chat-preview-wrapper">
-                        <div class="chat-preview">
-                            <div class="chat-preview-header">
-                                <div class="chat-preview-avatar">🤖</div>
-                                <div class="chat-preview-info">
-                                    <div class="chat-preview-name">四级备考诊断师</div>
-                                    <div class="chat-preview-status">在线 · 随时为你服务</div>
-                                </div>
+                    <div class="chat-preview">
+                        <div class="chat-preview-header">
+                            <div class="chat-preview-avatar">🤖</div>
+                            <div class="chat-preview-info">
+                                <div class="chat-preview-name">四级备考诊断师</div>
+                                <div class="chat-preview-status">在线 · 随时为你服务</div>
                             </div>
-                            <div class="chat-preview-body">
-                                <div class="chat-bubble bot">
-                                    <div class="chat-avatar">🤖</div>
-                                    <div class="chat-text">四级阅读里，你最怕遇到哪种题型？😏</div>
-                                </div>
-                                <div class="chat-bubble user">
-                                    <div class="chat-text">我最怕同义替换，每次都选错 😩</div>
-                                </div>
-                                <div class="chat-bubble bot">
-                                    <div class="chat-avatar">🤖</div>
-                                    <div class="chat-text">哈哈，你的"换词雷达"需要升级了！来，我们测测看～</div>
-                                </div>
-                                <div class="chat-bubble user">
-                                    <div class="chat-text">好呀，开始吧！</div>
-                                </div>
-                                <div class="chat-bubble bot">
-                                    <div class="chat-avatar">🤖</div>
-                                    <div class="chat-text">那听力呢？你平时是怎么练听力的？<span class="chat-cursor"></span></div>
-                                </div>
+                        </div>
+                        <div class="chat-preview-body">
+                            <div class="chat-bubble bot">
+                                <div class="chat-avatar">🤖</div>
+                                <div class="chat-text">四级阅读里，你最怕遇到哪种题型？😏</div>
+                            </div>
+                            <div class="chat-bubble user">
+                                <div class="chat-text">我最怕同义替换，每次都选错 😩</div>
+                            </div>
+                            <div class="chat-bubble bot">
+                                <div class="chat-avatar">🤖</div>
+                                <div class="chat-text">哈哈，你的"换词雷达"需要升级了！来，我们测测看～</div>
+                            </div>
+                            <div class="chat-bubble user">
+                                <div class="chat-text">好呀，开始吧！</div>
+                            </div>
+                            <div class="chat-bubble bot">
+                                <div class="chat-avatar">🤖</div>
+                                <div class="chat-text">那听力呢？你平时是怎么练听力的？<span class="chat-cursor"></span></div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
-<section class="features-section" id="features">
+
+        <!-- 功能卡片区 -->
+        <section class="features-section" id="features">
             <div class="features-container">
                 <div class="features-header">
                     <h2 class="features-title animate-in">AI驱动的备考，不止是刷题</h2>
                     <p class="features-subtitle animate-in delay-1">从诊断到提分，每一步都有AI陪伴</p>
                 </div>
 
-                <div class="features-grid" id="featuresGrid">
-                    <!-- 卡片1: AI对话诊断 -->
-                    <div class="feature-card" data-animate="true">
-                        <span class="feature-tag">AI诊断</span>
-                        <div class="feature-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-                                <circle cx="12" cy="10" r="1" fill="currentColor" stroke="none"/>
-                                <circle cx="8" cy="10" r="1" fill="currentColor" stroke="none"/>
-                                <circle cx="16" cy="10" r="1" fill="currentColor" stroke="none"/>
-                            </svg>
-                        </div>
-                        <h3 class="feature-title">AI对话诊断</h3>
-                        <p class="feature-desc">3分钟聊天，AI精准识别你的备考短板，发现专属你的备考人格</p>
-                        <div class="feature-preview">
-                            <div class="radar-preview">
-                                <canvas id="featureRadarCanvas" width="300" height="300"></canvas>
-                                <div class="radar-labels">
-                                    <span class="radar-label" style="top: 3%; left: 50%;">听力</span>
-                                    <span class="radar-label" style="top: 26%; left: 90%;">阅读</span>
-                                    <span class="radar-label" style="top: 74%; left: 90%;">写作</span>
-                                    <span class="radar-label" style="top: 26%; left: 10%;">翻译</span>
-                                    <span class="radar-label" style="top: 74%; left: 10%;">词汇</span>
+                <div class="features-grid">
+                    <!-- 诊断卡片 -->
+                    <div class="feature-card animate-in delay-2">
+                        <div class="feature-card-accent purple"></div>
+                        <div class="feature-card-content">
+                            <div class="feature-icon">💬</div>
+                            <h3 class="feature-title">AI对话诊断</h3>
+                            <p class="feature-desc">3分钟聊天，AI精准识别你的备考短板，发现专属你的备考人格</p>
+                            <div class="feature-preview">
+                                <div class="radar-preview">
+                                    <svg viewBox="0 0 100 100">
+                                        <!-- 背景网格 -->
+                                        <polygon points="50,15 79,32 79,68 50,85 21,68 21,32" fill="none" stroke="#E5E7EB" stroke-width="1"/>
+                                        <polygon points="50,25 71,37 71,63 50,75 29,63 29,37" fill="none" stroke="#E5E7EB" stroke-width="1"/>
+                                        <polygon points="50,35 64,42 64,58 50,65 36,58 36,42" fill="none" stroke="#E5E7EB" stroke-width="1"/>
+                                        <!-- 数据区域 -->
+                                        <polygon points="50,20 78,35 65,60 45,70 30,45 35,30" fill="rgba(99,91,255,0.2)" stroke="#635BFF" stroke-width="2"/>
+                                        <!-- 顶点 -->
+                                        <circle cx="50" cy="20" r="3" fill="#635BFF"/>
+                                        <circle cx="78" cy="35" r="3" fill="#635BFF"/>
+                                        <circle cx="65" cy="60" r="3" fill="#635BFF"/>
+                                        <circle cx="45" cy="70" r="3" fill="#635BFF"/>
+                                        <circle cx="30" cy="45" r="3" fill="#635BFF"/>
+                                    </svg>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- 卡片2: 智能备考计划 -->
-                    <div class="feature-card" data-animate="true">
-                        <span class="feature-tag">AI计划</span>
-                        <div class="feature-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="12" cy="12" r="10"/>
-                                <circle cx="12" cy="12" r="6"/>
-                                <circle cx="12" cy="12" r="2"/>
-                                <line x1="12" y1="2" x2="12" y2="4"/>
-                                <line x1="12" y1="20" x2="12" y2="22"/>
-                                <line x1="2" y1="12" x2="4" y2="12"/>
-                                <line x1="20" y1="12" x2="22" y2="12"/>
-                            </svg>
-                        </div>
-                        <h3 class="feature-title">智能备考计划</h3>
-                        <p class="feature-desc">根据你的弱项，AI定制30天冲刺方案，每天精准练习</p>
-                        <div class="feature-preview">
-                            <div class="progress-preview">
-                                <div class="progress-header">
-                                    <span class="progress-label">今日进度</span>
-                                    <span class="progress-value" id="progressValue">0%</span>
-                                </div>
-                                <div class="progress-bar-container">
-                                    <div class="progress-bar" id="progressBar"></div>
-                                </div>
-                                <div class="progress-items">
-                                    <span class="progress-item">听力专项</span>
-                                    <span class="progress-item">阅读强化</span>
-                                    <span class="progress-item">作文练习</span>
+                    <!-- 训练卡片 -->
+                    <div class="feature-card animate-in delay-3">
+                        <div class="feature-card-accent green"></div>
+                        <div class="feature-card-content">
+                            <div class="feature-icon">🎯</div>
+                            <h3 class="feature-title">智能备考计划</h3>
+                            <p class="feature-desc">根据你的弱项，AI定制30天冲刺方案，每天精准练习</p>
+                            <div class="feature-preview">
+                                <div class="progress-preview">
+                                    <div class="progress-label">
+                                        <span>今日进度</span>
+                                        <span>67%</span>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 67%"></div>
+                                    </div>
+                                    <div class="progress-items">
+                                        <span>听力专项</span>
+                                        <span>阅读强化</span>
+                                        <span>作文练习</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- 卡片3: 实战模拟提分 -->
-                    <div class="feature-card" data-animate="true">
-                        <span class="feature-tag">AI提分</span>
-                        <div class="feature-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-                            </svg>
-                        </div>
-                        <h3 class="feature-title">实战模拟提分</h3>
-                        <p class="feature-desc">全真模拟+AI作文批改，针对性突破瓶颈，快速提分</p>
-                        <div class="feature-preview">
-                            <div class="score-preview">
-                                <!-- SVG渐变定义 -->
-                                <svg width="0" height="0" style="position:absolute;">
-                                    <defs>
-                                        <linearGradient id="arrowGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                            <stop offset="0%" stop-color="#22c55e"/>
-                                            <stop offset="100%" stop-color="#f97316"/>
-                                        </linearGradient>
-                                        <linearGradient id="sparklineGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                                            <stop offset="0%" stop-color="#22c55e"/>
-                                            <stop offset="100%" stop-color="transparent"/>
-                                        </linearGradient>
-                                    </defs>
-                                </svg>
-                                <div class="score-box score-from">
-                                    <div class="score-value" id="scoreFrom">0</div>
-                                    <div class="score-label">诊断时</div>
-                                </div>
-                                <div class="score-arrow">
-                                    <svg viewBox="0 0 24 24" fill="none">
-                                        <path class="arrow-gradient" d="M5 12h14M13 5l7 7-7 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                </div>
-                                <div class="score-box score-to">
-                                    <div class="score-value" id="scoreTo">0</div>
-                                    <div class="score-label">目标分数</div>
-                                </div>
-                                <div class="score-sparkline">
-                                    <svg viewBox="0 0 200 40" preserveAspectRatio="none">
-                                        <path class="sparkline-area" d="M0,35 L20,28 L50,30 L80,20 L110,22 L140,10 L170,12 L200,3 L200,40 L0,40 Z"/>
-                                        <path class="sparkline-path" d="M0,35 L20,28 L50,30 L80,20 L110,22 L140,10 L170,12 L200,3"/>
-                                    </svg>
+                    <!-- 提分卡片 -->
+                    <div class="feature-card animate-in delay-4">
+                        <div class="feature-card-accent yellow"></div>
+                        <div class="feature-card-content">
+                            <div class="feature-icon">📈</div>
+                            <h3 class="feature-title">实战模拟提分</h3>
+                            <p class="feature-desc">全真模拟+AI作文批改，针对性突破瓶颈，快速提分</p>
+                            <div class="feature-preview">
+                                <div class="score-preview">
+                                    <div class="score-from">
+                                        <div class="score-value">380</div>
+                                        <div class="score-label">诊断时</div>
+                                    </div>
+                                    <div class="score-arrow">→</div>
+                                    <div class="score-to">
+                                        <div class="score-value">520</div>
+                                        <div class="score-label">目标分数</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -2963,7 +2100,7 @@
             </div>
         </section>
 
-
+        <!-- 人格预览区 -->
         <section class="section" id="personalities">
             <div class="section-header">
                 <h2 class="section-title animate-in">8种备考人格，你是哪一种？</h2>
@@ -2975,11 +2112,160 @@
             </div>
         </section>
 
-        <!-- 定价区 - Stripe/Vercel高级风格 -->
+        <!-- 用户评价区 -->
+        <section class="testimonials-section" id="testimonials">
+            <div class="testimonials-container">
+                <div class="testimonials-header">
+                    <h2 class="testimonials-title animate-in">他们在用之后，都过了</h2>
+                    <p class="testimonials-subtitle animate-in delay-1">来自真实用户的评价</p>
+                </div>
+                
+                <div class="testimonials-grid">
+                    <!-- 评价1 -->
+                    <div class="testimonial-card animate-in delay-2">
+                        <div class="testimonial-quote">❝</div>
+                        <div class="testimonial-header">
+                            <div class="testimonial-avatar blue-purple">小</div>
+                            <div class="testimonial-user-info">
+                                <div class="testimonial-name">小A</div>
+                                <div class="testimonial-meta">
+                                    <span class="testimonial-school">福建某高校</span>
+                                    <span class="testimonial-tag">冲刺版用户</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonial-stars">
+                            <span class="testimonial-star">★</span>
+                            <span class="testimonial-star">★</span>
+                            <span class="testimonial-star">★</span>
+                            <span class="testimonial-star">★</span>
+                            <span class="testimonial-star">★</span>
+                        </div>
+                        <p class="testimonial-text">诊断说我是什么"吗喽型选手"笑死，但说的确实是我😭 按AI给的计划练了两周，阅读从错8个到错3个</p>
+                    </div>
+
+                    <!-- 评价2 -->
+                    <div class="testimonial-card animate-in delay-3">
+                        <div class="testimonial-quote">❝</div>
+                        <div class="testimonial-header">
+                            <div class="testimonial-avatar pink-orange">匿</div>
+                            <div class="testimonial-user-info">
+                                <div class="testimonial-name">匿名</div>
+                                <div class="testimonial-meta">
+                                    <span class="testimonial-school">湖南某高校</span>
+                                    <span class="testimonial-tag">详细报告</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonial-stars">
+                            <span class="testimonial-star">★</span>
+                            <span class="testimonial-star">★</span>
+                            <span class="testimonial-star">★</span>
+                            <span class="testimonial-star">★</span>
+                            <span class="testimonial-star">★</span>
+                        </div>
+                        <p class="testimonial-text">¥1的报告比我想象的详细多了，五维分析很准，知道自己弱在哪终于不用瞎刷题了</p>
+                    </div>
+
+                    <!-- 评价3 -->
+                    <div class="testimonial-card animate-in delay-4">
+                        <div class="testimonial-quote">❝</div>
+                        <div class="testimonial-header">
+                            <div class="testimonial-avatar green-cyan">阿</div>
+                            <div class="testimonial-user-info">
+                                <div class="testimonial-name">阿杰</div>
+                                <div class="testimonial-meta">
+                                    <span class="testimonial-school">山东某高校</span>
+                                    <span class="testimonial-tag">旗舰版用户</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonial-stars">
+                            <span class="testimonial-star">★</span>
+                            <span class="testimonial-star">★</span>
+                            <span class="testimonial-star">★</span>
+                            <span class="testimonial-star">★</span>
+                            <span class="testimonial-star">★</span>
+                        </div>
+                        <p class="testimonial-text">旗舰版AI批改作文真的绝，比我英专室友改得还细，语法错误一个不漏</p>
+                    </div>
+
+                    <!-- 评价4 -->
+                    <div class="testimonial-card animate-in delay-5">
+                        <div class="testimonial-quote">❝</div>
+                        <div class="testimonial-header">
+                            <div class="testimonial-avatar purple-pink">小</div>
+                            <div class="testimonial-user-info">
+                                <div class="testimonial-name">小鱼</div>
+                                <div class="testimonial-meta">
+                                    <span class="testimonial-school">四川某高校</span>
+                                    <span class="testimonial-tag">免费版用户</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonial-stars">
+                            <span class="testimonial-star">★</span>
+                            <span class="testimonial-star">★</span>
+                            <span class="testimonial-star">★</span>
+                            <span class="testimonial-star">★</span>
+                            <span class="testimonial-star">★</span>
+                        </div>
+                        <p class="testimonial-text">人格卡太好玩了，室友都来测了，我们宿舍4个人4种人格哈哈</p>
+                    </div>
+
+                    <!-- 评价5 -->
+                    <div class="testimonial-card animate-in">
+                        <div class="testimonial-quote">❝</div>
+                        <div class="testimonial-header">
+                            <div class="testimonial-avatar orange-yellow">匿</div>
+                            <div class="testimonial-user-info">
+                                <div class="testimonial-name">匿名</div>
+                                <div class="testimonial-meta">
+                                    <span class="testimonial-school">广东某高校</span>
+                                    <span class="testimonial-tag">冲刺版用户</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonial-stars">
+                            <span class="testimonial-star">★</span>
+                            <span class="testimonial-star">★</span>
+                            <span class="testimonial-star">★</span>
+                            <span class="testimonial-star">★</span>
+                            <span class="testimonial-star">★</span>
+                        </div>
+                        <p class="testimonial-text">之前裸考3次都没过，用了冲刺版30天计划，这次终于425过了！</p>
+                    </div>
+
+                    <!-- 评价6 -->
+                    <div class="testimonial-card animate-in">
+                        <div class="testimonial-quote">❝</div>
+                        <div class="testimonial-header">
+                            <div class="testimonial-avatar cyan-blue">小</div>
+                            <div class="testimonial-user-info">
+                                <div class="testimonial-name">小李</div>
+                                <div class="testimonial-meta">
+                                    <span class="testimonial-school">河南某高校</span>
+                                    <span class="testimonial-tag">冲刺版用户</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonial-stars">
+                            <span class="testimonial-star">★</span>
+                            <span class="testimonial-star">★</span>
+                            <span class="testimonial-star">★</span>
+                            <span class="testimonial-star">★</span>
+                            <span class="testimonial-star">★</span>
+                        </div>
+                        <p class="testimonial-text">本来觉得¥49有点贵，但AI答疑真的省了很多查资料的时间，比自己闷头学效率高</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 定价区 - Coze风格 -->
         <section class="pricing-section" id="pricing">
             <div class="section-header">
                 <h2 class="section-title animate-in">选择你的备考方案</h2>
-                <p class="pricing-subtitle">从免费诊断到全程陪练，选最适合你的</p>
             </div>
             
             <div class="pricing-grid" id="pricingGrid">
@@ -3004,14 +2290,12 @@
         </footer>
     </div>
 
-        <!-- 用户中心视图 -->
+    <!-- 用户中心视图 -->
     <div id="user-center-view" style="display: none;">
         <section class="user-center">
             <div class="user-center-header">
                 <h1 class="user-center-title">我的账户</h1>
-                <a href="#" class="user-center-link" onclick="switchView('home'); return false;">
-                    ← 返回首页
-                </a>
+                <a href="#" class="user-center-link" onclick="switchView(`home`); return false;">← 返回首页</a>
             </div>
 
             <!-- 状态卡片 -->
@@ -3027,35 +2311,9 @@
                 <div class="status-card">
                     <div class="status-card-label">备考数据</div>
                     <div class="status-card-value" id="lastDiagnosisDisplay">
-                        <div class="diagnosis-progress-ring">
-                            <div class="progress-ring-circle">
-                                <svg viewBox="0 0 48 48">
-                                    <circle class="progress-ring-bg" cx="24" cy="24" r="20"/>
-                                    <circle class="progress-ring-fill" cx="24" cy="24" r="20" 
-                                            stroke-dasharray="125.6" stroke-dashoffset="125.6" id="progressRing"/>
-                                </svg>
-                                <span class="progress-ring-text" id="progressText">0/3</span>
-                            </div>
-                            <span id="diagnosisStatus">尚未完成诊断</span>
-                        </div>
+                        <span>尚未完成诊断</span>
                     </div>
                     <div class="status-card-meta" id="diagnosisCountDisplay">诊断次数：0次</div>
-                </div>
-            </div>
-
-            <!-- 快速操作区 -->
-            <div class="quick-actions">
-                <div class="quick-action-card" onclick="switchView('home'); setTimeout(() => document.getElementById('chatContainer').scrollIntoView({behavior: 'smooth'}), 100);">
-                    <div class="quick-action-icon">📊</div>
-                    <div class="quick-action-text">查看报告</div>
-                </div>
-                <div class="quick-action-card" onclick="handleMentorChat()">
-                    <div class="quick-action-icon">💬</div>
-                    <div class="quick-action-text">问学长</div>
-                </div>
-                <div class="quick-action-card" onclick="openChat('upgrade')">
-                    <div class="quick-action-icon">⬆️</div>
-                    <div class="quick-action-text">升级套餐</div>
                 </div>
             </div>
 
@@ -3065,23 +2323,19 @@
                     <span class="diagnosis-records-title">诊断记录</span>
                 </div>
                 <ul class="diagnosis-records-list" id="diagnosisRecordsList">
-                    <li class="empty-records">
-                        <div class="empty-records-icon">🎯</div>
-                        <div class="empty-records-title">还没有诊断记录</div>
-                        <div class="empty-records-text">完成首次诊断，解锁你的备考人格</div>
-                        <button class="empty-records-btn" onclick="switchView('home'); setTimeout(() => openChat('diagnosis'), 300);">
-                            开始诊断 🚀
-                        </button>
-                    </li>
+                    <li class="empty-records">暂无诊断记录，开始你的第一次诊断吧</li>
                 </ul>
             </div>
 
-            <!-- 底部操作按钮 -->
-            <div class="user-center-actions">
-                <button class="action-btn action-btn-mentor" onclick="handleMentorChat()" id="mentorChatBtn">
+            <!-- 聊天按钮区域 -->
+            <div style="text-align: center; margin-top: 24px;">
+                <button class="btn-primary" onclick="handleMentorChat()" id="mentorChatBtn" style="background: linear-gradient(135deg, #10B981, #059669);">
                     🤝 和学长聊天
                 </button>
-                <button class="action-btn action-btn-diagnosis" onclick="switchView('home'); setTimeout(() => openChat('diagnosis'), 300);">
+            </div>
+
+            <div style="text-align: center; margin-top: 16px;">
+                <button class="btn-primary" onclick="switchView(`home`); setTimeout(() => openChat('diagnosis'), 300);">
                     开始新诊断
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M3 8h10M9 4l4 4-4 4"/>
@@ -3089,7 +2343,9 @@
                 </button>
             </div>
         </section>
-    </div><!-- 结果页 -->
+    </div>
+
+    <!-- 结果页 -->
     <div class="result-overlay" id="resultOverlay">
         <div class="result-bg"></div>
         <div class="result-content">
@@ -3126,6 +2382,22 @@
     <canvas id="cardCanvas" class="personality-card-canvas" width="750" height="1334"></canvas>
 
     <script>
+        /* ========== 考试倒计时 ========== */
+        function updateCountdown() {
+            const examDate = new Date('2026-06-13');
+            const now = new Date();
+            const daysLeft = Math.ceil((examDate - now) / (1000 * 60 * 60 * 24));
+            const countdownText = document.getElementById('countdownText');
+            if (countdownText) {
+                countdownText.textContent = `距四级仅 ${daysLeft} 天`;
+            }
+        }
+        
+        // 初始化倒计时
+        updateCountdown();
+        // 每小时更新一次
+        setInterval(updateCountdown, 60 * 60 * 1000);
+
         /* ========== 数据定义 ========== */
         
         // 8种人格数据
@@ -3611,50 +2883,27 @@
             `;
             planMeta.textContent = isPaid ? "已解锁全部功能" : "基础功能可用";
 
-            // 更新备考数据 - 进度环
+            // 更新备考数据
+            const lastDiagnosisDisplay = document.getElementById("lastDiagnosisDisplay");
             const diagnosisCountDisplay = document.getElementById("diagnosisCountDisplay");
-            const progressRing = document.getElementById("progressRing");
-            const progressText = document.getElementById("progressText");
-            const diagnosisStatus = document.getElementById("diagnosisStatus");
 
-            const maxDiagnoses = isPaid ? 999 : 3;
-            const currentCount = data.diagnoseCount || 0;
-            const circumference = 2 * Math.PI * 20; // r=20
-            const progress = isPaid ? 1 : Math.min(currentCount / 3, 1);
-            const offset = circumference * (1 - progress);
+            diagnosisCountDisplay.textContent = `诊断次数：${data.diagnoseCount}次`;
 
-            if (progressRing) {
-                progressRing.style.strokeDashoffset = offset;
-            }
-            if (progressText) {
-                progressText.textContent = isPaid ? "∞" : `${currentCount}/3`;
-            }
-            if (diagnosisCountDisplay) {
-                diagnosisCountDisplay.textContent = `诊断次数：${currentCount}次`;
-            }
-            if (diagnosisStatus) {
-                if (currentCount > 0) {
-                    const last = data.diagnoses[0];
-                    diagnosisStatus.innerHTML = `<span style="font-size: 16px;">${last.emoji}</span> <span style="font-weight: 600;">${last.type}</span>`;
-                } else {
-                    diagnosisStatus.textContent = "快去测测你的备考人格吧";
-                }
+            if (data.diagnoses.length > 0) {
+                const last = data.diagnoses[0];
+                lastDiagnosisDisplay.innerHTML = `
+                    <span>${last.emoji}</span>
+                    <span>${last.type}</span>
+                `;
+            } else {
+                lastDiagnosisDisplay.innerHTML = `<span>尚未完成诊断</span>`;
             }
 
             // 更新诊断记录列表
             const recordsList = document.getElementById("diagnosisRecordsList");
             
             if (data.diagnoses.length === 0) {
-                recordsList.innerHTML = `
-                    <li class="empty-records">
-                        <div class="empty-records-icon">🎯</div>
-                        <div class="empty-records-title">还没有诊断记录</div>
-                        <div class="empty-records-text">完成首次诊断，解锁你的备考人格</div>
-                        <button class="empty-records-btn" onclick="switchView('home'); setTimeout(() => openChat('diagnosis'), 300);">
-                            开始诊断 🚀
-                        </button>
-                    </li>
-                `;
+                recordsList.innerHTML = `<li class="empty-records">暂无诊断记录，开始你的第一次诊断吧</li>`;
             } else {
                 recordsList.innerHTML = data.diagnoses.slice(0, 3).map(d => `
                     <li class="diagnosis-record-item">
@@ -3670,6 +2919,7 @@
             // 更新学长聊天按钮
             updateMentorChatButton();
         }
+
         function viewDiagnosisReport(type) {
             const data = getUserData();
             const diagnosis = data.diagnoses.find(d => d.type === type);
@@ -3768,29 +3018,27 @@
                     badgeHtml = `<span class="plan-badge-current">当前</span>`;
                 }
 
-                let cardClass = `plan-card animate-in delay-${i % 4 + 1}`;
+                let cardClass = "plan-card";
                 if (plan.isRecommended) cardClass += " recommended";
+                if (isCurrent) cardClass += " current-plan";
 
                 let originalPriceHtml = "";
                 if (plan.originalPrice) {
                     originalPriceHtml = `<div class="plan-original-price">${plan.originalPrice}</div>`;
                 }
 
-                let flagshipBadge = "";
-
                 return `
-                    <div class="${cardClass}" data-plan="${plan.id}">
+                    <div class="${cardClass} animate-in delay-${i % 4 + 1}">
                         ${badgeHtml}
                         <div class="plan-name">${plan.name}</div>
                         <div class="plan-price-wrapper">
-                            <div class="plan-price ${plan.priceClass || ''}">${plan.price === "¥0" ? "免费" : plan.price}</div>
+                            <div class="plan-price ${plan.priceClass}">${plan.price === "¥0" ? "免费" : plan.price}</div>
                             ${originalPriceHtml}
                         </div>
                         <ul class="plan-features">
                             ${plan.features.map(f => `<li>${f}</li>`).join("")}
                         </ul>
                         <button class="btn-plan ${btnClass}" ${isCurrent ? "disabled" : `onclick="handlePlanClick('${plan.id}')"`}>${btnText}</button>
-                        ${flagshipBadge}
                     </div>
                 `;
             }).join("");
@@ -4046,7 +3294,7 @@
 
             planName.textContent = planDisplayNames[orderData.plan] || orderData.plan;
             amount.innerHTML = `¥${orderData.amount}<small>`;
-            qrImg.src = '/wechat-qr.jpg';
+            qrImg.src = orderData.wechatQrUrl || 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=wechat-pay';
             orderId.textContent = orderData.orderId;
             status.innerHTML = '';
             status.className = 'payment-status';
@@ -4154,426 +3402,6 @@
 
         /* ========== 页面加载完成后初始化 ========== */
         document.addEventListener("DOMContentLoaded", initPage);
-    
-        /* ========== 动态功能卡片动画 ========== */
-        
-        // 雷达图数据
-        const radarTargetValues = [0.85, 0.72, 0.68, 0.55, 0.78]; // 5个维度的目标值
-        const radarLabels = ['听力', '阅读', '写作', '翻译', '词汇'];
-        const radarColor = '#7C3AED';
-        
-        // 绘制雷达图
-        function drawRadarChart(canvas, values, color) {
-            const ctx = canvas.getContext('2d');
-            const dpr = window.devicePixelRatio || 1;
-            const width = 140;
-            const height = 140;
-            
-            canvas.width = width * dpr;
-            canvas.height = height * dpr;
-            canvas.style.width = width + 'px';
-            canvas.style.height = height + 'px';
-            ctx.scale(dpr, dpr);
-            
-            const centerX = width / 2;
-            const centerY = height / 2;
-            const maxRadius = 55;
-            const levels = 3;
-            const angleStep = (Math.PI * 2) / 5;
-            const startAngle = -Math.PI / 2;
-            
-            // 清除画布
-            ctx.clearRect(0, 0, width, height);
-            
-            // 绘制背景网格
-            for (let i = 1; i <= levels; i++) {
-                const radius = (maxRadius / levels) * i;
-                ctx.beginPath();
-                for (let j = 0; j <= 5; j++) {
-                    const angle = startAngle + j * angleStep;
-                    const x = centerX + Math.cos(angle) * radius;
-                    const y = centerY + Math.sin(angle) * radius;
-                    if (j === 0) {
-                        ctx.moveTo(x, y);
-                    } else {
-                        ctx.lineTo(x, y);
-                    }
-                }
-                ctx.closePath();
-                ctx.strokeStyle = '#E5E7EB';
-                ctx.lineWidth = 1;
-                ctx.stroke();
-            }
-            
-            // 绘制轴线
-            for (let i = 0; i < 5; i++) {
-                const angle = startAngle + i * angleStep;
-                const x = centerX + Math.cos(angle) * maxRadius;
-                const y = centerY + Math.sin(angle) * maxRadius;
-                ctx.beginPath();
-                ctx.moveTo(centerX, centerY);
-                ctx.lineTo(x, y);
-                ctx.strokeStyle = '#E5E7EB';
-                ctx.lineWidth = 1;
-                ctx.stroke();
-            }
-            
-            // 绘制数据区域（带动画）
-            function animateData(progress) {
-                ctx.clearRect(0, 0, width, height);
-                
-                // 重新绘制网格
-                for (let i = 1; i <= levels; i++) {
-                    const radius = (maxRadius / levels) * i;
-                    ctx.beginPath();
-                    for (let j = 0; j <= 5; j++) {
-                        const angle = startAngle + j * angleStep;
-                        const x = centerX + Math.cos(angle) * radius;
-                        const y = centerY + Math.sin(angle) * radius;
-                        if (j === 0) {
-                            ctx.moveTo(x, y);
-                        } else {
-                            ctx.lineTo(x, y);
-                        }
-                    }
-                    ctx.closePath();
-                    ctx.strokeStyle = '#E5E7EB';
-                    ctx.lineWidth = 1;
-                    ctx.stroke();
-                }
-                
-                // 重新绘制轴线
-                for (let i = 0; i < 5; i++) {
-                    const angle = startAngle + i * angleStep;
-                    const x = centerX + Math.cos(angle) * maxRadius;
-                    const y = centerY + Math.sin(angle) * maxRadius;
-                    ctx.beginPath();
-                    ctx.moveTo(centerX, centerY);
-                    ctx.lineTo(x, y);
-                    ctx.strokeStyle = '#E5E7EB';
-                    ctx.lineWidth = 1;
-                    ctx.stroke();
-                }
-                
-                // 应用缓动效果
-                const easedProgress = 1 - Math.pow(1 - progress, 3); // ease-out cubic
-                
-                // 绘制数据区域
-                ctx.beginPath();
-                for (let i = 0; i < 5; i++) {
-                    const angle = startAngle + i * angleStep;
-                    const value = values[i] * easedProgress;
-                    const x = centerX + Math.cos(angle) * maxRadius * value;
-                    const y = centerY + Math.sin(angle) * maxRadius * value;
-                    if (i === 0) {
-                        ctx.moveTo(x, y);
-                    } else {
-                        ctx.lineTo(x, y);
-                    }
-                }
-                ctx.closePath();
-                ctx.fillStyle = 'rgba(124, 58, 237, 0.2)';
-                ctx.fill();
-                ctx.strokeStyle = color;
-                ctx.lineWidth = 2;
-                ctx.stroke();
-                
-                // 绘制数据点
-                for (let i = 0; i < 5; i++) {
-                    const angle = startAngle + i * angleStep;
-                    const value = values[i] * easedProgress;
-                    const x = centerX + Math.cos(angle) * maxRadius * value;
-                    const y = centerY + Math.sin(angle) * maxRadius * value;
-                    ctx.beginPath();
-                    ctx.arc(x, y, 4, 0, Math.PI * 2);
-                    ctx.fillStyle = color;
-                    ctx.fill();
-                }
-            }
-            
-            // 执行动画
-            const duration = 1500;
-            const startTime = performance.now();
-            
-            function animate(currentTime) {
-                const elapsed = currentTime - startTime;
-                const progress = Math.min(elapsed / duration, 1);
-                animateData(progress);
-                
-                if (progress < 1) {
-                    requestAnimationFrame(animate);
-                }
-            }
-            
-            // 检查是否支持 prefers-reduced-motion
-            const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-            if (prefersReducedMotion) {
-                animateData(1);
-            } else {
-                requestAnimationFrame(animate);
-            }
-        }
-        
-        // 数字滚动动画
-        function animateNumber(element, target, duration, suffix = '') {
-            const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-            
-            if (prefersReducedMotion) {
-                element.textContent = target + suffix;
-                return;
-            }
-            
-            const start = 0;
-            const startTime = performance.now();
-            
-            function update(currentTime) {
-                const elapsed = currentTime - startTime;
-                const progress = Math.min(elapsed / duration, 1);
-                const easedProgress = 1 - Math.pow(1 - progress, 3);
-                const current = Math.round(start + (target - start) * easedProgress);
-                element.textContent = current + suffix;
-                
-                if (progress < 1) {
-                    requestAnimationFrame(update);
-                }
-            }
-            
-            requestAnimationFrame(update);
-        }
-        
-        // 初始化功能卡片动画
-        function initFeatureCards() {
-            const cards = document.querySelectorAll('.feature-card[data-animate="true"]');
-            const progressBar = document.getElementById('progressBar');
-            const progressValue = document.getElementById('progressValue');
-            const scoreFrom = document.getElementById('scoreFrom');
-            const scoreTo = document.getElementById('scoreTo');
-            const radarCanvas = document.getElementById('radarCanvas');
-            
-            let radarAnimated = false;
-            let progressAnimated = false;
-            let scoreAnimated = false;
-            
-            // 创建 IntersectionObserver
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const card = entry.target;
-                        const index = Array.from(cards).indexOf(card);
-                        
-                        // 卡片淡入动画
-                        setTimeout(() => {
-                            card.classList.add('visible');
-                        }, index * 150);
-                        
-                        // 根据卡片类型触发动画
-                        if (index === 0 && !radarAnimated) {
-                            radarAnimated = true;
-                            setTimeout(() => {
-                                drawRadarChart(document.getElementById('featureRadarCanvas'), radarTargetValues, radarColor);
-                            }, 300);
-                        }
-                        
-                        if (index === 1 && !progressAnimated) {
-                            progressAnimated = true;
-                            setTimeout(() => {
-                                // 进度条动画
-                                progressBar.style.width = '67%';
-                                // 数字动画
-                                animateNumber(progressValue, 67, 1000, '%');
-                                // 进度项淡入
-                                setTimeout(() => {
-                                    document.querySelectorAll('.progress-item').forEach(item => {
-                                        item.classList.add('visible');
-                                    });
-                                }, 600);
-                            }, 300);
-                        }
-                        
-                        if (index === 2 && !scoreAnimated) {
-                            scoreAnimated = true;
-                            setTimeout(() => {
-                                // 分数动画
-                                document.querySelectorAll('.score-box').forEach(box => {
-                                    box.classList.add('visible');
-                                });
-                                document.querySelector('.score-arrow').classList.add('visible');
-                                
-                                // 数字动画
-                                animateNumber(scoreFrom, 380, 1000);
-                                animateNumber(scoreTo, 520, 1200);
-                                
-                                // 折线图动画 - 从左到右绘制
-                                setTimeout(() => {
-                                    const sparkline = document.querySelector('.score-sparkline');
-                                    if (sparkline) {
-                                        sparkline.classList.add('visible');
-                                        const path = sparkline.querySelector('.sparkline-path');
-                                        const area = sparkline.querySelector('.sparkline-area');
-                                        if (path) {
-                                            const length = path.getTotalLength ? path.getTotalLength() : 200;
-                                            path.style.strokeDasharray = length;
-                                            path.style.strokeDashoffset = length;
-                                            path.style.transition = 'stroke-dashoffset 1.5s ease-out';
-                                            setTimeout(() => {
-                                                path.style.strokeDashoffset = '0';
-                                            }, 50);
-                                        }
-                                        if (area) {
-                                            area.style.opacity = '0';
-                                            area.style.transition = 'opacity 0.8s ease 0.8s';
-                                            setTimeout(() => {
-                                                area.style.opacity = '0.3';
-                                            }, 50);
-                                        }
-                                    }
-                                }, 800);
-                            }, 200);
-                        }
-                    }
-                });
-            }, {
-                threshold: 0.3,
-                rootMargin: '0px 0px -50px 0px'
-            });
-            
-            // 观察每个卡片
-            cards.forEach(card => {
-                observer.observe(card);
-            });
-        }
-        
-        // 在页面加载完成后初始化
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initFeatureCards);
-        } else {
-            initFeatureCards();
-        }
-
-        // 移动端菜单控制
-        function toggleMobileMenu() {
-            const menu = document.getElementById('navMobileMenu');
-            const hamburger = document.getElementById('navHamburger');
-            menu.classList.toggle('active');
-            hamburger.classList.toggle('active');
-            document.body.style.overflow = menu.classList.contains('active') ? 'hidden' : '';
-        }
-
-        function closeMobileMenu() {
-            const menu = document.getElementById('navMobileMenu');
-            const hamburger = document.getElementById('navHamburger');
-            menu.classList.remove('active');
-            hamburger.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-
-        // 点击菜单外部关闭
-        document.addEventListener('click', function(e) {
-            const menu = document.getElementById('navMobileMenu');
-            const hamburger = document.getElementById('navHamburger');
-            if (menu && hamburger && 
-                !menu.contains(e.target) && 
-                !hamburger.contains(e.target) && 
-                menu.classList.contains('active')) {
-                closeMobileMenu();
-            }
-        });
-
-
-        // Hero区雷达图初始化
-        function initHeroRadar() {
-            const canvas = document.getElementById('heroRadarCanvas');
-            if (!canvas) return;
-            
-            const ctx = canvas.getContext('2d');
-            const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2;
-            const radius = Math.min(centerX, centerY) - 15;
-            
-            const labels = ['听力', '阅读', '写作', '翻译', '词汇'];
-            const values = [0.75, 0.45, 0.6, 0.55, 0.7];
-            
-            function drawRadar() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                
-                // 绘制背景网格
-                ctx.strokeStyle = 'rgba(99, 91, 255, 0.1)';
-                ctx.lineWidth = 1;
-                
-                for (let i = 1; i <= 4; i++) {
-                    ctx.beginPath();
-                    for (let j = 0; j < 5; j++) {
-                        const angle = (Math.PI * 2 / 5) * j - Math.PI / 2;
-                        const r = radius * (i / 4);
-                        const x = centerX + r * Math.cos(angle);
-                        const y = centerY + r * Math.sin(angle);
-                        if (j === 0) ctx.moveTo(x, y);
-                        else ctx.lineTo(x, y);
-                    }
-                    ctx.closePath();
-                    ctx.stroke();
-                }
-                
-                // 绘制轴线
-                for (let i = 0; i < 5; i++) {
-                    const angle = (Math.PI * 2 / 5) * i - Math.PI / 2;
-                    ctx.beginPath();
-                    ctx.moveTo(centerX, centerY);
-                    ctx.lineTo(centerX + radius * Math.cos(angle), centerY + radius * Math.sin(angle));
-                    ctx.stroke();
-                }
-                
-                // 绘制数据区域
-                ctx.beginPath();
-                for (let i = 0; i < 5; i++) {
-                    const angle = (Math.PI * 2 / 5) * i - Math.PI / 2;
-                    const value = values[i];
-                    const x = centerX + radius * value * Math.cos(angle);
-                    const y = centerY + radius * value * Math.sin(angle);
-                    if (i === 0) ctx.moveTo(x, y);
-                    else ctx.lineTo(x, y);
-                }
-                ctx.closePath();
-                
-                // 渐变填充
-                const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-                gradient.addColorStop(0, 'rgba(99, 91, 255, 0.3)');
-                gradient.addColorStop(1, 'rgba(6, 182, 212, 0.3)');
-                ctx.fillStyle = gradient;
-                ctx.fill();
-                
-                // 数据点
-                for (let i = 0; i < 5; i++) {
-                    const angle = (Math.PI * 2 / 5) * i - Math.PI / 2;
-                    const value = values[i];
-                    const x = centerX + radius * value * Math.cos(angle);
-                    const y = centerY + radius * value * Math.sin(angle);
-                    
-                    ctx.beginPath();
-                    ctx.arc(x, y, 4, 0, Math.PI * 2);
-                    ctx.fillStyle = '#635BFF';
-                    ctx.fill();
-                }
-            }
-            
-            drawRadar();
-        }
-        
-        // 打字机效果增强
-        function enhanceTypingEffect() {
-            const typingElements = document.querySelectorAll('.chat-bubble.bot .chat-text');
-            typingElements.forEach(el => {
-                if (el.dataset.typed) return;
-                el.dataset.typed = 'true';
-            });
-        }
-
-        // 页面加载完成后初始化
-        document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(initHeroRadar, 500);
-            setTimeout(enhanceTypingEffect, 800);
-        });
-
-</script>
+    </script>
 </body>
 </html>
