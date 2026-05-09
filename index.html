@@ -1933,7 +1933,7 @@
         let currentChatClient = null;
         let currentBotType = null;
 
-        /* ========== 聊天切换函数 ========== */
+        /* ========== 聊天切换函数（使用SDK官方API） ========== */
         
         function openChat(botType) {
             // 如果是免费用户想访问付费Bot，显示升级提示
@@ -1944,18 +1944,22 @@
                 return;
             }
             
-            // 如果已经是同一个Bot，尝试展开已有的聊天面板
+            // 如果已经是同一个Bot，直接打开聊天面板
             if (currentBotType === botType && currentChatClient) {
-                triggerChatOpen();
+                try { currentChatClient.showChatBot(); } catch(e) {}
                 return;
             }
             
-            // 清理旧的SDK实例
-            cleanupCozeSDK();
+            // 销毁旧的SDK实例
+            if (currentChatClient) {
+                try { currentChatClient.destroy(); } catch(e) {}
+                currentChatClient = null;
+                currentBotType = null;
+            }
             
             const config = BOT_CONFIG[botType];
             
-            // 创建新的WebChatClient
+            // 创建新的WebChatClient（隐藏悬浮球，用按钮触发）
             currentChatClient = new CozeWebSDK.WebChatClient({
                 config: { bot_id: config.id },
                 componentProps: { title: config.title },
@@ -1963,6 +1967,9 @@
                     type: 'token',
                     token: 'pat_hAOthvv429aDEqWspP4lITuL3DAU7VZJiGlVrnmA1zuoZ4IWW2kmxYzXUbGvZTYb',
                     onRefreshToken: function() { return 'pat_hAOthvv429aDEqWspP4lITuL3DAU7VZJiGlVrnmA1zuoZ4IWW2kmxYzXUbGvZTYb'; }
+                },
+                ui: {
+                    asstBtn: { isNeed: false }  // 隐藏SDK默认悬浮球
                 }
             });
             
@@ -1971,102 +1978,10 @@
             // 监听消息
             startMessageObserver();
             
-            // 自动展开聊天面板
-            autoOpenChatPanel();
-        }
-
-        function cleanupCozeSDK() {
-            // 移除SDK创建的DOM元素
-            const sdkElements = document.querySelectorAll('[class*="coze"]');
-            sdkElements.forEach(el => {
-                const className = el.className || '';
-                if (className.includes('coze-web-chat') || className.includes('coze-fab') || className.includes('coze-chat')) {
-                    el.remove();
-                }
-            });
-            
-            // 移除可能残留的iframe
-            document.querySelectorAll('iframe').forEach(iframe => {
-                if (iframe.src && iframe.src.includes('coze')) {
-                    iframe.remove();
-                }
-            });
-            
-            currentChatClient = null;
-            currentBotType = null;
-            
-            if (messageObserver) {
-                messageObserver.disconnect();
-                messageObserver = null;
-            }
-        }
-
-        function autoOpenChatPanel() {
-            // 等待SDK渲染完成，然后自动点击FAB打开聊天面板
+            // 用SDK官方API打开聊天面板
             setTimeout(() => {
-                // 查找SDK创建的按钮
-                const fabSelectors = [
-                    'button[class*="fab"]',
-                    'div[class*="fab"][role="button"]',
-                    'button[class*="chat"]',
-                    '[class*="coze"] button',
-                    '[class*="chat-btn"]'
-                ];
-                
-                for (const selector of fabSelectors) {
-                    const fab = document.querySelector(selector);
-                    if (fab && fab.offsetParent !== null) {
-                        fab.click();
-                        break;
-                    }
-                }
-                
-                // 隐藏FAB（聊天面板已打开，不需要FAB了）
-                hideChatFab();
-            }, 800);
-        }
-
-        function hideChatFab() {
-            // 添加样式隐藏FAB但保持功能
-            const styleId = 'coze-fab-hide-style';
-            if (document.getElementById(styleId)) return;
-            
-            const style = document.createElement('style');
-            style.id = styleId;
-            style.textContent = `
-                /* 隐藏SDK悬浮球但保持可交互 */
-                button[class*="fab"],
-                div[class*="fab"][role="button"],
-                [class*="coze-fab-trigger"],
-                [class*="coze-web-chat-fab"] {
-                    opacity: 0 !important;
-                    pointer-events: none !important;
-                    width: 0 !important;
-                    height: 0 !important;
-                    overflow: hidden !important;
-                }
-            `;
-            document.head.appendChild(style);
-        }
-
-        function triggerChatOpen() {
-            // 尝试点击SDK按钮展开面板
-            setTimeout(() => {
-                const fabSelectors = [
-                    'button[class*="fab"]',
-                    'div[class*="fab"][role="button"]',
-                    'button[class*="chat"]',
-                    '[class*="coze"] button'
-                ];
-                
-                for (const selector of fabSelectors) {
-                    const fab = document.querySelector(selector);
-                    if (fab && fab.offsetParent !== null) {
-                        fab.click();
-                        break;
-                    }
-                }
-            }, 300);
+                try { currentChatClient.showChatBot(); } catch(e) { console.error('showChatBot error:', e); }
+            }, 500);
         }
 
         function showUpgradeModal(botType) {
@@ -2599,28 +2514,9 @@
 
         /* ========== Coze Chat SDK ========== */
         
-        function initCozeChat() {
-            try {
-                chatClient = new CozeWebSDK.WebChatClient({
-                    config: {
-                        bot_id: "7636289658620215331",
-                    },
-                    componentProps: {
-                        title: "四级备考诊断师",
-                    },
-                    auth: {
-                        type: "token",
-                        token: "pat_hAOthvv429aDEqWspP4lITuL3DAU7VZJiGlVrnmA1zuoZ4IWW2kmxYzXUbGvZTYb",
-                        onRefreshToken: function () { return "pat_hAOthvv429aDEqWspP4lITuL3DAU7VZJiGlVrnmA1zuoZ4IWW2kmxYzXUbGvZTYb"; }
-                    }
-                });
-
-                // WebChatClient不支持.on()事件监听，改用MutationObserver监听消息
-            } catch (e) {
-                console.error("Coze Chat SDK init error:", e);
-            }
-        }
-
+        // initCozeChat已弃用，改用openChat(botType)函数
+        // SDK初始化、悬浮球隐藏、聊天面板打开全部在openChat中完成
+        
         function startDiagnosis() {
             // 重定向到openChat
             openChat('diagnosis');
