@@ -5,15 +5,22 @@ const crypto = require('crypto');
 
 const PORT = process.env.PORT || 8080;
 
-// PayJS 配置（从环境变量读取）
+// 管理员密钥
+const ADMIN_KEY = process.env.ADMIN_KEY || 'cet4admin2026';
+const SECRET_KEY = process.env.SECRET_KEY || 'cet4secret2026';
+
+// PayJS 配置（从环境变量读取）- 不再使用，改为手动收款模式
 const PAYJS_MCHID = process.env.PAYJS_MCHID || '';
 const PAYJS_KEY = process.env.PAYJS_KEY || '';
 const PAYJS_NOTIFY_URL = process.env.PAYJS_NOTIFY_URL || '';
 
-// Bot ID 配置（3个Bot暂时共用，后续可按套餐分配不同Bot）
+// 微信收款码URL（需要替换为真实收款码）
+const WECHAT_PAYMENT_QR = process.env.WECHAT_PAYMENT_QR || 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=wechat-pay-placeholder';
+
+// Bot ID 配置（3个Bot）
 const BOT_ID_DIAGNOSIS = '7636289658620215331';
-const BOT_ID_SPRINT = '7636289658620215331';
-const BOT_ID_PRO = '7636289658620215331';
+const BOT_ID_SPRINT = '7637702903679631395';
+const BOT_ID_PRO = '7637815810610036774';
 
 // 套餐配置（4层定价）
 const PLANS = {
@@ -91,90 +98,155 @@ async function handleApi(req, res, pathname) {
     }
 
     try {
-        // POST /api/create-order - 创建支付订单
+        // ===== 手动收款模式 API =====
+
+        // POST /api/create-order - 创建订单（手动收款模式）
         if (pathname === '/api/create-order' && req.method === 'POST') {
             const body = await parseBody(req);
-            const { plan, ref } = body;
+            const { plan } = body;
 
             if (!plan || !PLANS[plan]) {
                 return sendJson(res, 400, { error: '无效的套餐类型' });
             }
 
             const planConfig = PLANS[plan];
-            const orderId = generateOrderId();
-            const uid = generateUid(plan);
+            const orderId = `${planConfig.uidPrefix}${Date.now()}${Math.random().toString(36).substr(2, 4).toUpperCase()}`;
 
-            // 免费套餐不需要支付
+            // 免费套餐不需要支付，直接激活
             if (!planConfig.needPay) {
+                const token = crypto.createHash('md5').update(orderId + plan + SECRET_KEY).digest('hex');
                 return sendJson(res, 200, {
-                    order_id: orderId,
-                    uid,
-                    paid: true,
-                    mock: true
+                    orderId,
+                    plan,
+                    amount: 0,
+                    status: 'activated',
+                    token,
+                    createdAt: Date.now()
                 });
             }
 
-            const totalFee = Math.round(planConfig.price * 100); // 转换为分
-
-            // PayJS API参数
-            const payjsParams = {
-                mchid: PAYJS_MCHID,
-                total_fee: totalFee,
-                out_trade_no: orderId,
-                body: `四级备考搭子-${planConfig.name}`,
-                notify_url: PAYJS_NOTIFY_URL,
-                nonce: crypto.randomBytes(8).toString('hex')
-            };
-
-            // 添加签名
-            payjsParams.sign = sign(payjsParams, PAYJS_KEY);
-
-            // 存储订单信息
+            // 创建待支付订单
             orders.set(orderId, {
+                orderId,
                 plan,
-                uid,
-                paid: false,
+                amount: planConfig.price,
+                status: 'pending',
                 createdAt: Date.now(),
-                planConfig,
-                ref: ref || ''
+                activatedAt: null,
+                token: null
             });
 
-            console.log(`[订单创建] ${orderId} - ${planConfig.name} - ¥${planConfig.price} - ref: ${ref || 'none'}`);
+            console.log(`[订单创建] ${orderId} - ${planConfig.name} - ¥${planConfig.price}`);
 
-            // 如果没有配置PayJS，返回模拟数据用于测试
-            if (!PAYJS_MCHID || !PAYJS_KEY) {
-                const mockQrCode = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://example.com/pay?order=${orderId}`;
-                return sendJson(res, 200, {
-                    order_id: orderId,
-                    uid,
-                    qr_code_url: mockQrCode,
-                    mock: true
-                });
-            }
-
-            // 调用PayJS Native API
-            const payjsUrl = 'https://payjs.cn/api/native';
-            const postData = new URLSearchParams(payjsParams).toString();
-
-            const response = await fetch(payjsUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: postData
+            return sendJson(res, 200, {
+                orderId,
+                plan,
+                amount: planConfig.price,
+                status: 'pending',
+                wechatQrUrl: WECHAT_PAYMENT_QR,
+                createdAt: Date.now()
             });
-
-            const payjsResult = await response.json();
-
-            if (payjsResult.return_code === 1 && payjsResult.qrcode) {
-                return sendJson(res, 200, {
-                    order_id: orderId,
-                    uid,
-                    qr_code_url: `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(payjsResult.qrcode)}`
-                });
-            } else {
-                console.error('[PayJS错误]', payjsResult);
-                return sendJson(res, 500, { error: '创建支付订单失败', detail: payjsResult });
-            }
         }
+
+        // GET /api/check-order - 检查订单状态（用户轮询）
+        if (pathname === '/api/check-order' && req.method === 'GET') {
+            const url = new URL(req.url, `http://localhost:${PORT}`);
+            const orderId = url.searchParams.get('order_id') || url.searchParams.get('orderId');
+
+            if (!orderId) {
+                return sendJson(res, 400, { error: '缺少order_id参数' });
+            }
+
+            const order = orders.get(orderId);
+            if (!order) {
+                return sendJson(res, 200, { status: 'not_found' });
+            }
+
+            return sendJson(res, 200, {
+                status: order.status,
+                plan: order.plan,
+                token: order.token,
+                orderId: order.orderId
+            });
+        }
+
+        // POST /api/admin-activate - 管理员激活订单
+        if (pathname === '/api/admin-activate' && req.method === 'POST') {
+            const body = await parseBody(req);
+            const { orderId, adminKey } = body;
+
+            if (!orderId || !adminKey) {
+                return sendJson(res, 400, { error: '缺少必要参数' });
+            }
+
+            if (adminKey !== ADMIN_KEY) {
+                return sendJson(res, 401, { error: '管理员密钥错误' });
+            }
+
+            const order = orders.get(orderId);
+            if (!order) {
+                return sendJson(res, 404, { error: '订单不存在' });
+            }
+
+            if (order.status === 'activated') {
+                return sendJson(res, 200, { success: true, message: '订单已激活', token: order.token });
+            }
+
+            // 生成激活token
+            const token = crypto.createHash('md5').update(orderId + order.plan + SECRET_KEY).digest('hex');
+            order.status = 'activated';
+            order.activatedAt = Date.now();
+            order.token = token;
+
+            console.log(`[订单激活] ${orderId} - ${order.plan} - ¥${order.amount}`);
+
+            return sendJson(res, 200, { success: true, token });
+        }
+
+        // GET /api/admin-orders - 获取订单列表（管理员）
+        if (pathname === '/api/admin-orders' && req.method === 'GET') {
+            const url = new URL(req.url, `http://localhost:${PORT}`);
+            const adminKey = url.searchParams.get('adminKey');
+
+            if (adminKey !== ADMIN_KEY) {
+                return sendJson(res, 401, { error: '管理员密钥错误' });
+            }
+
+            const orderList = Array.from(orders.values())
+                .sort((a, b) => {
+                    // 待激活的排前面，然后按创建时间倒序
+                    if (a.status === 'pending' && b.status !== 'pending') return -1;
+                    if (a.status !== 'pending' && b.status === 'pending') return 1;
+                    return b.createdAt - a.createdAt;
+                });
+
+            return sendJson(res, 200, { orders: orderList });
+        }
+
+        // POST /api/admin-delete-order - 删除订单（管理员）
+        if (pathname === '/api/admin-delete-order' && req.method === 'POST') {
+            const body = await parseBody(req);
+            const { orderId, adminKey } = body;
+
+            if (!orderId || !adminKey) {
+                return sendJson(res, 400, { error: '缺少必要参数' });
+            }
+
+            if (adminKey !== ADMIN_KEY) {
+                return sendJson(res, 401, { error: '管理员密钥错误' });
+            }
+
+            if (!orders.has(orderId)) {
+                return sendJson(res, 404, { error: '订单不存在' });
+            }
+
+            orders.delete(orderId);
+            console.log(`[订单删除] ${orderId}`);
+
+            return sendJson(res, 200, { success: true });
+        }
+
+        // ===== 旧版PayJS API（保留但不再使用）=====
 
         // POST /api/payjs-notify - PayJS支付回调
         if (pathname === '/api/payjs-notify' && req.method === 'POST') {
@@ -202,7 +274,7 @@ async function handleApi(req, res, pathname) {
             return sendJson(res, 200, { return_code: 1, return_msg: 'OK' });
         }
 
-        // GET /api/check-order - 查询订单状态
+        // GET /api/check-order-legacy - 查询订单状态（旧版）
         if (pathname === '/api/check-order' && req.method === 'GET') {
             const url = new URL(req.url, `http://localhost:${PORT}`);
             const orderId = url.searchParams.get('order_id');
@@ -221,7 +293,7 @@ async function handleApi(req, res, pathname) {
                 paid: order.paid,
                 uid: order.uid,
                 plan: order.plan,
-                bot_id: order.planConfig.botId
+                bot_id: order.planConfig?.botId
             });
         }
 
@@ -265,6 +337,14 @@ const server = http.createServer((req, res) => {
         res.setHeader('X-Content-Type-Options', 'nosniff');
         res.setHeader('Content-Type', 'text/html; charset=utf-8');
         res.end(html);
+        return;
+    }
+
+    // 管理员页面
+    if (pathname === '/admin-activate-cet4') {
+        res.setHeader('Content-Security-Policy', "default-src * 'unsafe-inline' 'unsafe-eval' data: blob: http: https: ws: wss:; script-src * 'unsafe-inline' 'unsafe-eval' data: blob: http: https:; style-src * 'unsafe-inline' data: blob:; img-src * data: blob: http: https:; connect-src * data: blob: http: https: ws: wss:; worker-src * blob: data: http: https:; media-src * blob: data: http: https:;");
+        res.setHeader('Content-Type', 'text/html; charset=utf-8');
+        res.end(fs.readFileSync(path.join(__dirname, 'admin.html'), 'utf-8'));
         return;
     }
 
