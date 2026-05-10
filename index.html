@@ -608,6 +608,7 @@
 .coze-card { flex-shrink: 0; width: 180px; background: var(--card-bg); border-radius: 14px; padding: 14px; box-shadow: var(--card-shadow); cursor: pointer; transition: all 0.2s; border: 1.5px solid transparent; scroll-snap-align: start; display: flex; flex-direction: column; position: relative; }
 .coze-card:active { transform: scale(0.98); }
 .coze-card.recommended { border-color: var(--primary); }
+.coze-card.selected { border-color: var(--primary); background: rgba(108,92,231,0.02); }
 .coze-card-badge { position: absolute; top: -1px; right: 12px; background: var(--primary); color: white; font-size: 10px; font-weight: 600; padding: 2px 8px 4px; border-radius: 0 0 6px 6px; }
 .coze-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; }
 .coze-card-name { font-size: 14px; font-weight: 700; color: var(--text-primary); }
@@ -627,14 +628,13 @@
 .coze-benefits-header { margin-bottom: 10px; }
 .coze-benefits-title { font-size: 14px; font-weight: 600; color: var(--text-primary); }
 .coze-benefits-list { display: flex; flex-direction: column; gap: 6px; }
-.coze-benefit-item { font-size: 12px; color: var(--text-secondary); display: flex; align-items: center; gap: 6px; }
+.coze-benefit-item { font-size: 12px; color: var(--text-secondary); display: flex; align-items: center; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--card-border); }
+.coze-benefit-item:last-child { border-bottom: none; }
+.coze-benefit-left { display: flex; align-items: center; gap: 6px; }
 .coze-benefit-check { color: var(--primary); font-weight: 600; font-size: 11px; }
+.coze-benefit-val { font-size: 12px; color: var(--text-primary); font-weight: 500; }
+.coze-benefit-val.limited { color: var(--text-tertiary); }
 
-.coze-card-detail { display: none; margin: 8px 0 10px; padding-top: 8px; border-top: 1px solid var(--card-border); }
-.coze-card.expanded .coze-card-detail { display: block; }
-.coze-card.expanded { width: 260px; }
-.coze-detail-row { display: flex; justify-content: space-between; padding: 4px 0; font-size: 11px; color: var(--text-secondary); }
-.coze-detail-row span:last-child { color: var(--text-primary); font-weight: 500; }
 
 .coze-faq { padding: 0 16px 24px; }
 .coze-faq-title { font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 10px; }
@@ -719,7 +719,7 @@
                 <!-- 横向滑动卡片 -->
                 <div class="coze-cards">
                     <!-- 体验版 -->
-                    <div class="coze-card" data-plan="trial" onclick="expandCozeCard(this)">
+                    <div class="coze-card" data-plan="trial" onclick="selectCozeCard(this, 'trial')">
                         <div class="coze-card-top">
                             <div class="coze-card-name">体验版</div>
                             <div class="coze-card-price"><span class="coze-price-symbol">¥</span><span class="coze-price-num">4.9</span></div>
@@ -730,8 +730,6 @@
                             <li>✓ AI答疑50次</li>
                             <li>✓ 作文批改1次</li>
                         </ul>
-                        <div class="coze-card-detail">
-                        <div class="coze-detail-row"><span>AI答疑</span><span>50次</span></div>
                         <div class="coze-detail-row"><span>作文批改</span><span>1次</span></div>
                         <div class="coze-detail-row"><span>每日任务</span><span>✓</span></div>
                         <div class="coze-detail-row"><span>有效期</span><span>1天</span></div>
@@ -739,7 +737,7 @@
                         <button class="coze-card-btn outline" onclick="event.stopPropagation();openBottomSheet('trial')">¥4.9 体验</button>
                     </div>
                     <!-- 冲刺版 -->
-                    <div class="coze-card recommended" data-plan="sprint" onclick="expandCozeCard(this)">
+                    <div class="coze-card recommended selected" data-plan="sprint" onclick="selectCozeCard(this, 'sprint')" onclick="selectCozeCard(this, 'trial')">
                         <div class="coze-card-badge">推荐</div>
                         <div class="coze-card-top">
                             <div class="coze-card-name">冲刺版</div>
@@ -752,8 +750,6 @@
                             <li>✓ 弱项专项训练</li>
                             <li>✓ 考前7天冲刺</li>
                         </ul>
-                        <div class="coze-card-detail">
-                        <div class="coze-detail-row"><span>AI答疑</span><span>30天无限</span></div>
                         <div class="coze-detail-row"><span>作文批改</span><span>每日1次</span></div>
                         <div class="coze-detail-row"><span>每日任务推送</span><span>✓</span></div>
                         <div class="coze-detail-row"><span>弱项专项训练</span><span>✓</span></div>
@@ -763,7 +759,7 @@
                         <button class="coze-card-btn primary" onclick="event.stopPropagation();openBottomSheet('sprint')">¥49 开通</button>
                     </div>
                     <!-- 旗舰版 -->
-                    <div class="coze-card" data-plan="flagship" onclick="expandCozeCard(this)">
+                    <div class="coze-card" data-plan="flagship" onclick="selectCozeCard(this, 'flagship')" onclick="selectCozeCard(this, 'trial')">
                         <div class="coze-card-top">
                             <div class="coze-card-name">旗舰版</div>
                             <div class="coze-card-price"><span class="coze-price-symbol">¥</span><span class="coze-price-num">149</span></div>
@@ -775,8 +771,6 @@
                             <li>✓ 完整备考计划</li>
                             <li>✓ 六级衔接指导</li>
                         </ul>
-                        <div class="coze-card-detail">
-                        <div class="coze-detail-row"><span>AI答疑</span><span>无限</span></div>
                         <div class="coze-detail-row"><span>作文批改</span><span>无限</span></div>
                         <div class="coze-detail-row"><span>完整备考计划</span><span>✓</span></div>
                         <div class="coze-detail-row"><span>打卡追踪</span><span>✓</span></div>
@@ -792,13 +786,7 @@
                     <div class="coze-benefits-header">
                         <span class="coze-benefits-title">会员尊享权益</span>
                     </div>
-                    <div class="coze-benefits-list">
-                        <div class="coze-benefit-item"><span class="coze-benefit-check">✓</span> AI智能诊断，精准定位弱项</div>
-                        <div class="coze-benefit-item"><span class="coze-benefit-check">✓</span> 个性化备考计划，每日推送</div>
-                        <div class="coze-benefit-item"><span class="coze-benefit-check">✓</span> 作文精批，逐句修改建议</div>
-                        <div class="coze-benefit-item"><span class="coze-benefit-check">✓</span> 弱项专项训练，针对提升</div>
-                        <div class="coze-benefit-item"><span class="coze-benefit-check">✓</span> 考前7天冲刺，最后提分</div>
-                    </div>
+                    <div class="coze-benefits-list" id="coze-benefits-list"></div>
                 </div>
                 <!-- FAQ -->
                 <div class="coze-faq">
@@ -903,7 +891,7 @@
             ]
         };
         var state = { currentTab: 'home', currentPlan: 'free', currentOrderId: null, chatClient: null, diagnosisCount: 0, reviewCount: 0, userData: null };
-        document.addEventListener('DOMContentLoaded', function() { initPersonalityCards(); updateCountdown(); loadUserData(); setInterval(updateCountdown, 86400000); });
+        document.addEventListener('DOMContentLoaded', function() { initPersonalityCards(); updateCountdown(); loadUserData(); renderCozeBenefits('sprint'); setInterval(updateCountdown, 86400000); });
         function switchTab(tab) {
             state.currentTab = tab;
             var items = document.querySelectorAll('.tab-item');
@@ -1153,19 +1141,64 @@
         function showReport() { if (state.userData && state.userData.diagnosis) { showPersonalityDetail(state.userData.diagnosis.type); } else { showToast('请先完成AI诊断'); switchTab('diagnosis'); } }
         function showCodeRedeem() { openBottomSheet(state.currentPlan); switchSheetTab('code'); }
         function showService() { showToast('客服微信：cet4fanyi'); }
-        function expandCozeCard(card) {
-            var wasExpanded = card.classList.contains('expanded');
+        var cozeBenefits = {
+            trial: [
+                {name:'AI答疑', val:'50次'},
+                {name:'作文批改', val:'1次'},
+                {name:'每日任务推送', val:'✓'},
+                {name:'弱项专项训练', val:'—', limited:true},
+                {name:'考前7天冲刺', val:'—', limited:true},
+                {name:'完整备考计划', val:'—', limited:true},
+                {name:'六级衔接指导', val:'—', limited:true},
+                {name:'有效期', val:'1天'}
+            ],
+            sprint: [
+                {name:'AI答疑', val:'30天无限'},
+                {name:'作文批改', val:'每日1次'},
+                {name:'每日任务推送', val:'✓'},
+                {name:'弱项专项训练', val:'✓'},
+                {name:'考前7天冲刺', val:'✓'},
+                {name:'完整备考计划', val:'—', limited:true},
+                {name:'六级衔接指导', val:'—', limited:true},
+                {name:'有效期', val:'30天'}
+            ],
+            flagship: [
+                {name:'AI答疑', val:'无限'},
+                {name:'作文批改', val:'无限'},
+                {name:'每日任务推送', val:'✓'},
+                {name:'弱项专项训练', val:'✓'},
+                {name:'考前7天冲刺', val:'✓'},
+                {name:'完整备考计划', val:'✓'},
+                {name:'六级衔接指导', val:'✓'},
+                {name:'有效期', val:'至考试结束'}
+            ]
+        };
+        var currentCozePlan = 'sprint';
+        function selectCozeCard(card, plan) {
+            currentCozePlan = plan;
             var cards = document.querySelectorAll('.coze-card');
-            for (var i = 0; i < cards.length; i++) { cards[i].classList.remove('expanded'); }
-            if (!wasExpanded) { card.classList.add('expanded'); card.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' }); }
+            for (var i = 0; i < cards.length; i++) { cards[i].classList.remove('selected'); }
+            card.classList.add('selected');
+            renderCozeBenefits(plan);
+            card.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        }
+        function renderCozeBenefits(plan) {
+            var list = document.getElementById('coze-benefits-list');
+            var benefits = cozeBenefits[plan] || cozeBenefits.sprint;
+            var html = '';
+            for (var i = 0; i < benefits.length; i++) {
+                var b = benefits[i];
+                var valClass = b.limited ? ' limited' : '';
+                html += '<div class="coze-benefit-item"><span class="coze-benefit-left"><span class="coze-benefit-check">✓</span>' + b.name + '</span><span class="coze-benefit-val' + valClass + '">' + b.val + '</span></div>';
+            }
+            list.innerHTML = html;
         }
 
         function switchCozeTab(el, plan) {
             var tabs = document.querySelectorAll('.coze-tab');
             for (var i = 0; i < tabs.length; i++) { tabs[i].classList.toggle('active', tabs[i] === el); }
-            // Scroll to the matching card
             var card = document.querySelector('.coze-card[data-plan="' + plan + '"]');
-            if (card) { card.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' }); }
+            if (card) { selectCozeCard(card, plan); }
         }
         function toggleFaq(el) { el.parentElement.classList.toggle('open'); }
         function showToast(msg) { var toast = document.getElementById('toast'); toast.textContent = msg; toast.classList.add('show'); setTimeout(function() { toast.classList.remove('show'); }, 2500); }
