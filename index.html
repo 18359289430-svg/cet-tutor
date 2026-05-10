@@ -1178,7 +1178,8 @@
                     config: { botId: botId },
                     ui: { asstBtn: { isNeed: false }, chatBot: { title: '', statusBotText: 'AI正在思考...' } },
                     componentProps: { chatBot: { containerStyle: { width: '100%', height: '100%', backgroundColor: '#F8F9FA' } } },
-                    onRefreshToken: function(callback) { callback({ token: '' }); }
+                    auth: { type: 'token', token: 'pat_hAOthvv429aDEqWspP4lITuL3DAU7VZJiGlVrnmA1zuoZ4IWW2kmxYzXUbGvZTYb' },
+                    onRefreshToken: function(callback) { callback({ token: 'pat_hAOthvv429aDEqWspP4lITuL3DAU7VZJiGlVrnmA1zuoZ4IWW2kmxYzXUbGvZTYb' }); }
                 });
                 state.chatClient.mount(container);
                 state.chatClient.on('message', handleChatMessage);
@@ -1193,7 +1194,8 @@
                     config: { botId: CONFIG.botIds.diagnosis },
                     ui: { asstBtn: { isNeed: false }, chatBot: { title: '', statusBotText: 'AI正在思考...' } },
                     componentProps: { chatBot: { containerStyle: { width: '100%', height: '100%', backgroundColor: '#F8F9FA' } } },
-                    onRefreshToken: function(callback) { callback({ token: '' }); }
+                    auth: { type: 'token', token: 'pat_hAOthvv429aDEqWspP4lITuL3DAU7VZJiGlVrnmA1zuoZ4IWW2kmxYzXUbGvZTYb' },
+                    onRefreshToken: function(callback) { callback({ token: 'pat_hAOthvv429aDEqWspP4lITuL3DAU7VZJiGlVrnmA1zuoZ4IWW2kmxYzXUbGvZTYb' }); }
                 });
                 state.chatClient.mount(container);
                 state.chatClient.on('message', handleChatMessage);
