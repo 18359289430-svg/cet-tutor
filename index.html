@@ -914,7 +914,7 @@
             </div>
             <div class="sheet-content active" id="sheet-wechat">
                 <div class="qr-section">
-                    <div class="qr-code"><img src="/wechat-qr.jpg" alt="微信收款码" id="qr-code-img"></div>
+                    <div class="qr-code"><img src="/wechat-qr.jpg" alt="微信收款码" loading="lazy" id="qr-code-img"></div>
                     <div class="qr-amount" id="qr-amount">¥0</div>
                     <div class="qr-order" id="qr-order">订单号：-</div>
                     <div class="qr-hint">👆 截图保存二维码<br>打开微信扫一扫识别图中二维码付款<br>付款完成后点击下方按钮</div>
@@ -953,14 +953,14 @@
             botIds: { diagnosis: '7636289658620215331', sprint: '7637702903679631395', flagship: '7637815810610036774' },
             plans: { free: { name: '免费版', price: 0 }, trial: { name: '体验版', price: 4.9 }, sprint: { name: '冲刺版', price: 49 }, flagship: { name: '旗舰版', price: 149 } },
             personalities: [
-                { type:'佛系随缘选手', color:'#F5C6AA', emoji:'😌', img:'imgs/foxi.png', honor:'佛系陪跑员', comment:'你很佛系，但四级不佛', scores:{细节定位:95,推理判断:33,同义替换:66,主旨归纳:77,态度判断:93} },
-                { type:'脑补大师', color:'#C4A8E0', emoji:'💭', img:'imgs/naobu.png', honor:'四级白日梦家', comment:'笔在卷子上，魂在银河系', scores:{细节定位:40,推理判断:75,同义替换:50,主旨归纳:30,态度判断:60} },
-                { type:'偏科大佬', color:'#FFB6C1', emoji:'📚', img:'imgs/pianke.png', honor:'阅读王者·翻译菜鸡', comment:'一半封神，一半白给', scores:{细节定位:98,推理判断:20,同义替换:95,主旨归纳:99,态度判断:25} },
-                { type:'摆烂冠军', color:'#A8C4D8', emoji:'🛋️', img:'imgs/bailan.png', honor:'四级陪跑一级选手', comment:'重在参与，随缘就好', scores:{细节定位:10,推理判断:15,同义替换:5,主旨归纳:20,态度判断:80} },
-                { type:'全对卷王', color:'#E8E8E8', emoji:'🏆', img:'imgs/juanzong.png', honor:'四级人形标准答案', comment:'别人考四级，你考四级解析', scores:{细节定位:100,推理判断:98,同义替换:100,主旨归纳:100,态度判断:95} },
-                { type:'吗喽型选手', color:'#C4956A', emoji:'🐒', img:'imgs/malou.png', honor:'熬夜硬肝特种兵', comment:'咖啡续着命，单词记不住', scores:{细节定位:35,推理判断:40,同义替换:25,主旨归纳:30,态度判断:20} },
-                { type:'临时抱佛脚选手', color:'#FFA500', emoji:'🙏', img:'imgs/linshi.png', honor:'考前突击大师', comment:'平时不烧香，考前抱佛脚', scores:{细节定位:60,推理判断:55,同义替换:70,主旨归纳:65,态度判断:50} },
-                { type:'资料囤积狂', color:'#4A7C8C', emoji:'📦', img:'imgs/tunji.png', honor:'四级资料收藏家', comment:'收藏=学会，囤满=稳过', scores:{细节定位:85,推理判断:70,同义替换:80,主旨归纳:75,态度判断:60} }
+                { type:'佛系随缘选手', color:'#F5C6AA', emoji:'😌', img:'imgs/foxi.webp', honor:'佛系陪跑员', comment:'你很佛系，但四级不佛', scores:{细节定位:95,推理判断:33,同义替换:66,主旨归纳:77,态度判断:93} },
+                { type:'脑补大师', color:'#C4A8E0', emoji:'💭', img:'imgs/naobu.webp', honor:'四级白日梦家', comment:'笔在卷子上，魂在银河系', scores:{细节定位:40,推理判断:75,同义替换:50,主旨归纳:30,态度判断:60} },
+                { type:'偏科大佬', color:'#FFB6C1', emoji:'📚', img:'imgs/pianke.webp', honor:'阅读王者·翻译菜鸡', comment:'一半封神，一半白给', scores:{细节定位:98,推理判断:20,同义替换:95,主旨归纳:99,态度判断:25} },
+                { type:'摆烂冠军', color:'#A8C4D8', emoji:'🛋️', img:'imgs/bailan.webp', honor:'四级陪跑一级选手', comment:'重在参与，随缘就好', scores:{细节定位:10,推理判断:15,同义替换:5,主旨归纳:20,态度判断:80} },
+                { type:'全对卷王', color:'#E8E8E8', emoji:'🏆', img:'imgs/juanzong.webp', honor:'四级人形标准答案', comment:'别人考四级，你考四级解析', scores:{细节定位:100,推理判断:98,同义替换:100,主旨归纳:100,态度判断:95} },
+                { type:'吗喽型选手', color:'#C4956A', emoji:'🐒', img:'imgs/malou.webp', honor:'熬夜硬肝特种兵', comment:'咖啡续着命，单词记不住', scores:{细节定位:35,推理判断:40,同义替换:25,主旨归纳:30,态度判断:20} },
+                { type:'临时抱佛脚选手', color:'#FFA500', emoji:'🙏', img:'imgs/linshi.webp', honor:'考前突击大师', comment:'平时不烧香，考前抱佛脚', scores:{细节定位:60,推理判断:55,同义替换:70,主旨归纳:65,态度判断:50} },
+                { type:'资料囤积狂', color:'#4A7C8C', emoji:'📦', img:'imgs/tunji.webp', honor:'四级资料收藏家', comment:'收藏=学会，囤满=稳过', scores:{细节定位:85,推理判断:70,同义替换:80,主旨归纳:75,态度判断:60} }
             ]
         };
         var state = { currentTab: 'home', currentPlan: 'free', currentOrderId: null, chatClient: null, diagnosisCount: 0, reviewCount: 0, userData: null };
@@ -981,7 +981,7 @@
                 var p = CONFIG.personalities[i];
                 var c = colors[i] || '#E0E0E0';
                 html += '<div class="personality-card" onclick="showPersonalityDetail(\'" + p.type + "\')" style="--p-color:' + c + '">' +
-                    '<div class="personality-avatar" style="background:' + c + '20;">' + (p.img ? '<img src="' + p.img + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" />' : p.emoji) + '</div>' +
+                    '<div class="personality-avatar" style="background:' + c + '20;">' + (p.img ? '<img src="' + p.img + '" loading="lazy" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" />' : p.emoji) + '</div>' +
                     '<div class="personality-type">' + p.type + '</div>' +
                     '<span class="personality-honor" style="background:' + c + '25; color:#666;">' + p.honor + '</span></div>';
             }
@@ -993,7 +993,7 @@
             if (!p) return;
             var detailAvatar = document.getElementById('detail-avatar');
             detailAvatar.style.background = p.color;
-            if (p.img) { detailAvatar.innerHTML = '<img src="' + p.img + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" />'; } else { detailAvatar.textContent = p.emoji; }
+            if (p.img) { detailAvatar.innerHTML = '<img src="' + p.img + '" loading="lazy" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" />'; } else { detailAvatar.textContent = p.emoji; }
             document.getElementById('detail-type').textContent = p.type;
             document.getElementById('detail-honor').textContent = p.honor;
             document.getElementById('detail-comment').textContent = p.comment;
