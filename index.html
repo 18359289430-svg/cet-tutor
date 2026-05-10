@@ -73,7 +73,7 @@
             width: 100%;
             padding: 0 16px;
         }
-        .brand { font-size: 16px; font-weight: 700; color: #0F172A; letter-spacing: -0.3px; }
+        .brand { font-size: 16px; font-weight: 700; color: #6C5CE7; letter-spacing: -0.3px; }
         .countdown { 
             font-size: 12px; 
             color: #94A3B8; 
@@ -134,7 +134,7 @@
             transition: color 0.15s;
         }
         .tab-item:active { opacity: 0.7; }
-        .tab-item.active { color: #0F172A; }
+        .tab-item.active { color: #6C5CE7; }
         .tab-icon { width: 22px; height: 22px; }
         .tab-icon svg { width: 22px; height: 22px; }
         .tab-label { font-size: 10px; font-weight: 500; }
@@ -142,7 +142,7 @@
         .hero-section {
             padding: 32px 20px 24px;
             text-align: center;
-            background: #FFFFFF;
+            background: linear-gradient(180deg, #F8F7FF 0%, #FAFAFA 100%);
         }
         .hero-emoji { margin-bottom: 12px; display: flex; align-items: center; justify-content: center; }
         .hero-title { 
@@ -163,44 +163,52 @@
             justify-content: center;
             gap: 8px;
             padding: 14px 32px;
-            background: #0F172A;
+            background: #6C5CE7;
             color: white;
             border: none;
-            border-radius: 12px;
+            border-radius: 14px;
             font-size: 15px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
+            box-shadow: 0 4px 16px rgba(108,92,231,0.3);
         }
-        .btn-primary:active { transform: scale(0.96); opacity: 0.9; }
+        .btn-primary:active { transform: scale(0.96); box-shadow: 0 2px 8px rgba(108,92,231,0.2); }
         .btn-primary svg { width: 18px; height: 18px; }
 
-        /* ========== 瓷片区卡片 - Clean ========== */
+        /* ========== 瓷片区卡片 - 彩色图标 ========== */
         .tiles-section { padding: 0 16px 24px; }
         .tiles-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
         .tile-card {
             background: #FFFFFF;
-            border-radius: 14px;
-            padding: 16px;
+            border-radius: 16px;
+            padding: 18px 16px;
             display: flex;
             flex-direction: column;
             gap: 8px;
             cursor: pointer;
             transition: all 0.15s ease;
-            border: 1px solid #F1F5F9;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.03);
         }
-        .tile-card:active { transform: scale(0.97); background: #F8FAFC; }
+        .tile-card:active { transform: scale(0.97); background: #FAFAFA; }
         .tile-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #F8FAFC;
         }
-        .tile-title { font-size: 15px; font-weight: 500; color: #1E293B; }
-        .tile-desc { font-size: 12px; color: #94A3B8; line-height: 1.4; }
+        .tile-icon.diagnosis { background: rgba(108,92,231,0.08); }
+        .tile-icon.diagnosis svg { stroke: #6C5CE7; }
+        .tile-icon.plan { background: rgba(0,206,209,0.08); }
+        .tile-icon.plan svg { stroke: #00CED1; }
+        .tile-icon.review { background: rgba(255,165,2,0.08); }
+        .tile-icon.review svg { stroke: #FFA502; }
+        .tile-icon.simulate { background: rgba(255,118,117,0.08); }
+        .tile-icon.simulate svg { stroke: #FF7675; }
+        .tile-title { font-size: 15px; font-weight: 600; color: #2D3436; }
+        .tile-desc { font-size: 12px; color: #B2BEC3; line-height: 1.4; }
 
         /* ========== 人格卡 - 高端重做 ========== */
         .personality-section { padding: 0 0 24px; }
@@ -392,52 +400,53 @@
         .faq-item.open .faq-answer { padding: 0 16px 14px; max-height: 200px; }
         .faq-answer p { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
 
-        /* ========== 用户中心 - Clean白底 ========== */
+        /* ========== 用户中心 - 品牌色头像区 ========== */
         .profile-header {
-            padding: 32px 20px 24px;
-            background: #FFFFFF;
+            padding: 28px 20px 32px;
+            background: linear-gradient(135deg, #6C5CE7 0%, #A29BFE 100%);
             text-align: center;
+            position: relative;
         }
         .profile-avatar-wrap {
             position: relative;
-            width: 72px;
-            height: 72px;
-            margin: 0 auto 12px;
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 10px;
         }
         .profile-avatar {
-            width: 72px;
-            height: 72px;
+            width: 64px;
+            height: 64px;
             border-radius: 50%;
-            background: #F8FAFC;
+            background: rgba(255,255,255,0.25);
             display: flex;
             align-items: center;
             justify-content: center;
+            border: 3px solid rgba(255,255,255,0.4);
         }
+        .profile-avatar svg { stroke: white; }
         .profile-avatar-badge {
             position: absolute;
-            bottom: 0;
-            right: 0;
-            background: #E2E8F0;
-            color: #64748B;
+            bottom: -2px;
+            right: -2px;
+            background: #FFFFFF;
+            color: #6C5CE7;
             font-size: 9px;
             font-weight: 700;
-            padding: 2px 7px;
-            border-radius: 8px;
-            border: 2px solid #FFFFFF;
+            padding: 2px 8px;
+            border-radius: 10px;
         }
         .profile-name { 
-            font-size: 18px; 
+            font-size: 17px; 
             font-weight: 600; 
-            color: #0F172A;
+            color: #FFFFFF;
             margin-bottom: 6px;
-            letter-spacing: -0.2px;
         }
         .profile-plan-chip { 
             font-size: 12px; 
-            color: #64748B; 
-            background: #F1F5F9; 
-            padding: 4px 12px; 
-            border-radius: 6px; 
+            color: rgba(255,255,255,0.9); 
+            background: rgba(255,255,255,0.2); 
+            padding: 3px 12px; 
+            border-radius: 12px; 
             display: inline-flex;
             align-items: center;
             gap: 5px;
@@ -447,45 +456,51 @@
             width: 6px;
             height: 6px;
             border-radius: 50%;
-            background: #94A3B8;
+            background: #55EFC4;
         }
 
-        /* ========== 数据统计 - Clean白底 ========== */
-        .stats-section { padding: 12px 16px 16px; }
+        /* ========== 数据统计 - 彩色图标 ========== */
+        .stats-section { padding: 0 16px 16px; margin-top: -14px; position: relative; z-index: 2; }
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
         .stat-card {
             background: #FFFFFF;
-            border-radius: 12px;
+            border-radius: 14px;
             padding: 14px 8px 12px;
             text-align: center;
-            border: 1px solid #F1F5F9;
+            box-shadow: 0 2px 12px rgba(108,92,231,0.06);
         }
         .stat-icon-mini {
-            width: 24px;
-            height: 24px;
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0 auto 6px;
         }
-        .stat-value { font-size: 20px; font-weight: 700; color: #0F172A; margin-bottom: 2px; letter-spacing: -0.3px; }
-        .stat-label { font-size: 11px; color: #94A3B8; font-weight: 500; }
+        .stat-icon-mini svg { stroke-width: 2; }
+        .stat-card:nth-child(1) .stat-icon-mini { background: rgba(108,92,231,0.08); }
+        .stat-card:nth-child(1) .stat-icon-mini svg { stroke: #6C5CE7; }
+        .stat-card:nth-child(2) .stat-icon-mini { background: rgba(0,206,209,0.08); }
+        .stat-card:nth-child(2) .stat-icon-mini svg { stroke: #00CED1; }
+        .stat-card:nth-child(3) .stat-icon-mini { background: rgba(255,165,2,0.08); }
+        .stat-card:nth-child(3) .stat-icon-mini svg { stroke: #FFA502; }
+        .stat-value { font-size: 20px; font-weight: 700; color: #2D3436; margin-bottom: 2px; letter-spacing: -0.3px; }
+        .stat-label { font-size: 11px; color: #B2BEC3; font-weight: 500; }
 
-        /* ========== 功能列表 - Clean白底 ========== */
+        /* ========== 功能列表 - 彩色图标 ========== */
         .menu-section { padding: 0 16px 24px; }
         .menu-group {
             background: #FFFFFF;
-            border-radius: 12px;
+            border-radius: 14px;
             overflow: hidden;
             margin-bottom: 8px;
-            border: 1px solid #F1F5F9;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.03);
         }
         .menu-group-title {
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 600;
-            color: #94A3B8;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            color: #B2BEC3;
             padding: 14px 16px 6px;
         }
         .menu-item {
@@ -494,28 +509,33 @@
             padding: 13px 16px;
             cursor: pointer;
             transition: background 0.15s;
-            border-bottom: 0.5px solid #F8FAFC;
+            border-bottom: 0.5px solid #F8F9FA;
         }
         .menu-item:last-child { border-bottom: none; }
-        .menu-item:active { background: #F8FAFC; }
+        .menu-item:active { background: #F8F9FA; }
         .menu-icon-wrap {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
             margin-right: 12px;
         }
-        .menu-icon-wrap svg { width: 16px; height: 16px; }
-        .menu-icon-wrap.report { background: #F1F5F9; color: #64748B; }
-        .menu-icon-wrap.code { background: #F1F5F9; color: #64748B; }
-        .menu-icon-wrap.service { background: #F1F5F9; color: #64748B; }
-        .menu-icon-wrap.setting { background: #F1F5F9; color: #64748B; }
-        .menu-icon-wrap.about { background: #F1F5F9; color: #64748B; }
-        .menu-text { flex: 1; font-size: 15px; font-weight: 400; color: #1E293B; }
+        .menu-icon-wrap svg { width: 17px; height: 17px; }
+        .menu-icon-wrap.report { background: rgba(108,92,231,0.08); color: #6C5CE7; }
+        .menu-icon-wrap.report svg { stroke: #6C5CE7; }
+        .menu-icon-wrap.code { background: rgba(0,206,209,0.08); color: #00CED1; }
+        .menu-icon-wrap.code svg { stroke: #00CED1; }
+        .menu-icon-wrap.service { background: rgba(255,165,2,0.08); color: #FFA502; }
+        .menu-icon-wrap.service svg { stroke: #FFA502; }
+        .menu-icon-wrap.setting { background: rgba(116,125,140,0.08); color: #74849C; }
+        .menu-icon-wrap.setting svg { stroke: #74849C; }
+        .menu-icon-wrap.about { background: rgba(108,92,231,0.06); color: #A29BFE; }
+        .menu-icon-wrap.about svg { stroke: #A29BFE; }
+        .menu-text { flex: 1; font-size: 15px; font-weight: 500; color: #2D3436; }
         .menu-arrow { 
-            color: #CBD5E1; 
+            color: #DFE6E9; 
             width: 16px; 
             height: 16px;
             display: flex;
@@ -524,27 +544,26 @@
         }
         .menu-arrow svg { width: 16px; height: 16px; }
 
-        /* ========== 升级横幅 - Clean克制 ========== */
+        /* ========== 升级横幅 - 品牌色点缀 ========== */
         .upgrade-banner {
             margin: 12px 16px 16px;
-            background: #F8FAFC;
-            border-radius: 12px;
+            background: linear-gradient(135deg, rgba(108,92,231,0.06) 0%, rgba(162,155,254,0.06) 100%);
+            border-radius: 14px;
             padding: 14px 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             cursor: pointer;
-            border: 1px solid #E2E8F0;
         }
-        .upgrade-banner:active { background: #F1F5F9; }
-        .upgrade-text h4 { color: #1E293B; font-size: 14px; font-weight: 600; margin-bottom: 2px; }
-        .upgrade-text p { color: #94A3B8; font-size: 12px; }
+        .upgrade-banner:active { opacity: 0.9; }
+        .upgrade-text h4 { color: #2D3436; font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+        .upgrade-text p { color: #B2BEC3; font-size: 12px; }
         .upgrade-btn { 
-            background: #0F172A; 
+            background: #6C5CE7; 
             color: #FFFFFF; 
             border: none; 
             padding: 8px 16px; 
-            border-radius: 8px; 
+            border-radius: 10px; 
             font-size: 13px; 
             font-weight: 600; 
             cursor: pointer;
@@ -719,7 +738,7 @@
         <div class="main-content">
             <div class="tab-page active" id="tab-home">
                 <div class="hero-section">
-                    <div class="hero-emoji"><svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#0F172A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M8 7h8"/><path d="M8 11h6"/></svg></div>
+                    <div class="hero-emoji"><svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#6C5CE7" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M8 7h8"/><path d="M8 11h6"/></svg></div>
                     <h1 class="hero-title">AI智能诊断<span class="hero-title-accent">备考</span></h1>
                     <p class="hero-subtitle">5分钟找到你的备考人格和弱项</p>
                     <button class="btn-primary" onclick="openChat('diagnosis')">
@@ -1121,18 +1140,17 @@
             if (planChip) {
                 planChip.innerHTML = '<span class="plan-dot"></span>' + planName;
                 var dot = planChip.querySelector('.plan-dot');
-                var dotColors = { free: '#94A3B8', trial: '#635BFF', sprint: '#10B981', flagship: '#F59E0B' };
+                var dotColors = { free: '#55EFC4', trial: '#55EFC4', sprint: '#55EFC4', flagship: '#55EFC4' };
                 if (dot) { dot.style.background = dotColors[state.currentPlan] || '#94A3B8'; }
             }
             // Update badge
             if (badge) {
                 var badgeMap = { free: 'FREE', trial: 'TRY', sprint: 'PRO', flagship: 'MAX' };
-                var badgeBgMap = { free: '#E2E8F0', trial: '#EDE9FE', sprint: '#D1FAE5', flagship: '#FEF3C7' };
-                var badgeColorMap = { free: '#64748B', trial: '#635BFF', sprint: '#059669', flagship: '#D97706' };
+                var badgeBgMap = { free: '#FFFFFF', trial: '#FFFFFF', sprint: '#FFFFFF', flagship: '#FFFFFF' };
+                var badgeColorMap = { free: '#6C5CE7', trial: '#6C5CE7', sprint: '#00CED1', flagship: '#FFA502' };
                 badge.textContent = badgeMap[state.currentPlan] || 'FREE';
-                badge.style.background = badgeBgMap[state.currentPlan] || '#E2E8F0';
-                badge.style.color = badgeColorMap[state.currentPlan] || '#64748B';
-                badge.style.borderColor = '#FFFFFF';
+                badge.style.background = badgeBgMap[state.currentPlan] || '#FFFFFF';
+                badge.style.color = badgeColorMap[state.currentPlan] || '#6C5CE7';
             }
             document.getElementById('stat-plan').textContent = planName;
             var cozePlanName = document.getElementById('coze-plan-name');
