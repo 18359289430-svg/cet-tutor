@@ -592,6 +592,43 @@
         @media (min-width: 768px) {
             .app { border-left: 1px solid var(--card-border); border-right: 1px solid var(--card-border); box-shadow: 0 0 40px rgba(0,0,0,0.1); }
         }
+    
+/* Coze风格套餐页 */
+.coze-plans-header { padding: 24px 20px 8px; }
+.coze-plans-title { font-size: 22px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
+.coze-plans-subtitle { font-size: 14px; color: var(--text-tertiary); }
+.coze-plans-current { margin: 12px 16px; padding: 16px 20px; background: #1a1a2e; border-radius: 14px; display: flex; justify-content: space-between; align-items: center; }
+.coze-current-left { display: flex; align-items: center; gap: 10px; }
+.coze-current-badge { font-size: 11px; color: rgba(255,255,255,0.6); background: rgba(255,255,255,0.12); padding: 3px 8px; border-radius: 6px; }
+.coze-current-name { font-size: 16px; font-weight: 600; color: white; }
+.coze-current-arrow { color: rgba(255,255,255,0.4); font-size: 20px; }
+.coze-cards { padding: 0 16px; display: flex; flex-direction: column; gap: 12px; }
+.coze-card { background: var(--card-bg); border-radius: 16px; padding: 20px; box-shadow: var(--card-shadow); cursor: pointer; transition: all 0.2s; border: 1.5px solid transparent; }
+.coze-card:active { transform: scale(0.99); }
+.coze-card.recommended { border-color: var(--primary); box-shadow: 0 2px 16px rgba(108,92,231,0.1); }
+.coze-card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.coze-card-name { font-size: 17px; font-weight: 700; color: var(--text-primary); }
+.coze-card-price { display: flex; align-items: baseline; gap: 2px; }
+.coze-price-symbol { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+.coze-price-num { font-size: 28px; font-weight: 700; color: var(--text-primary); letter-spacing: -1px; }
+.coze-price-original { font-size: 13px; color: var(--text-tertiary); text-decoration: line-through; margin-left: 6px; }
+.coze-card-tag { font-size: 12px; color: var(--primary); background: rgba(108,92,231,0.06); display: inline-block; padding: 3px 10px; border-radius: 6px; margin-bottom: 14px; }
+.coze-card.recommended .coze-card-tag { background: rgba(108,92,231,0.1); }
+.coze-card-features { list-style: none; padding: 0; margin: 0 0 16px; }
+.coze-card-features li { font-size: 13px; color: var(--text-secondary); padding: 4px 0; line-height: 1.6; }
+.coze-card-btn { width: 100%; padding: 12px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.15s; border: none; }
+.coze-card-btn:active { transform: scale(0.98); }
+.coze-card-btn.primary { background: var(--primary); color: white; }
+.coze-card-btn.outline { background: rgba(108,92,231,0.06); color: var(--primary); }
+.coze-benefits { margin: 20px 16px; padding: 20px; background: var(--card-bg); border-radius: 16px; box-shadow: var(--card-shadow); }
+.coze-benefits-header { margin-bottom: 14px; }
+.coze-benefits-title { font-size: 15px; font-weight: 600; color: var(--text-primary); }
+.coze-benefits-list { display: flex; flex-direction: column; gap: 8px; }
+.coze-benefit-item { font-size: 13px; color: var(--text-secondary); display: flex; align-items: center; gap: 8px; }
+.coze-benefit-check { color: var(--primary); font-weight: 600; font-size: 12px; }
+.coze-faq { padding: 0 16px 24px; }
+.coze-faq-title { font-size: 17px; font-weight: 600; color: var(--text-primary); margin-bottom: 12px; }
+
     </style>
 </head>
 <body>
@@ -641,20 +678,7 @@
                     <div class="section-header"><span class="section-title">备考人格卡</span><span class="section-tag">8种类型</span></div>
                     <div class="personality-scroll" id="personality-scroll"></div>
                 </div>
-                <div class="pricing-section">
-                    <div class="pricing-card">
-                        <div class="pricing-header"><span class="pricing-name">冲刺版</span><span class="pricing-price"><small>¥</small>49<small>¥99</small></span></div>
-                        <div class="pricing-features">
-                            <span class="pricing-feature">30天AI答疑</span>
-                            <span class="pricing-feature">每日批改1次</span>
-                            <span class="pricing-feature">每日任务推送</span>
-                            <span class="pricing-feature">弱项专项训练</span>
-                            <span class="pricing-feature">考前7天冲刺</span>
-                        </div>
-                        <button class="btn-block" onclick="openBottomSheet('sprint')">立即开通</button>
-                    </div>
-                    <p class="pricing-trial-hint">只想试一下？<a href="javascript:void(0)" onclick="openBottomSheet('trial')">体验版¥4.9</a></p>
-                </div>
+
             </div>
             <div class="tab-page" id="tab-diagnosis">
                 <div class="diagnosis-page">
@@ -666,57 +690,87 @@
                 </div>
             </div>
             <div class="tab-page" id="tab-plans">
-                <div class="plans-section">
-                    <div class="plan-card" onclick="openBottomSheet('free')">
-                        <div class="plan-card-header"><span class="plan-name">免费版</span><div class="plan-price-wrap"><span class="plan-price free">免费</span></div></div>
-                        <div class="plan-features">
-                            <span class="plan-feature">AI诊断1次</span>
-                            <span class="plan-feature">基础人格报告</span>
-                            <span class="plan-feature">五维数据分析</span>
-                            <span class="plan-feature">备考人格卡</span>
-                        </div>
-                        <button class="plan-btn">免费体验</button>
+                <!-- Coze风格套餐页 -->
+                <div class="coze-plans-header">
+                    <h2 class="coze-plans-title">套餐订阅</h2>
+                    <p class="coze-plans-subtitle">选择适合你的备考方案</p>
+                </div>
+                <div class="coze-plans-current" id="coze-current-plan">
+                    <div class="coze-current-left">
+                        <span class="coze-current-badge">当前套餐</span>
+                        <span class="coze-current-name" id="coze-plan-name">免费版</span>
                     </div>
-                    <div class="plan-card" onclick="openBottomSheet('trial')">
-                        <div class="plan-card-header"><span class="plan-name">体验版</span><div class="plan-price-wrap"><span class="plan-price">¥4.9</span></div></div>
-                        <div class="plan-features">
-                            <span class="plan-feature">冲刺版1天体验</span>
-                            <span class="plan-feature">AI答疑50次</span>
-                            <span class="plan-feature">作文批改1次</span>
-                            <span class="plan-feature">每日任务</span>
+                    <span class="coze-current-arrow">›</span>
+                </div>
+                <div class="coze-cards">
+                    <!-- 体验版 -->
+                    <div class="coze-card" onclick="openBottomSheet('trial')">
+                        <div class="coze-card-top">
+                            <div class="coze-card-name">体验版</div>
+                            <div class="coze-card-price"><span class="coze-price-symbol">¥</span><span class="coze-price-num">4.9</span></div>
                         </div>
-                        <button class="plan-btn">立即购买</button>
+                        <div class="coze-card-tag">冲刺版1天体验</div>
+                        <ul class="coze-card-features">
+                            <li>✓ AI答疑50次</li>
+                            <li>✓ 作文批改1次</li>
+                            <li>✓ 每日任务</li>
+                        </ul>
+                        <button class="coze-card-btn outline">立即体验</button>
                     </div>
-                    <div class="plan-card recommended" onclick="openBottomSheet('sprint')">
-                        <div class="plan-card-header"><span class="plan-name">冲刺版</span><div class="plan-price-wrap"><span class="plan-price">¥49</span><span class="plan-original-price">¥99</span></div></div>
-                        <div class="plan-features">
-                            <span class="plan-feature">30天AI答疑</span>
-                            <span class="plan-feature">每日批改1次</span>
-                            <span class="plan-feature">每日任务推送</span>
-                            <span class="plan-feature">弱项专项训练</span>
-                            <span class="plan-feature">考前7天冲刺</span>
+                    <!-- 冲刺版 - 推荐 -->
+                    <div class="coze-card recommended" onclick="openBottomSheet('sprint')">
+                        <div class="coze-card-top">
+                            <div class="coze-card-name">冲刺版</div>
+                            <div class="coze-card-price"><span class="coze-price-symbol">¥</span><span class="coze-price-num">49</span><span class="coze-price-original">¥99</span></div>
                         </div>
-                        <button class="plan-btn">立即购买</button>
+                        <div class="coze-card-tag">30天全力备考</div>
+                        <ul class="coze-card-features">
+                            <li>✓ 30天AI答疑</li>
+                            <li>✓ 每日批改1次</li>
+                            <li>✓ 每日任务推送</li>
+                            <li>✓ 弱项专项训练</li>
+                            <li>✓ 考前7天冲刺</li>
+                        </ul>
+                        <button class="coze-card-btn primary">立即开通</button>
                     </div>
-                    <div class="plan-card" onclick="openBottomSheet('flagship')">
-                        <div class="plan-card-header"><span class="plan-name">旗舰版</span><div class="plan-price-wrap"><span class="plan-price">¥149</span></div></div>
-                        <div class="plan-features">
-                            <span class="plan-feature">无限AI答疑</span>
-                            <span class="plan-feature">无限作文批改</span>
-                            <span class="plan-feature">完整备考计划</span>
-                            <span class="plan-feature">打卡追踪</span>
-                            <span class="plan-feature">考前7天冲刺</span>
-                            <span class="plan-feature">六级衔接指导</span>
+                    <!-- 旗舰版 -->
+                    <div class="coze-card" onclick="openBottomSheet('flagship')">
+                        <div class="coze-card-top">
+                            <div class="coze-card-name">旗舰版</div>
+                            <div class="coze-card-price"><span class="coze-price-symbol">¥</span><span class="coze-price-num">149</span></div>
                         </div>
-                        <button class="plan-btn">立即购买</button>
+                        <div class="coze-card-tag">全套服务·直到考过</div>
+                        <ul class="coze-card-features">
+                            <li>✓ 无限AI答疑</li>
+                            <li>✓ 无限作文批改</li>
+                            <li>✓ 完整备考计划</li>
+                            <li>✓ 打卡追踪</li>
+                            <li>✓ 考前7天冲刺</li>
+                            <li>✓ 六级衔接指导</li>
+                        </ul>
+                        <button class="coze-card-btn outline">立即开通</button>
                     </div>
                 </div>
-                <div class="faq-section">
-                    <h3 class="faq-title">常见问题</h3>
+                <!-- 会员权益 -->
+                <div class="coze-benefits">
+                    <div class="coze-benefits-header">
+                        <span class="coze-benefits-title">会员尊享权益</span>
+                    </div>
+                    <div class="coze-benefits-list">
+                        <div class="coze-benefit-item"><span class="coze-benefit-check">✓</span> AI智能诊断，精准定位弱项</div>
+                        <div class="coze-benefit-item"><span class="coze-benefit-check">✓</span> 个性化备考计划，每日推送</div>
+                        <div class="coze-benefit-item"><span class="coze-benefit-check">✓</span> 作文精批，逐句修改建议</div>
+                        <div class="coze-benefit-item"><span class="coze-benefit-check">✓</span> 弱项专项训练，针对提升</div>
+                        <div class="coze-benefit-item"><span class="coze-benefit-check">✓</span> 考前7天冲刺，最后提分</div>
+                    </div>
+                </div>
+                <!-- FAQ -->
+                <div class="coze-faq">
+                    <h3 class="coze-faq-title">常见问题</h3>
                     <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span>付费后如何开始使用？</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-answer"><p>支付成功后，系统会自动生成激活码。您可以使用激活码在"我的-激活码兑换"中激活服务，也可以联系客服人工激活。</p></div></div>
-                    <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span>激活码有效期多久？</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-answer"><p>体验版激活后1天有效，冲刺版30天有效，旗舰版有效期至考试结束后一周。激活码可重复使用。</p></div></div>
+                    <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span>激活码有效期多久？</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-answer"><p>体验版激活后1天有效，冲刺版30天有效，旗舰版有效期至考试结束后一周。</p></div></div>
                     <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span>支持退款吗？</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-answer"><p>虚拟商品一经购买不支持退款。如有质量问题或支付问题，请联系客服处理。</p></div></div>
-                    <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span>和免费版有什么区别？</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-answer"><p>免费版仅支持1次AI诊断和查看人格卡。付费版可享受无限次AI答疑、作文精批、每日任务推送、弱项专项训练等增值服务。</p></div></div>
+                    <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span>和免费版有什么区别？</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-answer"><p>免费版仅支持1次AI诊断和查看人格卡。付费版可享受AI答疑、作文精批、每日任务推送、弱项专项训练等增值服务。</p></div></div>
                 </div>
             </div>
             <div class="tab-page" id="tab-profile">
@@ -990,6 +1044,8 @@
             var planName = CONFIG.plans[state.currentPlan] ? CONFIG.plans[state.currentPlan].name : '免费版';
             document.getElementById('profile-plan').textContent = planName;
             document.getElementById('stat-plan').textContent = planName;
+            var cozePlanName = document.getElementById('coze-plan-name');
+            if (cozePlanName) { cozePlanName.textContent = planName; }
             var upgradeBanner = document.getElementById('upgrade-banner');
             if (state.currentPlan !== 'free') { upgradeBanner.style.display = 'none'; }
         }
