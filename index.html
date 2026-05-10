@@ -981,7 +981,7 @@
                 var p = CONFIG.personalities[i];
                 var c = colors[i] || '#E0E0E0';
                 html += '<div class="personality-card" onclick="showPersonalityDetail(\'" + p.type + "\')" style="--p-color:' + c + '">' +
-                    '<div class="personality-avatar" style="background:' + c + '30;">' + p.emoji + '</div>' +
+                    '<div class="personality-avatar" style="background:' + c + '20;">' + (p.img ? '<img src="' + p.img + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" />' : p.emoji) + '</div>' +
                     '<div class="personality-type">' + p.type + '</div>' +
                     '<span class="personality-honor" style="background:' + c + '25; color:#666;">' + p.honor + '</span></div>';
             }
