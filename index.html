@@ -1177,6 +1177,16 @@
             document.getElementById('chat-panel').classList.remove('show');
             if (state.chatClient) { try { state.chatClient.hideChatBot(); } catch(e){} }
         }
+        // Save chat summary before page unload
+        window.addEventListener('beforeunload', function() {
+            if (state.chatType && state.chatRounds > 0) {
+                var topic = '';
+                if (state.chatType === 'diagnosis') topic = '完成了AI备考诊断';
+                else if (state.userData && state.userData.plan_data) topic = '练习了今日备考任务';
+                else topic = '进行了备考咨询';
+                saveChatSummary(topic);
+            }
+        });
         function clearChat() {
             if (confirm('清空当前对话？')) {
                 state.chatRounds = 0;
@@ -1221,7 +1231,8 @@
                                     user_personality: ctx.personality || '',
                                     study_days: String(ctx.studyDays || 0),
                                     today_task: getTodayTask(),
-                                    plan_summary: getPlanSummary()
+                                    plan_summary: getPlanSummary(),
+                                    last_context: getChatSummary()
                                 };
                             })()
                         }
@@ -1253,7 +1264,8 @@
                                     user_personality: ctx.personality || '',
                                     study_days: String(ctx.studyDays || 0),
                                     today_task: getTodayTask(),
-                                    plan_summary: getPlanSummary()
+                                    plan_summary: getPlanSummary(),
+                                    last_context: getChatSummary()
                                 };
                             })()
                         }
@@ -1317,6 +1329,31 @@
                 showToast('诊断完成！查看你的备考人格');
                 setTimeout(function() { showPersonalityDetail(params.type); }, 1500);
             }
+        }
+        function saveChatSummary(topic) {
+            try {
+                var data = JSON.parse(localStorage.getItem('cet_user') || '{}');
+                data.chatSummary = {
+                    topic: topic || '',
+                    timestamp: Date.now(),
+                    plan: data.plan || 'free',
+                    personality: (data.diagnosis && data.diagnosis.type) || ''
+                };
+                localStorage.setItem('cet_user', JSON.stringify(data));
+            } catch(e) {}
+        }
+        function getChatSummary() {
+            try {
+                var data = JSON.parse(localStorage.getItem('cet_user') || '{}');
+                var s = data.chatSummary;
+                if (!s || !s.topic) return '';
+                var timeStr = '';
+                var hoursAgo = Math.floor((Date.now() - s.timestamp) / 3600000);
+                if (hoursAgo < 1) timeStr = '刚刚';
+                else if (hoursAgo < 24) timeStr = hoursAgo + '小时前';
+                else timeStr = Math.floor(hoursAgo / 24) + '天前';
+                return timeStr + '对话：' + s.topic;
+            } catch(e) { return ''; }
         }
         function parsePlanResult(planStr) {
             var tasks = planStr.split('|');
