@@ -1175,6 +1175,11 @@
             try {
                 state.chatClient = new CozeWebSDK.WebChatClient({
                     config: { botId: botId, isIframe: false },
+                    auth: {
+                        type: 'token',
+                        token: 'pat_hAOthvv429aDEqWspP4lITuL3DAU7VZJiGlVrnmA1zuoZ4IWW2kmxYzXUbGvZTYb',
+                        onRefreshToken: function() { return 'pat_hAOthvv429aDEqWspP4lITuL3DAU7VZJiGlVrnmA1zuoZ4IWW2kmxYzXUbGvZTYb'; }
+                    },
                     ui: { asstBtn: { isNeed: false } }
                 });
                 state.chatClient.showChatBot();
@@ -1187,6 +1192,11 @@
             try {
                 state.chatClient = new CozeWebSDK.WebChatClient({
                     config: { botId: CONFIG.botIds.diagnosis, isIframe: false },
+                    auth: {
+                        type: 'token',
+                        token: 'pat_hAOthvv429aDEqWspP4lITuL3DAU7VZJiGlVrnmA1zuoZ4IWW2kmxYzXUbGvZTYb',
+                        onRefreshToken: function() { return 'pat_hAOthvv429aDEqWspP4lITuL3DAU7VZJiGlVrnmA1zuoZ4IWW2kmxYzXUbGvZTYb'; }
+                    },
                     ui: { asstBtn: { isNeed: false } }
                 });
                 state.chatClient.showChatBot();
