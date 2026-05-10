@@ -1174,7 +1174,7 @@
             if (state.chatClient) { try { state.chatClient.destroy(); } catch(e){} }
             container.innerHTML = '';
             try {
-                state.chatClient = new window.WebChatClient({
+                state.chatClient = new CozeWebSDK.WebChatClient({
                     config: { botId: botId },
                     auth: {
                         type: 'token',
@@ -1193,7 +1193,7 @@
             var container = document.getElementById('chat-container-diagnosis');
             container.innerHTML = '';
             try {
-                state.chatClient = new window.WebChatClient({
+                state.chatClient = new CozeWebSDK.WebChatClient({
                     config: { botId: CONFIG.botIds.diagnosis },
                     auth: {
                         type: 'token',
