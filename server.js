@@ -456,7 +456,7 @@ function sendHtml(res, htmlContent, req) {
 
 const server = http.createServer((req, res) => {
     const url = new URL(req.url, `http://localhost:${PORT}`);
-    const pathname = url.pathname;
+    const pathname = decodeURIComponent(url.pathname);
 
     // API路由
     if (pathname.startsWith('/api/')) {
