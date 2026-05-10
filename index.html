@@ -1171,18 +1171,21 @@
         function initChat(type) {
             var botId = CONFIG.botIds[type] || CONFIG.botIds.diagnosis;
             var container = document.getElementById('chat-body');
-            if (state.chatClient) { state.chatClient.destroy(); }
+            if (state.chatClient) { try { state.chatClient.destroy(); } catch(e){} }
             container.innerHTML = '';
             try {
                 state.chatClient = new window.WebChatClient({
                     config: { botId: botId },
-                    ui: { asstBtn: { isNeed: false }, chatBot: { title: '', statusBotText: 'AI正在思考...' } },
-                    componentProps: { chatBot: { containerStyle: { width: '100%', height: '100%', backgroundColor: '#F8F9FA' } } },
-                    auth: { type: 'token', token: 'pat_hAOthvv429aDEqWspP4lITuL3DAU7VZJiGlVrnmA1zuoZ4IWW2kmxYzXUbGvZTYb' },
-                    onRefreshToken: function(callback) { callback({ token: 'pat_hAOthvv429aDEqWspP4lITuL3DAU7VZJiGlVrnmA1zuoZ4IWW2kmxYzXUbGvZTYb' }); }
+                    auth: {
+                        type: 'token',
+                        token: 'pat_hAOthvv429aDEqWspP4lITuL3DAU7VZJiGlVrnmA1zuoZ4IWW2kmxYzXUbGvZTYb',
+                        onRefreshToken: function() { return 'pat_hAOthvv429aDEqWspP4lITuL3DAU7VZJiGlVrnmA1zuoZ4IWW2kmxYzXUbGvZTYb'; }
+                    },
+                    ui: { asstBtn: { isNeed: false } },
+                    componentProps: { chatBot: { containerStyle: { width: '100%', height: '100%', backgroundColor: '#F8F9FA' } } }
                 });
                 state.chatClient.mount(container);
-                state.chatClient.on('message', handleChatMessage);
+                startResultObserver(container);
             } catch (e) { console.error('Chat SDK init error:', e); container.innerHTML = '<div style="padding:20px;text-align:center;color:#666;">聊天加载失败，请刷新重试</div>'; }
         }
 
@@ -1192,23 +1195,38 @@
             try {
                 state.chatClient = new window.WebChatClient({
                     config: { botId: CONFIG.botIds.diagnosis },
-                    ui: { asstBtn: { isNeed: false }, chatBot: { title: '', statusBotText: 'AI正在思考...' } },
-                    componentProps: { chatBot: { containerStyle: { width: '100%', height: '100%', backgroundColor: '#F8F9FA' } } },
-                    auth: { type: 'token', token: 'pat_hAOthvv429aDEqWspP4lITuL3DAU7VZJiGlVrnmA1zuoZ4IWW2kmxYzXUbGvZTYb' },
-                    onRefreshToken: function(callback) { callback({ token: 'pat_hAOthvv429aDEqWspP4lITuL3DAU7VZJiGlVrnmA1zuoZ4IWW2kmxYzXUbGvZTYb' }); }
+                    auth: {
+                        type: 'token',
+                        token: 'pat_hAOthvv429aDEqWspP4lITuL3DAU7VZJiGlVrnmA1zuoZ4IWW2kmxYzXUbGvZTYb',
+                        onRefreshToken: function() { return 'pat_hAOthvv429aDEqWspP4lITuL3DAU7VZJiGlVrnmA1zuoZ4IWW2kmxYzXUbGvZTYb'; }
+                    },
+                    ui: { asstBtn: { isNeed: false } },
+                    componentProps: { chatBot: { containerStyle: { width: '100%', height: '100%', backgroundColor: '#F8F9FA' } } }
                 });
                 state.chatClient.mount(container);
-                state.chatClient.on('message', handleChatMessage);
+                startResultObserver(container);
             } catch (e) { console.error('Diagnosis chat init error:', e); }
         }
-        function handleChatMessage(event) {
-            var message = event.data;
-            if (message.role === 'assistant' && message.type === 'text') {
-                var resultMatch = message.content.match(/\[RESULT:(.+?)\]/);
-                if (resultMatch) { parseDiagnosisResult(resultMatch[1]); }
-            }
-            state.diagnosisCount++;
-            document.getElementById('stat-diagnosis').textContent = state.diagnosisCount;
+        function startResultObserver(container) {
+            if (state.resultObserver) { state.resultObserver.disconnect(); }
+            state.resultObserver = new MutationObserver(function(mutations) {
+                mutations.forEach(function(m) {
+                    m.addedNodes.forEach(function(node) {
+                        if (node.nodeType === 1) {
+                            var texts = node.querySelectorAll ? node.querySelectorAll('div,span,p,li') : [];
+                            texts.forEach(function(el) {
+                                var t = el.textContent || '';
+                                var resultMatch = t.match(/\[RESULT:(.+?)\]/);
+                                if (resultMatch) { parseDiagnosisResult(resultMatch[1]); }
+                            });
+                            var t = node.textContent || '';
+                            var resultMatch = t.match(/\[RESULT:(.+?)\]/);
+                            if (resultMatch) { parseDiagnosisResult(resultMatch[1]); }
+                        }
+                    });
+                });
+            });
+            state.resultObserver.observe(container, { childList: true, subtree: true });
         }
         function parseDiagnosisResult(resultStr) {
             var params = {};
