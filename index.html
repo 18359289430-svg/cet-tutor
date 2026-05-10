@@ -700,7 +700,6 @@
                 </div>
             </div>
             <div class="tab-page" id="tab-plans">
-                <!-- Coze风格套餐页 -->
                 <div class="coze-plans-current" id="coze-current-plan">
                     <div class="coze-current-info">
                         <div class="coze-current-left">
@@ -710,15 +709,12 @@
                         <span class="coze-current-renew">体验完整功能 →</span>
                     </div>
                 </div>
-                <!-- 套餐选择标签 -->
                 <div class="coze-tabs">
-                    <div class="coze-tab active" onclick="switchCozeTab(this, 'trial')">体验版</div>
-                    <div class="coze-tab" onclick="switchCozeTab(this, 'sprint')">冲刺版</div>
+                    <div class="coze-tab" onclick="switchCozeTab(this, 'trial')">体验版</div>
+                    <div class="coze-tab active" onclick="switchCozeTab(this, 'sprint')">冲刺版</div>
                     <div class="coze-tab" onclick="switchCozeTab(this, 'flagship')">旗舰版</div>
                 </div>
-                <!-- 横向滑动卡片 -->
                 <div class="coze-cards">
-                    <!-- 体验版 -->
                     <div class="coze-card" data-plan="trial" onclick="selectCozeCard(this, 'trial')">
                         <div class="coze-card-top">
                             <div class="coze-card-name">体验版</div>
@@ -726,18 +722,13 @@
                         </div>
                         <div class="coze-card-tag">5折限时</div>
                         <ul class="coze-card-features">
-                            <li>✓ 冲刺版1天体验</li>
                             <li>✓ AI答疑50次</li>
                             <li>✓ 作文批改1次</li>
+                            <li>✓ 每日任务</li>
                         </ul>
-                        <div class="coze-detail-row"><span>作文批改</span><span>1次</span></div>
-                        <div class="coze-detail-row"><span>每日任务</span><span>✓</span></div>
-                        <div class="coze-detail-row"><span>有效期</span><span>1天</span></div>
-                    </div>
                         <button class="coze-card-btn outline" onclick="event.stopPropagation();openBottomSheet('trial')">¥4.9 体验</button>
                     </div>
-                    <!-- 冲刺版 -->
-                    <div class="coze-card recommended selected" data-plan="sprint" onclick="selectCozeCard(this, 'sprint')" onclick="selectCozeCard(this, 'trial')">
+                    <div class="coze-card recommended selected" data-plan="sprint" onclick="selectCozeCard(this, 'sprint')">
                         <div class="coze-card-badge">推荐</div>
                         <div class="coze-card-top">
                             <div class="coze-card-name">冲刺版</div>
@@ -750,16 +741,9 @@
                             <li>✓ 弱项专项训练</li>
                             <li>✓ 考前7天冲刺</li>
                         </ul>
-                        <div class="coze-detail-row"><span>作文批改</span><span>每日1次</span></div>
-                        <div class="coze-detail-row"><span>每日任务推送</span><span>✓</span></div>
-                        <div class="coze-detail-row"><span>弱项专项训练</span><span>✓</span></div>
-                        <div class="coze-detail-row"><span>考前7天冲刺</span><span>✓</span></div>
-                        <div class="coze-detail-row"><span>有效期</span><span>30天</span></div>
-                    </div>
                         <button class="coze-card-btn primary" onclick="event.stopPropagation();openBottomSheet('sprint')">¥49 开通</button>
                     </div>
-                    <!-- 旗舰版 -->
-                    <div class="coze-card" data-plan="flagship" onclick="selectCozeCard(this, 'flagship')" onclick="selectCozeCard(this, 'trial')">
+                    <div class="coze-card" data-plan="flagship" onclick="selectCozeCard(this, 'flagship')">
                         <div class="coze-card-top">
                             <div class="coze-card-name">旗舰版</div>
                             <div class="coze-card-price"><span class="coze-price-symbol">¥</span><span class="coze-price-num">149</span></div>
@@ -771,30 +755,20 @@
                             <li>✓ 完整备考计划</li>
                             <li>✓ 六级衔接指导</li>
                         </ul>
-                        <div class="coze-detail-row"><span>作文批改</span><span>无限</span></div>
-                        <div class="coze-detail-row"><span>完整备考计划</span><span>✓</span></div>
-                        <div class="coze-detail-row"><span>打卡追踪</span><span>✓</span></div>
-                        <div class="coze-detail-row"><span>考前7天冲刺</span><span>✓</span></div>
-                        <div class="coze-detail-row"><span>六级衔接指导</span><span>✓</span></div>
-                        <div class="coze-detail-row"><span>有效期</span><span>至考试结束</span></div>
-                    </div>
                         <button class="coze-card-btn outline" onclick="event.stopPropagation();openBottomSheet('flagship')">¥149 开通</button>
                     </div>
                 </div>
-                <!-- 会员权益 -->
                 <div class="coze-benefits">
                     <div class="coze-benefits-header">
-                        <span class="coze-benefits-title">会员尊享权益</span>
+                        <span class="coze-benefits-title">套餐权益</span>
                     </div>
                     <div class="coze-benefits-list" id="coze-benefits-list"></div>
                 </div>
-                <!-- FAQ -->
                 <div class="coze-faq">
                     <h3 class="coze-faq-title">常见问题</h3>
-                    <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span>付费后如何开始使用？</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-answer"><p>支付成功后，系统会自动生成激活码。您可以使用激活码在"我的-激活码兑换"中激活服务。</p></div></div>
-                    <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span>激活码有效期多久？</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-answer"><p>体验版1天有效，冲刺版30天有效，旗舰版有效期至考试结束后一周。</p></div></div>
-                    <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span>支持退款吗？</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-answer"><p>虚拟商品一经购买不支持退款。如有质量问题请联系客服。</p></div></div>
-                    <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span>和免费版有什么区别？</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-answer"><p>免费版仅支持1次AI诊断。付费版可享受AI答疑、作文精批、每日任务等增值服务。</p></div></div>
+                    <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span>付费后如何开始使用？</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-answer"><p>支付成功后，系统会自动生成激活码。在"我的-激活码兑换"中激活即可。</p></div></div>
+                    <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span>激活码有效期多久？</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-answer"><p>体验版1天，冲刺版30天，旗舰版至考试结束。</p></div></div>
+                    <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span>和免费版有什么区别？</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-answer"><p>免费版仅1次AI诊断。付费版享AI答疑、作文精批、每日任务等。</p></div></div>
                 </div>
             </div>
             <div class="tab-page" id="tab-profile">
