@@ -55,18 +55,17 @@
             overflow: hidden;
         }
         .status-bar {
-            height: 48px;
+            height: 44px;
             padding-top: var(--safe-top);
-            background: rgba(255, 255, 255, 0.92);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
             z-index: 200;
             flex-shrink: 0;
-            border-bottom: 0.5px solid rgba(0,0,0,0.04);
         }
         .status-bar-content {
             display: flex;
@@ -75,18 +74,8 @@
             width: 100%;
             padding: 0 20px;
         }
-        .brand { font-size: 17px; font-weight: 700; color: var(--primary); letter-spacing: -0.5px; }
-        .countdown { 
-            font-size: 12px; 
-            color: var(--text-secondary); 
-            display: flex; 
-            align-items: center; 
-            gap: 6px;
-            background: var(--urgent-bg);
-            padding: 4px 10px;
-            border-radius: 8px;
-            font-weight: 500;
-        }
+        .brand { font-size: 17px; font-weight: 600; color: var(--primary); letter-spacing: -0.3px; }
+        .countdown { font-size: 13px; color: var(--text-secondary); display: flex; align-items: center; gap: 4px; }
         .countdown-dot {
             width: 6px;
             height: 6px;
@@ -120,12 +109,12 @@
             bottom: 0;
             left: 0;
             right: 0;
-            height: calc(60px + var(--safe-bottom));
+            height: calc(56px + var(--safe-bottom));
             padding-bottom: var(--safe-bottom);
-            background: rgba(255, 255, 255, 0.96);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border-top: 0.5px solid rgba(0,0,0,0.06);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid var(--card-border);
             display: flex;
             z-index: 200;
         }
@@ -135,117 +124,60 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 3px;
+            gap: 2px;
             color: var(--text-tertiary);
             cursor: pointer;
-            transition: all 0.2s;
-            position: relative;
+            transition: color 0.2s;
         }
-        .tab-item:active { transform: scale(0.92); }
+        .tab-item:active { transform: scale(0.95); }
         .tab-item.active { color: var(--primary); }
-        .tab-item.active::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 20px;
-            height: 2px;
-            background: var(--primary);
-            border-radius: 0 0 2px 2px;
-        }
-        .tab-icon { width: 22px; height: 22px; }
-        .tab-icon svg { width: 22px; height: 22px; }
+        .tab-icon { width: 24px; height: 24px; }
+        .tab-icon svg { width: 24px; height: 24px; }
         .tab-label { font-size: 10px; font-weight: 500; }
-        .tab-item.active .tab-label { font-weight: 600; }
         .hero-section {
-            padding: 36px 20px 28px;
+            padding: 32px 20px 24px;
             text-align: center;
             background: linear-gradient(180deg, #FFFFFF 0%, var(--bg) 100%);
-            position: relative;
         }
-        .hero-emoji { font-size: 52px; margin-bottom: 14px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.06)); }
-        .hero-title { 
-            font-size: 28px; 
-            font-weight: 800; 
-            color: var(--text-primary); 
-            margin-bottom: 8px; 
-            letter-spacing: -0.8px;
-            line-height: 1.2;
-        }
-        .hero-title-accent {
-            background: linear-gradient(135deg, #635BFF, #7C3AED);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .hero-subtitle { font-size: 14px; color: var(--text-secondary); margin-bottom: 22px; line-height: 1.5; }
+        .hero-emoji { font-size: 48px; margin-bottom: 12px; }
+        .hero-title { font-size: 26px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; letter-spacing: -0.5px; }
+        .hero-subtitle { font-size: 14px; color: var(--text-secondary); margin-bottom: 20px; }
         .btn-primary {
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            padding: 14px 36px;
-            background: linear-gradient(135deg, #635BFF, #7C3AED);
+            padding: 14px 32px;
+            background: var(--primary);
             color: white;
             border: none;
-            border-radius: 16px;
+            border-radius: 24px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
-            box-shadow: 0 4px 20px rgba(99, 91, 255, 0.35);
-            position: relative;
-            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(108, 92, 231, 0.3);
         }
-        .btn-primary::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 50%;
-            background: linear-gradient(180deg, rgba(255,255,255,0.15), transparent);
-            border-radius: 16px 16px 0 0;
-        }
-        .btn-primary:active { transform: scale(0.96); box-shadow: 0 2px 8px rgba(99, 91, 255, 0.3); }
+        .btn-primary:active { transform: scale(0.96); box-shadow: 0 2px 8px rgba(108, 92, 231, 0.3); }
         .btn-primary svg { width: 18px; height: 18px; }
 
-        /* ========== 瓷片区卡片 - Premium重做 ========== */
+        /* ========== 瓷片区卡片 - 高端重做 ========== */
         .tiles-section { padding: 0 16px 24px; }
-        .tiles-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .tiles-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
         .tile-card {
-            background: #FFFFFF;
-            border-radius: 18px;
-            padding: 18px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 20px;
             display: flex;
             flex-direction: column;
             gap: 10px;
-            box-shadow: 0 1px 8px rgba(0,0,0,0.04);
+            box-shadow: var(--card-shadow);
             cursor: pointer;
             transition: all 0.2s ease;
-            border: 1px solid rgba(0,0,0,0.04);
-            position: relative;
-            overflow: hidden;
+            border: none;
         }
-        .tile-card::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            border-radius: 18px 18px 0 0;
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-        .tile-card:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
-        .tile-card:hover::after { opacity: 1; }
+        .tile-card:hover { transform: translateY(-1px); box-shadow: var(--card-shadow-hover); }
         .tile-card:active { transform: scale(0.97); background: #fafafa; }
-        .tile-card:nth-child(1)::after { background: linear-gradient(90deg, #635BFF, #7C3AED); }
-        .tile-card:nth-child(2)::after { background: linear-gradient(90deg, #10B981, #34D399); }
-        .tile-card:nth-child(3)::after { background: linear-gradient(90deg, #F59E0B, #FBBF24); }
-        .tile-card:nth-child(4)::after { background: linear-gradient(90deg, #E17055, #FDCB6E); }
         .tile-icon {
             width: 44px;
             height: 44px;
@@ -255,11 +187,11 @@
             justify-content: center;
             font-size: 22px;
         }
-        .tile-icon.diagnosis { background: rgba(99,91,255,0.08); }
-        .tile-icon.plan { background: rgba(16,185,129,0.08); }
-        .tile-icon.review { background: rgba(245,158,11,0.08); }
+        .tile-icon.diagnosis { background: rgba(108,92,231,0.08); }
+        .tile-icon.plan { background: rgba(0,184,148,0.08); }
+        .tile-icon.review { background: rgba(253,203,110,0.15); }
         .tile-icon.simulate { background: rgba(225,112,85,0.08); }
-        .tile-title { font-size: 15px; font-weight: 600; color: var(--text-primary); letter-spacing: -0.2px; }
+        .tile-title { font-size: 15px; font-weight: 500; color: var(--text-primary); }
         .tile-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.4; }
 
         /* ========== 人格卡 - 高端重做 ========== */
@@ -452,111 +384,36 @@
         .faq-item.open .faq-answer { padding: 0 16px 14px; max-height: 200px; }
         .faq-answer p { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
 
-        /* ========== 用户中心 - Premium重做 ========== */
-        .profile-header {
-            position: relative;
-            padding: 32px 20px 28px;
-            background: linear-gradient(160deg, #635BFF 0%, #7C3AED 40%, #9333EA 100%);
-            text-align: center;
-            overflow: hidden;
-        }
-        .profile-header::before {
-            content: '';
-            position: absolute;
-            top: -40%;
-            right: -20%;
-            width: 200px;
-            height: 200px;
-            background: rgba(255,255,255,0.06);
-            border-radius: 50%;
-        }
-        .profile-header::after {
-            content: '';
-            position: absolute;
-            bottom: -30%;
-            left: -15%;
-            width: 160px;
-            height: 160px;
-            background: rgba(255,255,255,0.04);
-            border-radius: 50%;
-        }
-        .profile-avatar-wrap {
-            position: relative;
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 14px;
-        }
+        /* ========== 用户中心 - 高端重做 ========== */
+        .profile-section { padding: 24px 20px; background: linear-gradient(180deg, var(--card-bg) 0%, var(--bg) 100%); text-align: center; }
         .profile-avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 28px;
-            background: rgba(255,255,255,0.2);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 36px;
+            margin: 0 auto 12px;
+            font-size: 32px;
             color: white;
-            border: 2px solid rgba(255,255,255,0.3);
-            position: relative;
-            z-index: 1;
         }
-        .profile-avatar-badge {
-            position: absolute;
-            bottom: -2px;
-            right: -2px;
-            background: #10B981;
-            color: white;
-            font-size: 9px;
-            font-weight: 700;
-            padding: 2px 6px;
-            border-radius: 6px;
-            z-index: 2;
-            border: 2px solid #7C3AED;
-        }
-        .profile-name { 
-            font-size: 20px; 
-            font-weight: 700; 
-            color: #FFFFFF; 
-            margin-bottom: 6px;
-            letter-spacing: -0.3px;
-            position: relative;
-            z-index: 1;
-        }
-        .profile-plan-chip { 
-            font-size: 12px; 
-            color: rgba(255,255,255,0.9); 
-            background: rgba(255,255,255,0.15); 
-            padding: 4px 14px; 
-            border-radius: 20px; 
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            position: relative;
-            z-index: 1;
-        }
-        .profile-plan-chip .plan-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: #10B981;
-        }
+        .profile-name { font-size: 18px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
+        .profile-plan { font-size: 13px; color: var(--primary); background: rgba(108, 92, 231, 0.08); padding: 4px 12px; border-radius: 10px; display: inline-block; }
 
-        /* ========== 数据统计卡片 - Premium重做 ========== */
-        .stats-section { padding: 16px 16px 20px; margin-top: -16px; position: relative; z-index: 2; }
+        /* ========== 数据统计卡片 - 高端重做 ========== */
+        .stats-section { padding: 0 16px 20px; }
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
         .stat-card {
-            background: #FFFFFF;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             border-radius: 16px;
-            padding: 18px 8px 14px;
+            padding: 16px 8px;
             text-align: center;
-            box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
             position: relative;
             overflow: hidden;
-            border: 1px solid rgba(0,0,0,0.04);
         }
         .stat-card::before {
             content: '';
@@ -564,45 +421,24 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 3px;
-            border-radius: 16px 16px 0 0;
+            height: 2px;
         }
-        .stat-card:nth-child(1)::before { background: linear-gradient(90deg, #635BFF, #7C3AED); }
-        .stat-card:nth-child(2)::before { background: linear-gradient(90deg, #10B981, #34D399); }
-        .stat-card:nth-child(3)::before { background: linear-gradient(90deg, #F59E0B, #FBBF24); }
-        .stat-icon-mini {
-            width: 28px;
-            height: 28px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 8px;
-            font-size: 14px;
-        }
-        .stat-card:nth-child(1) .stat-icon-mini { background: rgba(99,91,255,0.08); }
-        .stat-card:nth-child(2) .stat-icon-mini { background: rgba(16,185,129,0.08); }
-        .stat-card:nth-child(3) .stat-icon-mini { background: rgba(245,158,11,0.08); }
-        .stat-value { font-size: 24px; font-weight: 700; color: var(--text-primary); margin-bottom: 2px; letter-spacing: -0.5px; }
-        .stat-label { font-size: 11px; color: var(--text-tertiary); font-weight: 500; }
+        .stat-card:nth-child(1)::before { background: var(--primary); }
+        .stat-card:nth-child(2)::before { background: var(--success); }
+        .stat-card:nth-child(3)::before { background: var(--warning); }
+        .stat-value { font-size: 28px; font-weight: 700; color: var(--text-primary); margin-bottom: 2px; }
+        .stat-label { font-size: 11px; color: var(--text-tertiary); }
 
-        /* ========== 功能列表 - Premium重做 ========== */
+        /* ========== 功能列表 - 高端重做 ========== */
         .menu-section { padding: 0 16px 24px; }
         .menu-group {
-            background: #FFFFFF;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             border-radius: 16px;
             overflow: hidden;
-            margin-bottom: 10px;
-            box-shadow: 0 1px 8px rgba(0,0,0,0.04);
-            border: 1px solid rgba(0,0,0,0.04);
-        }
-        .menu-group-title {
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--text-tertiary);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            padding: 16px 16px 8px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
         }
         .menu-item {
             display: flex;
@@ -610,75 +446,43 @@
             padding: 14px 16px;
             cursor: pointer;
             transition: background 0.15s;
-            border-bottom: 0.5px solid #f4f4f5;
+            border-bottom: 0.5px solid #f1f5f9;
         }
         .menu-item:last-child { border-bottom: none; }
-        .menu-item:active { background: #f9fafb; }
-        .menu-icon-wrap {
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
+        .menu-item:active { background: #f8fafc; }
+        .menu-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: 14px;
+            margin-right: 12px;
+            font-size: 16px;
+            background: rgba(108,92,231,0.06);
         }
-        .menu-icon-wrap svg { width: 18px; height: 18px; }
-        .menu-icon-wrap.report { background: rgba(99,91,255,0.08); color: #635BFF; }
-        .menu-icon-wrap.code { background: rgba(16,185,129,0.08); color: #10B981; }
-        .menu-icon-wrap.service { background: rgba(245,158,11,0.08); color: #F59E0B; }
-        .menu-icon-wrap.setting { background: rgba(100,116,139,0.08); color: #64748B; }
-        .menu-icon-wrap.about { background: rgba(99,91,255,0.06); color: #8B5CF6; }
+        .menu-icon.report { background: rgba(108,92,231,0.06); }
+        .menu-icon.code { background: rgba(0,184,148,0.06); }
+        .menu-icon.service { background: rgba(253,203,110,0.12); }
         .menu-text { flex: 1; font-size: 15px; font-weight: 500; color: var(--text-primary); }
-        .menu-arrow { 
-            color: #d1d5db; 
-            width: 16px; 
-            height: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .menu-arrow svg { width: 16px; height: 16px; }
+        .menu-arrow { color: #cbd5e1; font-size: 14px; }
 
-        /* ========== 升级横幅 - Premium重做 ========== */
+        /* ========== 升级横幅 - 高端重做 ========== */
         .upgrade-banner {
-            margin: 0 16px 20px;
-            background: linear-gradient(135deg, rgba(99,91,255,0.06) 0%, rgba(124,58,237,0.04) 100%);
-            border-radius: 16px;
-            padding: 18px;
+            margin: 0 16px 24px;
+            background: rgba(108,92,231,0.06);
+            border-radius: 12px;
+            padding: 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             cursor: pointer;
-            border: 1px solid rgba(99,91,255,0.12);
-            position: relative;
-            overflow: hidden;
-        }
-        .upgrade-banner::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            width: 3px;
-            background: linear-gradient(180deg, #635BFF, #7C3AED);
-            border-radius: 3px 0 0 3px;
+            border-left: 3px solid var(--primary);
         }
         .upgrade-banner:active { opacity: 0.9; }
-        .upgrade-text h4 { color: #1e293b; font-size: 15px; font-weight: 600; margin-bottom: 3px; }
+        .upgrade-text h4 { color: #1e293b; font-size: 15px; font-weight: 600; margin-bottom: 2px; }
         .upgrade-text p { color: var(--text-secondary); font-size: 12px; }
-        .upgrade-btn { 
-            background: linear-gradient(135deg, #635BFF, #7C3AED); 
-            color: white; 
-            border: none; 
-            padding: 10px 20px; 
-            border-radius: 12px; 
-            font-size: 13px; 
-            font-weight: 600; 
-            cursor: pointer;
-            box-shadow: 0 2px 8px rgba(99,91,255,0.3);
-            white-space: nowrap;
-        }
+        .upgrade-btn { background: var(--primary); color: white; border: none; padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; }
 
         /* ========== Bottom Sheet - 高端重做 ========== */
         .bottom-sheet-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.4); z-index: 500; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
@@ -849,7 +653,7 @@
             <div class="tab-page active" id="tab-home">
                 <div class="hero-section">
                     <div class="hero-emoji">📚</div>
-                    <h1 class="hero-title">AI智能诊断<span class="hero-title-accent">备考</span></h1>
+                    <h1 class="hero-title">AI智能诊断备考</h1>
                     <p class="hero-subtitle">5分钟找到你的备考人格和弱项</p>
                     <button class="btn-primary" onclick="openChat('diagnosis')">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
@@ -968,19 +772,16 @@
                 </div>
             </div>
             <div class="tab-page" id="tab-profile">
-                <div class="profile-header">
-                    <div class="profile-avatar-wrap">
-                        <div class="profile-avatar" id="profile-avatar">👤</div>
-                        <div class="profile-avatar-badge" id="profile-avatar-badge">FREE</div>
-                    </div>
+                <div class="profile-section">
+                    <div class="profile-avatar" id="profile-avatar">👤</div>
                     <div class="profile-name" id="profile-name">点击登录</div>
-                    <div class="profile-plan-chip" id="profile-plan"><span class="plan-dot"></span>免费版</div>
+                    <div class="profile-plan" id="profile-plan">免费版</div>
                 </div>
                 <div class="stats-section">
                     <div class="stats-grid">
-                        <div class="stat-card"><div class="stat-icon-mini">📋</div><div class="stat-value" id="stat-plan">-</div><div class="stat-label">当前套餐</div></div>
-                        <div class="stat-card"><div class="stat-icon-mini">🎯</div><div class="stat-value" id="stat-diagnosis">0</div><div class="stat-label">诊断次数</div></div>
-                        <div class="stat-card"><div class="stat-icon-mini">✍️</div><div class="stat-value" id="stat-review">0</div><div class="stat-label">批改次数</div></div>
+                        <div class="stat-card"><div class="stat-value" id="stat-plan">-</div><div class="stat-label">当前套餐</div></div>
+                        <div class="stat-card"><div class="stat-value" id="stat-diagnosis">0</div><div class="stat-label">诊断次数</div></div>
+                        <div class="stat-card"><div class="stat-value" id="stat-review">0</div><div class="stat-label">批改次数</div></div>
                     </div>
                 </div>
                 <div class="upgrade-banner" id="upgrade-banner" onclick="switchTab('plans')">
@@ -989,14 +790,9 @@
                 </div>
                 <div class="menu-section">
                     <div class="menu-group">
-                        <div class="menu-group-title">功能</div>
-                        <div class="menu-item" onclick="showReport()"><div class="menu-icon-wrap report"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg></div><span class="menu-text">我的报告</span><span class="menu-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span></div>
-                        <div class="menu-item" onclick="showCodeRedeem()"><div class="menu-icon-wrap code"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg></div><span class="menu-text">激活码兑换</span><span class="menu-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span></div>
-                        <div class="menu-item" onclick="showService()"><div class="menu-icon-wrap service"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><span class="menu-text">联系客服</span><span class="menu-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span></div>
-                    </div>
-                    <div class="menu-group">
-                        <div class="menu-group-title">其他</div>
-                        <div class="menu-item" onclick="showAbout()"><div class="menu-icon-wrap about"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></div><span class="menu-text">关于我们</span><span class="menu-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span></div>
+                        <div class="menu-item" onclick="showReport()"><div class="menu-icon report">📊</div><span class="menu-text">我的报告</span><span class="menu-arrow">›</span></div>
+                        <div class="menu-item" onclick="showCodeRedeem()"><div class="menu-icon code">🔑</div><span class="menu-text">激活码兑换</span><span class="menu-arrow">›</span></div>
+                        <div class="menu-item" onclick="showService()"><div class="menu-icon service">💬</div><span class="menu-text">联系客服</span><span class="menu-arrow">›</span></div>
                     </div>
                 </div>
             </div>
@@ -1244,22 +1040,7 @@
         }
         function updateProfileUI() {
             var planName = CONFIG.plans[state.currentPlan] ? CONFIG.plans[state.currentPlan].name : '免费版';
-            var planChip = document.getElementById('profile-plan');
-            var badge = document.getElementById('profile-avatar-badge');
-            var planDot = planChip ? planChip.querySelector('.plan-dot') : null;
-            // Update plan chip
-            if (planChip) {
-                var dotHtml = planDot ? '<span class="plan-dot"></span>' : '';
-                planChip.innerHTML = dotHtml + planName;
-            }
-            // Update badge
-            if (badge) {
-                var badgeMap = { free: 'FREE', trial: 'TRY', sprint: 'PRO', flagship: 'MAX' };
-                var colorMap = { free: '#64748B', trial: '#635BFF', sprint: '#10B981', flagship: '#F59E0B' };
-                badge.textContent = badgeMap[state.currentPlan] || 'FREE';
-                badge.style.background = colorMap[state.currentPlan] || '#64748B';
-                badge.style.borderColor = '#7C3AED';
-            }
+            document.getElementById('profile-plan').textContent = planName;
             document.getElementById('stat-plan').textContent = planName;
             var cozePlanName = document.getElementById('coze-plan-name');
             if (cozePlanName) { cozePlanName.textContent = planName; }
@@ -1334,7 +1115,6 @@
         function showReport() { if (state.userData && state.userData.diagnosis) { showPersonalityDetail(state.userData.diagnosis.type); } else { showToast('请先完成AI诊断'); switchTab('diagnosis'); } }
         function showCodeRedeem() { openBottomSheet(state.currentPlan); switchSheetTab('code'); }
         function showService() { showToast('客服微信：cet4fanyi'); }
-        function showAbout() { showToast('四级备考搭子·金牌陪练 v1.0'); }
         var cozeBenefits = {
             trial: [
                 {name:'AI答疑', val:'50次'},
