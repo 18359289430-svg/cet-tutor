@@ -1181,9 +1181,7 @@
         window.addEventListener('beforeunload', function() {
             if (state.chatType && state.chatRounds > 0) {
                 var topic = '';
-                if (state.chatType === 'diagnosis') topic = '完成了AI备考诊断';
-                else if (state.userData && state.userData.plan_data) topic = '练习了今日备考任务';
-                else topic = '进行了备考咨询';
+                try { var pd = JSON.parse(localStorage.getItem('cet_user')||'{}'); var pt = pd.pendingTask; if (pt && pt.type) { topic = '练习'+pt.type+'，进度'+pt.done+'/'+pt.total; } else if (state.chatType === 'diagnosis') { topic = '完成了AI备考诊断'; } else if (pd.plan_data) { topic = '练习了今日备考任务'; } else { topic = '进行了备考咨询'; } } catch(e) { topic = '进行了备考咨询'; }
                 saveChatSummary(topic);
             }
         });
@@ -1232,7 +1230,8 @@
                                     study_days: String(ctx.studyDays || 0),
                                     today_task: getTodayTask(),
                                     plan_summary: getPlanSummary(),
-                                    last_context: getChatSummary()
+                                    last_context: getChatSummary(),
+                                    pending_task: getPendingTask()
                                 };
                             })()
                         }
@@ -1265,7 +1264,8 @@
                                     study_days: String(ctx.studyDays || 0),
                                     today_task: getTodayTask(),
                                     plan_summary: getPlanSummary(),
-                                    last_context: getChatSummary()
+                                    last_context: getChatSummary(),
+                                    pending_task: getPendingTask()
                                 };
                             })()
                         }
@@ -1383,6 +1383,24 @@
                 if (todayIndex < 0) todayIndex = 0;
                 var today = plan[todayIndex];
                 return (today.day || ('第' + (todayIndex + 1) + '天')) + ': ' + (today.task || '');
+            } catch(e) { return ''; }
+        }
+        function parseTaskResult(taskStr) {
+            try {
+                var parts = taskStr.split('|');
+                var task = { type: parts[0]||'', content: parts[1]||'', total: parseInt(parts[2])||0, done: parseInt(parts[3])||0, timestamp: Date.now() };
+                var data = JSON.parse(localStorage.getItem('cet_user')||'{}');
+                data.pendingTask = task;
+                localStorage.setItem('cet_user', JSON.stringify(data));
+            } catch(e) {}
+        }
+        function getPendingTask() {
+            try {
+                var data = JSON.parse(localStorage.getItem('cet_user')||'{}');
+                var t = data.pendingTask;
+                if (!t || !t.type) return '';
+                if ((Date.now() - t.timestamp) / 3600000 > 48) return '';
+                return t.type+'|'+t.content+'|'+t.total+'|'+t.done;
             } catch(e) { return ''; }
         }
         function getPlanSummary() {
