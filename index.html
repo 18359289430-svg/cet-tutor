@@ -13,14 +13,23 @@
             --primary-light: #A29BFE;
             --primary-dark: #5849C4;
             --bg: #F8F9FA;
-            --card-bg: #FFFFFF;
-            --text: #1A1A2E;
-            --text-secondary: #666;
-            --text-light: #999;
-            --border: #EAEAEF;
+            --card-bg: #ffffff;
+            --card-bg-glass: rgba(255, 255, 255, 0.72);
+            --card-border: #f1f5f9;
+            --card-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02);
+            --card-shadow-hover: 0 4px 16px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+            --card-shadow-promoted: 0 4px 24px rgba(108,92,231,0.12), 0 1px 2px rgba(0,0,0,0.04);
+            --card-radius: 20px;
+            --card-radius-sm: 16px;
+            --text-primary: #1a1a2e;
+            --text-secondary: #475569;
+            --text-tertiary: #94a3b8;
+            --brand-purple: #6C5CE7;
+            --brand-purple-light: rgba(108,92,231,0.08);
             --success: #00B894;
+            --warning: #FDCB6E;
+            --border: #EAEAEF;
             --danger: #E17055;
-            --shadow: 0 2px 12px rgba(108, 92, 231, 0.08);
             --safe-bottom: env(safe-area-inset-bottom, 20px);
             --safe-top: env(safe-area-inset-top, 44px);
         }
@@ -30,7 +39,7 @@
             overflow: hidden;
             background: var(--bg);
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            color: var(--text);
+            color: var(--text-primary);
             font-size: 15px;
             line-height: 1.5;
             -webkit-font-smoothing: antialiased;
@@ -105,7 +114,7 @@
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border-top: 1px solid var(--border);
+            border-top: 1px solid var(--card-border);
             display: flex;
             z-index: 200;
         }
@@ -116,7 +125,7 @@
             align-items: center;
             justify-content: center;
             gap: 2px;
-            color: var(--text-light);
+            color: var(--text-tertiary);
             cursor: pointer;
             transition: color 0.2s;
         }
@@ -131,7 +140,7 @@
             background: linear-gradient(180deg, #FFFFFF 0%, var(--bg) 100%);
         }
         .hero-emoji { font-size: 48px; margin-bottom: 12px; }
-        .hero-title { font-size: 26px; font-weight: 700; color: var(--text); margin-bottom: 8px; letter-spacing: -0.5px; }
+        .hero-title { font-size: 26px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; letter-spacing: -0.5px; }
         .hero-subtitle { font-size: 14px; color: var(--text-secondary); margin-bottom: 20px; }
         .btn-primary {
             display: inline-flex;
@@ -151,32 +160,45 @@
         }
         .btn-primary:active { transform: scale(0.96); box-shadow: 0 2px 8px rgba(108, 92, 231, 0.3); }
         .btn-primary svg { width: 18px; height: 18px; }
+
+        /* ========== 瓷片区卡片 - 高端重做 ========== */
         .tiles-section { padding: 0 16px 24px; }
         .tiles-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
         .tile-card {
             background: var(--card-bg);
-            border-radius: 16px;
-            padding: 16px;
+            border-radius: 20px;
+            padding: 20px;
             display: flex;
             flex-direction: column;
-            gap: 8px;
-            box-shadow: var(--shadow);
+            gap: 10px;
+            box-shadow: var(--card-shadow);
             cursor: pointer;
-            transition: all 0.2s;
-            border: 1px solid var(--border);
+            transition: all 0.2s ease;
+            border: none;
         }
-        .tile-card:active { transform: scale(0.97); background: #F5F5F8; }
-        .tile-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
-        .tile-icon.diagnosis { background: linear-gradient(135deg, #6C5CE7, #A29BFE); }
-        .tile-icon.plan { background: linear-gradient(135deg, #00B894, #55EFC4); }
-        .tile-icon.review { background: linear-gradient(135deg, #FDCB6E, #F8E71C); }
-        .tile-icon.simulate { background: linear-gradient(135deg, #E17055, #FF7675); }
-        .tile-title { font-size: 15px; font-weight: 600; color: var(--text); }
-        .tile-desc { font-size: 12px; color: var(--text-light); line-height: 1.4; }
+        .tile-card:hover { transform: translateY(-1px); box-shadow: var(--card-shadow-hover); }
+        .tile-card:active { transform: scale(0.97); background: #fafafa; }
+        .tile-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+        .tile-icon.diagnosis { background: rgba(108,92,231,0.08); }
+        .tile-icon.plan { background: rgba(0,184,148,0.08); }
+        .tile-icon.review { background: rgba(253,203,110,0.15); }
+        .tile-icon.simulate { background: rgba(225,112,85,0.08); }
+        .tile-title { font-size: 15px; font-weight: 500; color: var(--text-primary); }
+        .tile-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.4; }
+
+        /* ========== 人格卡 - 高端重做 ========== */
         .personality-section { padding: 0 0 24px; }
         .section-header { padding: 0 20px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
-        .section-title { font-size: 17px; font-weight: 600; color: var(--text); }
-        .section-tag { font-size: 11px; color: var(--primary); background: rgba(108, 92, 231, 0.1); padding: 4px 10px; border-radius: 10px; }
+        .section-title { font-size: 17px; font-weight: 600; color: var(--text-primary); }
+        .section-tag { font-size: 11px; color: var(--primary); background: rgba(108, 92, 231, 0.08); padding: 4px 10px; border-radius: 10px; }
         .personality-scroll {
             display: flex;
             gap: 12px;
@@ -189,117 +211,280 @@
         .personality-scroll::-webkit-scrollbar { display: none; }
         .personality-card {
             flex-shrink: 0;
-            width: 140px;
+            width: 150px;
             background: var(--card-bg);
-            border-radius: 16px;
+            border-radius: 20px;
             padding: 16px 12px;
             text-align: center;
-            box-shadow: var(--shadow);
+            box-shadow: var(--card-shadow);
             scroll-snap-align: start;
             cursor: pointer;
-            transition: all 0.2s;
-            border: 1px solid var(--border);
+            transition: all 0.2s ease;
+            border: none;
+            position: relative;
+            overflow: hidden;
         }
-        .personality-card:active { transform: scale(0.95); }
-        .personality-avatar { width: 56px; height: 56px; border-radius: 50%; margin: 0 auto 8px; display: flex; align-items: center; justify-content: center; font-size: 28px; }
-        .personality-type { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .personality-honor { font-size: 10px; color: var(--text-light); }
+        .personality-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+        }
+        .personality-card:active { transform: scale(0.97); }
+        .personality-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin: 8px auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+        }
+        .personality-type { font-size: 15px; font-weight: 600; color: var(--text-primary); margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .personality-honor {
+            font-size: 10px;
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 6px;
+        }
+
+        /* ========== 首页定价卡 - 高端重做 ========== */
         .pricing-section { padding: 0 16px 24px; }
         .pricing-card {
             background: var(--card-bg);
             border-radius: 20px;
-            padding: 20px;
-            box-shadow: var(--shadow);
-            border: 2px solid var(--primary);
+            padding: 24px 20px;
+            box-shadow: var(--card-shadow-promoted);
             position: relative;
             overflow: hidden;
+            border-top: 3px solid var(--primary);
         }
-        .pricing-recommended {
-            position: absolute;
-            top: 12px;
-            right: -28px;
+        .pricing-header { display: flex; align-items: baseline; gap: 8px; margin-bottom: 6px; }
+        .pricing-name { font-size: 18px; font-weight: 600; color: var(--text-primary); }
+        .pricing-price { font-size: 32px; font-weight: 700; color: var(--text-primary); letter-spacing: -1px; }
+        .pricing-price small { font-size: 16px; font-weight: 500; color: var(--text-tertiary); text-decoration: line-through; margin-left: 4px; }
+        .pricing-features {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin: 16px 0 20px;
+        }
+        .pricing-feature {
+            font-size: 13px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            line-height: 1.4;
+        }
+        .pricing-feature::before {
+            content: '·';
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 16px;
+        }
+        .btn-block {
+            width: 100%;
+            padding: 14px;
             background: var(--primary);
             color: white;
-            font-size: 10px;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
             font-weight: 600;
-            padding: 4px 32px;
-            transform: rotate(45deg);
-        }
-        .pricing-header { display: flex; align-items: baseline; gap: 8px; margin-bottom: 8px; }
-        .pricing-name { font-size: 18px; font-weight: 700; color: var(--text); }
-        .pricing-price { font-size: 28px; font-weight: 700; color: var(--primary); }
-        .pricing-price small { font-size: 14px; font-weight: 500; }
-        .pricing-features { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0 16px; }
-        .pricing-feature { font-size: 11px; color: var(--text-secondary); background: var(--bg); padding: 4px 10px; border-radius: 8px; }
-        .btn-block { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-        .btn-block:active { transform: scale(0.98); background: var(--primary-dark); }
-        .pricing-trial-hint { text-align: center; margin-top: 12px; font-size: 13px; color: var(--text-light); }
-        .pricing-trial-hint a { color: var(--primary); text-decoration: none; font-weight: 500; }
-        .diagnosis-page { display: flex; flex-direction: column; height: 100%; padding-bottom: 0 !important; }
-        .diagnosis-header { padding: 20px; text-align: center; background: var(--card-bg); border-bottom: 1px solid var(--border); }
-        .diagnosis-title { font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
-        .diagnosis-desc { font-size: 13px; color: var(--text-secondary); }
-        .chat-container { flex: 1; position: relative; overflow: hidden; }
-        .plans-section { padding: 20px 16px; }
-        .plan-card {
-            background: var(--card-bg);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 12px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
-            position: relative;
             cursor: pointer;
             transition: all 0.2s;
         }
-        .plan-card:active { transform: scale(0.98); }
-        .plan-card.recommended { border: 2px solid var(--primary); }
-        .plan-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
-        .plan-name { font-size: 17px; font-weight: 600; color: var(--text); }
+        .btn-block:active { transform: scale(0.98); background: var(--primary-dark); }
+        .pricing-trial-hint { text-align: center; margin-top: 14px; font-size: 13px; color: var(--text-tertiary); }
+        .pricing-trial-hint a { color: var(--primary); text-decoration: none; font-weight: 500; }
+
+        .diagnosis-page { display: flex; flex-direction: column; height: 100%; padding-bottom: 0 !important; }
+        .diagnosis-header { padding: 20px; text-align: center; background: var(--card-bg); border-bottom: 1px solid var(--card-border); }
+        .diagnosis-title { font-size: 18px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
+        .diagnosis-desc { font-size: 13px; color: var(--text-secondary); }
+        .chat-container { flex: 1; position: relative; overflow: hidden; }
+
+        /* ========== 套餐卡片 - 高端重做 ========== */
+        .plans-section { padding: 20px 16px; }
+        .plan-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 24px 20px;
+            margin-bottom: 12px;
+            box-shadow: var(--card-shadow);
+            position: relative;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+        }
+        .plan-card:hover { box-shadow: var(--card-shadow-hover); }
+        .plan-card:active { transform: scale(0.99); }
+        .plan-card.recommended {
+            border-top: 3px solid var(--primary);
+            box-shadow: var(--card-shadow-promoted);
+        }
+        .plan-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+        .plan-name { font-size: 17px; font-weight: 600; color: var(--text-primary); }
         .plan-price-wrap { text-align: right; }
-        .plan-price { font-size: 22px; font-weight: 700; color: var(--primary); }
+        .plan-price { font-size: 24px; font-weight: 700; color: var(--text-primary); letter-spacing: -0.5px; }
         .plan-price.free { color: var(--success); }
-        .plan-original-price { font-size: 12px; color: var(--text-light); text-decoration: line-through; }
-        .plan-features { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
-        .plan-feature { font-size: 12px; color: var(--text-secondary); background: var(--bg); padding: 4px 10px; border-radius: 6px; }
-        .plan-btn { width: 100%; padding: 12px; background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-        .plan-btn:active { transform: scale(0.98); }
-        .plan-card.recommended .plan-btn { background: var(--primary); color: white; border-color: var(--primary); }
+        .plan-original-price { font-size: 13px; color: var(--text-tertiary); text-decoration: line-through; margin-top: 2px; display: block; }
+        .plan-features {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .plan-feature {
+            font-size: 13px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .plan-feature::before {
+            content: '✓';
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+        .plan-btn {
+            width: 100%;
+            padding: 12px;
+            background: #f8fafc;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .plan-btn:active { transform: scale(0.98); background: rgba(108,92,231,0.05); }
+        .plan-card.recommended .plan-btn {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
         .faq-section { padding: 0 16px 24px; }
-        .faq-title { font-size: 17px; font-weight: 600; color: var(--text); margin-bottom: 12px; }
-        .faq-item { background: var(--card-bg); border-radius: 12px; margin-bottom: 8px; overflow: hidden; border: 1px solid var(--border); }
-        .faq-question { padding: 14px 16px; font-size: 14px; font-weight: 500; color: var(--text); display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
-        .faq-question svg { width: 16px; height: 16px; color: var(--text-light); transition: transform 0.2s; }
+        .faq-title { font-size: 17px; font-weight: 600; color: var(--text-primary); margin-bottom: 12px; }
+        .faq-item { background: var(--card-bg); border-radius: 12px; margin-bottom: 8px; overflow: hidden; border: 1px solid var(--card-border); }
+        .faq-question { padding: 14px 16px; font-size: 14px; font-weight: 500; color: var(--text-primary); display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .faq-question svg { width: 16px; height: 16px; color: var(--text-tertiary); transition: transform 0.2s; }
         .faq-item.open .faq-question svg { transform: rotate(180deg); }
         .faq-answer { padding: 0 16px; max-height: 0; overflow: hidden; transition: all 0.3s ease; }
         .faq-item.open .faq-answer { padding: 0 16px 14px; max-height: 200px; }
         .faq-answer p { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+
+        /* ========== 用户中心 - 高端重做 ========== */
         .profile-section { padding: 24px 20px; background: linear-gradient(180deg, var(--card-bg) 0%, var(--bg) 100%); text-align: center; }
-        .profile-avatar { width: 72px; height: 72px; border-radius: 50%; background: linear-gradient(135deg, var(--primary-light), var(--primary)); display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 32px; color: white; }
-        .profile-name { font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
-        .profile-plan { font-size: 13px; color: var(--primary); background: rgba(108, 92, 231, 0.1); padding: 4px 12px; border-radius: 10px; display: inline-block; }
+        .profile-avatar {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            font-size: 32px;
+            color: white;
+        }
+        .profile-name { font-size: 18px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
+        .profile-plan { font-size: 13px; color: var(--primary); background: rgba(108, 92, 231, 0.08); padding: 4px 12px; border-radius: 10px; display: inline-block; }
+
+        /* ========== 数据统计卡片 - 高端重做 ========== */
         .stats-section { padding: 0 16px 20px; }
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        .stat-card { background: var(--card-bg); border-radius: 12px; padding: 14px 8px; text-align: center; box-shadow: var(--shadow); border: 1px solid var(--border); }
-        .stat-value { font-size: 22px; font-weight: 700; color: var(--primary); margin-bottom: 2px; }
-        .stat-label { font-size: 11px; color: var(--text-light); }
+        .stat-card {
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 16px 8px;
+            text-align: center;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            position: relative;
+            overflow: hidden;
+        }
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+        }
+        .stat-card:nth-child(1)::before { background: var(--primary); }
+        .stat-card:nth-child(2)::before { background: var(--success); }
+        .stat-card:nth-child(3)::before { background: var(--warning); }
+        .stat-value { font-size: 28px; font-weight: 700; color: var(--text-primary); margin-bottom: 2px; }
+        .stat-label { font-size: 11px; color: var(--text-tertiary); }
+
+        /* ========== 功能列表 - 高端重做 ========== */
         .menu-section { padding: 0 16px 24px; }
-        .menu-group { background: var(--card-bg); border-radius: 12px; overflow: hidden; border: 1px solid var(--border); margin-bottom: 12px; }
-        .menu-item { display: flex; align-items: center; padding: 14px 16px; cursor: pointer; transition: background 0.15s; border-bottom: 1px solid var(--border); }
+        .menu-group {
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+        }
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 14px 16px;
+            cursor: pointer;
+            transition: background 0.15s;
+            border-bottom: 0.5px solid #f1f5f9;
+        }
         .menu-item:last-child { border-bottom: none; }
-        .menu-item:active { background: var(--bg); }
-        .menu-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-right: 12px; font-size: 16px; }
-        .menu-icon.report { background: rgba(108, 92, 231, 0.1); }
-        .menu-icon.code { background: rgba(0, 184, 148, 0.1); }
-        .menu-icon.service { background: rgba(253, 203, 110, 0.2); }
-        .menu-text { flex: 1; font-size: 15px; color: var(--text); }
-        .menu-arrow { color: var(--text-light); }
-        .menu-arrow svg { width: 16px; height: 16px; }
-        .upgrade-banner { margin: 0 16px 24px; background: linear-gradient(135deg, var(--primary), var(--primary-light)); border-radius: 12px; padding: 16px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
+        .menu-item:active { background: #f8fafc; }
+        .menu-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-size: 16px;
+            background: rgba(108,92,231,0.06);
+        }
+        .menu-icon.report { background: rgba(108,92,231,0.06); }
+        .menu-icon.code { background: rgba(0,184,148,0.06); }
+        .menu-icon.service { background: rgba(253,203,110,0.12); }
+        .menu-text { flex: 1; font-size: 15px; font-weight: 500; color: var(--text-primary); }
+        .menu-arrow { color: #cbd5e1; font-size: 14px; }
+
+        /* ========== 升级横幅 - 高端重做 ========== */
+        .upgrade-banner {
+            margin: 0 16px 24px;
+            background: rgba(108,92,231,0.06);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            border-left: 3px solid var(--primary);
+        }
         .upgrade-banner:active { opacity: 0.9; }
-        .upgrade-text h4 { color: white; font-size: 15px; font-weight: 600; margin-bottom: 2px; }
-        .upgrade-text p { color: rgba(255,255,255,0.8); font-size: 12px; }
-        .upgrade-btn { background: white; color: var(--primary); border: none; padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; }
+        .upgrade-text h4 { color: #1e293b; font-size: 15px; font-weight: 600; margin-bottom: 2px; }
+        .upgrade-text p { color: var(--text-secondary); font-size: 12px; }
+        .upgrade-btn { background: var(--primary); color: white; border: none; padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; }
+
+        /* ========== Bottom Sheet - 高端重做 ========== */
         .bottom-sheet-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.4); z-index: 500; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
         .bottom-sheet-overlay.show { opacity: 1; visibility: visible; }
         .bottom-sheet {
@@ -310,40 +495,44 @@
             width: 100%;
             max-width: 430px;
             background: var(--card-bg);
-            border-radius: 20px 20px 0 0;
+            border-radius: 24px 24px 0 0;
             z-index: 600;
             transition: transform 0.3s ease;
             max-height: 85vh;
             display: flex;
             flex-direction: column;
+            box-shadow: 0 -4px 24px rgba(0,0,0,0.1);
         }
         .bottom-sheet.show { transform: translateX(-50%) translateY(0); }
-        .bottom-sheet-handle { width: 36px; height: 4px; background: var(--border); border-radius: 2px; margin: 12px auto 0; flex-shrink: 0; }
-        .bottom-sheet-header { padding: 16px 20px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
-        .bottom-sheet-title { font-size: 17px; font-weight: 600; color: var(--text); text-align: center; }
+        .bottom-sheet-handle { width: 36px; height: 4px; background: var(--card-border); border-radius: 2px; margin: 12px auto 0; flex-shrink: 0; }
+        .bottom-sheet-header { padding: 16px 20px; border-bottom: 0.5px solid var(--card-border); flex-shrink: 0; }
+        .bottom-sheet-title { font-size: 17px; font-weight: 600; color: var(--text-primary); text-align: center; }
         .bottom-sheet-content { flex: 1; overflow-y: auto; padding: 20px; }
         .bottom-sheet-tabs { display: flex; gap: 8px; margin-bottom: 20px; }
-        .sheet-tab { flex: 1; padding: 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; font-size: 14px; font-weight: 500; color: var(--text-secondary); cursor: pointer; text-align: center; transition: all 0.2s; }
+        .sheet-tab { flex: 1; padding: 12px; background: #f8fafc; border: 1px solid var(--card-border); border-radius: 10px; font-size: 14px; font-weight: 500; color: var(--text-secondary); cursor: pointer; text-align: center; transition: all 0.2s; }
         .sheet-tab.active { background: var(--primary); border-color: var(--primary); color: white; }
         .sheet-content { display: none; }
         .sheet-content.active { display: block; }
         .qr-section { text-align: center; }
         .qr-code { width: 200px; height: 200px; margin: 0 auto 16px; border-radius: 12px; overflow: hidden; }
         .qr-code img { width: 100%; height: 100%; object-fit: cover; }
-        .qr-amount { font-size: 24px; font-weight: 700; color: var(--primary); margin-bottom: 4px; }
-        .qr-order { font-size: 12px; color: var(--text-light); margin-bottom: 16px; }
-        .qr-hint { font-size: 13px; color: var(--text-secondary); margin-bottom: 16px; padding: 12px; background: var(--bg); border-radius: 8px; }
+        .qr-amount { font-size: 24px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
+        .qr-order { font-size: 12px; color: var(--text-tertiary); margin-bottom: 16px; }
+        .qr-hint { font-size: 13px; color: var(--text-secondary); margin-bottom: 16px; padding: 12px; background: #f8fafc; border-radius: 8px; }
         .activate-form { display: flex; flex-direction: column; gap: 12px; }
-        .activate-input { width: 100%; padding: 14px 16px; border: 1px solid var(--border); border-radius: 10px; font-size: 15px; outline: none; transition: border-color 0.2s; }
-        .activate-input:focus { border-color: var(--primary); }
-        .activate-hint { font-size: 12px; color: var(--text-light); text-align: center; }
+        .activate-input { width: 100%; padding: 14px 16px; border: 1px solid var(--card-border); border-radius: 10px; font-size: 15px; outline: none; transition: border-color 0.2s; background: #fafafa; }
+        .activate-input:focus { border-color: var(--primary); background: white; }
+        .activate-hint { font-size: 12px; color: var(--text-tertiary); text-align: center; }
+
         .toast { position: fixed; top: 80px; left: 50%; transform: translateX(-50%) translateY(-20px); background: rgba(0, 0, 0, 0.8); color: white; padding: 12px 24px; border-radius: 24px; font-size: 14px; z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.3s ease; max-width: 90%; text-align: center; }
         .toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
         .loading-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255, 255, 255, 0.95); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; opacity: 0; visibility: hidden; transition: all 0.3s; }
         .loading-overlay.show { opacity: 1; visibility: visible; }
-        .loading-spinner { width: 40px; height: 40px; border: 3px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
+        .loading-spinner { width: 40px; height: 40px; border: 3px solid var(--card-border); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
         .loading-text { margin-top: 16px; font-size: 14px; color: var(--text-secondary); }
+
+        /* ========== 人格详情弹窗 - 高端重做 ========== */
         .personality-detail-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); z-index: 500; opacity: 0; visibility: hidden; transition: all 0.3s; }
         .personality-detail-overlay.show { opacity: 1; visibility: visible; }
         .personality-detail {
@@ -354,21 +543,23 @@
             width: 100%;
             max-width: 430px;
             background: var(--card-bg);
-            border-radius: 20px 20px 0 0;
+            border-radius: 24px 24px 0 0;
             z-index: 600;
             transition: transform 0.3s ease;
             max-height: 80vh;
             overflow-y: auto;
+            box-shadow: 0 -4px 24px rgba(0,0,0,0.1);
         }
         .personality-detail.show { transform: translateX(-50%) translateY(0); }
         .personality-detail-header { padding: 24px 20px; text-align: center; background: linear-gradient(180deg, var(--bg) 0%, var(--card-bg) 100%); }
-        .personality-detail-avatar { width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-size: 40px; }
-        .personality-detail-type { font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+        .personality-detail-avatar { width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-size: 40px; border: 3px solid rgba(108,92,231,0.15); }
+        .personality-detail-type { font-size: 20px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
         .personality-detail-honor { font-size: 14px; color: var(--primary); margin-bottom: 8px; }
         .personality-detail-comment { font-size: 14px; color: var(--text-secondary); font-style: italic; }
         .personality-detail-body { padding: 20px; }
         .radar-chart-container { width: 100%; max-width: 280px; margin: 0 auto 20px; }
         .radar-chart-container canvas { width: 100% !important; height: auto !important; }
+
         .chat-panel {
             position: fixed;
             top: 0;
@@ -387,19 +578,19 @@
             height: calc(44px + var(--safe-top));
             padding-top: var(--safe-top);
             background: var(--card-bg);
-            border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid var(--card-border);
             display: flex;
             align-items: center;
             padding-left: 16px;
             flex-shrink: 0;
         }
         .chat-back { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; margin-right: 8px; }
-        .chat-back svg { width: 20px; height: 20px; color: var(--text); }
-        .chat-title { flex: 1; font-size: 17px; font-weight: 600; color: var(--text); text-align: center; padding-right: 48px; }
+        .chat-back svg { width: 20px; height: 20px; color: var(--text-primary); }
+        .chat-title { flex: 1; font-size: 17px; font-weight: 600; color: var(--text-primary); text-align: center; padding-right: 48px; }
         .chat-body { flex: 1; overflow: hidden; position: relative; }
         .chat-body > div { height: 100% !important; }
         @media (min-width: 768px) {
-            .app { border-left: 1px solid var(--border); border-right: 1px solid var(--border); box-shadow: 0 0 40px rgba(0,0,0,0.1); }
+            .app { border-left: 1px solid var(--card-border); border-right: 1px solid var(--card-border); box-shadow: 0 0 40px rgba(0,0,0,0.1); }
         }
     </style>
 </head>
@@ -452,8 +643,7 @@
                 </div>
                 <div class="pricing-section">
                     <div class="pricing-card">
-                        <div class="pricing-recommended">推荐</div>
-                        <div class="pricing-header"><span class="pricing-name">冲刺版</span><span class="pricing-price"><small>¥</small>49</span></div>
+                        <div class="pricing-header"><span class="pricing-name">冲刺版</span><span class="pricing-price"><small>¥</small>49<small>¥99</small></span></div>
                         <div class="pricing-features">
                             <span class="pricing-feature">30天AI答疑</span>
                             <span class="pricing-feature">每日批改1次</span>
@@ -479,22 +669,45 @@
                 <div class="plans-section">
                     <div class="plan-card" onclick="openBottomSheet('free')">
                         <div class="plan-card-header"><span class="plan-name">免费版</span><div class="plan-price-wrap"><span class="plan-price free">免费</span></div></div>
-                        <div class="plan-features"><span class="plan-feature">AI诊断1次</span><span class="plan-feature">基础人格报告</span><span class="plan-feature">五维数据分析</span><span class="plan-feature">备考人格卡</span></div>
+                        <div class="plan-features">
+                            <span class="plan-feature">AI诊断1次</span>
+                            <span class="plan-feature">基础人格报告</span>
+                            <span class="plan-feature">五维数据分析</span>
+                            <span class="plan-feature">备考人格卡</span>
+                        </div>
                         <button class="plan-btn">免费体验</button>
                     </div>
                     <div class="plan-card" onclick="openBottomSheet('trial')">
                         <div class="plan-card-header"><span class="plan-name">体验版</span><div class="plan-price-wrap"><span class="plan-price">¥4.9</span></div></div>
-                        <div class="plan-features"><span class="plan-feature">冲刺版1天体验</span><span class="plan-feature">AI答疑50次</span><span class="plan-feature">作文批改1次</span><span class="plan-feature">每日任务</span></div>
+                        <div class="plan-features">
+                            <span class="plan-feature">冲刺版1天体验</span>
+                            <span class="plan-feature">AI答疑50次</span>
+                            <span class="plan-feature">作文批改1次</span>
+                            <span class="plan-feature">每日任务</span>
+                        </div>
                         <button class="plan-btn">立即购买</button>
                     </div>
                     <div class="plan-card recommended" onclick="openBottomSheet('sprint')">
-                        <div class="plan-card-header"><span class="plan-name">冲刺版</span><div class="plan-price-wrap"><span class="plan-price">¥49</span><div class="plan-original-price">¥99</div></div></div>
-                        <div class="plan-features"><span class="plan-feature">30天AI答疑</span><span class="plan-feature">每日批改1次</span><span class="plan-feature">每日任务推送</span><span class="plan-feature">弱项专项训练</span><span class="plan-feature">考前7天冲刺</span></div>
+                        <div class="plan-card-header"><span class="plan-name">冲刺版</span><div class="plan-price-wrap"><span class="plan-price">¥49</span><span class="plan-original-price">¥99</span></div></div>
+                        <div class="plan-features">
+                            <span class="plan-feature">30天AI答疑</span>
+                            <span class="plan-feature">每日批改1次</span>
+                            <span class="plan-feature">每日任务推送</span>
+                            <span class="plan-feature">弱项专项训练</span>
+                            <span class="plan-feature">考前7天冲刺</span>
+                        </div>
                         <button class="plan-btn">立即购买</button>
                     </div>
                     <div class="plan-card" onclick="openBottomSheet('flagship')">
                         <div class="plan-card-header"><span class="plan-name">旗舰版</span><div class="plan-price-wrap"><span class="plan-price">¥149</span></div></div>
-                        <div class="plan-features"><span class="plan-feature">无限AI答疑</span><span class="plan-feature">无限作文批改</span><span class="plan-feature">完整备考计划</span><span class="plan-feature">打卡追踪</span><span class="plan-feature">考前7天冲刺</span><span class="plan-feature">六级衔接指导</span></div>
+                        <div class="plan-features">
+                            <span class="plan-feature">无限AI答疑</span>
+                            <span class="plan-feature">无限作文批改</span>
+                            <span class="plan-feature">完整备考计划</span>
+                            <span class="plan-feature">打卡追踪</span>
+                            <span class="plan-feature">考前7天冲刺</span>
+                            <span class="plan-feature">六级衔接指导</span>
+                        </div>
                         <button class="plan-btn">立即购买</button>
                     </div>
                 </div>
@@ -525,9 +738,9 @@
                 </div>
                 <div class="menu-section">
                     <div class="menu-group">
-                        <div class="menu-item" onclick="showReport()"><div class="menu-icon report">📊</div><span class="menu-text">我的报告</span><span class="menu-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></span></div>
-                        <div class="menu-item" onclick="showCodeRedeem()"><div class="menu-icon code">🔑</div><span class="menu-text">激活码兑换</span><span class="menu-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></span></div>
-                        <div class="menu-item" onclick="showService()"><div class="menu-icon service">💬</div><span class="menu-text">联系客服</span><span class="menu-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></span></div>
+                        <div class="menu-item" onclick="showReport()"><div class="menu-icon report">📊</div><span class="menu-text">我的报告</span><span class="menu-arrow">›</span></div>
+                        <div class="menu-item" onclick="showCodeRedeem()"><div class="menu-icon code">🔑</div><span class="menu-text">激活码兑换</span><span class="menu-arrow">›</span></div>
+                        <div class="menu-item" onclick="showService()"><div class="menu-icon service">💬</div><span class="menu-text">联系客服</span><span class="menu-arrow">›</span></div>
                     </div>
                 </div>
             </div>
@@ -593,7 +806,7 @@
                 { type:'脑补大师', color:'#C4A8E0', emoji:'💭', honor:'四级白日梦家', comment:'笔在卷子上，魂在银河系', scores:{细节定位:40,推理判断:75,同义替换:50,主旨归纳:30,态度判断:60} },
                 { type:'偏科大佬', color:'#FFB6C1', emoji:'📚', honor:'阅读王者·翻译菜鸡', comment:'一半封神，一半白给', scores:{细节定位:98,推理判断:20,同义替换:95,主旨归纳:99,态度判断:25} },
                 { type:'摆烂冠军', color:'#A8C4D8', emoji:'🛋️', honor:'四级陪跑一级选手', comment:'重在参与，随缘就好', scores:{细节定位:10,推理判断:15,同义替换:5,主旨归纳:20,态度判断:80} },
-                { type:'全对卷王', color:'#F0F0F0', emoji:'🏆', honor:'四级人形标准答案', comment:'别人考四级，你考四级解析', scores:{细节定位:100,推理判断:98,同义替换:100,主旨归纳:100,态度判断:95} },
+                { type:'全对卷王', color:'#E8E8E8', emoji:'🏆', honor:'四级人形标准答案', comment:'别人考四级，你考四级解析', scores:{细节定位:100,推理判断:98,同义替换:100,主旨归纳:100,态度判断:95} },
                 { type:'吗喽型选手', color:'#C4956A', emoji:'🐒', honor:'熬夜硬肝特种兵', comment:'咖啡续着命，单词记不住', scores:{细节定位:35,推理判断:40,同义替换:25,主旨归纳:30,态度判断:20} },
                 { type:'临时抱佛脚选手', color:'#FFA500', emoji:'🙏', honor:'考前突击大师', comment:'平时不烧香，考前抱佛脚', scores:{细节定位:60,推理判断:55,同义替换:70,主旨归纳:65,态度判断:50} },
                 { type:'资料囤积狂', color:'#4A7C8C', emoji:'📦', honor:'四级资料收藏家', comment:'收藏=学会，囤满=稳过', scores:{细节定位:85,推理判断:70,同义替换:80,主旨归纳:75,态度判断:60} }
@@ -612,11 +825,14 @@
         function initPersonalityCards() {
             var container = document.getElementById('personality-scroll');
             var html = '';
+            var colors = ['#F5C6AA','#C4A8E0','#FFB6C1','#A8C4D8','#E8E8E8','#C4956A','#FFA500','#4A7C8C'];
             for (var i = 0; i < CONFIG.personalities.length; i++) {
                 var p = CONFIG.personalities[i];
-                html += '<div class="personality-card" onclick="showPersonalityDetail(\'' + p.type + '\')">' +
-                    '<div class="personality-avatar" style="background:' + p.color + '">' + p.emoji + '</div>' +
-                    '<div class="personality-type">' + p.type + '</div><div class="personality-honor">' + p.honor + '</div></div>';
+                var c = colors[i] || '#E0E0E0';
+                html += '<div class="personality-card" onclick="showPersonalityDetail('' + p.type + '')" style="--p-color:' + c + '">' +
+                    '<div class="personality-avatar" style="background:' + c + '30;">' + p.emoji + '</div>' +
+                    '<div class="personality-type">' + p.type + '</div>' +
+                    '<span class="personality-honor" style="background:' + c + '25; color:#666;">' + p.honor + '</span></div>';
             }
             container.innerHTML = html;
         }
@@ -628,7 +844,7 @@
             document.getElementById('detail-avatar').textContent = p.emoji;
             document.getElementById('detail-type').textContent = p.type;
             document.getElementById('detail-honor').textContent = p.honor;
-            document.getElementById('detail-comment').textContent = '"' + p.comment + '"';
+            document.getElementById('detail-comment').textContent = ' + p.comment + ';
             drawRadarChart(p.scores);
             document.getElementById('personality-overlay').classList.add('show');
             document.getElementById('personality-detail').classList.add('show');
@@ -685,6 +901,7 @@
                 ctx.fillText(labels[n], lx, ly);
             }
         }
+
         function updateCountdown() {
             var examDate = new Date('2026-06-13');
             var today = new Date();
@@ -802,6 +1019,7 @@
                 state.chatClient.on('message', handleChatMessage);
             } catch (e) { console.error('Chat SDK init error:', e); container.innerHTML = '<div style="padding:20px;text-align:center;color:#666;">聊天加载失败，请刷新重试</div>'; }
         }
+
         function initDiagnosisChat() {
             var container = document.getElementById('chat-container-diagnosis');
             container.innerHTML = '';
