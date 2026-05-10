@@ -2488,7 +2488,7 @@
         /* 移动端顶部状态栏 */
         .mobile-topbar {
             display: none;
-            position: sticky;
+            position: fixed;
             top: 0;
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(8px);
@@ -2580,15 +2580,18 @@
                 display: none !important;
             }
             
-            /* 给body底部留出Tab栏空间 */
+            /* 给body顶部和底部留出空间 */
             body {
+                padding-top: 44px;
                 padding-bottom: 56px;
             }
             
             /* ========== Hero区精简 ========== */
             .hero {
                 min-height: auto;
-                padding: 52px 16px 24px;
+                padding: 24px 16px 32px;
+                background: var(--white);
+                display: block;
             }
             
             .hero-visual {
@@ -2606,9 +2609,7 @@
             }
             
             .hero-badge {
-                font-size: 12px;
-                padding: 4px 12px;
-                margin-bottom: 16px;
+                display: none;
             }
             
             .hero-title {
@@ -2630,6 +2631,8 @@
                 width: 100%;
                 padding: 14px 24px;
                 font-size: 15px;
+                border-radius: 12px;
+                justify-content: center;
             }
             
             .hero-trust {
@@ -2646,55 +2649,68 @@
                 display: none;
             }
             
-            /* ========== 功能区改为3个横排小卡片 ========== */
+            /* ========== 功能区改为2x2瓷片区 ========== */
             .features-section {
-                padding: 32px 16px;
+                padding: 24px 16px;
+                background: var(--white);
             }
             
             .features-header {
-                margin-bottom: 20px;
-            }
-            
-            .features-title {
-                font-size: 20px;
-                margin-bottom: 6px;
-            }
-            
-            .features-subtitle {
-                font-size: 13px;
+                display: none;
             }
             
             .features-grid {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 8px;
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+                max-width: 100%;
             }
             
             .feature-card {
-                padding: 12px 8px;
-                text-align: center;
+                background: var(--white);
+                border: 1px solid var(--border);
                 border-radius: 12px;
+                padding: 16px;
+                text-align: center;
+                cursor: pointer;
             }
             
-            .feature-card-accent {
-                display: none;
-            }
+            .feature-card-accent { display: none; }
+            .feature-card:hover { transform: none; box-shadow: none; }
             
             .feature-card-content {
                 padding: 0;
             }
             
             .feature-icon {
-                width: 32px;
-                height: 32px;
-                font-size: 16px;
-                margin: 0 auto 6px;
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
+                margin: 0 auto 8px;
+                border-radius: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .feature-card:nth-child(1) .feature-icon,
+            .feature-card:nth-child(3) .feature-icon {
+                background: rgba(99, 91, 255, 0.1);
+            }
+            
+            .feature-card:nth-child(2) .feature-icon {
+                background: rgba(16, 185, 129, 0.1);
+            }
+            
+            .feature-card:nth-child(4) .feature-icon {
+                background: rgba(245, 158, 11, 0.1);
             }
             
             .feature-title {
-                font-size: 12px;
+                font-size: 14px;
                 font-weight: 600;
+                color: var(--slate);
                 margin-bottom: 2px;
-                white-space: nowrap;
             }
             
             .feature-desc {
@@ -2711,8 +2727,27 @@
             }
             
             #personalities .section-header {
-                padding: 0 16px;
-                margin-bottom: 16px;
+                display: none;
+            }
+            
+            /* 手机端人格标题行 */
+            .personality-header-row {
+                display: flex !important;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0 16px 12px;
+            }
+            
+            .personality-header-title {
+                font-size: 16px;
+                font-weight: 600;
+                color: var(--slate);
+            }
+            
+            .personality-header-link {
+                font-size: 13px;
+                color: var(--primary);
+                text-decoration: none;
             }
             
             .personality-grid {
@@ -2731,7 +2766,7 @@
             }
             
             .personality-card {
-                min-width: 130px;
+                min-width: 100px;
                 flex-shrink: 0;
                 scroll-snap-align: start;
                 padding: 16px 12px;
@@ -2739,11 +2774,22 @@
             
             /* ========== 定价区手机端精简 ========== */
             .pricing-section {
-                padding: 32px 16px;
+                padding: 24px 16px;
+                background: var(--bg);
             }
             
             .pricing-section .section-header {
-                margin-bottom: 24px;
+                display: none;
+            }
+            
+            /* 隐藏4列定价，只显示手机端推荐卡 */
+            .pricing-grid {
+                display: none !important;
+            }
+            
+            /* 显示手机端推荐定价卡 */
+            .mobile-pricing-card {
+                display: block !important;
             }
             
             .plan-badge-recommended {
@@ -2751,16 +2797,8 @@
                 padding: 3px 10px;
             }
             
-            /* ========== FAQ区精简：只显示3个 ========== */
+            /* ========== FAQ区完全隐藏（移到套餐Tab） ========== */
             .faq-section {
-                padding: 32px 16px;
-            }
-            
-            .faq-section .section-header {
-                margin-bottom: 16px;
-            }
-            
-            .faq-item:nth-child(n+4) {
                 display: none;
             }
             
@@ -2821,6 +2859,509 @@
             
             .personality-card {
                 min-width: 120px;
+            }
+        }
+
+        /* ========== App化手机端完整样式 (768px以下) ========== */
+        @media (max-width: 768px) {
+            /* 修正body padding for fixed topbar */
+            body {
+                padding-top: 44px;
+                padding-bottom: 56px;
+            }
+
+            /* 隐藏所有桌面端区域 */
+            .nav { display: none !important; }
+            .hero-visual { display: none !important; }
+            .features-header { display: none !important; }
+            .how-it-works { display: none !important; }
+            .final-cta { display: none !important; }
+            .footer { display: none !important; }
+            .faq-section { display: none !important; }
+            #pricing .section-header { display: none !important; }
+            #personalities .section-header { display: none !important; }
+
+            /* 显示移动端组件 */
+            .mobile-topbar { display: flex !important; }
+            .mobile-tabbar { display: flex !important; }
+
+            /* ========== Hero精简区 (App风格) ========== */
+            .hero {
+                min-height: auto;
+                padding: 24px 16px 32px;
+                background: var(--white);
+                display: block;
+            }
+
+            .hero-container {
+                display: block;
+                gap: 0;
+            }
+
+            .hero-content {
+                text-align: center;
+                max-width: 100%;
+            }
+
+            .hero-badge { display: none; }
+
+            .hero-title {
+                font-size: 24px;
+                font-weight: 700;
+                color: var(--slate);
+                margin-bottom: 8px;
+                letter-spacing: -0.02em;
+            }
+
+            .hero-subtitle {
+                font-size: 14px;
+                color: var(--slate-light);
+                margin-bottom: 20px;
+                line-height: 1.5;
+            }
+
+            .hero-actions {
+                margin-bottom: 12px;
+            }
+
+            .hero-actions .btn-primary {
+                width: 100%;
+                padding: 14px 24px;
+                font-size: 15px;
+                border-radius: 12px;
+                justify-content: center;
+            }
+
+            .hero-trust {
+                justify-content: center;
+                font-size: 12px;
+                color: var(--slate-muted);
+            }
+
+            .hero-trust-divider { display: none; }
+
+            /* ========== 功能瓷片区 (2x2网格) ========== */
+            .features-section {
+                padding: 24px 16px;
+                background: var(--white);
+            }
+
+            .features-container {
+                max-width: 100%;
+            }
+
+            .features-grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+                max-width: 100%;
+            }
+
+            .feature-card {
+                background: var(--white);
+                border: 1px solid var(--border);
+                border-radius: 12px;
+                padding: 16px;
+                text-align: center;
+                cursor: pointer;
+            }
+
+            .feature-card-accent { display: none; }
+            .feature-card:hover { transform: none; box-shadow: none; }
+
+            .feature-card-content {
+                padding: 0;
+            }
+
+            .feature-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
+                margin: 0 auto 8px;
+                border-radius: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .feature-card:nth-child(1) .feature-icon,
+            .feature-card:nth-child(3) .feature-icon {
+                background: rgba(99, 91, 255, 0.1);
+            }
+
+            .feature-card:nth-child(2) .feature-icon {
+                background: rgba(16, 185, 129, 0.1);
+            }
+
+            .feature-card:nth-child(4) .feature-icon {
+                background: rgba(245, 158, 11, 0.1);
+            }
+
+            .feature-title {
+                font-size: 14px;
+                font-weight: 600;
+                color: var(--slate);
+                margin-bottom: 2px;
+            }
+
+            .feature-desc {
+                display: none;
+            }
+
+            .feature-preview { display: none; }
+
+            /* ========== 备考人格横滑区 ========== */
+            #personalities {
+                padding: 24px 0 16px;
+                background: var(--white);
+            }
+
+            .personality-header-row {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0 16px 12px;
+            }
+
+            .personality-header-title {
+                font-size: 16px;
+                font-weight: 600;
+                color: var(--slate);
+            }
+
+            .personality-header-link {
+                font-size: 13px;
+                color: var(--primary);
+                text-decoration: none;
+            }
+
+            .personality-grid {
+                display: flex;
+                overflow-x: auto;
+                gap: 10px;
+                padding: 0 16px 16px;
+                scroll-snap-type: x mandatory;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+            }
+
+            .personality-grid::-webkit-scrollbar {
+                display: none;
+            }
+
+            .personality-card {
+                min-width: 100px;
+                flex-shrink: 0;
+                scroll-snap-align: start;
+                padding: 16px 12px;
+                text-align: center;
+                background: var(--white);
+                border: 1px solid var(--border);
+                border-radius: 12px;
+            }
+
+            .personality-emoji {
+                font-size: 28px;
+                margin-bottom: 6px;
+            }
+
+            .personality-name {
+                font-size: 14px;
+                font-weight: 600;
+                color: var(--slate);
+                margin-bottom: 2px;
+            }
+
+            .personality-slogan {
+                font-size: 12px;
+                color: var(--slate-light);
+            }
+
+            /* ========== 手机端推荐定价卡 (只显示冲刺版) ========== */
+            .pricing-section {
+                padding: 24px 16px;
+                background: var(--bg);
+            }
+
+            .pricing-section .section-header { display: none; }
+
+            .mobile-pricing-card {
+                background: var(--white);
+                border: 2px solid var(--primary);
+                border-radius: 16px;
+                padding: 20px;
+                margin-bottom: 16px;
+            }
+
+            .mobile-pricing-header {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                margin-bottom: 12px;
+            }
+
+            .mobile-pricing-badge {
+                background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+                color: white;
+                font-size: 11px;
+                font-weight: 600;
+                padding: 3px 10px;
+                border-radius: 10px;
+            }
+
+            .mobile-pricing-name {
+                font-size: 16px;
+                font-weight: 600;
+                color: var(--slate);
+            }
+
+            .mobile-pricing-price-row {
+                display: flex;
+                align-items: baseline;
+                gap: 8px;
+                margin-bottom: 16px;
+            }
+
+            .mobile-pricing-price {
+                font-size: 32px;
+                font-weight: 700;
+                color: var(--slate);
+            }
+
+            .mobile-pricing-original {
+                font-size: 14px;
+                color: var(--slate-light);
+                text-decoration: line-through;
+            }
+
+            .mobile-pricing-features {
+                list-style: none;
+                margin: 0 0 16px 0;
+                padding: 0;
+            }
+
+            .mobile-pricing-features li {
+                font-size: 13px;
+                color: var(--slate-light);
+                padding: 6px 0;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .mobile-pricing-features li::before {
+                content: "✓";
+                color: var(--success);
+                font-weight: 600;
+            }
+
+            .mobile-pricing-cta {
+                width: 100%;
+                padding: 14px;
+                background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+                color: white;
+                border: none;
+                border-radius: 10px;
+                font-size: 15px;
+                font-weight: 600;
+                cursor: pointer;
+                margin-bottom: 8px;
+            }
+
+            .mobile-pricing-trial-link {
+                text-align: center;
+                font-size: 13px;
+                color: var(--slate-light);
+            }
+
+            .mobile-pricing-trial-link span {
+                color: var(--primary);
+                cursor: pointer;
+                font-weight: 500;
+            }
+
+            /* 隐藏桌面端4列定价 */
+            .pricing-grid { display: none !important; }
+
+            /* ========== 套餐Tab内容区 ========== */
+            .mobile-tab-content {
+                display: none;
+                padding: 24px 16px;
+                padding-bottom: calc(24px + 56px + env(safe-area-inset-bottom));
+            }
+
+            .mobile-tab-content.active {
+                display: block;
+            }
+
+            .mobile-tab-title {
+                font-size: 18px;
+                font-weight: 600;
+                color: var(--slate);
+                margin-bottom: 16px;
+                text-align: center;
+            }
+
+            /* 套餐列表卡片 */
+            .mobile-plan-card {
+                background: var(--white);
+                border: 1px solid var(--border);
+                border-radius: 12px;
+                padding: 16px;
+                margin-bottom: 12px;
+                cursor: pointer;
+                transition: all 0.2s;
+            }
+
+            .mobile-plan-card.recommended {
+                border: 2px solid var(--primary);
+            }
+
+            .mobile-plan-card:hover {
+                box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            }
+
+            .mobile-plan-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 8px;
+            }
+
+            .mobile-plan-name {
+                font-size: 15px;
+                font-weight: 600;
+                color: var(--slate);
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .mobile-plan-badge {
+                background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+                color: white;
+                font-size: 10px;
+                font-weight: 600;
+                padding: 2px 8px;
+                border-radius: 8px;
+            }
+
+            .mobile-plan-price {
+                font-size: 18px;
+                font-weight: 700;
+                color: var(--primary);
+            }
+
+            .mobile-plan-price.free {
+                color: var(--success);
+            }
+
+            .mobile-plan-features {
+                list-style: none;
+                margin: 0 0 12px 0;
+                padding: 0;
+            }
+
+            .mobile-plan-features li {
+                font-size: 12px;
+                color: var(--slate-light);
+                padding: 3px 0;
+                padding-left: 16px;
+                position: relative;
+            }
+
+            .mobile-plan-features li::before {
+                content: "✓";
+                position: absolute;
+                left: 0;
+                color: var(--success);
+                font-size: 11px;
+            }
+
+            .mobile-plan-btn {
+                width: 100%;
+                padding: 10px;
+                border-radius: 8px;
+                font-size: 14px;
+                font-weight: 600;
+                cursor: pointer;
+                border: none;
+                transition: all 0.2s;
+            }
+
+            .mobile-plan-btn.primary {
+                background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+                color: white;
+            }
+
+            .mobile-plan-btn.outline {
+                background: transparent;
+                color: var(--primary);
+                border: 1px solid var(--primary);
+            }
+
+            .mobile-plan-btn.current {
+                background: var(--border);
+                color: var(--slate-light);
+                cursor: default;
+            }
+
+            /* 手机端FAQ区 */
+            .mobile-faq-section {
+                padding: 24px 16px;
+                padding-bottom: calc(24px + 56px + env(safe-area-inset-bottom));
+            }
+
+            .mobile-faq-title {
+                font-size: 18px;
+                font-weight: 600;
+                color: var(--slate);
+                margin-bottom: 16px;
+                text-align: center;
+            }
+
+            .mobile-faq-item {
+                border-bottom: 1px solid var(--border);
+            }
+
+            .mobile-faq-question {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 14px 0;
+                font-size: 14px;
+                font-weight: 500;
+                color: var(--slate);
+                cursor: pointer;
+            }
+
+            .mobile-faq-icon {
+                font-size: 16px;
+                color: var(--slate-light);
+                transition: transform 0.3s;
+            }
+
+            .mobile-faq-item.active .mobile-faq-icon {
+                transform: rotate(45deg);
+            }
+
+            .mobile-faq-answer {
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.3s;
+                font-size: 13px;
+                color: var(--slate-light);
+                line-height: 1.6;
+            }
+
+            .mobile-faq-item.active .mobile-faq-answer {
+                max-height: 200px;
+                padding-bottom: 14px;
+            }
+
+            /* 用户中心底部留白 */
+            .user-center {
+                padding: 16px 16px 80px;
             }
         }
 
@@ -2923,26 +3464,18 @@
             <div class="hero-container">
                 <!-- 左侧文字内容 -->
                 <div class="hero-content">
-                    <div class="hero-badge animate-in delay-1">
-                        <span class="hero-badge-dot"></span>
-                        AI驱动的新型备考方式
-                    </div>
-                    <h1 class="hero-title animate-in delay-2">测出你的四级备考DNA</h1>
-                    <p class="hero-subtitle animate-in delay-3">3分钟AI对话诊断，精准识别你的备考短板，找到最适合你的备考方式</p>
+                    <h1 class="hero-title animate-in delay-2">AI驱动的备考<br>不止是刷题</h1>
+                    <p class="hero-subtitle animate-in delay-3">3分钟测你的备考人格</p>
                     <div class="hero-actions animate-in delay-4">
                         <button class="btn-primary" onclick="openChat('diagnosis')">
-                            开始免费诊断
+                            3分钟测你的备考人格
                             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M3 8h10M9 4l4 4-4 4"/>
                             </svg>
                         </button>
                     </div>
                     <div class="hero-trust animate-in delay-5">
-                        <span class="hero-trust-item">2min快速诊断</span>
-                        <span class="hero-trust-divider"></span>
-                        <span class="hero-trust-item">5维精准分析</span>
-                        <span class="hero-trust-divider"></span>
-                        <span class="hero-trust-item">8种人格类型</span>
+                        <span class="hero-trust-item">已有 1,200+ 同学完成诊断</span>
                     </div>
                 </div>
 
@@ -2990,80 +3523,39 @@
                 </div>
 
                 <div class="features-grid">
-                    <!-- 诊断卡片 -->
-                    <div class="feature-card animate-in delay-2">
-                        <div class="feature-card-accent purple"></div>
+                    <!-- AI诊断 -->
+                    <div class="feature-card animate-in delay-2" onclick="openChat('diagnosis')">
                         <div class="feature-card-content">
-                            <div class="feature-icon">💬</div>
-                            <h3 class="feature-title">AI对话诊断</h3>
-                            <p class="feature-desc">3分钟聊天，AI精准识别你的备考短板，发现专属你的备考人格</p>
-                            <div class="feature-preview">
-                                <div class="radar-preview">
-                                    <svg viewBox="0 0 100 100">
-                                        <!-- 背景网格 -->
-                                        <polygon points="50,15 79,32 79,68 50,85 21,68 21,32" fill="none" stroke="#E5E7EB" stroke-width="1"/>
-                                        <polygon points="50,25 71,37 71,63 50,75 29,63 29,37" fill="none" stroke="#E5E7EB" stroke-width="1"/>
-                                        <polygon points="50,35 64,42 64,58 50,65 36,58 36,42" fill="none" stroke="#E5E7EB" stroke-width="1"/>
-                                        <!-- 数据区域 -->
-                                        <polygon points="50,20 78,35 65,60 45,70 30,45 35,30" fill="rgba(99,91,255,0.2)" stroke="#635BFF" stroke-width="2"/>
-                                        <!-- 顶点 -->
-                                        <circle cx="50" cy="20" r="3" fill="#635BFF"/>
-                                        <circle cx="78" cy="35" r="3" fill="#635BFF"/>
-                                        <circle cx="65" cy="60" r="3" fill="#635BFF"/>
-                                        <circle cx="45" cy="70" r="3" fill="#635BFF"/>
-                                        <circle cx="30" cy="45" r="3" fill="#635BFF"/>
-                                    </svg>
-                                </div>
-                            </div>
+                            <div class="feature-icon">🤖</div>
+                            <h3 class="feature-title">AI诊断</h3>
+                            <p class="feature-desc">3分钟测出你的备考人格</p>
                         </div>
                     </div>
 
-                    <!-- 训练卡片 -->
-                    <div class="feature-card animate-in delay-3">
-                        <div class="feature-card-accent green"></div>
+                    <!-- 备考计划 -->
+                    <div class="feature-card animate-in delay-2" onclick="document.getElementById('pricing')?.scrollIntoView({behavior: 'smooth'})">
                         <div class="feature-card-content">
-                            <div class="feature-icon">🎯</div>
-                            <h3 class="feature-title">智能备考计划</h3>
-                            <p class="feature-desc">根据你的弱项，AI定制30天冲刺方案，每天精准练习</p>
-                            <div class="feature-preview">
-                                <div class="progress-preview">
-                                    <div class="progress-label">
-                                        <span>今日进度</span>
-                                        <span>67%</span>
-                                    </div>
-                                    <div class="progress-bar">
-                                        <div class="progress-fill" style="width: 67%"></div>
-                                    </div>
-                                    <div class="progress-items">
-                                        <span>听力专项</span>
-                                        <span>阅读强化</span>
-                                        <span>作文练习</span>
-                                    </div>
-                                </div>
-                            </div>
+                            <div class="feature-icon">📋</div>
+                            <h3 class="feature-title">备考计划</h3>
+                            <p class="feature-desc">30天冲刺方案</p>
                         </div>
                     </div>
 
-                    <!-- 提分卡片 -->
-                    <div class="feature-card animate-in delay-4">
-                        <div class="feature-card-accent yellow"></div>
+                    <!-- 作文批改 -->
+                    <div class="feature-card animate-in delay-3" onclick="document.getElementById('pricing')?.scrollIntoView({behavior: 'smooth'})">
                         <div class="feature-card-content">
-                            <div class="feature-icon">📈</div>
-                            <h3 class="feature-title">实战模拟提分</h3>
-                            <p class="feature-desc">全真模拟+AI作文批改，针对性突破瓶颈，快速提分</p>
-                            <div class="feature-preview">
-                                <div class="score-preview">
-                                    <div class="score-from">
-                                        <div class="score-value">380</div>
-                                        <div class="score-label">诊断时</div>
-                                    </div>
-                                    <div class="score-arrow">→</div>
-                                    <div class="score-to">
-                                        <div class="score-value">520</div>
-                                        <div class="score-label">目标分数</div>
-                                    </div>
-                                </div>
-                            </div>
+                            <div class="feature-icon">✍️</div>
+                            <h3 class="feature-title">作文批改</h3>
+                            <p class="feature-desc">AI精准批改</p>
+                        </div>
+                    </div>
+
+                    <!-- 全真模拟 -->
+                    <div class="feature-card animate-in delay-4" onclick="document.getElementById('pricing')?.scrollIntoView({behavior: 'smooth'})">
+                        <div class="feature-card-content">
+                            <div class="feature-icon">📊</div>
+                            <h3 class="feature-title">全真模拟</h3>
+                            <p class="feature-desc">3次真题模拟</p>
                         </div>
                     </div>
                 </div>
@@ -3072,6 +3564,11 @@
 
         <!-- 人格预览区 -->
         <section class="section" id="personalities">
+            <!-- 手机端标题行 -->
+            <div class="personality-header-row" style="display:none;">
+                <span class="personality-header-title">8种备考人格</span>
+                <a href="javascript:void(0)" class="personality-header-link" onclick="document.getElementById('personalities')?.scrollIntoView({behavior: 'smooth'})">查看全部 &gt;</a>
+            </div>
             <div class="section-header">
                 <h2 class="section-title animate-in">8种备考人格，你是哪一种？</h2>
                 <p class="section-subtitle animate-in delay-1">每个四级考生都有专属的备考DNA</p>
@@ -3082,7 +3579,157 @@
             </div>
         </section>
 
-        <!-- 评价区已删除，等真实用户后加回 -->
+        <!-- 用户评价区（暂时隐藏，等有真实用户后再加回） -->
+        <!--
+        <section class="testimonials-section" id="testimonials">
+            <div class="testimonials-container">
+                <div class="testimonials-header">
+                    <h2 class="testimonials-title animate-in">他们在用之后，都过了</h2>
+                    <p class="testimonials-subtitle animate-in delay-1">来自真实用户的评价</p>
+                </div>
+                
+                <div class="testimonials-grid">
+                    <!-- 评价1 -->
+                    <div class="testimonial-card animate-in delay-2">
+                        <div class="testimonial-quote">❝</div>
+                        <div class="testimonial-header">
+                            <div class="testimonial-avatar blue-purple">小</div>
+                            <div class="testimonial-user-info">
+                                <div class="testimonial-name">小A</div>
+                                <div class="testimonial-meta">
+                                    <span class="testimonial-school">福建某高校</span>
+                                    <span class="testimonial-tag">冲刺版用户</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonial-stars">
+                            <span class="testimonial-star">★</span>
+                            <span class="testimonial-star">★</span>
+                            <span class="testimonial-star">★</span>
+                            <span class="testimonial-star">★</span>
+                            <span class="testimonial-star">★</span>
+                        </div>
+                        <p class="testimonial-text">诊断说我是什么"吗喽型选手"笑死，但说的确实是我😭 按AI给的计划练了两周，阅读从错8个到错3个</p>
+                    </div>
+
+                    <!-- 评价2 -->
+                    <div class="testimonial-card animate-in delay-3">
+                        <div class="testimonial-quote">❝</div>
+                        <div class="testimonial-header">
+                            <div class="testimonial-avatar pink-orange">匿</div>
+                            <div class="testimonial-user-info">
+                                <div class="testimonial-name">匿名</div>
+                                <div class="testimonial-meta">
+                                    <span class="testimonial-school">湖南某高校</span>
+                                    <span class="testimonial-tag">详细报告</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonial-stars">
+                            <span class="testimonial-star">★</span>
+                            <span class="testimonial-star">★</span>
+                            <span class="testimonial-star">★</span>
+                            <span class="testimonial-star">★</span>
+                            <span class="testimonial-star">★</span>
+                        </div>
+                        <p class="testimonial-text">¥1的报告比我想象的详细多了，五维分析很准，知道自己弱在哪终于不用瞎刷题了</p>
+                    </div>
+
+                    <!-- 评价3 -->
+                    <div class="testimonial-card animate-in delay-4">
+                        <div class="testimonial-quote">❝</div>
+                        <div class="testimonial-header">
+                            <div class="testimonial-avatar green-cyan">阿</div>
+                            <div class="testimonial-user-info">
+                                <div class="testimonial-name">阿杰</div>
+                                <div class="testimonial-meta">
+                                    <span class="testimonial-school">山东某高校</span>
+                                    <span class="testimonial-tag">旗舰版用户</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonial-stars">
+                            <span class="testimonial-star">★</span>
+                            <span class="testimonial-star">★</span>
+                            <span class="testimonial-star">★</span>
+                            <span class="testimonial-star">★</span>
+                            <span class="testimonial-star">★</span>
+                        </div>
+                        <p class="testimonial-text">旗舰版AI批改作文真的绝，比我英专室友改得还细，语法错误一个不漏</p>
+                    </div>
+
+                    <!-- 评价4 -->
+                    <div class="testimonial-card animate-in delay-5">
+                        <div class="testimonial-quote">❝</div>
+                        <div class="testimonial-header">
+                            <div class="testimonial-avatar purple-pink">小</div>
+                            <div class="testimonial-user-info">
+                                <div class="testimonial-name">小鱼</div>
+                                <div class="testimonial-meta">
+                                    <span class="testimonial-school">四川某高校</span>
+                                    <span class="testimonial-tag">免费版用户</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonial-stars">
+                            <span class="testimonial-star">★</span>
+                            <span class="testimonial-star">★</span>
+                            <span class="testimonial-star">★</span>
+                            <span class="testimonial-star">★</span>
+                            <span class="testimonial-star">★</span>
+                        </div>
+                        <p class="testimonial-text">人格卡太好玩了，室友都来测了，我们宿舍4个人4种人格哈哈</p>
+                    </div>
+
+                    <!-- 评价5 -->
+                    <div class="testimonial-card animate-in">
+                        <div class="testimonial-quote">❝</div>
+                        <div class="testimonial-header">
+                            <div class="testimonial-avatar orange-yellow">匿</div>
+                            <div class="testimonial-user-info">
+                                <div class="testimonial-name">匿名</div>
+                                <div class="testimonial-meta">
+                                    <span class="testimonial-school">广东某高校</span>
+                                    <span class="testimonial-tag">冲刺版用户</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonial-stars">
+                            <span class="testimonial-star">★</span>
+                            <span class="testimonial-star">★</span>
+                            <span class="testimonial-star">★</span>
+                            <span class="testimonial-star">★</span>
+                            <span class="testimonial-star">★</span>
+                        </div>
+                        <p class="testimonial-text">之前裸考3次都没过，用了冲刺版30天计划，这次终于425过了！</p>
+                    </div>
+
+                    <!-- 评价6 -->
+                    <div class="testimonial-card animate-in">
+                        <div class="testimonial-quote">❝</div>
+                        <div class="testimonial-header">
+                            <div class="testimonial-avatar cyan-blue">小</div>
+                            <div class="testimonial-user-info">
+                                <div class="testimonial-name">小李</div>
+                                <div class="testimonial-meta">
+                                    <span class="testimonial-school">河南某高校</span>
+                                    <span class="testimonial-tag">冲刺版用户</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonial-stars">
+                            <span class="testimonial-star">★</span>
+                            <span class="testimonial-star">★</span>
+                            <span class="testimonial-star">★</span>
+                            <span class="testimonial-star">★</span>
+                            <span class="testimonial-star">★</span>
+                        </div>
+                        <p class="testimonial-text">本来觉得¥49有点贵，但AI答疑真的省了很多查资料的时间，比自己闷头学效率高</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        -->
 
         <!-- 定价区 - Coze风格 -->
         <section class="pricing-section" id="pricing">
@@ -3092,6 +3739,26 @@
             
             <div class="pricing-grid" id="pricingGrid">
                 <!-- 动态生成 -->
+            </div>
+            
+            <!-- 手机端推荐定价卡 (只显示冲刺版) -->
+            <div class="mobile-pricing-card" id="mobilePricingCard" style="display:none;">
+                <div class="mobile-pricing-header">
+                    <span class="mobile-pricing-badge">推荐</span>
+                    <span class="mobile-pricing-name">冲刺版</span>
+                </div>
+                <div class="mobile-pricing-price-row">
+                    <span class="mobile-pricing-price">¥49</span>
+                    <span class="mobile-pricing-original">原价¥99</span>
+                </div>
+                <ul class="mobile-pricing-features">
+                    <li>AI无限答疑</li>
+                    <li>作文批改 每天1次</li>
+                    <li>30天备考计划</li>
+                    <li>3次全真模拟</li>
+                </ul>
+                <button class="mobile-pricing-cta" onclick="handlePlanClick('sprint')">立即升级</button>
+                <p class="mobile-pricing-trial-link">只想试一下？<span onclick="handlePlanClick('trial')">体验版 ¥4.9</span></p>
             </div>
         </section>
 
@@ -3114,22 +3781,34 @@
 
     <!-- 移动端底部Tab栏 -->
     <div class="mobile-tabbar" id="mobileTabbar">
-        <button class="tab-item active" data-tab="home" onclick="switchMobileTab('home')">
+        <div class="tab-item active" data-tab="home" onclick="switchMobileTab('home')">
             <span class="tab-icon">🏠</span>
             <span class="tab-label">首页</span>
-        </button>
-        <button class="tab-item" data-tab="diagnose" onclick="switchMobileTab('diagnose')">
+        </div>
+        <div class="tab-item" data-tab="diagnose" onclick="switchMobileTab('diagnose')">
             <span class="tab-icon">💬</span>
             <span class="tab-label">诊断</span>
-        </button>
-        <button class="tab-item" data-tab="pricing" onclick="switchMobileTab('pricing')">
+        </div>
+        <div class="tab-item" data-tab="pricing" onclick="switchMobileTab('pricing')">
             <span class="tab-icon">💎</span>
             <span class="tab-label">套餐</span>
-        </button>
-        <button class="tab-item" data-tab="profile" onclick="switchMobileTab('profile')">
+        </div>
+        <div class="tab-item" data-tab="profile" onclick="switchMobileTab('profile')">
             <span class="tab-icon">👤</span>
             <span class="tab-label">我的</span>
-        </button>
+        </div>
+    </div>
+
+    <!-- 手机端套餐Tab内容 -->
+    <div class="mobile-tab-content" id="mobilePricingTab">
+        <div class="mobile-tab-title">选择备考方案</div>
+        <!-- 动态生成套餐列表 -->
+        <div id="mobilePlanList"></div>
+        <!-- 手机端FAQ区 -->
+        <div class="mobile-faq-section" style="margin-top: 24px;">
+            <div class="mobile-faq-title">常见问题</div>
+            <div id="mobileFaqList"></div>
+        </div>
     </div>
 
     <!-- 用户中心视图 -->
@@ -3820,9 +4499,14 @@
             const activeTab = document.querySelector(`.tab-item[data-tab="${tab}"]`);
             if (activeTab) activeTab.classList.add('active');
             
+            // 隐藏所有Tab内容
+            document.querySelectorAll('.mobile-tab-content').forEach(c => c.classList.remove('active'));
+            document.getElementById('home-view').style.display = 'none';
+            document.getElementById('user-center-view').style.display = 'none';
+            
             switch(tab) {
                 case 'home':
-                    switchView('home');
+                    document.getElementById('home-view').style.display = 'block';
                     window.scrollTo({top: 0, behavior: 'smooth'});
                     break;
                 case 'diagnose':
@@ -3830,13 +4514,11 @@
                     openChat('diagnosis');
                     break;
                 case 'pricing':
-                    switchView('home');
-                    setTimeout(() => {
-                        document.getElementById('pricing')?.scrollIntoView({behavior: 'smooth'});
-                    }, 100);
+                    document.getElementById('mobilePricingTab').classList.add('active');
                     break;
                 case 'profile':
-                    switchView('user');
+                    document.getElementById('user-center-view').style.display = 'block';
+                    window.scrollTo({top: 0, behavior: 'smooth'});
                     break;
             }
         }
@@ -3993,17 +4675,45 @@
             renderPersonalities();
             renderPricing();
             renderFAQs();
+            renderMobilePlanList();
+            renderMobileFaqList();
             setupScrollListener();
             // 不再自动初始化Coze Chat，等待用户点击按钮
             updateUserCenter();
             updatePricingCards();
             updateMentorChatButton();
+            updateMobileView();
             
             // 3秒后强制隐藏loading
             setTimeout(() => {
                 document.getElementById("loadingOverlay").classList.add("hidden");
             }, 3000);
         }
+        
+        // 根据屏幕宽度更新手机端视图
+        function updateMobileView() {
+            const isMobile = window.innerWidth < 768;
+            const homeView = document.getElementById('home-view');
+            
+            if (homeView) {
+                homeView.style.display = '';
+            }
+            
+            // 显示/隐藏手机端元素
+            const personalityHeader = document.querySelector('.personality-header-row');
+            const mobilePricingCard = document.getElementById('mobilePricingCard');
+            
+            if (isMobile) {
+                if (personalityHeader) personalityHeader.style.display = 'flex';
+                if (mobilePricingCard) mobilePricingCard.style.display = 'block';
+            } else {
+                if (personalityHeader) personalityHeader.style.display = 'none';
+                if (mobilePricingCard) mobilePricingCard.style.display = 'none';
+            }
+        }
+        
+        // 监听窗口大小变化
+        window.addEventListener('resize', updateMobileView);
         
         // 根据用户套餐更新"和学长聊天"按钮文案
         function updateMentorChatButton() {
@@ -4081,9 +4791,61 @@
             }).join("");
         }
 
+        // 渲染手机端套餐列表
+        function renderMobilePlanList() {
+            const list = document.getElementById("mobilePlanList");
+            if (!list) return;
+            
+            const data = getUserData();
+            const currentPlan = data.plan;
+            
+            list.innerHTML = plans.map(plan => {
+                const isCurrent = plan.id === currentPlan;
+                const isRecommended = plan.isRecommended;
+                
+                let btnClass = isCurrent ? "current" : (isRecommended ? "primary" : "outline");
+                let btnText = isCurrent ? "当前方案" : plan.btnText;
+                
+                return `
+                    <div class="mobile-plan-card ${isRecommended ? 'recommended' : ''}">
+                        <div class="mobile-plan-header">
+                            <div class="mobile-plan-name">
+                                ${isRecommended ? '<span class="mobile-plan-badge">推荐</span>' : ''}
+                                ${plan.name}
+                            </div>
+                            <div class="mobile-plan-price ${plan.priceClass}">${plan.price === "¥0" ? "免费" : plan.price}</div>
+                        </div>
+                        <ul class="mobile-plan-features">
+                            ${plan.features.map(f => `<li>${f}</li>`).join("")}
+                        </ul>
+                        <button class="mobile-plan-btn ${btnClass}" ${isCurrent ? "disabled" : `onclick="handlePlanClick('${plan.id}')"`}>${btnText}</button>
+                    </div>
+                `;
+            }).join("");
+        }
+
+        // 渲染手机端FAQ列表
+        function renderMobileFaqList() {
+            const list = document.getElementById("mobileFaqList");
+            if (!list) return;
+            
+            list.innerHTML = faqs.map((faq, i) => `
+                <div class="mobile-faq-item" onclick="this.classList.toggle('active')">
+                    <div class="mobile-faq-question">
+                        <span>${faq.question}</span>
+                        <span class="mobile-faq-icon">+</span>
+                    </div>
+                    <div class="mobile-faq-answer">
+                        <p>${faq.answer}</p>
+                    </div>
+                </div>
+            `).join("");
+        }
+
         // 更新定价卡片（仅更新当前方案标识）
         function updatePricingCards() {
             renderPricing();
+            renderMobilePlanList();
         }
 
         // 渲染FAQ
