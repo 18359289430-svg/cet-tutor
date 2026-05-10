@@ -1219,7 +1219,9 @@
                                 return {
                                     user_plan: ctx.plan || 'free',
                                     user_personality: ctx.personality || '',
-                                    study_days: String(ctx.studyDays || 0)
+                                    study_days: String(ctx.studyDays || 0),
+                                    today_task: getTodayTask(),
+                                    plan_summary: getPlanSummary()
                                 };
                             })()
                         }
@@ -1249,7 +1251,9 @@
                                 return {
                                     user_plan: ctx.plan || 'free',
                                     user_personality: ctx.personality || '',
-                                    study_days: String(ctx.studyDays || 0)
+                                    study_days: String(ctx.studyDays || 0),
+                                    today_task: getTodayTask(),
+                                    plan_summary: getPlanSummary()
                                 };
                             })()
                         }
@@ -1313,6 +1317,48 @@
                 showToast('诊断完成！查看你的备考人格');
                 setTimeout(function() { showPersonalityDetail(params.type); }, 1500);
             }
+        }
+        function parsePlanResult(planStr) {
+            var tasks = planStr.split('|');
+            var plan = [];
+            for (var i = 0; i < tasks.length; i++) {
+                var parts = tasks[i].split(':');
+                if (parts.length >= 2) {
+                    plan.push({ day: parts[0].trim(), task: parts.slice(1).join(':').trim() });
+                }
+            }
+            if (plan.length > 0) {
+                state.userData = state.userData || {};
+                state.userData.plan_data = plan;
+                state.userData.planCreatedAt = Date.now();
+                localStorage.setItem('cet_user', JSON.stringify(state.userData));
+                showToast('备考计划已保存！共' + plan.length + '天');
+            }
+        }
+        function getTodayTask() {
+            try {
+                var data = JSON.parse(localStorage.getItem('cet_user') || '{}');
+                var plan = data.plan_data;
+                if (!plan || plan.length === 0) return '';
+                var createdAt = data.planCreatedAt || data.activatedAt || Date.now();
+                var daysPassed = Math.floor((Date.now() - createdAt) / 86400000);
+                var todayIndex = Math.min(daysPassed, plan.length - 1);
+                if (todayIndex < 0) todayIndex = 0;
+                var today = plan[todayIndex];
+                return (today.day || ('第' + (todayIndex + 1) + '天')) + ': ' + (today.task || '');
+            } catch(e) { return ''; }
+        }
+        function getPlanSummary() {
+            try {
+                var data = JSON.parse(localStorage.getItem('cet_user') || '{}');
+                var plan = data.plan_data;
+                if (!plan || plan.length === 0) return '';
+                var summary = [];
+                for (var i = 0; i < plan.length; i++) {
+                    summary.push(plan[i].day + ':' + plan[i].task);
+                }
+                return summary.join('|');
+            } catch(e) { return ''; }
         }
         function showReport() { if (state.userData && state.userData.diagnosis) { showPersonalityDetail(state.userData.diagnosis.type); } else { showToast('请先完成AI诊断'); switchTab('diagnosis'); } }
         function showCodeRedeem() { openBottomSheet(state.currentPlan); switchSheetTab('code'); }
