@@ -829,7 +829,7 @@
             for (var i = 0; i < CONFIG.personalities.length; i++) {
                 var p = CONFIG.personalities[i];
                 var c = colors[i] || '#E0E0E0';
-                html += '<div class="personality-card" onclick="showPersonalityDetail('' + p.type + '')" style="--p-color:' + c + '">' +
+                html += '<div class="personality-card" onclick="showPersonalityDetail(\'" + p.type + "\')" style="--p-color:' + c + '">' +
                     '<div class="personality-avatar" style="background:' + c + '30;">' + p.emoji + '</div>' +
                     '<div class="personality-type">' + p.type + '</div>' +
                     '<span class="personality-honor" style="background:' + c + '25; color:#666;">' + p.honor + '</span></div>';
@@ -844,7 +844,7 @@
             document.getElementById('detail-avatar').textContent = p.emoji;
             document.getElementById('detail-type').textContent = p.type;
             document.getElementById('detail-honor').textContent = p.honor;
-            document.getElementById('detail-comment').textContent = ' + p.comment + ';
+            document.getElementById('detail-comment').textContent = p.comment;
             drawRadarChart(p.scores);
             document.getElementById('personality-overlay').classList.add('show');
             document.getElementById('personality-detail').classList.add('show');
