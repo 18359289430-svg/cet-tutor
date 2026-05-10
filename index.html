@@ -1189,12 +1189,41 @@
             var el = document.getElementById('chat-round');
             if (el) el.textContent = state.chatRounds + '轮';
         }
+        function getUserContext() {
+            var ctx = {};
+            try {
+                var data = JSON.parse(localStorage.getItem('cet_user') || '{}');
+                ctx.plan = data.plan || 'free';
+                ctx.personality = (data.diagnosis && data.diagnosis.type) || '';
+                ctx.activatedAt = data.activatedAt || '';
+                if (ctx.activatedAt) {
+                    var days = Math.floor((Date.now() - ctx.activatedAt) / 86400000);
+                    ctx.studyDays = days > 0 ? days : 1;
+                } else {
+                    ctx.studyDays = 0;
+                }
+            } catch(e) {}
+            return ctx;
+        }
         function initChat(type) {
             var botId = CONFIG.botIds[type] || CONFIG.botIds.diagnosis;
             if (state.chatClient) { try { state.chatClient.destroy(); } catch(e){} state.chatClient = null; }
             try {
                 state.chatClient = new CozeWebSDK.WebChatClient({
-                    config: { botId: botId, isIframe: false },
+                    config: {
+                        botId: botId,
+                        isIframe: false,
+                        botInfo: {
+                            parameters: (function() {
+                                var ctx = getUserContext();
+                                return {
+                                    user_plan: ctx.plan || 'free',
+                                    user_personality: ctx.personality || '',
+                                    study_days: String(ctx.studyDays || 0)
+                                };
+                            })()
+                        }
+                    },
                     auth: {
                         type: 'token',
                         token: 'pat_hAOthvv429aDEqWspP4lITuL3DAU7VZJiGlVrnmA1zuoZ4IWW2kmxYzXUbGvZTYb',
@@ -1211,7 +1240,20 @@
             if (state.chatClient) { try { state.chatClient.destroy(); } catch(e){} state.chatClient = null; }
             try {
                 state.chatClient = new CozeWebSDK.WebChatClient({
-                    config: { botId: CONFIG.botIds.diagnosis, isIframe: false },
+                    config: {
+                        botId: CONFIG.botIds.diagnosis,
+                        isIframe: false,
+                        botInfo: {
+                            parameters: (function() {
+                                var ctx = getUserContext();
+                                return {
+                                    user_plan: ctx.plan || 'free',
+                                    user_personality: ctx.personality || '',
+                                    study_days: String(ctx.studyDays || 0)
+                                };
+                            })()
+                        }
+                    },
                     auth: {
                         type: 'token',
                         token: 'pat_hAOthvv429aDEqWspP4lITuL3DAU7VZJiGlVrnmA1zuoZ4IWW2kmxYzXUbGvZTYb',
