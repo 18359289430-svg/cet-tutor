@@ -672,7 +672,12 @@
         }
         .chat-back { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; margin-right: 8px; }
         .chat-back svg { width: 20px; height: 20px; color: var(--text-primary); }
-        .chat-title { flex: 1; font-size: 17px; font-weight: 600; color: var(--text-primary); text-align: center; padding-right: 48px; }
+        .chat-title { flex: 1; font-size: 17px; font-weight: 600; color: var(--text-primary); text-align: center; }
+        .chat-actions { display: flex; align-items: center; gap: 4px; }
+        .chat-clear-btn { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 50%; transition: background 0.2s; }
+        .chat-clear-btn:active { background: rgba(0,0,0,0.05); }
+        .chat-clear-btn svg { width: 18px; height: 18px; color: var(--text-secondary); }
+        .chat-round-counter { font-size: 11px; color: var(--text-tertiary); padding: 2px 8px; background: rgba(108,92,231,0.08); border-radius: 10px; }
         .chat-body { flex: 1; overflow: hidden; position: relative; }
         .chat-body > div { height: 100% !important; }
         @media (min-width: 768px) {
@@ -926,7 +931,7 @@
         </div>
     </div>
     <div class="chat-panel" id="chat-panel">
-        <div class="chat-header"><div class="chat-back" onclick="closeChat()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></div><div class="chat-title" id="chat-title">AI诊断</div></div>
+        <div class="chat-header"><div class="chat-back" onclick="closeChat()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></div><div class="chat-title" id="chat-title">AI诊断</div><div class="chat-actions"><span class="chat-round-counter" id="chat-round">0轮</span><div class="chat-clear-btn" onclick="clearChat()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14"/></svg></div></div></div>
         <div class="chat-body" id="chat-body"></div>
     </div>
     <div class="personality-detail-overlay" id="personality-overlay" onclick="closePersonalityDetail()"></div>
@@ -1162,12 +1167,27 @@
         function openChat(type) {
             var titles = { diagnosis: 'AI智能诊断', sprint: '冲刺版助手', flagship: '旗舰版助手' };
             document.getElementById('chat-title').textContent = titles[type] || 'AI助手';
+            state.chatType = type;
+            state.chatRounds = 0;
+            updateChatRound();
             document.getElementById('chat-panel').classList.add('show');
             initChat(type);
         }
         function closeChat() {
             document.getElementById('chat-panel').classList.remove('show');
             if (state.chatClient) { try { state.chatClient.hideChatBot(); } catch(e){} }
+        }
+        function clearChat() {
+            if (confirm('清空当前对话？')) {
+                state.chatRounds = 0;
+                updateChatRound();
+                initChat(state.chatType || 'diagnosis');
+                showToast('对话已清空');
+            }
+        }
+        function updateChatRound() {
+            var el = document.getElementById('chat-round');
+            if (el) el.textContent = state.chatRounds + '轮';
         }
         function initChat(type) {
             var botId = CONFIG.botIds[type] || CONFIG.botIds.diagnosis;
@@ -1209,6 +1229,19 @@
                 mutations.forEach(function(m) {
                     m.addedNodes.forEach(function(node) {
                         if (node.nodeType === 1) {
+                            // Count Bot replies as rounds
+                            var isBotMsg = false;
+                            if (node.querySelector) {
+                                var botMsgs = node.querySelectorAll('[class*="bot"],[class*="assistant"],[class*="ai-"],[data-role="assistant"]');
+                                if (botMsgs.length > 0) isBotMsg = true;
+                            }
+                            if (isBotMsg || (node.className && typeof node.className === 'string' && (node.className.indexOf('bot') >= 0 || node.className.indexOf('assistant') >= 0))) {
+                                state.chatRounds = (state.chatRounds || 0) + 1;
+                                updateChatRound();
+                                if (state.chatRounds === 20) {
+                                    showToast('已对话20轮，如需继续建议清空对话');
+                                }
+                            }
                             var texts = node.querySelectorAll ? node.querySelectorAll('div,span,p,li') : [];
                             texts.forEach(function(el) {
                                 var t = el.textContent || '';
