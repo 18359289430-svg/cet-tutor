@@ -8,7 +8,10 @@
     <meta name="theme-color" content="#6C5CE7">
     <title>四级备考搭子</title>
     <link rel="preload" href="/wechat-qr.jpg" as="image">
-    <!-- Coze SDK & html2canvas: 按需加载，不阻塞首屏 -->
+    <!-- Coze Chat SDK -->
+    <script src="https://lf-cdn.coze.cn/obj/unpkg/flow-platform/chat-app-sdk/1.2.0-beta.20/libs/cn/index.js"></script>
+    <!-- html2canvas -->
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <style>
         :root {
             --primary: #6C5CE7;
@@ -2351,12 +2354,7 @@
                     <!-- 聊天容器（对话时显示） -->
                     <div class="diag-chat-container" id="diag-chat-view">
                         <div class="diag-chat-body">
-                            <div class="coze-chat-container" id="diagnosis-chat-container">
-                                <div id="chat-loading-hint" style="display:none;align-items:center;justify-content:center;height:100%;flex-direction:column;gap:12px;">
-                                    <div style="width:32px;height:32px;border:3px solid #e0e0e0;border-top-color:#6C5CE7;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
-                                    <div style="color:#999;font-size:14px;">AI教练加载中...</div>
-                                </div>
-                            </div>
+                            <div class="coze-chat-container" id="diagnosis-chat-container"></div>
                         </div>
                         <div class="diag-chat-close">
                             <button onclick="closeDiagChat()">返回</button>
@@ -2782,22 +2780,6 @@
 
         function initDiagnosisChat(mode) {
             mode = mode || 'diagnosis';
-            // 如果Coze SDK还没加载，先加载SDK再初始化
-            if (typeof CozeWebSDK === 'undefined') {
-                var loadingEl = document.getElementById('chat-loading-hint');
-                if (loadingEl) loadingEl.style.display = 'flex';
-                var sdkScript = document.createElement('script');
-                sdkScript.src = 'https://lf-cdn.coze.cn/obj/unpkg/flow-platform/chat-app-sdk/1.2.0-beta.20/libs/cn/index.js';
-                sdkScript.onload = function() {
-                    if (loadingEl) loadingEl.style.display = 'none';
-                    initDiagnosisChat(mode);
-                };
-                sdkScript.onerror = function() {
-                    if (loadingEl) loadingEl.innerHTML = '<div style="text-align:center;padding:40px;color:#999;">AI加载失败，请刷新重试</div>';
-                };
-                document.head.appendChild(sdkScript);
-                return;
-            }
             var container = document.getElementById('diagnosis-chat-container');
             container.innerHTML = '';
             state.chatRounds = 0;
