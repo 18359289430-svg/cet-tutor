@@ -929,20 +929,6 @@
                     </div>
                     <div class="personality-scroll" id="personality-scroll"></div>
                 </div>
-
-                <!-- 定价卡片 -->
-                <div class="pricing-section">
-                    <div class="pricing-card">
-                        <div class="pricing-header">
-                            <span class="pricing-name">金牌陪练</span>
-                            <span class="pricing-tag">限时</span>
-                        </div>
-                        <div class="pricing-price">¥29 <small>¥99</small></div>
-                        <div class="pricing-features">
-                            <div class="pricing-feature">无限次AI答疑</div>
-                            <div class="pricing-feature">每日作文精批</div>
-                            <div class="pricing-feature">弱项专项训练</div>
-                        </div>
                         <button class="btn-pricing" onclick="switchTab('plans')">立即开通</button>
                         <div class="pricing-hint"><a href="javascript:void(0)" onclick="openChat('diagnosis')">先免费诊断 →</a></div>
                     </div>
@@ -1165,15 +1151,15 @@
 
     <script>
         var personalities = [
-            { type: '狐狸型', img: 'imgs/foxi.webp', honor: '效率王者', honorBg: 'rgba(255,165,2,0.1)', honorColor: '#E17055', desc: '效率至上，善于利用碎片时间', traits: ['时间管理', '目标导向', '自律'], advice: '建议你采用「番茄工作法」，每次专注25分钟，每天完成3-4个番茄时段。重点突破听力真题，每天精听一段。' },
-            { type: '脑牛型', img: 'imgs/naobu.webp', honor: '笔记达人', honorBg: 'rgba(108,92,231,0.1)', honorColor: '#6C5CE7', desc: '热爱总结，笔记整理能力强', traits: ['善于总结', '逻辑清晰', '耐心'], advice: '你的笔记能力是很大优势。建议建立「错题本」电子化，用不同颜色标注高频考点和易错点。每周复习一次笔记。' },
-            { type: '偏科型', img: 'imgs/pianke.webp', honor: '单项突破', honorBg: 'rgba(0,206,209,0.1)', honorColor: '#00CED1', desc: '某单项特别突出，其他需提升', traits: ['专项强', '专注力高', '突破型'], advice: '建议先做一套全真模拟，找出拖后腿的单项。然后用「木桶理论」重点补足短板，均衡发展后再冲刺拔高。' },
-            { type: '摆烂型', img: 'imgs/bailan.webp', honor: '逆袭潜力', honorBg: 'rgba(85,239,196,0.1)', honorColor: '#00B894', desc: '目前状态需要调整，即将发力', traits: ['潜力大', '后劲足', '可塑性强'], advice: '不要给自己太大压力！建议从最简单的任务开始，比如每天背10个核心词汇、看1篇真题阅读。循序渐进，慢慢进入状态。' },
-            { type: '卷宗型', img: 'imgs/juanzong.webp', honor: '努力模范', honorBg: 'rgba(255,118,117,0.1)', honorColor: '#FF7675', desc: '学习勤奋，但方法需要优化', traits: ['勤奋', '坚持', '执行力强'], advice: '你的努力值得肯定！但建议适当休息，避免疲劳战术。试试「间隔重复法」背单词，效率会比死记硬背提升3倍。' },
-            { type: '码楼型', img: 'imgs/malou.webp', honor: '稳扎稳打', honorBg: 'rgba(108,92,231,0.1)', honorColor: '#6C5CE7', desc: '基础扎实，按部就班备考', traits: ['基础好', '心态稳', '计划性强'], advice: '你的基础不错，可以尝试挑战更高难度。多做历年真题，熟悉出题套路。作文方面多积累高级句型和连接词。' },
-            { type: '临时型', img: 'imgs/linshi.webp', honor: '冲刺选手', honorBg: 'rgba(255,165,2,0.1)', honorColor: '#FFA502', desc: '习惯临时抱佛脚，需要提前规划', traits: ['适应力强', '爆发力足', '临场发挥好'], advice: '临时抱佛脚虽然有效，但风险太大！建议至少提前1个月开始准备，每天投入1-2小时，保持学习节奏。' },
-            { type: '囤积型', img: 'imgs/tunji.webp', honor: '资料收藏家', honorBg: 'rgba(0,206,209,0.1)', honorColor: '#00CED1', desc: '收藏很多资料，但很少行动', traits: ['信息广', '资源多', '需要行动'], advice: '资料在精不在多！建议你从现在开始，每天完成一个小目标：比如做一套听力、写一篇翻译。行动比收藏更重要！' }
-        ];
+                { type:'佛系随缘选手', color:'#F5C6AA', emoji:'😌', img:'imgs/foxi.webp', honor:'佛系陪跑员', comment:'你很佛系，但四级不佛', scores:{细节定位:95,推理判断:33,同义替换:66,主旨归纳:77,态度判断:93} },
+                { type:'脑补大师', color:'#C4A8E0', emoji:'💭', img:'imgs/naobu.webp', honor:'四级白日梦家', comment:'笔在卷子上，魂在银河系', scores:{细节定位:40,推理判断:75,同义替换:50,主旨归纳:30,态度判断:60} },
+                { type:'偏科大佬', color:'#FFB6C1', emoji:'📚', img:'imgs/pianke.webp', honor:'阅读王者·翻译菜鸡', comment:'一半封神，一半白给', scores:{细节定位:98,推理判断:20,同义替换:95,主旨归纳:99,态度判断:25} },
+                { type:'摆烂冠军', color:'#A8C4D8', emoji:'🛋️', img:'imgs/bailan.webp', honor:'四级陪跑一级选手', comment:'重在参与，随缘就好', scores:{细节定位:10,推理判断:15,同义替换:5,主旨归纳:20,态度判断:80} },
+                { type:'全对卷王', color:'#E8E8E8', emoji:'🏆', img:'imgs/juanzong.webp', honor:'四级人形标准答案', comment:'别人考四级，你考四级解析', scores:{细节定位:100,推理判断:98,同义替换:100,主旨归纳:100,态度判断:95} },
+                { type:'吗喽型选手', color:'#C4956A', emoji:'🐒', img:'imgs/malou.webp', honor:'熬夜硬肝特种兵', comment:'咖啡续着命，单词记不住', scores:{细节定位:35,推理判断:40,同义替换:25,主旨归纳:30,态度判断:20} },
+                { type:'临时抱佛脚选手', color:'#FFA500', emoji:'🙏', img:'imgs/linshi.webp', honor:'考前突击大师', comment:'平时不烧香，考前抱佛脚', scores:{细节定位:60,推理判断:55,同义替换:70,主旨归纳:65,态度判断:50} },
+                { type:'资料囤积狂', color:'#4A7C8C', emoji:'📦', img:'imgs/tunji.webp', honor:'四级资料收藏家', comment:'收藏=学会，囤满=稳过', scores:{细节定位:85,推理判断:70,同义替换:80,主旨归纳:75,态度判断:60} }
+            ];
 
         var state = {
             currentTab: 'home',
