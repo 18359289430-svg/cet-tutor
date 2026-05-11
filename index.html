@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="theme-color" content="#2980b9">
+    <meta name="theme-color" content="#6C5CE7">
     <title>四级备考搭子</title>
     <link rel="preload" href="/wechat-qr.jpg" as="image">
     <!-- Coze Chat SDK -->
@@ -14,9 +14,9 @@
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <style>
         :root {
-            --primary: #2980b9;
-            --primary-light: #85c1e9;
-            --primary-dark: #1a5276;
+            --primary: #6C5CE7;
+            --primary-light: #A29BFE;
+            --primary-dark: #5849C4;
             --bg: #FFFFFF;
             --card-bg: #ffffff;
             --card-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02);
@@ -73,7 +73,7 @@
             width: 100%;
             padding: 0 20px;
         }
-        .brand { font-size: 17px; font-weight: 700; color: #2980b9; letter-spacing: -0.3px; }
+        .brand { font-size: 17px; font-weight: 700; color: #6C5CE7; letter-spacing: -0.3px; }
         .countdown { font-size: 12px; color: var(--text-tertiary); display: flex; align-items: center; gap: 5px; font-weight: 500; }
         .countdown-dot { width: 6px; height: 6px; background: var(--danger); border-radius: 50%; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
@@ -131,7 +131,7 @@
             transition: all 0.15s;
             position: relative;
         }
-        .tab-item.active { color: #2980b9; }
+        .tab-item.active { color: #6C5CE7; }
         .tab-item.active::before {
             content: '';
             position: absolute;
@@ -825,7 +825,7 @@
             margin-bottom: 10px;
         }
         .study-progress-label { font-size: 14px; font-weight: 600; color: #1a1a2e; }
-        .study-progress-pct { font-size: 14px; font-weight: 700; color: #2980b9; }
+        .study-progress-pct { font-size: 14px; font-weight: 700; color: #6C5CE7; }
         .study-progress-bar {
             height: 8px;
             background: #F0F0F5;
@@ -1279,7 +1279,7 @@
             border: none;
         }
         .plan-btn:active { transform: scale(0.98); }
-        .plan-card:not(.recommended) .plan-btn { background: #F5F5F5; color: #2980b9; }
+        .plan-card:not(.recommended) .plan-btn { background: #F5F5F5; color: #6C5CE7; }
         .plan-card.recommended .plan-btn { background: var(--primary); color: white; }
         
         /* FAQ */
@@ -1551,7 +1551,7 @@
             width: 40px;
             height: 40px;
             border: 3px solid #F1F5F9;
-            border-top-color: #2980b9;
+            border-top-color: #6C5CE7;
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
         }
@@ -1570,7 +1570,7 @@
         .coze-cards::-webkit-scrollbar { display: none; }
         .coze-card { flex-shrink: 0; width: 180px; background: white; border-radius: 14px; padding: 14px; box-shadow: 0 1px 4px rgba(0,0,0,0.03); cursor: pointer; transition: all 0.2s; border: 1.5px solid transparent; scroll-snap-align: start; display: flex; flex-direction: column; position: relative; }
         .coze-card:active { transform: scale(0.98); }
-        .coze-card.recommended { border-color: #2980b9; }
+        .coze-card.recommended { border-color: #6C5CE7; }
         .coze-card.selected { border-color: #2980b9; background: rgba(108,92,231,0.02); }
         .coze-card-badge { position: absolute; top: -1px; right: 12px; background: var(--primary); color: white; font-size: 10px; font-weight: 600; padding: 2px 8px 4px; border-radius: 0 0 6px 6px; }
         .coze-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; }
@@ -1579,33 +1579,24 @@
         .coze-price-num { font-size: 22px; font-weight: 700; color: var(--text-primary); letter-spacing: -1px; }
         .coze-price-original { font-size: 11px; color: var(--text-tertiary); text-decoration: line-through; margin-left: 4px; }
         .coze-card-tag { font-size: 10px; color: var(--danger); font-weight: 600; margin-bottom: 8px; }
-        .coze-card.recommended .coze-card-tag { color: #2980b9; }
+        .coze-card.recommended .coze-card-tag { color: #6C5CE7; }
         .coze-card-features { list-style: none; padding: 0; margin: 0 0 10px; flex: 1; }
         .coze-card-features li { font-size: 11px; color: var(--text-secondary); padding: 2px 0; }
         .coze-card-btn { width: 100%; padding: 8px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.15s; border: none; margin-top: auto; }
         .coze-card-btn:active { transform: scale(0.98); }
         .coze-card-btn.primary { background: var(--primary); color: white; }
-        .coze-card-btn.outline { background: rgba(108,92,231,0.06); color: #2980b9; }
+        .coze-card-btn.outline { background: rgba(108,92,231,0.06); color: #6C5CE7; }
         .coze-benefits { margin: 0 16px 16px; padding: 16px; background: white; border-radius: 14px; box-shadow: 0 1px 4px rgba(0,0,0,0.03); }
         .coze-benefits-title { font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 10px; }
         .coze-benefit-item { font-size: 12px; color: var(--text-secondary); display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 0.5px solid #F0F0F0; }
         .coze-benefit-item:last-child { border-bottom: none; }
-        .coze-benefit-check { color: #2980b9; font-weight: 600; margin-right: 6px; }
+        .coze-benefit-check { color: #6C5CE7; font-weight: 600; margin-right: 6px; }
         .coze-benefit-val { color: var(--text-primary); font-weight: 500; }
         .coze-benefit-val.limited { color: var(--text-tertiary); }
 
     
-        /* Emoji图标样式 - 百词斩画风 */
+        /* 百词斩插画图标 */
         .icon-svg svg { width: 26px; height: 26px; stroke: #2980b9; }
-            font-size: 28px;
-            line-height: 1;
-            display: block;
-        }
-        .icon-svg svg { width: 22px; height: 22px; stroke: #2980b9; }
-            font-size: 22px;
-            line-height: 1;
-            display: block;
-        }
     </style>
 </head>
 <body>
@@ -1663,7 +1654,39 @@
                         <div class="home-quick-icon"><img src="/imgs/icons/study.webp" alt="" style="width:32px;height:32px;object-fit:contain"></div>
                         <span>今日学习</span>
                     </div>
+                    <div class="home-quick-item" onclick="switchTab('diagnosis');setTimeout(()=>startDiagChat('开始AI诊断，帮我找出四级薄弱点'),300)">
+                        <div class="home-quick-icon"><img src="/imgs/icons/search.webp" alt="" style="width:32px;height:32px;object-fit:contain"></div>
+                        <span>AI诊断</span>
+                    </div>
+                    <div class="home-quick-item" onclick="switchTab('personality')">
+                        <div class="home-quick-icon"><img src="/imgs/icons/personality.webp" alt="" style="width:32px;height:32px;object-fit:contain"></div>
+                        <span>人格测试</span>
+                    </div>
+                </div>
+
+                <!-- 备考锦囊 -->
+                <div class="home-section-title">备考锦囊 <span class="home-section-more" onclick="switchTab('diagnosis')">更多</span></div>
+                <div class="home-tips-scroll">
+                    <div class="home-tip-card tip-purple" onclick="switchTab('diagnosis');setTimeout(()=>startDiagChat('阅读理解怎么提速'),300)">
+                        <div class="home-tip-text">
+                            <div class="home-tip-title">阅读提速3招</div>
+                            <div class="home-tip-desc">先看题再读文，定位关键句</div>
+                        </div>
                         <div class="home-tip-visual" style="background:#EBF5FB"><img src="/imgs/icons/study.webp" alt="" style="width:28px;height:28px;object-fit:contain"></div>
+                    </div>
+                    <div class="home-tip-card tip-green" onclick="switchTab('diagnosis');setTimeout(()=>startDiagChat('同义替换总是做错怎么办'),300)">
+                        <div class="home-tip-text">
+                            <div class="home-tip-title">同义替换必杀</div>
+                            <div class="home-tip-desc">90%答案藏在同义替换里</div>
+                        </div>
+                        <div class="home-tip-visual" style="background:#EBF5FB"><img src="/imgs/icons/target.webp" alt="" style="width:28px;height:28px;object-fit:contain"></div>
+                    </div>
+                    <div class="home-tip-card tip-orange" onclick="switchTab('diagnosis');setTimeout(()=>startDiagChat('翻译有什么技巧'),300)">
+                        <div class="home-tip-text">
+                            <div class="home-tip-title">翻译拿分模板</div>
+                            <div class="home-tip-desc">3步拆句法，告别中式英语</div>
+                        </div>
+                        <div class="home-tip-visual" style="background:#EBF5FB"><img src="/imgs/icons/pencil.webp" alt="" style="width:28px;height:28px;object-fit:contain"></div>
                     </div>
                 </div>
 
