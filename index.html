@@ -800,6 +800,17 @@
         .loading-text { font-size: 14px; color: var(--text-secondary); }
 
         /* Coze聊天样式覆盖 */
+
+        /* AI欢迎区 */
+        .ai-welcome { padding: 20px 20px 0; text-align: center; }
+        .ai-avatar-lg { width: 56px; height: 56px; margin: 0 auto 12px; background: linear-gradient(135deg, var(--primary), var(--primary-light)); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .ai-avatar-lg svg { width: 28px; height: 28px; }
+        .ai-welcome-info { margin-bottom: 16px; }
+        .ai-welcome-name { font-size: 16px; font-weight: 700; color: var(--text-primary); }
+        .ai-welcome-desc { font-size: 12px; color: var(--text-tertiary); margin-top: 2px; }
+        .ai-welcome-chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; padding-bottom: 16px; }
+        .ai-chip { padding: 8px 14px; background: rgba(108,92,231,0.06); color: var(--primary); border: 1px solid rgba(108,92,231,0.15); border-radius: 20px; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+        .ai-chip:active { background: rgba(108,92,231,0.12); transform: scale(0.96); }
         .coze-chat-container { width: 100%; height: 100%; }
         .current-plan-bar { margin: 0 16px 12px; padding: 10px 16px; background: #1a1a2e; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; }
         .current-plan-label { font-size: 12px; color: rgba(255,255,255,0.6); }
@@ -855,55 +866,57 @@
                     <h1 class="home-title">开始今天的<span>备考</span>吧</h1>
                 </div>
 
-                <!-- 今日主卡片 -->
-                <div class="today-card">
-                    <div class="today-card-content">
-                        <div class="today-label">AI陪练</div>
-                        <div class="today-title">5分钟找到你的备考人格</div>
-                        
-                        <!-- 对话预览 -->
-                        <div class="today-preview">
-                            <div class="today-preview-header">
-                                <div class="today-preview-avatar">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                                </div>
-                                <span class="today-preview-name">AI陪练</span>
-                                <span class="today-preview-status">在线</span>
-                            </div>
-                            <div class="today-messages">
-                                <div class="today-msg bot">嗨！准备好聊聊你的四级备考了吗？</div>
-                                <div class="today-msg user">准备好了，开始吧</div>
-                                <div class="today-typing"><span></span><span></span><span></span></div>
-                            </div>
+                <!-- 学习状态卡 -->
+                <div class="learn-status-card">
+                    <div class="learn-status-row">
+                        <div class="learn-status-item">
+                            <div class="learn-status-val" id="home-days">0</div>
+                            <div class="learn-status-lbl">备考天数</div>
                         </div>
-
-                        <!-- 主CTA -->
-                        <div class="today-cta">
-                            <button class="btn-start" onclick="openChat('diagnosis')">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                                开始AI诊断
-                            </button>
-                            <div class="today-hint">已有 10,000+ 用户完成诊断</div>
+                        <div class="learn-status-div"></div>
+                        <div class="learn-status-item">
+                            <div class="learn-status-val" id="home-personality">未诊断</div>
+                            <div class="learn-status-lbl">备考人格</div>
+                        </div>
+                        <div class="learn-status-div"></div>
+                        <div class="learn-status-item">
+                            <div class="learn-status-val" id="home-plan">免费版</div>
+                            <div class="learn-status-lbl">当前套餐</div>
                         </div>
                     </div>
                 </div>
 
+                <!-- 核心CTA -->
+                <div class="home-main-cta">
+                    <button class="cta-start-btn" id="home-cta-btn" onclick="handleHomeCta()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px;flex-shrink:0"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                        <span id="home-cta-text">开始AI诊断</span>
+                    </button>
+                    <div class="cta-hint" id="home-cta-hint">5分钟找到你的备考短板</div>
+                </div>
+
                 <!-- 快捷入口 -->
                 <div class="quick-actions">
-                    <button class="quick-action" onclick="openChat('chat')">
+                    <button class="quick-action" onclick="openChat('diagnosis')">
                         <div class="quick-icon purple">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                        </div>
+                        <div class="quick-label">AI诊断</div>
+                    </button>
+                    <button class="quick-action" onclick="openChat('chat')">
+                        <div class="quick-icon teal">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                         </div>
-                        <div class="quick-label">AI聊天</div>
+                        <div class="quick-label">AI陪练</div>
                     </button>
                     <button class="quick-action" onclick="document.getElementById('personality-scroll').scrollIntoView({behavior:'smooth'})">
-                        <div class="quick-icon teal">
+                        <div class="quick-icon orange">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                         </div>
                         <div class="quick-label">人格卡</div>
                     </button>
                     <button class="quick-action" onclick="switchTab('plans')">
-                        <div class="quick-icon orange">
+                        <div class="quick-icon pink">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
                         </div>
                         <div class="quick-label">套餐</div>
@@ -929,6 +942,22 @@
                         </div>
                         <span class="coze-title" id="coze-title">AI诊断</span>
                         <span class="coze-status">在线</span>
+                    </div>
+                    <!-- AI欢迎区 -->
+                    <div class="ai-welcome" id="ai-welcome">
+                        <div class="ai-avatar-lg">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                        </div>
+                        <div class="ai-welcome-info">
+                            <div class="ai-welcome-name">小过学长</div>
+                            <div class="ai-welcome-desc">你的四级备考AI搭子，已帮你诊断</div>
+                        </div>
+                        <div class="ai-welcome-chips">
+                            <button class="ai-chip" onclick="sendChip('开始AI诊断')">开始AI诊断</button>
+                            <button class="ai-chip" onclick="sendChip('我的备考计划')">查看备考计划</button>
+                            <button class="ai-chip" onclick="sendChip('今天练什么')">今日任务</button>
+                            <button class="ai-chip" onclick="sendChip('帮我批改作文')">批改作文</button>
+                        </div>
                     </div>
                     <div class="chat-container">
                         <div class="coze-chat-container" id="diagnosis-chat-container"></div>
@@ -1189,6 +1218,7 @@
             renderPersonalities();
             initTabEvents();
             updateProfileStats();
+            updateHomeStatus();
         });
 
         function loadUserData() {
@@ -1283,6 +1313,8 @@
         function openChat(mode) {
             mode = mode || 'diagnosis';
             document.getElementById('coze-title').textContent = mode === 'diagnosis' ? 'AI诊断' : 'AI陪练';
+            var welcome = document.getElementById('ai-welcome');
+            if (welcome) welcome.style.display = 'none';
             switchTab('diagnosis');
             setTimeout(function() { initDiagnosisChat(mode); }, 300);
         }
@@ -1461,6 +1493,51 @@
 
         function openPayment(plan) {
             showToast('支付功能即将上线，请稍候');
+        }
+
+
+        function handleHomeCta() {
+            var data = state.userData || {};
+            if (data.diagnosis && data.diagnosis.type) {
+                openChat('chat');
+            } else {
+                openChat('diagnosis');
+            }
+        }
+
+        function updateHomeStatus() {
+            var data = state.userData || {};
+            var days = data.studyDays || 0;
+            var personality = (data.diagnosis && data.diagnosis.type) || '未诊断';
+            var planMap = {free:'免费版', trial:'体验版', sprint:'冲刺版', flagship:'旗舰版'};
+            var plan = planMap[data.plan] || '免费版';
+            document.getElementById('home-days').textContent = days;
+            document.getElementById('home-personality').textContent = personality;
+            document.getElementById('home-plan').textContent = plan;
+            var ctaText = document.getElementById('home-cta-text');
+            var ctaHint = document.getElementById('home-cta-hint');
+            if (data.diagnosis && data.diagnosis.type) {
+                ctaText.textContent = '继续AI陪练';
+                ctaHint.textContent = '你的备考人格：' + data.diagnosis.type;
+            } else {
+                ctaText.textContent = '开始AI诊断';
+                ctaHint.textContent = '5分钟找到你的备考短板';
+            }
+        }
+
+        function sendChip(text) {
+            // Hide welcome after first interaction
+            var welcome = document.getElementById('ai-welcome');
+            if (welcome) welcome.style.display = 'none';
+            // The SDK chat is already open, user just types
+            // We can try to find the input and set value
+            try {
+                var iframe = document.querySelector('[id^="coze-web-chat"] iframe');
+                if (iframe && iframe.contentDocument) {
+                    var input = iframe.contentDocument.querySelector('textarea, input[type="text"]');
+                    if (input) { input.value = text; input.dispatchEvent(new Event('input', {bubbles:true})); }
+                }
+            } catch(e) {}
         }
 
         function toggleFaq(el) { el.parentElement.classList.toggle('open'); }
