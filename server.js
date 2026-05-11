@@ -413,6 +413,21 @@ async function handleApi(req, res, pathname) {
             });
         }
 
+
+        // ===== Coze Chat API 代理 =====
+        if (pathname === '/api/chat/conversation' && req.method === 'POST') {
+            return handleCreateConversation(req, res);
+        }
+        if (pathname === '/api/chat/send' && req.method === 'POST') {
+            return handleChatSend(req, res);
+        }
+        if (pathname === '/api/chat/messages' && req.method === 'GET') {
+            return handleChatMessages(req, res);
+        }
+        if (pathname === '/api/chat/retrieve' && req.method === 'GET') {
+            return handleChatRetrieve(req, res);
+        }
+
         // 404
         sendJson(res, 404, { error: 'API不存在' });
 
@@ -522,3 +537,139 @@ server.listen(PORT, () => {
     });
     console.log(`PayJS配置: ${PAYJS_MCHID ? '已配置' : '未配置 (使用模拟模式)'}`);
 });
+
+// ===== Coze Chat API 代理 =====
+const COZE_API_BASE = 'https://api.coze.cn';
+const COZE_PAT = 'pat_hAOthvv429aDEqWspP4lITuL3DAU7VZJiGlVrnmA1zuoZ4IWW2kmxYzXUbGvZTYb';
+
+// POST /api/chat/conversation - 创建对话
+async function handleCreateConversation(req, res) {
+    try {
+        const resp = await fetch(COZE_API_BASE + '/v1/conversation/create', {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + COZE_PAT,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({})
+        });
+        const data = await resp.json();
+        sendJson(res, 200, data);
+    } catch (e) {
+        console.error('Create conversation error:', e);
+        sendJson(res, 500, { error: '创建对话失败' });
+    }
+}
+
+// POST /api/chat/send - 发送消息（流式）
+async function handleChatSend(req, res) {
+    try {
+        const body = await parseBody(req);
+        const { bot_id, user_id, conversation_id, messages, stream, parameters } = body;
+
+        if (!bot_id || !user_id || !messages) {
+            return sendJson(res, 400, { error: '参数缺失' });
+        }
+
+        const payload = {
+            bot_id: bot_id,
+            user_id: user_id,
+            additional_messages: messages,
+            stream: stream !== false,
+            auto_save_history: stream === false
+        };
+        if (conversation_id) payload.conversation_id = conversation_id;
+        if (parameters) payload.custom_variables = parameters;
+
+        const resp = await fetch(COZE_API_BASE + '/v3/chat', {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + COZE_PAT,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
+
+        if (payload.stream) {
+            // 流式：透传SSE
+            res.writeHead(200, {
+                'Content-Type': 'text/event-stream',
+                'Cache-Control': 'no-cache',
+                'Connection': 'keep-alive',
+                'X-Accel-Buffering': 'no',
+                'Access-Control-Allow-Origin': '*'
+            });
+            // Node.js 18+ fetch returns Web ReadableStream
+            const reader = resp.body.getReader();
+            async function pump() {
+                try {
+                    while (true) {
+                        const { done, value } = await reader.read();
+                        if (done) { res.end(); break; }
+                        res.write(value);
+                    }
+                } catch (err) {
+                    console.error('Stream pump error:', err);
+                    res.end();
+                }
+            }
+            pump();
+        } else {
+            const data = await resp.json();
+            sendJson(res, 200, data);
+        }
+    } catch (e) {
+        console.error('Chat send error:', e);
+        sendJson(res, 500, { error: '发送消息失败' });
+    }
+}
+
+// GET /api/chat/messages - 获取对话消息列表
+async function handleChatMessages(req, res) {
+    try {
+        const url = new URL(req.url, 'http://localhost');
+        const conversationId = url.searchParams.get('conversation_id');
+        const chatId = url.searchParams.get('chat_id');
+
+        if (!conversationId || !chatId) {
+            return sendJson(res, 400, { error: '参数缺失' });
+        }
+
+        const resp = await fetch(
+            COZE_API_BASE + '/v1/conversation/message/list?conversation_id=' + conversationId + '&chat_id=' + chatId,
+            {
+                headers: { 'Authorization': 'Bearer ' + COZE_PAT }
+            }
+        );
+        const data = await resp.json();
+        sendJson(res, 200, data);
+    } catch (e) {
+        console.error('Get messages error:', e);
+        sendJson(res, 500, { error: '获取消息失败' });
+    }
+}
+
+// GET /api/chat/retrieve - 查询chat状态
+async function handleChatRetrieve(req, res) {
+    try {
+        const url = new URL(req.url, 'http://localhost');
+        const conversationId = url.searchParams.get('conversation_id');
+        const chatId = url.searchParams.get('chat_id');
+
+        if (!conversationId || !chatId) {
+            return sendJson(res, 400, { error: '参数缺失' });
+        }
+
+        const resp = await fetch(
+            COZE_API_BASE + '/v3/chat/retrieve?conversation_id=' + conversationId + '&chat_id=' + chatId,
+            {
+                headers: { 'Authorization': 'Bearer ' + COZE_PAT }
+            }
+        );
+        const data = await resp.json();
+        sendJson(res, 200, data);
+    } catch (e) {
+        console.error('Retrieve chat error:', e);
+        sendJson(res, 500, { error: '查询失败' });
+    }
+}
