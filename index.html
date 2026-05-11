@@ -151,76 +151,101 @@
             background: #F5F5FA;
         }
         
-        /* 顶部区域 */
-        .home-top {
+        /* 主视觉区 - 一个大卡片搞定 */
+        .home-hero {
             background: linear-gradient(135deg, var(--primary) 0%, #8B7CF7 60%, #A29BFE 100%);
-            padding: 24px 20px 36px;
+            padding: 28px 24px 48px;
             position: relative;
             overflow: hidden;
         }
-        .home-top::after {
+        .home-hero::after {
             content: '';
             position: absolute;
-            bottom: -40px;
-            right: -30px;
-            width: 180px;
-            height: 180px;
-            background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 70%);
+            bottom: -60px;
+            right: -40px;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
             border-radius: 50%;
         }
-        .home-top-row {
+        .home-hero-inner { position: relative; z-index: 1; }
+        .home-hero-top {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 20px;
-            position: relative;
-            z-index: 1;
+            margin-bottom: 16px;
         }
         .home-greeting {
             font-size: 14px;
-            color: rgba(255,255,255,0.75);
-            margin-bottom: 2px;
+            color: rgba(255,255,255,0.7);
         }
-        .home-title {
-            font-size: 22px;
-            font-weight: 700;
-            color: white;
-            letter-spacing: -0.3px;
-            line-height: 1.2;
-        }
-        .home-streak-badge {
+        .home-streak-pill {
             display: flex;
             align-items: center;
             gap: 4px;
-            background: rgba(255,255,255,0.2);
-            backdrop-filter: blur(10px);
-            padding: 8px 14px;
-            border-radius: 20px;
+            background: rgba(255,255,255,0.18);
+            backdrop-filter: blur(8px);
+            padding: 6px 12px;
+            border-radius: 16px;
             color: white;
             font-weight: 700;
-            font-size: 16px;
+            font-size: 14px;
+            cursor: pointer;
         }
-        .home-streak-badge svg { width: 20px; height: 20px; }
-        .home-streak-sub {
+        .home-streak-pill svg { width: 16px; height: 16px; }
+        .home-hero-title {
+            font-size: 26px;
+            font-weight: 800;
+            color: white;
+            line-height: 1.25;
+            letter-spacing: -0.5px;
+            margin-bottom: 24px;
+        }
+        /* 状态数据 - 在紫卡片内 */
+        .home-hero-stats {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            background: rgba(255,255,255,0.12);
+            border-radius: 14px;
+            padding: 14px 0;
+        }
+        .hero-stat {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+        .hero-stat-val {
+            font-size: 17px;
+            font-weight: 700;
+            color: white;
+        }
+        .hero-stat-lbl {
             font-size: 10px;
+            color: rgba(255,255,255,0.6);
             font-weight: 500;
-            color: rgba(255,255,255,0.7);
-            margin-top: 1px;
+        }
+        .hero-stat-div {
+            width: 1px;
+            height: 24px;
+            background: rgba(255,255,255,0.15);
         }
         
-        /* 大CTA - 浮在紫蓝渐变和白色之间 */
-        .home-cta-wrap {
-            margin: -24px 16px 16px;
+        /* 大CTA */
+        .home-cta-area {
+            margin: -22px 20px 20px;
             position: relative;
             z-index: 2;
         }
         .home-cta-btn {
             width: 100%;
-            padding: 18px 24px;
+            padding: 17px 24px;
             background: white;
             color: var(--primary);
             border: none;
-            border-radius: 18px;
+            border-radius: 16px;
             font-size: 17px;
             font-weight: 700;
             cursor: pointer;
@@ -228,11 +253,11 @@
             align-items: center;
             justify-content: center;
             gap: 10px;
-            box-shadow: 0 8px 32px rgba(108,92,231,0.25);
+            box-shadow: 0 8px 28px rgba(108,92,231,0.22);
             transition: all 0.2s;
         }
-        .home-cta-btn:active { transform: scale(0.97); box-shadow: 0 4px 16px rgba(108,92,231,0.15); }
-        .home-cta-btn svg { width: 22px; height: 22px; }
+        .home-cta-btn:active { transform: scale(0.97); }
+        .home-cta-btn svg { width: 20px; height: 20px; }
         .home-cta-hint {
             text-align: center;
             margin-top: 8px;
@@ -240,159 +265,83 @@
             color: var(--text-tertiary);
         }
         
-        /* 每日一练卡片 - 百词斩风格 */
+        /* 每日一练 - 简洁一行 */
         .daily-card {
-            margin: 0 16px 14px;
+            margin: 0 20px 16px;
             background: white;
-            border-radius: 18px;
-            padding: 16px 18px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+            border-radius: 16px;
+            padding: 14px 16px;
+            box-shadow: 0 1px 8px rgba(0,0,0,0.04);
             cursor: pointer;
             transition: all 0.2s;
-        }
-        .daily-card:active { transform: scale(0.98); }
-        .daily-card-top {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 12px;
         }
+        .daily-card:active { transform: scale(0.98); }
         .daily-card-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 14px;
-            background: linear-gradient(135deg, rgba(108,92,231,0.1), rgba(108,92,231,0.05));
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: rgba(108,92,231,0.08);
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
         }
-        .daily-card-icon svg { width: 24px; height: 24px; stroke: var(--primary); stroke-width: 1.8; }
+        .daily-card-icon svg { width: 20px; height: 20px; stroke: var(--primary); stroke-width: 1.8; }
         .daily-card-body { flex: 1; min-width: 0; }
-        .daily-card-title {
-            font-size: 15px;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-        .daily-card-desc {
-            font-size: 12px;
-            color: var(--text-tertiary);
-            margin-top: 2px;
-        }
+        .daily-card-title { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+        .daily-card-desc { font-size: 12px; color: var(--text-tertiary); margin-top: 1px; }
         .daily-card-badge {
             font-size: 11px;
-            padding: 5px 12px;
-            border-radius: 12px;
+            padding: 4px 10px;
+            border-radius: 10px;
             font-weight: 600;
             white-space: nowrap;
             flex-shrink: 0;
         }
         .daily-card-badge.pending { background: rgba(108,92,231,0.08); color: var(--primary); }
         .daily-card-badge.done { background: rgba(0,184,148,0.1); color: var(--success); }
-        .daily-card-progress {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 12px;
-            padding-top: 12px;
-            border-top: 1px solid rgba(0,0,0,0.04);
-        }
-        .daily-bar-bg {
-            flex: 1;
-            height: 5px;
-            background: rgba(0,0,0,0.04);
-            border-radius: 3px;
-            overflow: hidden;
-        }
-        .daily-bar-fill {
-            height: 100%;
-            background: var(--primary);
-            border-radius: 3px;
-            transition: width 0.5s ease;
-        }
-        .daily-bar-text {
-            font-size: 11px;
-            color: var(--text-tertiary);
-            font-weight: 500;
-            white-space: nowrap;
-        }
         
-        /* 功能入口 - 百词斩2x2瓷片 */
-        .func-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            padding: 0 16px 14px;
-        }
-        .func-card {
-            background: white;
-            border-radius: 16px;
-            padding: 16px;
+        /* 快捷入口 - 横排4个，极简 */
+        .home-shortcuts {
             display: flex;
-            align-items: center;
-            gap: 12px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.03);
-            cursor: pointer;
-            transition: all 0.15s;
-            border: none;
+            padding: 0 20px 20px;
+            gap: 0;
         }
-        .func-card:active { transform: scale(0.97); background: #FAFAFA; }
-        .func-card-icon {
-            width: 42px;
-            height: 42px;
+        .shortcut {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 0;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        .shortcut:active { opacity: 0.7; }
+        .shortcut-icon {
+            width: 40px;
+            height: 40px;
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-shrink: 0;
         }
-        .func-card-icon svg { width: 22px; height: 22px; stroke-width: 1.8; }
-        .func-card-icon.purple { background: rgba(108,92,231,0.1); }
-        .func-card-icon.purple svg { stroke: var(--primary); }
-        .func-card-icon.teal { background: rgba(0,206,209,0.1); }
-        .func-card-icon.teal svg { stroke: #00CED1; }
-        .func-card-icon.orange { background: rgba(255,165,2,0.1); }
-        .func-card-icon.orange svg { stroke: #FFA502; }
-        .func-card-icon.pink { background: rgba(255,118,117,0.1); }
-        .func-card-icon.pink svg { stroke: #FF7675; }
-        .func-card-icon.green { background: rgba(85,239,196,0.15); }
-        .func-card-icon.green svg { stroke: #00B894; }
-        .func-card-text { min-width: 0; }
-        .func-card-name {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-primary);
-            line-height: 1.2;
-        }
-        .func-card-sub {
+        .shortcut-icon svg { width: 20px; height: 20px; stroke-width: 1.8; }
+        .shortcut-icon.purple { background: rgba(108,92,231,0.08); }
+        .shortcut-icon.purple svg { stroke: var(--primary); }
+        .shortcut-icon.teal { background: rgba(0,206,209,0.08); }
+        .shortcut-icon.teal svg { stroke: #00CED1; }
+        .shortcut-icon.orange { background: rgba(255,165,2,0.08); }
+        .shortcut-icon.orange svg { stroke: #FFA502; }
+        .shortcut-icon.green { background: rgba(0,184,148,0.08); }
+        .shortcut-icon.green svg { stroke: #00B894; }
+        .shortcut span {
             font-size: 11px;
-            color: var(--text-tertiary);
-            margin-top: 2px;
-        }
-        
-        /* 学习数据条 - 首页底部 */
-        .home-stats-bar {
-            display: flex;
-            gap: 10px;
-            padding: 0 16px 16px;
-        }
-        .home-stat-item {
-            flex: 1;
-            background: white;
-            border-radius: 14px;
-            padding: 12px;
-            text-align: center;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.03);
-        }
-        .home-stat-val {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--text-primary);
-            line-height: 1;
-        }
-        .home-stat-lbl {
-            font-size: 10px;
-            color: var(--text-tertiary);
-            margin-top: 4px;
+            color: var(--text-secondary);
             font-weight: 500;
         }
         
@@ -1133,23 +1082,38 @@
         <div class="main-content">
             <!-- 首页 - App化 -->
             <div class="tab-page active" id="tab-home">
-                <!-- 顶部渐变区 -->
-                <div class="home-top">
-                    <div class="home-top-row">
-                        <div>
+                <!-- 主视觉区：大卡片+CTA -->
+                <div class="home-hero">
+                    <div class="home-hero-inner">
+                        <div class="home-hero-top">
                             <div class="home-greeting" id="greeting-text">早上好</div>
-                            <div class="home-title">开始今天的备考</div>
+                            <div class="home-streak-pill" id="home-streak" onclick="handleDailyTask()">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c.5 4-2 7-4 9.5C6 14 5.5 16 6 18c.7 3 3.5 4 6 4s5.3-1 6-4c.5-2 0-4-2-6.5C14 9 11.5 6 12 2z"/><path d="M12 22c-1.5 0-3-.8-3-3 0-1.5.8-2.5 2-4 .5-.6 1-1.5 1-2.5 0 1 .5 1.9 1 2.5 1.2 1.5 2 2.5 2 4 0 2.2-1.5 3-3 3z" fill="rgba(255,255,255,0.6)" stroke="none"/></svg>
+                                <span id="streak-num">0</span>天
+                            </div>
                         </div>
-                        <div class="home-streak-badge" id="home-streak" onclick="handleDailyTask()">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c.5 4-2 7-4 9.5C6 14 5.5 16 6 18c.7 3 3.5 4 6 4s5.3-1 6-4c.5-2 0-4-2-6.5C14 9 11.5 6 12 2z"/><path d="M12 22c-1.5 0-3-.8-3-3 0-1.5.8-2.5 2-4 .5-.6 1-1.5 1-2.5 0 1 .5 1.9 1 2.5 1.2 1.5 2 2.5 2 4 0 2.2-1.5 3-3 3z" fill="rgba(255,255,255,0.6)" stroke="none"/></svg>
-                            <span id="streak-num">0</span>
-                            <div class="home-streak-sub">连续打卡</div>
+                        <div class="home-hero-title">开始今天的<br>四级备考</div>
+                        <div class="home-hero-stats">
+                            <div class="hero-stat">
+                                <span class="hero-stat-val" id="home-days">0</span>
+                                <span class="hero-stat-lbl">备考天数</span>
+                            </div>
+                            <div class="hero-stat-div"></div>
+                            <div class="hero-stat">
+                                <span class="hero-stat-val" id="home-personality">--</span>
+                                <span class="hero-stat-lbl">备考人格</span>
+                            </div>
+                            <div class="hero-stat-div"></div>
+                            <div class="hero-stat">
+                                <span class="hero-stat-val" id="home-plan">免费</span>
+                                <span class="hero-stat-lbl">当前套餐</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 大CTA按钮 - 浮在渐变和白色之间 -->
-                <div class="home-cta-wrap">
+                <!-- 大CTA -->
+                <div class="home-cta-area">
                     <button class="home-cta-btn" id="home-cta-btn" onclick="handleHomeCta()">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
                         <span id="home-cta-text">开始AI诊断</span>
@@ -1157,7 +1121,7 @@
                     <div class="home-cta-hint" id="home-cta-hint">5分钟找到你的备考短板</div>
                 </div>
 
-                <!-- 每日一练卡片 -->
+                <!-- 每日一练 -->
                 <div class="daily-card" id="daily-task-card" onclick="handleDailyTask()">
                     <div class="daily-card-top">
                         <div class="daily-card-icon">
@@ -1169,68 +1133,34 @@
                         </div>
                         <div class="daily-card-badge pending" id="daily-task-badge">待完成</div>
                     </div>
-                    <div class="daily-card-progress">
-                        <div class="daily-bar-bg">
-                            <div class="daily-bar-fill" id="daily-progress-bar" style="width: 0%"></div>
-                        </div>
-                        <div class="daily-bar-text" id="daily-progress-text">0/1</div>
-                    </div>
                 </div>
 
-                <!-- 功能入口 2x2 -->
-                <div class="func-grid">
-                    <button class="func-card" onclick="openChat('diagnosis')">
-                        <div class="func-card-icon purple">
+                <!-- 快捷入口 - 横排一行4个，极简 -->
+                <div class="home-shortcuts">
+                    <button class="shortcut" onclick="switchTab('diagnosis')">
+                        <div class="shortcut-icon purple">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                         </div>
-                        <div class="func-card-text">
-                            <div class="func-card-name">AI诊断</div>
-                            <div class="func-card-sub">5分钟测弱点</div>
-                        </div>
+                        <span>AI诊断</span>
                     </button>
-                    <button class="func-card" onclick="openChat('chat')">
-                        <div class="func-card-icon teal">
+                    <button class="shortcut" onclick="openChat('chat')">
+                        <div class="shortcut-icon teal">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                         </div>
-                        <div class="func-card-text">
-                            <div class="func-card-name">AI陪练</div>
-                            <div class="func-card-sub">对话式学英语</div>
-                        </div>
+                        <span>AI陪练</span>
                     </button>
-                    <button class="func-card" onclick="document.getElementById('personality-scroll').scrollIntoView({behavior:'smooth'})">
-                        <div class="func-card-icon orange">
+                    <button class="shortcut" onclick="document.getElementById('personality-scroll').scrollIntoView({behavior:'smooth'})">
+                        <div class="shortcut-icon orange">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                         </div>
-                        <div class="func-card-text">
-                            <div class="func-card-name">人格卡</div>
-                            <div class="func-card-sub">8种备考人格</div>
-                        </div>
+                        <span>人格卡</span>
                     </button>
-                    <button class="func-card" onclick="switchTab('plans')">
-                        <div class="func-card-icon green">
+                    <button class="shortcut" onclick="switchTab('plans')">
+                        <div class="shortcut-icon green">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
                         </div>
-                        <div class="func-card-text">
-                            <div class="func-card-name">升级套餐</div>
-                            <div class="func-card-sub">解锁更多能力</div>
-                        </div>
+                        <span>套餐</span>
                     </button>
-                </div>
-
-                <!-- 学习数据 -->
-                <div class="home-stats-bar">
-                    <div class="home-stat-item">
-                        <div class="home-stat-val" id="home-days">0</div>
-                        <div class="home-stat-lbl">备考天数</div>
-                    </div>
-                    <div class="home-stat-item">
-                        <div class="home-stat-val" id="home-personality">--</div>
-                        <div class="home-stat-lbl">备考人格</div>
-                    </div>
-                    <div class="home-stat-item">
-                        <div class="home-stat-val" id="home-plan">免费</div>
-                        <div class="home-stat-lbl">当前套餐</div>
-                    </div>
                 </div>
 
                 <!-- 人格卡区域 -->
