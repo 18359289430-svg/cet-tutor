@@ -2803,7 +2803,7 @@
                                 user_plan: (state.userData && state.userData.plan) || 'free',
                                 user_personality: (state.userData && state.userData.diagnosis && state.userData.diagnosis.type) || '',
                                 study_days: String((state.userData && state.userData.studyDays) || 0),
-                                today_task: getTodayTask(),
+                                today_task: getPlanTodayTaskText() || '',
                                 plan_summary: getPlanSummary(),
                                 last_context: getChatSummary(),
                                 pending_task: getPendingTask()
@@ -2890,10 +2890,18 @@
                                 var t = el.textContent || '';
                                 var resultMatch = t.match(/\[RESULT:(.+?)\]/);
                                 if (resultMatch) parseDiagnosisResult(resultMatch[1]);
+                                var planMatch = t.match(/\[PLAN:(.+?)\]/);
+                                if (planMatch) parsePlanResult(planMatch[1]);
+                                var taskMatch = t.match(/\[TASK:(.+?)\]/);
+                                if (taskMatch) parseTaskDone(taskMatch[1]);
                             });
                             var t = node.textContent || '';
                             var resultMatch = t.match(/\[RESULT:(.+?)\]/);
                             if (resultMatch) parseDiagnosisResult(resultMatch[1]);
+                            var planMatch = t.match(/\[PLAN:(.+?)\]/);
+                            if (planMatch) parsePlanResult(planMatch[1]);
+                            var taskMatch = t.match(/\[TASK:(.+?)\]/);
+                            if (taskMatch) parseTaskDone(taskMatch[1]);
                         }
                     });
                 });
@@ -2916,6 +2924,76 @@
             }
         }
 
+        // 解析Bot输出的 [PLAN:...] 标记，保存备考计划
+        // 格式: [PLAN:day1=背200词+1篇阅读|day2=1篇翻译+作文模板|day3=...]
+        function parsePlanResult(planStr) {
+            try {
+                var planData = [];
+                planStr.split('|').forEach(function(item) {
+                    var kv = item.split('=');
+                    if (kv.length >= 2) {
+                        planData.push({
+                            day: kv[0].trim(),
+                            task: kv.slice(1).join('=').trim()
+                        });
+                    }
+                });
+
+                if (planData.length > 0) {
+                    state.userData = state.userData || {};
+                    state.userData.plan_data = planData;
+                    state.userData.planCreatedAt = Date.now();
+                    localStorage.setItem('cet_user', JSON.stringify(state.userData));
+                    showToast('备考计划已生成！共' + planData.length + '天');
+                    updateHomeStatus();
+                    updateDailyTask();
+                }
+            } catch(e) {
+                console.error('Plan parse error:', e);
+            }
+        }
+
+        // 解析Bot输出的 [TASK:done] 标记，标记今日计划完成
+        function parseTaskDone(taskStr) {
+            try {
+                var streak = getStreakData();
+                var today = getTodayStr();
+                var todayChecked = streak.todayChecked && streak.lastDate === today;
+
+                if (todayChecked) return; // 今天已打卡
+
+                // 标记每日一练完成
+                var daily = getDailyTaskInfo();
+                if (daily.completed.length === 0) {
+                    var task = dailyTasks[daily.taskIndex];
+                    daily.completed.push(task.type);
+                    saveDailyTaskData(daily);
+                }
+
+                // 标记今日计划完成
+                state.userData = state.userData || {};
+                state.userData.todayPlanDone = true;
+                state.userData.todayPlanDoneDate = today;
+                localStorage.setItem('cet_user', JSON.stringify(state.userData));
+
+                // 打卡
+                var justCheckedIn = doCheckIn();
+                if (justCheckedIn) {
+                    showToast('任务完成！连续打卡' + getStreakData().count + '天');
+                    renderStreakCalendar();
+                    var streakNumBig = document.getElementById('streak-num-big');
+                    var studyEnStreak = document.getElementById('study-en-streak');
+                    var s = getStreakData();
+                    if (streakNumBig) streakNumBig.textContent = s.count;
+                    if (studyEnStreak) studyEnStreak.textContent = s.count;
+                }
+                updateDailyTask();
+                updateHomeStatus();
+            } catch(e) {
+                console.error('Task done parse error:', e);
+            }
+        }
+
         function getChatSummary() {
             try {
                 var data = JSON.parse(localStorage.getItem('cet_user') || '{}');
@@ -2927,15 +3005,28 @@
             } catch(e) { return ''; }
         }
 
-        function getTodayTask() {
+        function getPlanTodayTask() {
             try {
                 var data = JSON.parse(localStorage.getItem('cet_user') || '{}');
                 var plan = data.plan_data;
-                if (!plan || plan.length === 0) return '';
+                if (!plan || plan.length === 0) return null;
                 var daysPassed = Math.floor((Date.now() - (data.planCreatedAt || data.activatedAt || Date.now())) / 86400000);
-                var today = plan[Math.min(daysPassed, plan.length - 1)];
-                return (today.day || ('第' + (daysPassed + 1) + '天')) + ': ' + (today.task || '');
-            } catch(e) { return ''; }
+                var todayItem = plan[Math.min(daysPassed, plan.length - 1)];
+                return {
+                    day: todayItem.day || ('第' + (daysPassed + 1) + '天'),
+                    task: todayItem.task || '',
+                    index: Math.min(daysPassed, plan.length - 1),
+                    total: plan.length,
+                    progress: Math.min(daysPassed + 1, plan.length)
+                };
+            } catch(e) { return null; }
+        }
+
+        // 获取计划今日任务文本（给Bot参数用）
+        function getPlanTodayTaskText() {
+            var t = getPlanTodayTask();
+            if (!t) return '';
+            return t.day + ': ' + t.task;
         }
 
         function getPlanSummary() {
@@ -2945,6 +3036,13 @@
                 if (!plan || plan.length === 0) return '';
                 return plan.map(function(p) { return p.day + ':' + p.task; }).join('|');
             } catch(e) { return ''; }
+        }
+
+        // 检查今日计划是否已完成
+        function isTodayPlanDone() {
+            var data = state.userData || {};
+            var today = getTodayStr();
+            return data.todayPlanDoneDate === today && data.todayPlanDone;
         }
 
         function getPendingTask() {
@@ -3089,9 +3187,16 @@
             
             var ctaText = document.getElementById('home-cta-text');
             var heroSub = document.getElementById('home-hero-subtitle');
+            var planTask = getPlanTodayTask();
             if (data.diagnosis && data.diagnosis.type) {
                 if (ctaText) ctaText.textContent = '继续AI陪练';
-                if (heroSub) heroSub.textContent = '你的备考人格：' + data.diagnosis.type;
+                if (heroSub) {
+                    if (planTask && planTask.task) {
+                        heroSub.textContent = planTask.day + '：' + planTask.task;
+                    } else {
+                        heroSub.textContent = '你的备考人格：' + data.diagnosis.type;
+                    }
+                }
             } else {
                 if (ctaText) ctaText.textContent = '开始AI诊断';
                 if (heroSub) heroSub.textContent = '5分钟找到你的备考短板';
@@ -3259,7 +3364,7 @@
             localStorage.setItem('cet_daily', JSON.stringify(d));
         }
         
-        function getTodayTask() {
+        function getDailyTaskInfo() {
             var daily = getDailyTaskData();
             var today = getTodayStr();
             
@@ -3278,9 +3383,20 @@
         }
         
         function updateDailyTask() {
-            var daily = getTodayTask();
-            var task = dailyTasks[daily.taskIndex];
+            var daily = getDailyTaskInfo();
+            var planTask = getPlanTodayTask();
+            var hasPlan = planTask && planTask.task;
+            var task = hasPlan ? { title: planTask.task, desc: planTask.day + ' · 共' + planTask.total + '天计划', type: 'plan' } : dailyTasks[daily.taskIndex];
             var isDone = daily.completed.length > 0;
+
+            // 如果有计划，检查今日计划是否完成
+            if (hasPlan) {
+                var userData = state.userData || {};
+                var today = getTodayStr();
+                if (userData.todayPlanDoneDate === today && userData.todayPlanDone) {
+                    isDone = true;
+                }
+            }
             
             var titleEl = document.getElementById('daily-task-title');
             var descEl = document.getElementById('daily-task-desc');
@@ -3318,14 +3434,22 @@
                 return;
             }
 
-            // 打开AI对话，不立即打卡
-            // 打卡将在用户与AI对话满2轮后自动触发（见onBotReply）
-            showToast('和AI聊2轮即可打卡');
+            var planTask = getPlanTodayTask();
             var data = state.userData || {};
-            if (data.diagnosis && data.diagnosis.type) {
+
+            // 打开AI对话，不立即打卡
+            // 有计划：打开陪练Bot，提示今日任务
+            // 无计划：打开对应Bot，聊2轮打卡
+            if (planTask && planTask.task && data.plan && data.plan !== 'free') {
+                showToast('完成今日任务即可打卡');
                 openChat('chat');
             } else {
-                openChat('diagnosis');
+                showToast('和AI聊2轮即可打卡');
+                if (data.diagnosis && data.diagnosis.type) {
+                    openChat('chat');
+                } else {
+                    openChat('diagnosis');
+                }
             }
         }
 
@@ -3342,31 +3466,45 @@
 
             if (todayChecked) return; // 今天已打卡，不重复
 
-            if (state.chatRounds >= REQUIRED_ROUNDS) {
-                // 达标！自动打卡
-                var daily = getTodayTask();
-                if (daily.completed.length === 0) {
-                    var task = dailyTasks[daily.taskIndex];
-                    daily.completed.push(task.type);
-                    saveDailyTaskData(daily);
-                }
+            var planTask = getPlanTodayTask();
+            var userData = state.userData || {};
+            var hasPlan = planTask && planTask.task && userData.plan && userData.plan !== 'free';
 
-                var justCheckedIn = doCheckIn();
-                if (justCheckedIn) {
-                    showToast('学习完成！连续打卡' + getStreakData().count + '天');
-                    renderStreakCalendar();
-                    var streakNumBig = document.getElementById('streak-num-big');
-                    var studyEnStreak = document.getElementById('study-en-streak');
-                    var s = getStreakData();
-                    if (streakNumBig) streakNumBig.textContent = s.count;
-                    if (studyEnStreak) studyEnStreak.textContent = s.count;
+            if (hasPlan) {
+                // 有备考计划：需要Bot输出 [TASK:done] 标记才能打卡（由parseTaskDone处理）
+                // 这里只提示进度
+                if (state.chatRounds >= REQUIRED_ROUNDS) {
+                    showToast('继续完成今日任务，Bot确认后自动打卡');
+                } else {
+                    var remaining = REQUIRED_ROUNDS - state.chatRounds;
+                    showToast('再聊' + remaining + '轮');
                 }
-                updateDailyTask();
-                updateHomeStatus();
             } else {
-                // 还没达标，提示进度
-                var remaining = REQUIRED_ROUNDS - state.chatRounds;
-                showToast('再聊' + remaining + '轮即可打卡');
+                // 无计划：2轮打卡
+                if (state.chatRounds >= REQUIRED_ROUNDS) {
+                    var daily = getDailyTaskInfo();
+                    if (daily.completed.length === 0) {
+                        var task = dailyTasks[daily.taskIndex];
+                        daily.completed.push(task.type);
+                        saveDailyTaskData(daily);
+                    }
+
+                    var justCheckedIn = doCheckIn();
+                    if (justCheckedIn) {
+                        showToast('学习完成！连续打卡' + getStreakData().count + '天');
+                        renderStreakCalendar();
+                        var streakNumBig = document.getElementById('streak-num-big');
+                        var studyEnStreak = document.getElementById('study-en-streak');
+                        var s = getStreakData();
+                        if (streakNumBig) streakNumBig.textContent = s.count;
+                        if (studyEnStreak) studyEnStreak.textContent = s.count;
+                    }
+                    updateDailyTask();
+                    updateHomeStatus();
+                } else {
+                    var remaining = REQUIRED_ROUNDS - state.chatRounds;
+                    showToast('再聊' + remaining + '轮即可打卡');
+                }
             }
         }
 
