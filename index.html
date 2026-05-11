@@ -393,22 +393,7 @@
             position: relative;
         }
         .personality-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .personality-badge {
-            position: absolute;
-            bottom: -2px;
-            right: -2px;
-            width: 20px;
-            height: 20px;
-            background: var(--primary);
-            border-radius: 50%;
-            color: white;
-            font-size: 10px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid white;
-        }
+        /* personality-badge removed */
         .personality-type { font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .personality-honor { font-size: 10px; padding: 2px 8px; border-radius: 6px; font-weight: 600; }
         
@@ -439,7 +424,7 @@
         .pricing-features { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
         .pricing-feature { font-size: 13px; color: var(--text-secondary); display: flex; align-items: center; gap: 6px; }
         .pricing-feature::before { content: '✓'; color: var(--success); font-weight: 600; font-size: 12px; }
-        .btn-pricing {
+        /* btn-pricing removed */
             width: 100%;
             padding: 14px;
             background: var(--primary);
@@ -451,9 +436,6 @@
             cursor: pointer;
             transition: all 0.2s;
         }
-        .btn-pricing:active { transform: scale(0.98); background: var(--primary-dark); }
-        .pricing-hint { text-align: center; margin-top: 12px; font-size: 12px; color: var(--text-tertiary); }
-        .pricing-hint a { color: var(--primary); text-decoration: none; font-weight: 500; }
 
         /* 诊断页 */
         .diagnosis-page { display: flex; flex-direction: column; height: 100%; }
@@ -816,6 +798,10 @@
 
         /* Coze聊天样式覆盖 */
         .coze-chat-container { width: 100%; height: 100%; }
+        .current-plan-bar { margin: 0 16px 12px; padding: 10px 16px; background: #1a1a2e; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .current-plan-label { font-size: 12px; color: rgba(255,255,255,0.6); }
+        .current-plan-name { font-size: 13px; color: white; font-weight: 600; }
+        .coze-price-sign { font-size: 14px; font-weight: 600; color: var(--text-primary); margin-right: 1px; }
         .coze-cards { padding: 16px 0 16px 16px; display: flex; gap: 10px; overflow-x: auto; -webkit-overflow-scrolling: touch; scroll-snap-type: x mandatory; scrollbar-width: none; padding-right: 16px; }
         .coze-cards::-webkit-scrollbar { display: none; }
         .coze-card { flex-shrink: 0; width: 180px; background: white; border-radius: 14px; padding: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.04); cursor: pointer; transition: all 0.2s; border: 1.5px solid transparent; scroll-snap-align: start; display: flex; flex-direction: column; position: relative; }
@@ -929,10 +915,6 @@
                     </div>
                     <div class="personality-scroll" id="personality-scroll"></div>
                 </div>
-                        <button class="btn-pricing" onclick="switchTab('plans')">立即开通</button>
-                        <div class="pricing-hint"><a href="javascript:void(0)" onclick="openChat('diagnosis')">先免费诊断 →</a></div>
-                    </div>
-                </div>
             </div>
 
             <!-- 诊断页 -->
@@ -957,53 +939,75 @@
                     <h1 class="plans-title">选择方案</h1>
                     <p class="plans-subtitle">解锁更多能力，提升备考效率</p>
                 </div>
-                <div class="plans-section">
-                    <div class="plan-card">
-                        <div class="plan-header">
-                            <span class="plan-name">免费试用</span>
-                            <div class="plan-price-wrap">
-                                <span class="plan-price free">免费</span>
-                            </div>
+                <div class="current-plan-bar" id="current-plan-bar">
+                    <span class="current-plan-label">当前套餐</span>
+                    <span class="current-plan-name" id="current-plan-name">免费版</span>
+                </div>
+                <div class="coze-cards" id="coze-cards">
+                    <div class="coze-card" data-plan="free" onclick="selectPlan('free')">
+                        <div class="coze-card-top">
+                            <span class="coze-card-name">免费版</span>
+                            <div class="coze-card-price"><span class="coze-price-num">免费</span></div>
                         </div>
-                        <div class="plan-features">
-                            <div class="plan-feature">AI答疑 50次</div>
-                            <div class="plan-feature">作文批改 1次</div>
-                            <div class="plan-feature">每日任务推送</div>
-                        </div>
-                        <button class="plan-btn" onclick="openChat('chat')">免费使用</button>
+                        <div class="coze-card-tag">诊断+基础答疑</div>
+                        <ul class="coze-card-features">
+                            <li>✓ AI诊断测试</li>
+                            <li>✓ 备考人格卡</li>
+                            <li>✓ AI答疑 50次</li>
+                            <li>✓ 作文批改 1次</li>
+                        </ul>
+                        <button class="coze-card-btn outline" onclick="event.stopPropagation();openChat('diagnosis')">开始诊断</button>
                     </div>
-                    <div class="plan-card recommended">
-                        <div class="plan-header">
-                            <span class="plan-name">金牌陪练</span>
-                            <div class="plan-price-wrap">
-                                <span class="plan-price">¥29</span>
-                                <span class="plan-original">¥99</span>
-                            </div>
+                    <div class="coze-card" data-plan="trial" onclick="selectPlan('trial')">
+                        <div class="coze-card-top">
+                            <span class="coze-card-name">体验版</span>
+                            <div class="coze-card-price"><span class="coze-price-sign">¥</span><span class="coze-price-num">4.9</span></div>
                         </div>
-                        <div class="plan-features">
-                            <div class="plan-feature">AI答疑 30天无限</div>
-                            <div class="plan-feature">作文批改 每日1次</div>
-                            <div class="plan-feature">弱项专项训练</div>
-                            <div class="plan-feature">考前7天冲刺</div>
-                        </div>
-                        <button class="plan-btn" onclick="openChat('chat')">立即开通</button>
+                        <div class="coze-card-tag">体验AI陪练</div>
+                        <ul class="coze-card-features">
+                            <li>✓ 含免费版全部</li>
+                            <li>✓ AI答疑 7天</li>
+                            <li>✓ 作文批改 3次</li>
+                            <li>✓ 翻译批改 3次</li>
+                        </ul>
+                        <button class="coze-card-btn primary" onclick="event.stopPropagation();openPayment('trial')">立即购买</button>
                     </div>
-                    <div class="plan-card">
-                        <div class="plan-header">
-                            <span class="plan-name">旗舰全程</span>
-                            <div class="plan-price-wrap">
-                                <span class="plan-price">¥99</span>
-                                <span class="plan-original">¥299</span>
-                            </div>
+                    <div class="coze-card recommended" data-plan="sprint" onclick="selectPlan('sprint')">
+                        <div class="coze-card-badge">推荐</div>
+                        <div class="coze-card-top">
+                            <span class="coze-card-name">冲刺版</span>
+                            <div class="coze-card-price"><span class="coze-price-sign">¥</span><span class="coze-price-num">49</span></div>
                         </div>
-                        <div class="plan-features">
-                            <div class="plan-feature">AI答疑 无限</div>
-                            <div class="plan-feature">作文批改 无限</div>
-                            <div class="plan-feature">完整备考计划</div>
-                            <div class="plan-feature">六级衔接指导</div>
-                        </div>
-                        <button class="plan-btn" onclick="openChat('chat')">立即开通</button>
+                        <div class="coze-card-tag">30天高效冲刺</div>
+                        <ul class="coze-card-features">
+                            <li>✓ AI答疑 30天无限</li>
+                            <li>✓ 作文批改 每日1次</li>
+                            <li>✓ 翻译批改 每日1次</li>
+                            <li>✓ 每日任务推送</li>
+                            <li>✓ 考前7天冲刺</li>
+                        </ul>
+                        <button class="coze-card-btn primary" onclick="event.stopPropagation();openPayment('sprint')">立即购买</button>
                     </div>
+                    <div class="coze-card" data-plan="flagship" onclick="selectPlan('flagship')">
+                        <div class="coze-card-top">
+                            <span class="coze-card-name">旗舰版</span>
+                            <div class="coze-card-price"><span class="coze-price-sign">¥</span><span class="coze-price-num">149</span></div>
+                        </div>
+                        <div class="coze-card-tag">完整备考周期</div>
+                        <ul class="coze-card-features">
+                            <li>✓ AI答疑 无限</li>
+                            <li>✓ 作文/翻译批改 无限</li>
+                            <li>✓ 完整学习计划</li>
+                            <li>✓ 每日任务+打卡</li>
+                            <li>✓ 考前冲刺方案</li>
+                            <li>✓ 六级衔接指导</li>
+                        </ul>
+                        <button class="coze-card-btn primary" onclick="event.stopPropagation();openPayment('flagship')">立即购买</button>
+                    </div>
+                </div>
+                <div class="coze-benefits" id="coze-benefits">
+                    <div class="coze-benefits-title">权益对比</div>
+                    <div id="benefits-content"></div>
                 </div>
                 <div class="faq-section">
                     <div class="faq-title">常见问题</div>
@@ -1019,7 +1023,7 @@
                             到考试前可以一直用吗？
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
                         </div>
-                        <div class="faq-answer"><p>金牌陪练有效期30天，旗舰全程有效期至当次考试结束。</p></div>
+                        <div class="faq-answer"><p>体验版7天，冲刺版30天，旗舰版有效期至当次考试结束。</p></div>
                     </div>
                 </div>
             </div>
@@ -1219,7 +1223,10 @@
                 item.classList.toggle('active', item.dataset.tab === tab);
             });
             if (tab === 'diagnosis') {
-                initDiagnosisChat('diagnosis');
+                // Don't auto-init, let openChat handle it
+            }
+            if (tab === 'plans') {
+                renderBenefits();
             }
         }
 
@@ -1229,7 +1236,7 @@
             for (var i = 0; i < personalities.length; i++) {
                 var p = personalities[i];
                 html += '<div class="personality-card" onclick="showPersonalityDetail(\'' + p.type + '\')">';
-                html += '<div class="personality-avatar"><img src="' + p.img + '" alt="' + p.type + '" onerror="this.style.display=\'none\'"><div class="personality-badge">' + (i + 1) + '</div></div>';
+                html += '<div class="personality-avatar"><img src="' + p.img + '" alt="' + p.type + '" onerror="this.style.display=\'none\'"></div>';
                 html += '<div class="personality-type">' + p.type + '</div>';
                 html += '<span class="personality-honor" style="background:' + p.honorBg + ';color:' + p.honorColor + '">' + p.honor + '</span>';
                 html += '</div>';
@@ -1277,21 +1284,28 @@
             container.innerHTML = '';
             state.chatRounds = 0;
             if (state.resultObserver) { state.resultObserver.disconnect(); state.resultObserver = null; }
-            var botId = mode === 'diagnosis' ? '7462543557442478120' : '7492072964089749508';
+            var botMap = {
+                'diagnosis': '7636289658620215331',
+                'sprint': '7637702903679631395',
+                'flagship': '7637815810610036774'
+            };
+            var botId = botMap[mode] || botMap['diagnosis'];
             try {
-                if (window.chatClient) { try { window.chatClient.destroy(); } catch(e) {} window.chatClient = null; }
-                window.chatClient = new CozeWebSDK.ChatClient({
+                if (state.chatClient) { try { state.chatClient.destroy(); } catch(e) {} state.chatClient = null; }
+                state.chatClient = new CozeWebSDK.WebChatClient({
                     config: {
-                        bot_id: botId,
-                        user: { id: String('user_' + Date.now()), name: 'CET用户' },
-                        extra: {
-                            user_plan: (state.userData && state.userData.plan) || 'free',
-                            user_personality: (state.userData && state.userData.diagnosis && state.userData.diagnosis.type) || '',
-                            study_days: String((state.userData && state.userData.studyDays) || 0),
-                            today_task: getTodayTask(),
-                            plan_summary: getPlanSummary(),
-                            last_context: getChatSummary(),
-                            pending_task: getPendingTask()
+                        botId: botId,
+                        isIframe: false,
+                        botInfo: {
+                            parameters: {
+                                user_plan: (state.userData && state.userData.plan) || 'free',
+                                user_personality: (state.userData && state.userData.diagnosis && state.userData.diagnosis.type) || '',
+                                study_days: String((state.userData && state.userData.studyDays) || 0),
+                                today_task: getTodayTask(),
+                                plan_summary: getPlanSummary(),
+                                last_context: getChatSummary(),
+                                pending_task: getPendingTask()
+                            }
                         }
                     },
                     auth: {
@@ -1392,6 +1406,41 @@
                 document.getElementById('profile-plan').textContent = data.plan === 'sprint' ? '金牌陪练' : '旗舰全程';
                 document.getElementById('profile-badge').textContent = data.plan === 'sprint' ? 'Pro' : 'VIP';
             }
+        }
+
+
+        function selectPlan(plan) {
+            document.querySelectorAll('.coze-card').forEach(function(card) {
+                card.classList.toggle('selected', card.dataset.plan === plan);
+            });
+            renderBenefits(plan);
+        }
+
+        function renderBenefits(selectedPlan) {
+            selectedPlan = selectedPlan || 'free';
+            var benefits = [
+                { name: 'AI诊断测试', free: true, trial: true, sprint: true, flagship: true },
+                { name: '备考人格卡', free: true, trial: true, sprint: true, flagship: true },
+                { name: 'AI答疑', free: '50次', trial: '7天', sprint: '30天无限', flagship: '无限' },
+                { name: '作文批改', free: '1次', trial: '3次', sprint: '每日1次', flagship: '无限' },
+                { name: '翻译批改', free: '—', trial: '3次', sprint: '每日1次', flagship: '无限' },
+                { name: '每日任务推送', free: false, trial: true, sprint: true, flagship: true },
+                { name: '完整学习计划', free: false, trial: false, sprint: false, flagship: true },
+                { name: '考前冲刺方案', free: false, trial: false, sprint: true, flagship: true },
+                { name: '打卡追踪', free: false, trial: false, sprint: false, flagship: true },
+                { name: '六级衔接', free: false, trial: false, sprint: false, flagship: true }
+            ];
+            var html = '';
+            benefits.forEach(function(b) {
+                var val = b[selectedPlan];
+                var isLimited = (typeof val === 'string' && val !== '无限');
+                html += '<div class="coze-benefit-item"><span>' + b.name + '</span><span class="coze-benefit-val' + (isLimited ? ' limited' : '') + '">' + (val === true ? '✓' : val === false ? '—' : val) + '</span></div>';
+            });
+            document.getElementById('benefits-content').innerHTML = html;
+        }
+
+        function openPayment(plan) {
+            showToast('支付功能即将上线，请稍候');
         }
 
         function toggleFaq(el) { el.parentElement.classList.toggle('open'); }
