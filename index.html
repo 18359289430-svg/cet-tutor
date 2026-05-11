@@ -47,7 +47,7 @@
             margin: 0 auto;
             background: var(--bg);
             position: relative;
-            overflow: hidden;
+            overflow: visible;
             border-radius: 0;
         }
         
@@ -459,7 +459,7 @@
         .coze-title { font-size: 16px; font-weight: 600; color: white; }
         .coze-status { font-size: 11px; color: rgba(255,255,255,0.7); display: flex; align-items: center; gap: 4px; }
         .coze-status::before { content: ''; width: 6px; height: 6px; background: #55EFC4; border-radius: 50%; }
-        .chat-container { flex: 1; overflow: hidden; }
+        .chat-container { flex: 1; overflow: hidden; position: relative; }
 
         /* 套餐页 */
         .plans-header {
@@ -1279,7 +1279,7 @@
             mode = mode || 'diagnosis';
             document.getElementById('coze-title').textContent = mode === 'diagnosis' ? 'AI诊断' : 'AI陪练';
             switchTab('diagnosis');
-            setTimeout(function() { initDiagnosisChat(mode); }, 100);
+            setTimeout(function() { initDiagnosisChat(mode); }, 300);
         }
 
         function initDiagnosisChat(mode) {
@@ -1320,6 +1320,17 @@
                     ui: { asstBtn: { isNeed: false } }
                 });
                 state.chatClient.showChatBot();
+                // Make the SDK overlay fill the chat container area
+                var sdkIframe = document.querySelector('[id^="coze-web-chat"]');
+                if (sdkIframe) {
+                    sdkIframe.style.position = 'absolute';
+                    sdkIframe.style.top = '0';
+                    sdkIframe.style.left = '0';
+                    sdkIframe.style.width = '100%';
+                    sdkIframe.style.height = '100%';
+                    sdkIframe.style.zIndex = '1';
+                    container.appendChild(sdkIframe);
+                }
                 startResultObserver(document.body);
             } catch (e) { console.error('Chat init error:', e); }
         }
