@@ -2504,29 +2504,19 @@
                 <div class="menu-group-label">学习</div>
                 <div class="menu-list">
                     <div class="menu-item-new" onclick="switchTab('personality')">
-                        <div class="menu-icon-new pink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></div>
+                        <div class="menu-icon-new pink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
                         <span class="menu-text-new">备考人格卡</span>
-                        <span class="menu-arrow-new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"/></svg></span>
+                        <span class="menu-arrow-new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
                     </div>
-                    <div class="menu-item-new" onclick="switchTab('study')">
-                        <div class="menu-icon-new purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 6v6l4 2"/></svg></div>
-                        <span class="menu-text-new">学习打卡</span>
-                        <span class="menu-arrow-new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"/></svg></span>
+                    <div class="menu-item-new" onclick="showStudyHistory()">
+                        <div class="menu-icon-new purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+                        <span class="menu-text-new">学习数据</span>
+                        <span class="menu-arrow-new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
                     </div>
-                    <div class="menu-item-new" onclick="switchTab('diagnosis')">
-                        <div class="menu-icon-new green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
-                        <span class="menu-text-new">AI诊断报告</span>
-                        <span class="menu-arrow-new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"/></svg></span>
-                    </div>
-                    <div class="menu-item-new" onclick="openChat('chat')">
-                        <div class="menu-icon-new teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
-                        <span class="menu-text-new">AI陪练聊天</span>
-                        <span class="menu-arrow-new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"/></svg></span>
-                    </div>
-                    <div class="menu-item-new" onclick="openChat('chat')">
-                        <div class="menu-icon-new orange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></div>
-                        <span class="menu-text-new">作文批改</span>
-                        <span class="menu-arrow-new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"/></svg></span>
+                    <div class="menu-item-new" onclick="showDiagHistory()">
+                        <div class="menu-icon-new green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+                        <span class="menu-text-new">诊断记录</span>
+                        <span class="menu-arrow-new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
                     </div>
                 </div>
 
@@ -2599,6 +2589,14 @@
                     <button class="btn-start-detail" onclick="startPractice()">开始练习</button>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- 通用弹窗 -->
+    <div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeModal()">
+        <div class="modal-sheet">
+            <div class="modal-handle"></div>
+            <div id="modal-body"></div>
         </div>
     </div>
 
@@ -3071,6 +3069,107 @@
                 }
             }
         }
+
+        // ===== 学习数据弹窗 =====
+        function showStudyHistory() {
+            var data = state.userData || {};
+            var streak = getStreakData();
+            var planTask = getPlanTodayTask();
+
+            var html = '<div style="padding:24px;text-align:center;">';
+            html += '<div style="font-size:18px;font-weight:700;color:#1a1a2e;margin-bottom:20px;">学习数据</div>';
+
+            // 核心数据
+            html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">';
+            html += '<div style="background:#F8F8FA;border-radius:12px;padding:16px;"><div style="font-size:24px;font-weight:700;color:#6C5CE7;">' + (streak.count || 0) + '</div><div style="font-size:12px;color:#94a3b8;margin-top:4px;">连续打卡</div></div>';
+            html += '<div style="background:#F8F8FA;border-radius:12px;padding:16px;"><div style="font-size:24px;font-weight:700;color:#6C5CE7;">' + (data.studyDays || 0) + '</div><div style="font-size:12px;color:#94a3b8;margin-top:4px;">累计学习</div></div>';
+            html += '<div style="background:#F8F8FA;border-radius:12px;padding:16px;"><div style="font-size:24px;font-weight:700;color:#6C5CE7;">' + (data.chatCount || 0) + '</div><div style="font-size:12px;color:#94a3b8;margin-top:4px;">AI对话</div></div>';
+
+            // 计划进度
+            if (planTask && planTask.total) {
+                html += '<div style="background:#F8F8FA;border-radius:12px;padding:16px;"><div style="font-size:24px;font-weight:700;color:#6C5CE7;">' + planTask.progress + '/' + planTask.total + '</div><div style="font-size:12px;color:#94a3b8;margin-top:4px;">计划进度</div></div>';
+            } else {
+                html += '<div style="background:#F8F8FA;border-radius:12px;padding:16px;"><div style="font-size:14px;font-weight:600;color:#94a3b8;">暂无计划</div><div style="font-size:12px;color:#94a3b8;margin-top:4px;">备考计划</div></div>';
+            }
+            html += '</div>';
+
+            // 备考人格
+            if (data.diagnosis && data.diagnosis.type) {
+                html += '<div style="background:linear-gradient(135deg,#6C5CE7,#A29BFE);border-radius:12px;padding:16px;color:white;margin-bottom:16px;">';
+                html += '<div style="font-size:13px;opacity:0.8;">备考人格</div>';
+                html += '<div style="font-size:18px;font-weight:700;margin-top:4px;">' + data.diagnosis.type + '</div>';
+                html += '</div>';
+            }
+
+            html += '<button onclick="closeModal()" style="width:100%;padding:12px;border:none;border-radius:10px;background:#F0F0F5;color:#6C5CE7;font-size:14px;font-weight:600;cursor:pointer;">关闭</button>';
+            html += '</div>';
+
+            showModal(html);
+        }
+
+        // ===== 诊断记录弹窗 =====
+        function showDiagHistory() {
+            var data = state.userData || {};
+
+            var html = '<div style="padding:24px;">';
+            html += '<div style="font-size:18px;font-weight:700;color:#1a1a2e;margin-bottom:20px;text-align:center;">诊断记录</div>';
+
+            if (data.diagnosis && data.diagnosis.type) {
+                var diag = data.diagnosis;
+                html += '<div style="background:#F8F8FA;border-radius:12px;padding:16px;margin-bottom:12px;">';
+                html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">';
+                html += '<span style="font-size:16px;font-weight:700;color:#1a1a2e;">' + diag.type + '</span>';
+                html += '<span style="font-size:12px;color:#94a3b8;">最近诊断</span>';
+                html += '</div>';
+
+                // 五维数据
+                if (diag.scores) {
+                    var dims = ['细节定位','推理判断','同义替换','主旨归纳','态度判断'];
+                    var keys = ['detail','inference','synonym','main','attitude'];
+                    for (var d = 0; d < dims.length; d++) {
+                        var val = diag.scores[keys[d]] || 0;
+                        html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">';
+                        html += '<span style="font-size:12px;color:#64748b;width:60px;">' + dims[d] + '</span>';
+                        html += '<div style="flex:1;height:6px;background:#E8E8ED;border-radius:3px;overflow:hidden;">';
+                        html += '<div style="height:100%;width:' + val + '%;background:#6C5CE7;border-radius:3px;"></div>';
+                        html += '</div>';
+                        html += '<span style="font-size:12px;color:#6C5CE7;font-weight:600;width:32px;text-align:right;">' + val + '%</span>';
+                        html += '</div>';
+                    }
+                }
+
+                if (diag.comment) {
+                    html += '<div style="margin-top:12px;padding:10px;background:rgba(108,92,231,0.08);border-radius:8px;font-size:13px;color:#6C5CE7;font-style:italic;">' + diag.comment + '</div>';
+                }
+                html += '</div>';
+            } else {
+                html += '<div style="text-align:center;padding:40px 0;">';
+                html += '<div style="font-size:40px;margin-bottom:12px;">📝</div>';
+                html += '<div style="font-size:14px;color:#94a3b8;margin-bottom:16px;">还没有诊断记录</div>';
+                html += '<button onclick="closeModal();openChat('diagnosis')" style="padding:10px 24px;border:none;border-radius:10px;background:#6C5CE7;color:white;font-size:14px;font-weight:600;cursor:pointer;">开始诊断</button>';
+                html += '</div>';
+            }
+
+            html += '<button onclick="closeModal()" style="width:100%;padding:12px;border:none;border-radius:10px;background:#F0F0F5;color:#6C5CE7;font-size:14px;font-weight:600;cursor:pointer;margin-top:8px;">关闭</button>';
+            html += '</div>';
+
+            showModal(html);
+        }
+
+        // ===== 通用弹窗 =====
+        function showModal(contentHTML) {
+            var overlay = document.getElementById('modal-overlay');
+            var body = document.getElementById('modal-body');
+            if (!overlay || !body) return;
+            body.innerHTML = contentHTML;
+            overlay.classList.add('show');
+        }
+
+        function closeModal() {
+            var overlay = document.getElementById('modal-overlay');
+            if (overlay) overlay.classList.remove('show');
+        }
+
 
         // 渲染打卡日历（百词斩风格）
         function renderStreakCalendar() {
