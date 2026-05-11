@@ -929,7 +929,7 @@
             flex-shrink: 0;
         }
         .chat-action-pill:active { background: #E2E8F0; transform: scale(0.97); }
-        .chat-action-pill svg { width: 14px; height: 14px; stroke: #6C5CE7; stroke-width: 2; }
+        .chat-action-pill svg { width: 14px; height: 14px; stroke: #8E8E93; stroke-width: 2; }
         
         /* 推荐提问 - Perplexity风格纯文本 */
         .chat-suggest-label {
@@ -1974,14 +1974,14 @@
             align-items: center;
             gap: 8px;
         }
-        .ai-credibility svg { width: 14px; height: 14px; stroke: #6C5CE7; stroke-width: 2; flex-shrink: 0; }
+        .ai-credibility svg { width: 14px; height: 14px; stroke: #8E8E93; stroke-width: 2; flex-shrink: 0; }
         .ai-credibility-text {
             font-size: 11px;
             color: #64748b;
             font-weight: 500;
             line-height: 1.5;
         }
-        .ai-credibility-text strong { color: #6C5CE7; font-weight: 700; }
+        .ai-credibility-text strong { color: #1E293B; font-weight: 700; }
 
     
 /* ===== Custom Chat UI ===== */
@@ -2017,10 +2017,10 @@
 @keyframes msgIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
 .custom-chat-avatar {
     width:32px; height:32px; border-radius:50%; flex-shrink:0;
-    background:linear-gradient(135deg,#6C5CE7,#A29BFE);
+    background:#E5E5EA;
     display:flex; align-items:center; justify-content:center;
 }
-.custom-chat-avatar svg { width:16px; height:16px; stroke:white; stroke-width:2; fill:none; }
+.custom-chat-avatar svg { width:16px; height:16px; stroke:#8E8E93; stroke-width:2; fill:none; }
 .custom-chat-msg.user .custom-chat-avatar { display:none; }
 .custom-chat-bubble {
     max-width:78%; padding:10px 14px; border-radius:16px; font-size:14px;
@@ -2096,16 +2096,10 @@
 .custom-chip-pill {
     padding:5px 12px; border-radius:16px; font-size:12px; white-space:nowrap;
     cursor:pointer; flex-shrink:0; transition:all 0.15s; display:flex; align-items:center; gap:4px;
+    background:#F5F5F7; color:#3C3C43; border:1px solid #E5E5EA;
 }
-.custom-chip-pill svg { width:13px; height:13px; stroke-width:2; }
-.custom-chip-pill.purple { background:#F0EEFF; color:#6C5CE7; border:1px solid #D4CFFF; }
-.custom-chip-pill.purple:active { background:#6C5CE7; color:#fff; }
-.custom-chip-pill.green { background:#F0FFF4; color:#22C55E; border:1px solid #BBF7D0; }
-.custom-chip-pill.green:active { background:#22C55E; color:#fff; }
-.custom-chip-pill.orange { background:#FFF7ED; color:#F97316; border:1px solid #FED7AA; }
-.custom-chip-pill.orange:active { background:#F97316; color:#fff; }
-.custom-chip-pill.blue { background:#EFF6FF; color:#3B82F6; border:1px solid #BFDBFE; }
-.custom-chip-pill.blue:active { background:#3B82F6; color:#fff; }
+.custom-chip-pill svg { width:13px; height:13px; stroke-width:2; stroke:currentColor; }
+.custom-chip-pill:active { background:#E5E5EA; }
 
 /* Voice button */
 .custom-chat-voice {
@@ -2113,8 +2107,8 @@
     cursor:pointer; flex-shrink:0; display:flex; align-items:center; justify-content:center;
     transition:all 0.15s;
 }
-.custom-chat-voice:active { background:#F0EEFF; }
-.custom-chat-voice svg { width:20px; height:20px; stroke:#6C5CE7; stroke-width:2; fill:none; }
+.custom-chat-voice:active { background:#F0F0F5; }
+.custom-chat-voice svg { width:20px; height:20px; stroke:#8E8E93; stroke-width:2; fill:none; }
 .custom-chat-voice.recording { background:#FEE2E2; }
 .custom-chat-voice.recording svg { stroke:#EF4444; }
 
@@ -2444,19 +2438,19 @@
                     <div class="custom-chat-input-area" id="chat-input-area">
                         <!-- Function chips -->
                         <div class="custom-chips-row" id="input-chips">
-                            <div class="custom-chip-pill purple" onclick="sendSuggestion('开始AI诊断，帮我找出四级薄弱点')">
+                            <div class="custom-chip-pill" onclick="sendSuggestion('开始AI诊断，帮我找出四级薄弱点')">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                                 AI诊断
                             </div>
-                            <div class="custom-chip-pill green" onclick="sendSuggestion('帮我制定冲刺计划')">
+                            <div class="custom-chip-pill" onclick="sendSuggestion('帮我制定冲刺计划')">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                                 制定计划
                             </div>
-                            <div class="custom-chip-pill orange" onclick="sendSuggestion('帮我批改作文')">
+                            <div class="custom-chip-pill" onclick="sendSuggestion('帮我批改作文')">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                                 批改作文
                             </div>
-                            <div class="custom-chip-pill blue" onclick="sendSuggestion('今天练什么')">
+                            <div class="custom-chip-pill" onclick="sendSuggestion('今天练什么')">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                                 今日任务
                             </div>
