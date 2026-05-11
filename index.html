@@ -146,356 +146,465 @@
         .tab-icon svg { width: 24px; height: 24px; }
         .tab-label { font-size: 10px; font-weight: 500; }
         
-        /* ========== 首页 - App化设计 ========== */
+        /* ========== 首页 - 百词斩风格 ========== */
         #tab-home {
-            background: linear-gradient(180deg, #FFFFFF 0%, #F8F9FA 100%);
+            background: #F5F5FA;
         }
         
-        /* 顶部问候区 */
-        .home-header {
-            padding: 20px 20px 16px;
-            background: transparent;
-        }
-        .home-greeting {
-            font-size: 13px;
-            color: var(--text-tertiary);
-            margin-bottom: 4px;
-        }
-        .home-title {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--text-primary);
-            letter-spacing: -0.5px;
-            line-height: 1.2;
-        }
-        .home-title span { color: var(--primary); }
-        
-        /* 主卡片 - 像App的"今日"卡片 */
-        .today-card {
-            margin: 0 16px 16px;
-            background: linear-gradient(135deg, var(--primary) 0%, #8B7CF7 50%, var(--primary-light) 100%);
-            border-radius: 24px;
-            padding: 24px 20px;
+        /* 顶部区域 */
+        .home-top {
+            background: linear-gradient(135deg, var(--primary) 0%, #8B7CF7 60%, #A29BFE 100%);
+            padding: 24px 20px 36px;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 8px 32px rgba(108,92,231,0.3);
         }
-        .today-card::before {
+        .home-top::after {
             content: '';
             position: absolute;
-            top: -50%;
-            right: -30%;
-            width: 200px;
-            height: 200px;
-            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+            bottom: -40px;
+            right: -30px;
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 70%);
             border-radius: 50%;
         }
-        .today-card::after {
-            content: '';
-            position: absolute;
-            bottom: -30%;
-            left: -20%;
-            width: 150px;
-            height: 150px;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-            border-radius: 50%;
-        }
-        .today-card-content { position: relative; z-index: 1; }
-        .today-label {
-            font-size: 11px;
-            color: rgba(255,255,255,0.7);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 8px;
-        }
-        .today-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: white;
-            margin-bottom: 12px;
-            line-height: 1.4;
-        }
-        .today-preview {
-            background: rgba(255,255,255,0.15);
-            border-radius: 16px;
-            padding: 14px;
-            margin-bottom: 16px;
-            backdrop-filter: blur(10px);
-        }
-        .today-preview-header {
+        .home-top-row {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-        .today-preview-avatar {
-            width: 32px;
-            height: 32px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .today-preview-avatar svg { width: 18px; height: 18px; stroke: white; }
-        .today-preview-name { font-size: 13px; color: white; font-weight: 500; }
-        .today-preview-status { font-size: 10px; color: rgba(255,255,255,0.6); margin-left: auto; }
-        .today-messages { display: flex; flex-direction: column; gap: 8px; }
-        .today-msg { font-size: 13px; color: rgba(255,255,255,0.9); line-height: 1.4; }
-        .today-msg.bot { padding-left: 0; }
-        .today-msg.user { text-align: right; color: white; font-weight: 500; }
-        .today-typing {
-            display: flex;
-            gap: 4px;
-            align-items: center;
-        }
-        .today-typing span {
-            width: 6px;
-            height: 6px;
-            background: rgba(255,255,255,0.5);
-            border-radius: 50%;
-            animation: typingBounce 1.2s infinite;
-        }
-        .today-typing span:nth-child(2) { animation-delay: 0.2s; }
-        .today-typing span:nth-child(3) { animation-delay: 0.4s; }
-        @keyframes typingBounce {
-            0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
-            30% { transform: translateY(-5px); opacity: 1; }
-        }
-        
-        /* 主CTA按钮 */
-        .today-cta {
+            justify-content: space-between;
+            margin-bottom: 20px;
             position: relative;
             z-index: 1;
         }
-        .btn-start {
+        .home-greeting {
+            font-size: 14px;
+            color: rgba(255,255,255,0.75);
+            margin-bottom: 2px;
+        }
+        .home-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: white;
+            letter-spacing: -0.3px;
+            line-height: 1.2;
+        }
+        .home-streak-badge {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            padding: 8px 14px;
+            border-radius: 20px;
+            color: white;
+            font-weight: 700;
+            font-size: 16px;
+        }
+        .home-streak-badge svg { width: 20px; height: 20px; }
+        .home-streak-sub {
+            font-size: 10px;
+            font-weight: 500;
+            color: rgba(255,255,255,0.7);
+            margin-top: 1px;
+        }
+        
+        /* 大CTA - 浮在紫蓝渐变和白色之间 */
+        .home-cta-wrap {
+            margin: -24px 16px 16px;
+            position: relative;
+            z-index: 2;
+        }
+        .home-cta-btn {
             width: 100%;
-            padding: 16px 24px;
+            padding: 18px 24px;
             background: white;
             color: var(--primary);
             border: none;
-            border-radius: 16px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-            transition: all 0.2s;
-        }
-        .btn-start:active { transform: scale(0.97); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        .btn-start svg { width: 20px; height: 20px; }
-        .today-hint { text-align: center; margin-top: 10px; font-size: 12px; color: rgba(255,255,255,0.7); }
-        
-        /* 快捷入口 - 像App的Action Row */
-        .quick-actions {
-            display: flex;
-            gap: 8px;
-            padding: 0 16px 20px;
-        }
-        .quick-action {
-            flex: 1;
-            background: white;
-            border-radius: 16px;
-            padding: 16px 12px;
-            text-align: center;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
-            cursor: pointer;
-            transition: all 0.2s;
-            border: none;
-        }
-        .quick-action:active { transform: scale(0.97); background: #FAFAFA; }
-        .quick-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 8px;
-        }
-        .quick-icon svg { width: 20px; height: 20px; stroke-width: 1.8; }
-        .quick-icon.purple { background: rgba(108,92,231,0.1); }
-        .quick-icon.purple svg { stroke: var(--primary); }
-        .quick-icon.teal { background: rgba(0,206,209,0.1); }
-        .quick-icon.teal svg { stroke: #00CED1; }
-        .quick-icon.orange { background: rgba(255,165,2,0.1); }
-        .quick-icon.orange svg { stroke: #FFA502; }
-        .quick-label { font-size: 12px; color: var(--text-secondary); font-weight: 500; }
-
-        /* 学习状态卡 */
-        .learn-status-card {
-            margin: 0 16px 16px;
-            background: white;
-            border-radius: 20px;
-            padding: 20px 16px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
-        }
-        .learn-status-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-        }
-        .learn-status-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            min-width: 60px;
-        }
-        .learn-status-val {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--text-primary);
-            line-height: 1;
-        }
-        .learn-status-val.streak-val {
-            color: #FF6B35;
-            display: flex;
-            align-items: center;
-            gap: 3px;
-        }
-        .streak-fire {
-            width: 18px;
-            height: 18px;
-        }
-        .learn-status-lbl {
-            font-size: 11px;
-            color: var(--text-tertiary);
-            font-weight: 500;
-        }
-        .learn-status-div {
-            width: 1px;
-            height: 28px;
-            background: rgba(0,0,0,0.06);
-        }
-        
-        /* 核心CTA */
-        .home-main-cta {
-            padding: 0 16px 16px;
-        }
-        .cta-start-btn {
-            width: 100%;
-            padding: 16px 24px;
-            background: linear-gradient(135deg, var(--primary) 0%, #8B7CF7 100%);
-            color: white;
-            border: none;
-            border-radius: 16px;
+            border-radius: 18px;
             font-size: 17px;
             font-weight: 700;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            box-shadow: 0 6px 24px rgba(108,92,231,0.35);
+            gap: 10px;
+            box-shadow: 0 8px 32px rgba(108,92,231,0.25);
             transition: all 0.2s;
-            letter-spacing: 0.5px;
         }
-        .cta-start-btn:active {
-            transform: scale(0.97);
-            box-shadow: 0 3px 12px rgba(108,92,231,0.25);
-        }
-        .cta-start-btn svg { width: 20px; height: 20px; stroke: white; }
-        .cta-hint {
+        .home-cta-btn:active { transform: scale(0.97); box-shadow: 0 4px 16px rgba(108,92,231,0.15); }
+        .home-cta-btn svg { width: 22px; height: 22px; }
+        .home-cta-hint {
             text-align: center;
-            margin-top: 10px;
+            margin-top: 8px;
             font-size: 12px;
             color: var(--text-tertiary);
         }
         
-        /* 每日一练卡片 */
-        .daily-task-card {
-            margin: 0 16px 16px;
+        /* 每日一练卡片 - 百词斩风格 */
+        .daily-card {
+            margin: 0 16px 14px;
             background: white;
-            border-radius: 20px;
-            padding: 18px 20px;
+            border-radius: 18px;
+            padding: 16px 18px;
             box-shadow: 0 2px 12px rgba(0,0,0,0.04);
             cursor: pointer;
             transition: all 0.2s;
         }
-        .daily-task-card:active {
-            transform: scale(0.98);
-            background: #FAFAFA;
-        }
-        .daily-task-header {
+        .daily-card:active { transform: scale(0.98); }
+        .daily-card-top {
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin-bottom: 10px;
+            gap: 14px;
         }
-        .daily-task-icon {
-            width: 44px;
-            height: 44px;
+        .daily-card-icon {
+            width: 48px;
+            height: 48px;
             border-radius: 14px;
-            background: rgba(108,92,231,0.08);
+            background: linear-gradient(135deg, rgba(108,92,231,0.1), rgba(108,92,231,0.05));
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
         }
-        .daily-task-icon svg {
-            width: 22px;
-            height: 22px;
-            stroke: var(--primary);
-            stroke-width: 1.8;
-        }
-        .daily-task-info {
-            flex: 1;
-        }
-        .daily-task-title {
+        .daily-card-icon svg { width: 24px; height: 24px; stroke: var(--primary); stroke-width: 1.8; }
+        .daily-card-body { flex: 1; min-width: 0; }
+        .daily-card-title {
             font-size: 15px;
             font-weight: 600;
             color: var(--text-primary);
-            line-height: 1.3;
         }
-        .daily-task-desc {
+        .daily-card-desc {
             font-size: 12px;
             color: var(--text-tertiary);
             margin-top: 2px;
         }
-        .daily-task-badge {
+        .daily-card-badge {
             font-size: 11px;
-            padding: 4px 10px;
-            border-radius: 10px;
+            padding: 5px 12px;
+            border-radius: 12px;
             font-weight: 600;
             white-space: nowrap;
+            flex-shrink: 0;
         }
-        .daily-task-badge.pending {
-            background: rgba(108,92,231,0.08);
-            color: var(--primary);
-        }
-        .daily-task-badge.done {
-            background: rgba(0,184,148,0.1);
-            color: var(--success);
-        }
-        .daily-task-footer {
+        .daily-card-badge.pending { background: rgba(108,92,231,0.08); color: var(--primary); }
+        .daily-card-badge.done { background: rgba(0,184,148,0.1); color: var(--success); }
+        .daily-card-progress {
             display: flex;
             align-items: center;
-            gap: 6px;
-            padding-top: 10px;
+            gap: 8px;
+            margin-top: 12px;
+            padding-top: 12px;
             border-top: 1px solid rgba(0,0,0,0.04);
         }
-        .daily-task-progress {
+        .daily-bar-bg {
             flex: 1;
-            height: 4px;
+            height: 5px;
             background: rgba(0,0,0,0.04);
-            border-radius: 2px;
+            border-radius: 3px;
             overflow: hidden;
         }
-        .daily-task-progress-bar {
+        .daily-bar-fill {
             height: 100%;
             background: var(--primary);
-            border-radius: 2px;
+            border-radius: 3px;
             transition: width 0.5s ease;
         }
-        .daily-task-progress-text {
+        .daily-bar-text {
             font-size: 11px;
             color: var(--text-tertiary);
             font-weight: 500;
+            white-space: nowrap;
         }
+        
+        /* 功能入口 - 百词斩2x2瓷片 */
+        .func-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            padding: 0 16px 14px;
+        }
+        .func-card {
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.03);
+            cursor: pointer;
+            transition: all 0.15s;
+            border: none;
+        }
+        .func-card:active { transform: scale(0.97); background: #FAFAFA; }
+        .func-card-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .func-card-icon svg { width: 22px; height: 22px; stroke-width: 1.8; }
+        .func-card-icon.purple { background: rgba(108,92,231,0.1); }
+        .func-card-icon.purple svg { stroke: var(--primary); }
+        .func-card-icon.teal { background: rgba(0,206,209,0.1); }
+        .func-card-icon.teal svg { stroke: #00CED1; }
+        .func-card-icon.orange { background: rgba(255,165,2,0.1); }
+        .func-card-icon.orange svg { stroke: #FFA502; }
+        .func-card-icon.pink { background: rgba(255,118,117,0.1); }
+        .func-card-icon.pink svg { stroke: #FF7675; }
+        .func-card-icon.green { background: rgba(85,239,196,0.15); }
+        .func-card-icon.green svg { stroke: #00B894; }
+        .func-card-text { min-width: 0; }
+        .func-card-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            line-height: 1.2;
+        }
+        .func-card-sub {
+            font-size: 11px;
+            color: var(--text-tertiary);
+            margin-top: 2px;
+        }
+        
+        /* 学习数据条 - 首页底部 */
+        .home-stats-bar {
+            display: flex;
+            gap: 10px;
+            padding: 0 16px 16px;
+        }
+        .home-stat-item {
+            flex: 1;
+            background: white;
+            border-radius: 14px;
+            padding: 12px;
+            text-align: center;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.03);
+        }
+        .home-stat-val {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1;
+        }
+        .home-stat-lbl {
+            font-size: 10px;
+            color: var(--text-tertiary);
+            margin-top: 4px;
+            font-weight: 500;
+        }
+        
+        /* ========== 诊断页 - 重设计 ========== */
+        .diagnosis-page {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        .diag-header {
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: white;
+            border-bottom: 1px solid rgba(0,0,0,0.04);
+            flex-shrink: 0;
+        }
+        .diag-back {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: #F5F5FA;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: none;
+        }
+        .diag-back:active { background: #EDEDF5; }
+        .diag-back svg { width: 20px; height: 20px; stroke: var(--text-primary); stroke-width: 2; }
+        .diag-header-info { flex: 1; }
+        .diag-header-title { font-size: 16px; font-weight: 700; color: var(--text-primary); }
+        .diag-header-sub { font-size: 11px; color: var(--text-tertiary); margin-top: 1px; }
+        .diag-header-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); flex-shrink: 0; }
+        
+        /* 诊断页内容 - 可滚动 */
+        .diag-body {
+            flex: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        /* AI信息卡 */
+        .diag-ai-card {
+            margin: 16px;
+            background: linear-gradient(135deg, var(--primary) 0%, #8B7CF7 100%);
+            border-radius: 20px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+        .diag-ai-card::after {
+            content: '';
+            position: absolute;
+            top: -30px;
+            right: -30px;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .diag-ai-avatar {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            position: relative;
+            z-index: 1;
+        }
+        .diag-ai-avatar svg { width: 26px; height: 26px; stroke: white; }
+        .diag-ai-info { position: relative; z-index: 1; }
+        .diag-ai-name { font-size: 17px; font-weight: 700; color: white; }
+        .diag-ai-desc { font-size: 12px; color: rgba(255,255,255,0.75); margin-top: 2px; }
+        
+        /* 快捷操作卡片 */
+        .diag-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            padding: 0 16px 16px;
+        }
+        .diag-action {
+            background: white;
+            border-radius: 16px;
+            padding: 16px 14px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.03);
+            cursor: pointer;
+            transition: all 0.15s;
+            border: none;
+            text-align: left;
+        }
+        .diag-action:active { transform: scale(0.97); }
+        .diag-action-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        .diag-action-icon svg { width: 20px; height: 20px; stroke-width: 1.8; }
+        .diag-action-icon.purple { background: rgba(108,92,231,0.1); }
+        .diag-action-icon.purple svg { stroke: var(--primary); }
+        .diag-action-icon.teal { background: rgba(0,206,209,0.1); }
+        .diag-action-icon.teal svg { stroke: #00CED1; }
+        .diag-action-icon.orange { background: rgba(255,165,2,0.1); }
+        .diag-action-icon.orange svg { stroke: #FFA502; }
+        .diag-action-icon.pink { background: rgba(255,118,117,0.1); }
+        .diag-action-icon.pink svg { stroke: #FF7675; }
+        .diag-action-name { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+        .diag-action-sub { font-size: 11px; color: var(--text-tertiary); margin-top: 2px; }
+        
+        /* 学习小贴士 */
+        .diag-tips {
+            margin: 0 16px 16px;
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.03);
+        }
+        .diag-tips-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .diag-tips-title svg { width: 16px; height: 16px; stroke: var(--primary); }
+        .diag-tip-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            padding: 8px 0;
+        }
+        .diag-tip-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--primary);
+            margin-top: 6px;
+            flex-shrink: 0;
+        }
+        .diag-tip-text {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        
+        /* 开始对话按钮 */
+        .diag-chat-btn {
+            margin: 0 16px 20px;
+            padding: 16px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 6px 24px rgba(108,92,231,0.3);
+            transition: all 0.2s;
+        }
+        .diag-chat-btn:active { transform: scale(0.97); }
+        .diag-chat-btn svg { width: 20px; height: 20px; }
+        
+        /* 聊天容器 - 诊断页 */
+        .diag-chat-container {
+            flex: 1;
+            display: none;
+            flex-direction: column;
+        }
+        .diag-chat-container.active {
+            display: flex;
+        }
+        .diag-chat-body {
+            flex: 1;
+        }
+        .diag-chat-close {
+            padding: 12px 20px;
+            background: white;
+            border-top: 1px solid rgba(0,0,0,0.04);
+            text-align: center;
+            flex-shrink: 0;
+        }
+        .diag-chat-close button {
+            padding: 10px 32px;
+            background: #F5F5FA;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+        .diag-chat-close button:active { background: #EDEDF5; }
+
+
 
         
         /* 人格卡区域 - App化 */
@@ -974,17 +1083,8 @@
 
         /* Coze聊天样式覆盖 */
 
-        /* AI欢迎区 */
-        .ai-welcome { padding: 20px 20px 0; text-align: center; }
-        .ai-avatar-lg { width: 56px; height: 56px; margin: 0 auto 12px; background: linear-gradient(135deg, var(--primary), var(--primary-light)); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-        .ai-avatar-lg svg { width: 28px; height: 28px; }
-        .ai-welcome-info { margin-bottom: 16px; }
-        .ai-welcome-name { font-size: 16px; font-weight: 700; color: var(--text-primary); }
-        .ai-welcome-desc { font-size: 12px; color: var(--text-tertiary); margin-top: 2px; }
-        .ai-welcome-chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; padding-bottom: 16px; }
-        .ai-chip { padding: 8px 14px; background: rgba(108,92,231,0.06); color: var(--primary); border: 1px solid rgba(108,92,231,0.15); border-radius: 20px; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
-        .ai-chip:active { background: rgba(108,92,231,0.12); transform: scale(0.96); }
-        .coze-chat-container { width: 100%; height: 100%; }
+
+        
         .current-plan-bar { margin: 0 16px 12px; padding: 10px 16px; background: #1a1a2e; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; }
         .current-plan-label { font-size: 12px; color: rgba(255,255,255,0.6); }
         .current-plan-name { font-size: 13px; color: white; font-weight: 600; }
@@ -1033,95 +1133,104 @@
         <div class="main-content">
             <!-- 首页 - App化 -->
             <div class="tab-page active" id="tab-home">
-                <!-- 问候区 -->
-                <div class="home-header">
-                    <div class="home-greeting" id="greeting-text">早上好</div>
-                    <h1 class="home-title">开始今天的<span>备考</span>吧</h1>
-                </div>
-
-                <!-- 学习状态卡 -->
-                <div class="learn-status-card">
-                    <div class="learn-status-row">
-                        <div class="learn-status-item">
-                            <div class="learn-status-val streak-val" id="home-streak">
-                                <svg class="streak-fire" viewBox="0 0 24 24" fill="none" stroke="#FF6B35" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c.5 4-2 7-4 9.5C6 14 5.5 16 6 18c.7 3 3.5 4 6 4s5.3-1 6-4c.5-2 0-4-2-6.5C14 9 11.5 6 12 2z"/><path d="M12 22c-1.5 0-3-.8-3-3 0-1.5.8-2.5 2-4 .5-.6 1-1.5 1-2.5 0 1 .5 1.9 1 2.5 1.2 1.5 2 2.5 2 4 0 2.2-1.5 3-3 3z" fill="#FF6B35" stroke="none"/></svg>
-                                <span id="streak-num">0</span>
-                            </div>
-                            <div class="learn-status-lbl">连续打卡</div>
+                <!-- 顶部渐变区 -->
+                <div class="home-top">
+                    <div class="home-top-row">
+                        <div>
+                            <div class="home-greeting" id="greeting-text">早上好</div>
+                            <div class="home-title">开始今天的备考</div>
                         </div>
-                        <div class="learn-status-div"></div>
-                        <div class="learn-status-item">
-                            <div class="learn-status-val" id="home-days">0</div>
-                            <div class="learn-status-lbl">备考天数</div>
-                        </div>
-                        <div class="learn-status-div"></div>
-                        <div class="learn-status-item">
-                            <div class="learn-status-val" id="home-personality">未诊断</div>
-                            <div class="learn-status-lbl">备考人格</div>
-                        </div>
-                        <div class="learn-status-div"></div>
-                        <div class="learn-status-item">
-                            <div class="learn-status-val" id="home-plan">免费版</div>
-                            <div class="learn-status-lbl">当前套餐</div>
+                        <div class="home-streak-badge" id="home-streak" onclick="handleDailyTask()">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c.5 4-2 7-4 9.5C6 14 5.5 16 6 18c.7 3 3.5 4 6 4s5.3-1 6-4c.5-2 0-4-2-6.5C14 9 11.5 6 12 2z"/><path d="M12 22c-1.5 0-3-.8-3-3 0-1.5.8-2.5 2-4 .5-.6 1-1.5 1-2.5 0 1 .5 1.9 1 2.5 1.2 1.5 2 2.5 2 4 0 2.2-1.5 3-3 3z" fill="rgba(255,255,255,0.6)" stroke="none"/></svg>
+                            <span id="streak-num">0</span>
+                            <div class="home-streak-sub">连续打卡</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 每日一练 -->
-                <div class="daily-task-card" id="daily-task-card" onclick="handleDailyTask()">
-                    <div class="daily-task-header">
-                        <div class="daily-task-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-                        </div>
-                        <div class="daily-task-info">
-                            <div class="daily-task-title" id="daily-task-title">今日一练</div>
-                            <div class="daily-task-desc" id="daily-task-desc">每天3分钟，保持手感</div>
-                        </div>
-                        <div class="daily-task-badge pending" id="daily-task-badge">待完成</div>
-                    </div>
-                    <div class="daily-task-footer">
-                        <div class="daily-task-progress">
-                            <div class="daily-task-progress-bar" id="daily-progress-bar" style="width: 0%"></div>
-                        </div>
-                        <div class="daily-task-progress-text" id="daily-progress-text">0/1</div>
-                    </div>
-                </div>
-
-                <!-- 核心CTA -->
-                <div class="home-main-cta">
-                    <button class="cta-start-btn" id="home-cta-btn" onclick="handleHomeCta()">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px;flex-shrink:0"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                <!-- 大CTA按钮 - 浮在渐变和白色之间 -->
+                <div class="home-cta-wrap">
+                    <button class="home-cta-btn" id="home-cta-btn" onclick="handleHomeCta()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
                         <span id="home-cta-text">开始AI诊断</span>
                     </button>
-                    <div class="cta-hint" id="home-cta-hint">5分钟找到你的备考短板</div>
+                    <div class="home-cta-hint" id="home-cta-hint">5分钟找到你的备考短板</div>
                 </div>
 
-                <!-- 快捷入口 -->
-                <div class="quick-actions">
-                    <button class="quick-action" onclick="openChat('diagnosis')">
-                        <div class="quick-icon purple">
+                <!-- 每日一练卡片 -->
+                <div class="daily-card" id="daily-task-card" onclick="handleDailyTask()">
+                    <div class="daily-card-top">
+                        <div class="daily-card-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                        </div>
+                        <div class="daily-card-body">
+                            <div class="daily-card-title" id="daily-task-title">今日一练</div>
+                            <div class="daily-card-desc" id="daily-task-desc">每天3分钟，保持手感</div>
+                        </div>
+                        <div class="daily-card-badge pending" id="daily-task-badge">待完成</div>
+                    </div>
+                    <div class="daily-card-progress">
+                        <div class="daily-bar-bg">
+                            <div class="daily-bar-fill" id="daily-progress-bar" style="width: 0%"></div>
+                        </div>
+                        <div class="daily-bar-text" id="daily-progress-text">0/1</div>
+                    </div>
+                </div>
+
+                <!-- 功能入口 2x2 -->
+                <div class="func-grid">
+                    <button class="func-card" onclick="openChat('diagnosis')">
+                        <div class="func-card-icon purple">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                         </div>
-                        <div class="quick-label">AI诊断</div>
+                        <div class="func-card-text">
+                            <div class="func-card-name">AI诊断</div>
+                            <div class="func-card-sub">5分钟测弱点</div>
+                        </div>
                     </button>
-                    <button class="quick-action" onclick="openChat('chat')">
-                        <div class="quick-icon teal">
+                    <button class="func-card" onclick="openChat('chat')">
+                        <div class="func-card-icon teal">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                         </div>
-                        <div class="quick-label">AI陪练</div>
+                        <div class="func-card-text">
+                            <div class="func-card-name">AI陪练</div>
+                            <div class="func-card-sub">对话式学英语</div>
+                        </div>
                     </button>
-                    <button class="quick-action" onclick="document.getElementById('personality-scroll').scrollIntoView({behavior:'smooth'})">
-                        <div class="quick-icon orange">
+                    <button class="func-card" onclick="document.getElementById('personality-scroll').scrollIntoView({behavior:'smooth'})">
+                        <div class="func-card-icon orange">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                         </div>
-                        <div class="quick-label">人格卡</div>
+                        <div class="func-card-text">
+                            <div class="func-card-name">人格卡</div>
+                            <div class="func-card-sub">8种备考人格</div>
+                        </div>
                     </button>
-                    <button class="quick-action" onclick="switchTab('plans')">
-                        <div class="quick-icon pink">
+                    <button class="func-card" onclick="switchTab('plans')">
+                        <div class="func-card-icon green">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
                         </div>
-                        <div class="quick-label">套餐</div>
+                        <div class="func-card-text">
+                            <div class="func-card-name">升级套餐</div>
+                            <div class="func-card-sub">解锁更多能力</div>
+                        </div>
                     </button>
+                </div>
+
+                <!-- 学习数据 -->
+                <div class="home-stats-bar">
+                    <div class="home-stat-item">
+                        <div class="home-stat-val" id="home-days">0</div>
+                        <div class="home-stat-lbl">备考天数</div>
+                    </div>
+                    <div class="home-stat-item">
+                        <div class="home-stat-val" id="home-personality">--</div>
+                        <div class="home-stat-lbl">备考人格</div>
+                    </div>
+                    <div class="home-stat-item">
+                        <div class="home-stat-val" id="home-plan">免费</div>
+                        <div class="home-stat-lbl">当前套餐</div>
+                    </div>
                 </div>
 
                 <!-- 人格卡区域 -->
@@ -1137,31 +1246,98 @@
             <!-- 诊断页 -->
             <div class="tab-page" id="tab-diagnosis">
                 <div class="diagnosis-page">
-                    <div class="coze-header">
-                        <div class="coze-back-btn" onclick="switchTab('home')">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+                    <!-- 顶部栏 -->
+                    <div class="diag-header">
+                        <button class="diag-back" onclick="switchTab('home')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+                        </button>
+                        <div class="diag-header-info">
+                            <div class="diag-header-title" id="coze-title">AI诊断</div>
+                            <div class="diag-header-sub">四级备考AI私教 · 在线</div>
                         </div>
-                        <span class="coze-title" id="coze-title">AI诊断</span>
-                        <span class="coze-status">在线</span>
+                        <div class="diag-header-dot"></div>
                     </div>
-                    <!-- AI欢迎区 -->
-                    <div class="ai-welcome" id="ai-welcome">
-                        <div class="ai-avatar-lg">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+
+                    <!-- 诊断页内容（可滚动，聊天前显示） -->
+                    <div class="diag-body" id="diag-body">
+                        <!-- AI信息卡 -->
+                        <div class="diag-ai-card">
+                            <div class="diag-ai-avatar">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                            </div>
+                            <div class="diag-ai-info">
+                                <div class="diag-ai-name">小过学长</div>
+                                <div class="diag-ai-desc">你的四级备考AI搭子，随时待命</div>
+                            </div>
                         </div>
-                        <div class="ai-welcome-info">
-                            <div class="ai-welcome-name">小过学长</div>
-                            <div class="ai-welcome-desc">你的四级备考AI搭子，已帮你诊断</div>
+
+                        <!-- 快捷操作 2x2 -->
+                        <div class="diag-actions">
+                            <button class="diag-action" onclick="startDiagChat('开始AI诊断，帮我找出四级薄弱点')">
+                                <div class="diag-action-icon purple">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                                </div>
+                                <div class="diag-action-name">AI诊断</div>
+                                <div class="diag-action-sub">5分钟找弱点</div>
+                            </button>
+                            <button class="diag-action" onclick="startDiagChat('查看我的备考计划')">
+                                <div class="diag-action-icon teal">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                                </div>
+                                <div class="diag-action-name">备考计划</div>
+                                <div class="diag-action-sub">个性化方案</div>
+                            </button>
+                            <button class="diag-action" onclick="startDiagChat('今天练什么')">
+                                <div class="diag-action-icon orange">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                </div>
+                                <div class="diag-action-name">今日任务</div>
+                                <div class="diag-action-sub">每天练一练</div>
+                            </button>
+                            <button class="diag-action" onclick="startDiagChat('帮我批改作文')">
+                                <div class="diag-action-icon pink">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                </div>
+                                <div class="diag-action-name">批改作文</div>
+                                <div class="diag-action-sub">写作提分</div>
+                            </button>
                         </div>
-                        <div class="ai-welcome-chips">
-                            <button class="ai-chip" onclick="sendChip('开始AI诊断')">开始AI诊断</button>
-                            <button class="ai-chip" onclick="sendChip('我的备考计划')">查看备考计划</button>
-                            <button class="ai-chip" onclick="sendChip('今天练什么')">今日任务</button>
-                            <button class="ai-chip" onclick="sendChip('帮我批改作文')">批改作文</button>
+
+                        <!-- 学习小贴士 -->
+                        <div class="diag-tips">
+                            <div class="diag-tips-title">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                                备考小贴士
+                            </div>
+                            <div class="diag-tip-item">
+                                <div class="diag-tip-dot"></div>
+                                <div class="diag-tip-text">阅读先看题目关键词，再回原文定位</div>
+                            </div>
+                            <div class="diag-tip-item">
+                                <div class="diag-tip-dot"></div>
+                                <div class="diag-tip-text">翻译重点抓"主语+动词"，不要逐字翻</div>
+                            </div>
+                            <div class="diag-tip-item">
+                                <div class="diag-tip-dot"></div>
+                                <div class="diag-tip-text">听力注意转折词but/however，后面常是答案</div>
+                            </div>
                         </div>
+
+                        <!-- 开始对话按钮 -->
+                        <button class="diag-chat-btn" onclick="startDiagChat('')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                            开始对话
+                        </button>
                     </div>
-                    <div class="chat-container">
-                        <div class="coze-chat-container" id="diagnosis-chat-container"></div>
+
+                    <!-- 聊天容器（对话时显示） -->
+                    <div class="diag-chat-container" id="diag-chat-view">
+                        <div class="diag-chat-body">
+                            <div class="coze-chat-container" id="diagnosis-chat-container"></div>
+                        </div>
+                        <div class="diag-chat-close">
+                            <button onclick="closeDiagChat()">返回</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1709,9 +1885,9 @@
         function updateHomeStatus() {
             var data = state.userData || {};
             var days = data.studyDays || 0;
-            var personality = (data.diagnosis && data.diagnosis.type) || '未诊断';
-            var planMap = {free:'免费版', trial:'体验版', sprint:'冲刺版', flagship:'旗舰版'};
-            var plan = planMap[data.plan] || '免费版';
+            var personality = (data.diagnosis && data.diagnosis.type) || '--';
+            var planMap = {free:'免费', trial:'体验', sprint:'冲刺', flagship:'旗舰'};
+            var plan = planMap[data.plan] || '免费';
             document.getElementById('home-days').textContent = days;
             document.getElementById('home-personality').textContent = personality;
             document.getElementById('home-plan').textContent = plan;
@@ -1730,6 +1906,35 @@
             } else {
                 ctaText.textContent = '开始AI诊断';
                 ctaHint.textContent = '5分钟找到你的备考短板';
+            }
+        }
+        
+        // ===== 诊断页对话控制 =====
+        function startDiagChat(initialMsg) {
+            var body = document.getElementById('diag-body');
+            var chatView = document.getElementById('diag-chat-view');
+            if (body) body.style.display = 'none';
+            if (chatView) chatView.classList.add('active');
+            
+            // Open the Coze chat
+            if (initialMsg) {
+                openChat('diagnosis');
+                // Try to set initial message after a short delay
+                setTimeout(function() { sendChip(initialMsg); }, 1000);
+            } else {
+                openChat('diagnosis');
+            }
+        }
+        
+        function closeDiagChat() {
+            var body = document.getElementById('diag-body');
+            var chatView = document.getElementById('diag-chat-view');
+            if (body) body.style.display = '';
+            if (chatView) chatView.classList.remove('active');
+            
+            // Hide Coze SDK overlay
+            if (state.chatClient) {
+                try { state.chatClient.hideChatBot(); } catch(e) {}
             }
         }
         
@@ -1882,11 +2087,11 @@
             if (descEl) descEl.textContent = task.desc;
             
             if (isDone) {
-                if (badgeEl) { badgeEl.textContent = '已完成'; badgeEl.className = 'daily-task-badge done'; }
+                if (badgeEl) { badgeEl.textContent = '已完成'; badgeEl.className = 'daily-card-badge done'; }
                 if (barEl) barEl.style.width = '100%';
                 if (textEl) textEl.textContent = '1/1';
             } else {
-                if (badgeEl) { badgeEl.textContent = '待完成'; badgeEl.className = 'daily-task-badge pending'; }
+                if (badgeEl) { badgeEl.textContent = '待完成'; badgeEl.className = 'daily-card-badge pending'; }
                 if (barEl) barEl.style.width = '0%';
                 if (textEl) textEl.textContent = '0/1';
             }
