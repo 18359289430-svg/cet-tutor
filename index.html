@@ -199,38 +199,6 @@
             color: white;
             line-height: 1.25;
             letter-spacing: -0.5px;
-            margin-bottom: 24px;
-        }
-        /* 状态数据 - 在紫卡片内 */
-        .home-hero-stats {
-            display: flex;
-            align-items: center;
-            gap: 0;
-            background: rgba(255,255,255,0.12);
-            border-radius: 14px;
-            padding: 14px 0;
-        }
-        .hero-stat {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2px;
-        }
-        .hero-stat-val {
-            font-size: 17px;
-            font-weight: 700;
-            color: white;
-        }
-        .hero-stat-lbl {
-            font-size: 10px;
-            color: rgba(255,255,255,0.6);
-            font-weight: 500;
-        }
-        .hero-stat-div {
-            width: 1px;
-            height: 24px;
-            background: rgba(255,255,255,0.15);
         }
         
         /* 大CTA */
@@ -304,46 +272,7 @@
         .daily-card-badge.pending { background: rgba(108,92,231,0.08); color: var(--primary); }
         .daily-card-badge.done { background: rgba(0,184,148,0.1); color: var(--success); }
         
-        /* 快捷入口 - 横排4个，极简 */
-        .home-shortcuts {
-            display: flex;
-            padding: 0 20px 20px;
-            gap: 0;
-        }
-        .shortcut {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 0;
-            background: none;
-            border: none;
-            cursor: pointer;
-        }
-        .shortcut:active { opacity: 0.7; }
-        .shortcut-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .shortcut-icon svg { width: 20px; height: 20px; stroke-width: 1.8; }
-        .shortcut-icon.purple { background: rgba(108,92,231,0.08); }
-        .shortcut-icon.purple svg { stroke: var(--primary); }
-        .shortcut-icon.teal { background: rgba(0,206,209,0.08); }
-        .shortcut-icon.teal svg { stroke: #00CED1; }
-        .shortcut-icon.orange { background: rgba(255,165,2,0.08); }
-        .shortcut-icon.orange svg { stroke: #FFA502; }
-        .shortcut-icon.green { background: rgba(0,184,148,0.08); }
-        .shortcut-icon.green svg { stroke: #00B894; }
-        .shortcut span {
-            font-size: 11px;
-            color: var(--text-secondary);
-            font-weight: 500;
-        }
+
         
         /* ========== 诊断页 - 重设计 ========== */
         .diagnosis-page {
@@ -556,10 +485,66 @@
 
 
         
-        /* 人格卡区域 - App化 */
-        .personality-section {
-            padding: 0 0 20px;
+        /* 首页简约数据条 */
+        .home-stats-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            padding: 16px 24px;
         }
+        .hs-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+        .hs-val {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .hs-lbl {
+            font-size: 10px;
+            color: var(--text-tertiary);
+            font-weight: 500;
+        }
+        .hs-div {
+            width: 1px;
+            height: 20px;
+            background: rgba(0,0,0,0.06);
+        }
+        
+        /* 人格卡Tab页 */
+        .personality-page {
+            padding-bottom: 20px;
+        }
+        .personality-page-header {
+            padding: 24px 20px 16px;
+        }
+        .personality-page-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: -0.3px;
+        }
+        .personality-page-sub {
+            font-size: 13px;
+            color: var(--text-tertiary);
+            margin-top: 4px;
+        }
+        .personality-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            padding: 0 16px;
+        }
+        .personality-grid .personality-card {
+            width: auto;
+        }
+        
+        /* 人格卡区域 - 保留用于首页可能的引用 */
         .section-header {
             padding: 0 20px;
             margin-bottom: 14px;
@@ -1082,7 +1067,7 @@
         <div class="main-content">
             <!-- 首页 - App化 -->
             <div class="tab-page active" id="tab-home">
-                <!-- 主视觉区：大卡片+CTA -->
+                <!-- 主视觉区：紫卡片+CTA+每日一练，一屏搞定 -->
                 <div class="home-hero">
                     <div class="home-hero-inner">
                         <div class="home-hero-top">
@@ -1093,22 +1078,6 @@
                             </div>
                         </div>
                         <div class="home-hero-title">开始今天的<br>四级备考</div>
-                        <div class="home-hero-stats">
-                            <div class="hero-stat">
-                                <span class="hero-stat-val" id="home-days">0</span>
-                                <span class="hero-stat-lbl">备考天数</span>
-                            </div>
-                            <div class="hero-stat-div"></div>
-                            <div class="hero-stat">
-                                <span class="hero-stat-val" id="home-personality">--</span>
-                                <span class="hero-stat-lbl">备考人格</span>
-                            </div>
-                            <div class="hero-stat-div"></div>
-                            <div class="hero-stat">
-                                <span class="hero-stat-val" id="home-plan">免费</span>
-                                <span class="hero-stat-lbl">当前套餐</span>
-                            </div>
-                        </div>
                     </div>
                 </div>
 
@@ -1135,41 +1104,13 @@
                     </div>
                 </div>
 
-                <!-- 快捷入口 - 横排一行4个，极简 -->
-                <div class="home-shortcuts">
-                    <button class="shortcut" onclick="switchTab('diagnosis')">
-                        <div class="shortcut-icon purple">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                        </div>
-                        <span>AI诊断</span>
-                    </button>
-                    <button class="shortcut" onclick="openChat('chat')">
-                        <div class="shortcut-icon teal">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                        </div>
-                        <span>AI陪练</span>
-                    </button>
-                    <button class="shortcut" onclick="document.getElementById('personality-scroll').scrollIntoView({behavior:'smooth'})">
-                        <div class="shortcut-icon orange">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                        </div>
-                        <span>人格卡</span>
-                    </button>
-                    <button class="shortcut" onclick="switchTab('plans')">
-                        <div class="shortcut-icon green">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
-                        </div>
-                        <span>套餐</span>
-                    </button>
-                </div>
-
-                <!-- 人格卡区域 -->
-                <div class="personality-section">
-                    <div class="section-header">
-                        <span class="section-title">备考人格卡</span>
-                        <span class="section-tag">8种类型</span>
-                    </div>
-                    <div class="personality-scroll" id="personality-scroll"></div>
+                <!-- 简约数据条 -->
+                <div class="home-stats-row">
+                    <div class="hs-item"><span class="hs-val" id="home-days">0</span><span class="hs-lbl">备考天数</span></div>
+                    <div class="hs-div"></div>
+                    <div class="hs-item"><span class="hs-val" id="home-personality">--</span><span class="hs-lbl">备考人格</span></div>
+                    <div class="hs-div"></div>
+                    <div class="hs-item"><span class="hs-val" id="home-plan">免费</span><span class="hs-lbl">当前套餐</span></div>
                 </div>
             </div>
 
@@ -1269,6 +1210,17 @@
                             <button onclick="closeDiagChat()">返回</button>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <!-- 人格卡页 -->
+            <div class="tab-page" id="tab-personality">
+                <div class="personality-page">
+                    <div class="personality-page-header">
+                        <h1 class="personality-page-title">备考人格卡</h1>
+                        <p class="personality-page-sub">8种备考人格，你是哪一种？</p>
+                    </div>
+                    <div class="personality-grid" id="personality-grid"></div>
                 </div>
             </div>
 
@@ -1443,20 +1395,20 @@
 
         <!-- 底部Tab -->
         <div class="tab-bar">
-            <div class="tab-item active" data-tab="home">
-                <div class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>
+            <div class="tab-item active" data-tab="home" onclick="switchTab('home')">
+                <div class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
                 <span class="tab-label">首页</span>
             </div>
-            <div class="tab-item" data-tab="diagnosis">
-                <div class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
-                <span class="tab-label">诊断</span>
+            <div class="tab-item" data-tab="diagnosis" onclick="switchTab('diagnosis')">
+                <div class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+                <span class="tab-label">AI教练</span>
             </div>
-            <div class="tab-item" data-tab="plans">
-                <div class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></div>
-                <span class="tab-label">套餐</span>
+            <div class="tab-item" data-tab="personality" onclick="switchTab('personality')">
+                <div class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+                <span class="tab-label">人格卡</span>
             </div>
-            <div class="tab-item" data-tab="profile">
-                <div class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+            <div class="tab-item" data-tab="profile" onclick="switchTab('profile')">
+                <div class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
                 <span class="tab-label">我的</span>
             </div>
         </div>
@@ -1577,7 +1529,8 @@
         }
 
         function renderPersonalities() {
-            var container = document.getElementById('personality-scroll');
+            var scroll = document.getElementById('personality-scroll');
+            var grid = document.getElementById('personality-grid');
             var html = '';
             for (var i = 0; i < personalities.length; i++) {
                 var p = personalities[i];
@@ -1587,7 +1540,8 @@
                 html += '<span class="personality-honor" style="background:' + p.honorBg + ';color:' + p.honorColor + '">' + p.honor + '</span>';
                 html += '</div>';
             }
-            container.innerHTML = html;
+            if (scroll) scroll.innerHTML = html;
+            if (grid) grid.innerHTML = html;
         }
 
         function showPersonalityDetail(type) {
