@@ -41,7 +41,8 @@
         .app {
             display: flex;
             flex-direction: column;
-            height: var(--app-height);
+            height: 100vh;
+            height: 100dvh;
             max-width: 430px;
             margin: 0 auto;
             background: var(--bg);
@@ -1171,6 +1172,12 @@
         };
 
         document.addEventListener('DOMContentLoaded', function() {
+            // Fix mobile 100vh issue - set real viewport height
+            function setAppHeight() {
+                document.querySelector('.app').style.height = window.innerHeight + 'px';
+            }
+            setAppHeight();
+            window.addEventListener('resize', setAppHeight);
             loadUserData();
             initGreeting();
             initCountdown();
