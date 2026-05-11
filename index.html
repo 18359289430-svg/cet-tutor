@@ -1483,13 +1483,13 @@
         }
 
         function initCountdown() {
-            var text = document.getElementById('countdown-text');
-            var homeCd = document.getElementById('home-countdown');
-            if (homeCd) homeCd.textContent = '距考试' + days + '天';
             var examDate = new Date('2026-06-14');
             var now = new Date();
             var diff = Math.ceil((examDate - now) / (1000 * 60 * 60 * 24));
-            text.textContent = diff > 0 ? '距考试 ' + diff + ' 天' : '考试季';
+            var text = document.getElementById('countdown-text');
+            if (text) text.textContent = diff > 0 ? '距考试 ' + diff + ' 天' : '考试季';
+            var homeCd = document.getElementById('home-countdown');
+            if (homeCd) homeCd.textContent = '距考试' + diff + '天';
         }
 
         function initTabEvents() {
