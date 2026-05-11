@@ -550,41 +550,31 @@
             background: white;
             border-bottom: none;
             flex-shrink: 0;
-            position: relative;
-        }
-        .diag-header::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 20px;
-            right: 20px;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, #E8E4FF, transparent);
         }
         .diag-back {
             width: 36px;
             height: 36px;
-            border-radius: 10px;
-            background: #F5F5F5;
+            border-radius: 50%;
+            background: #F1F5F9;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             border: none;
         }
-        .diag-back:active { background: #EEEEEE; }
-        .diag-back svg { width: 20px; height: 20px; stroke: var(--text-primary); stroke-width: 2; }
+        .diag-back:active { background: #E2E8F0; }
+        .diag-back svg { width: 20px; height: 20px; stroke: #475569; stroke-width: 2; }
         .diag-header-info { flex: 1; }
-        .diag-header-title { font-size: 17px; font-weight: 800; color: #1a1a2e; letter-spacing: -0.3px; }
-        .diag-header-sub { font-size: 12px; color: #94a3b8; margin-top: 1px; }
-        .diag-header-dot { width: 8px; height: 8px; border-radius: 50%; background: #00B894; flex-shrink: 0; box-shadow: 0 0 6px rgba(0,184,148,0.5); }
+        .diag-header-title { font-size: 17px; font-weight: 700; color: #1E293B; letter-spacing: -0.3px; }
+        .diag-header-sub { font-size: 12px; color: #94A3B8; margin-top: 1px; }
+        .diag-header-dot { width: 8px; height: 8px; border-radius: 50%; background: #22C55E; flex-shrink: 0; }
         
         /* 诊断页内容 */
         .diag-body {
             flex: 1;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
-            background: linear-gradient(180deg, #F8F7FF 0%, #FAFAFA 40%);
+            background: #FFFFFF;
             padding-bottom: 20px;
         }
         
@@ -880,157 +870,138 @@
         .study-plan-title { font-size: 14px; font-weight: 600; color: #1a1a2e; }
         .study-plan-desc { font-size: 12px; color: #94a3b8; margin-top: 2px; }
 
-        /* ===== AI教练页 - 聊天界面风格 ===== */
-        /* AI欢迎消息 */
+        /* ===== AI教练页 - Kimi/Perplexity极简风格 ===== */
+        /* AI欢迎区 */
         .chat-welcome {
-            display: flex;
-            gap: 12px;
-            padding: 28px 20px 20px;
-            align-items: flex-start;
+            padding: 48px 24px 24px;
+            text-align: center;
         }
         .chat-welcome-avatar {
-            width: 44px;
-            height: 44px;
+            width: 56px;
+            height: 56px;
             border-radius: 50%;
             background: linear-gradient(135deg, #6C5CE7, #A29BFE);
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-shrink: 0;
-            box-shadow: 0 4px 12px rgba(108,92,231,0.25);
+            margin: 0 auto 16px;
         }
-        .chat-welcome-avatar svg { width: 22px; height: 22px; }
+        .chat-welcome-avatar svg { width: 26px; height: 26px; }
         .chat-welcome-bubble {
-            background: #FFFFFF;
+            background: transparent;
             border: none;
-            border-radius: 4px 20px 20px 20px;
-            padding: 16px 18px;
-            max-width: 85%;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            border-radius: 0;
+            padding: 0;
+            max-width: 100%;
+            box-shadow: none;
         }
         .chat-welcome-text {
-            font-size: 14px;
-            color: #1a1a2e;
+            font-size: 15px;
+            color: #475569;
             line-height: 1.7;
         }
         .chat-welcome-time {
-            font-size: 10px;
-            color: #C0C0C8;
-            margin-top: 8px;
+            display: none;
         }
         
-        /* 快捷操作 - 横滑胶囊 */
+        /* 快捷操作 - 圆角标签 */
         .chat-actions {
             display: flex;
+            flex-wrap: wrap;
             gap: 8px;
-            padding: 0 16px 20px;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
+            padding: 0 24px 28px;
+            justify-content: center;
         }
         .chat-actions::-webkit-scrollbar { display: none; }
         .chat-action-pill {
             display: flex;
             align-items: center;
-            gap: 7px;
-            padding: 10px 18px;
-            background: #FFFFFF;
+            gap: 5px;
+            padding: 8px 16px;
+            background: #F1F5F9;
             border: none;
-            border-radius: 24px;
+            border-radius: 20px;
             font-size: 13px;
-            font-weight: 600;
-            color: #555;
+            font-weight: 500;
+            color: #475569;
             white-space: nowrap;
             cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            transition: all 0.15s;
+            box-shadow: none;
             flex-shrink: 0;
         }
-        .chat-action-pill:active { background: #F5F5FA; transform: scale(0.96); box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
-        .chat-action-pill svg { width: 16px; height: 16px; stroke: #6C5CE7; stroke-width: 2; }
+        .chat-action-pill:active { background: #E2E8F0; transform: scale(0.97); }
+        .chat-action-pill svg { width: 14px; height: 14px; stroke: #6C5CE7; stroke-width: 2; }
         
-        /* 推荐提问 */
+        /* 推荐提问 - Perplexity风格纯文本 */
         .chat-suggest-label {
-            font-size: 12px;
-            font-weight: 700;
+            font-size: 13px;
+            font-weight: 600;
             color: #94a3b8;
-            padding: 0 20px 12px;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
+            padding: 0 24px 12px;
         }
         .chat-suggest-list {
-            padding: 0 16px;
+            padding: 0 24px;
         }
         .chat-suggest-item {
             display: flex;
             align-items: center;
-            gap: 14px;
-            padding: 16px 18px;
-            background: #FFFFFF;
+            gap: 10px;
+            padding: 14px 0;
+            background: transparent;
             border: none;
-            border-radius: 16px;
-            margin-bottom: 10px;
+            border-radius: 0;
+            margin-bottom: 0;
             cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: all 0.15s;
+            box-shadow: none;
             position: relative;
             overflow: hidden;
+            border-bottom: 1px solid #F1F5F9;
         }
-        .chat-suggest-item:active { background: #F8F8FA; transform: scale(0.98); }
-        .chat-suggest-item::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 12px;
-            bottom: 12px;
-            width: 3px;
-            border-radius: 0 3px 3px 0;
-        }
-        .chat-suggest-item:nth-child(1)::before { background: linear-gradient(180deg, #6C5CE7, #A29BFE); }
-        .chat-suggest-item:nth-child(2)::before { background: linear-gradient(180deg, #00B894, #55EFC4); }
-        .chat-suggest-item:nth-child(3)::before { background: linear-gradient(180deg, #F39C12, #FDCB6E); }
+        .chat-suggest-item:last-child { border-bottom: none; }
+        .chat-suggest-item:active { opacity: 0.6; }
+        .chat-suggest-item::before { display: none; }
         .chat-suggest-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 14px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
+            background: #F8FAFC;
         }
-        .chat-suggest-icon svg { width: 22px; height: 22px; stroke-width: 2; }
-        .chat-suggest-icon.purple { background: linear-gradient(135deg, #F0EEFF, #E4E0FF); }
+        .chat-suggest-icon svg { width: 18px; height: 18px; stroke-width: 1.8; }
         .chat-suggest-icon.purple svg { stroke: #6C5CE7; }
-        .chat-suggest-icon.green { background: linear-gradient(135deg, #E8F8F0, #D4F5E4); }
         .chat-suggest-icon.green svg { stroke: #00B894; }
-        .chat-suggest-icon.orange { background: linear-gradient(135deg, #FFF3E0, #FFE8C8); }
         .chat-suggest-icon.orange svg { stroke: #F39C12; }
         .chat-suggest-text { flex: 1; min-width: 0; }
-        .chat-suggest-title { font-size: 14px; font-weight: 600; color: #1a1a2e; letter-spacing: -0.2px; }
-        .chat-suggest-desc { font-size: 12px; color: #94a3b8; margin-top: 3px; }
-        .chat-suggest-arrow { width: 16px; height: 16px; flex-shrink: 0; }
+        .chat-suggest-title { font-size: 14px; font-weight: 500; color: #1E293B; }
+        .chat-suggest-desc { font-size: 12px; color: #94A3B8; margin-top: 2px; }
+        .chat-suggest-arrow { width: 16px; height: 16px; flex-shrink: 0; opacity: 0.3; }
 
 
-        /* 开始对话按钮 */
+        /* 开始对话 - Perplexity大CTA */
         .diag-chat-btn {
-            margin: 20px 16px 24px;
+            margin: 32px 24px 40px;
             padding: 16px;
-            background: linear-gradient(135deg, #6C5CE7, #A29BFE);
+            background: #1E293B;
             color: white;
             border: none;
-            border-radius: 16px;
+            border-radius: 14px;
             font-size: 15px;
-            font-weight: 700;
+            font-weight: 600;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            transition: all 0.2s;
-            box-shadow: 0 6px 24px rgba(108,92,231,0.3);
-            letter-spacing: 0.3px;
+            transition: all 0.15s;
+            box-shadow: none;
+            letter-spacing: 0;
         }
-        .diag-chat-btn:active { opacity: 0.85; transform: scale(0.98); box-shadow: 0 3px 12px rgba(108,92,231,0.2); }
+        .diag-chat-btn:active { background: #334155; transform: scale(0.98); }
         .diag-chat-btn svg { width: 18px; height: 18px; }
         
         /* 聊天容器 - 诊断页 */
@@ -1322,113 +1293,89 @@
         .faq-answer p { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
 
         /* 用户中心 */
+        /* 用户中心 - iOS Settings极简风 */
         .profile-header {
-            padding: 32px 20px 36px;
-            background: linear-gradient(135deg, #5B4EC9 0%, #6C5CE7 40%, #A29BFE 100%);
-            text-align: center;
+            padding: 40px 24px 32px;
+            background: #FFFFFF;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 16px;
             position: relative;
             overflow: hidden;
         }
-        .profile-header::before {
-            content: '';
-            position: absolute;
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.06);
-            top: -60px;
-            right: -40px;
-        }
-        .profile-header::after {
-            content: '';
-            position: absolute;
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.04);
-            bottom: -30px;
-            left: -20px;
-        }
-        .profile-avatar-wrap { position: relative; width: 80px; height: 80px; margin: 0 auto 14px; }
+        .profile-header::before { display: none; }
+        .profile-header::after { display: none; }
+        .profile-avatar-wrap { position: relative; width: 60px; height: 60px; margin: 0; flex-shrink: 0; }
         .profile-avatar {
-            width: 80px;
-            height: 80px;
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
-            background: rgba(255,255,255,0.15);
+            background: #F1F5F9;
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 3px solid rgba(255,255,255,0.3);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            border: none;
+            box-shadow: none;
         }
-        .profile-avatar svg { width: 36px; height: 36px; stroke: white; }
+        .profile-avatar svg { width: 28px; height: 28px; stroke: #94A3B8; }
         .profile-badge {
             position: absolute;
-            bottom: 0;
-            right: 0;
-            background: linear-gradient(135deg, #6C5CE7, #A29BFE);
+            bottom: -2px;
+            right: -2px;
+            background: #6C5CE7;
             color: white;
-            font-size: 10px;
+            font-size: 9px;
             font-weight: 700;
-            padding: 3px 10px;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(108,92,231,0.3);
+            padding: 2px 7px;
+            border-radius: 8px;
+            box-shadow: none;
         }
-        .profile-name { font-size: 20px; font-weight: 700; color: white; margin-bottom: 4px; letter-spacing: -0.3px; }
-        .profile-plan { font-size: 13px; color: rgba(255,255,255,0.75); font-weight: 500; }
+        .profile-name { font-size: 18px; font-weight: 700; color: #1E293B; margin-bottom: 2px; letter-spacing: -0.3px; }
+        .profile-plan { font-size: 13px; color: #94A3B8; font-weight: 400; }
         
-        /* 统计卡片 */
-        .stats-section { padding: 0 16px; margin-top: -20px; margin-bottom: 16px; }
+        /* 统计条 - 横排极简 */
+        .stats-section { padding: 0 24px; margin-top: 0; margin-bottom: 24px; }
         .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
+            display: flex;
+            gap: 0;
+            background: #F8FAFC;
+            border-radius: 12px;
+            padding: 16px 0;
         }
         .stat-card {
-            background: #FFFFFF;
-            border-radius: 16px;
-            padding: 18px 8px;
+            background: transparent;
+            border-radius: 0;
+            padding: 0 20px;
             text-align: center;
             border: none;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            box-shadow: none;
+            flex: 1;
+            border-right: 1px solid #E2E8F0;
         }
-        .stat-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 10px;
-        }
-        .stat-icon svg { width: 20px; height: 20px; stroke-width: 2; }
-        .stat-card:nth-child(1) .stat-icon { background: linear-gradient(135deg, #F0EEFF, #E4E0FF); }
-        .stat-card:nth-child(1) .stat-icon svg { stroke: #6C5CE7; }
-        .stat-card:nth-child(2) .stat-icon { background: linear-gradient(135deg, #E0F7F7, #C8F0F0); }
-        .stat-card:nth-child(2) .stat-icon svg { stroke: #00B4D8; }
-        .stat-card:nth-child(3) .stat-icon { background: linear-gradient(135deg, #FFF3E0, #FFE8C8); }
-        .stat-card:nth-child(3) .stat-icon svg { stroke: #F39C12; }
-        .stat-value { font-size: 22px; font-weight: 800; color: #1a1a2e; margin-bottom: 2px; letter-spacing: -0.5px; }
-        .stat-label { font-size: 11px; color: #94a3b8; font-weight: 500; }
+        .stat-card:last-child { border-right: none; }
+        .stat-icon { display: none; }
+        .stat-value { font-size: 20px; font-weight: 700; color: #1E293B; margin-bottom: 2px; letter-spacing: -0.5px; }
+        .stat-label { font-size: 11px; color: #94A3B8; font-weight: 500; }
         
-        /* 菜单 */
-        .menu-section { padding: 0 16px 20px; }
-        .menu-group { background: #FFFFFF; border-radius: 18px; overflow: hidden; margin-bottom: 12px; border: none; box-shadow: 0 2px 12px rgba(0,0,0,0.05); }
+        /* 菜单 - iOS Settings列表 */
+        .menu-section { padding: 0 24px 40px; }
+        .menu-group { background: #FFFFFF; border-radius: 0; overflow: hidden; margin-bottom: 24px; border: none; box-shadow: none; }
         .menu-group-title {
-            padding: 14px 18px 8px;
-            font-size: 11px;
-            font-weight: 700;
-            color: #94a3b8;
+            padding: 0 0 8px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #94A3B8;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
         }
         .menu-item {
             display: flex;
             align-items: center;
-            padding: 15px 18px;
+            padding: 14px 0;
             gap: 14px;
             cursor: pointer;
-            transition: background 0.15s;
+            transition: opacity 0.15s;
             border-bottom: none;
             position: relative;
         }
@@ -1436,35 +1383,35 @@
             content: '';
             position: absolute;
             bottom: 0;
-            left: 68px;
-            right: 18px;
-            height: 0.5px;
-            background: #F0F0F5;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #F1F5F9;
         }
-        .menu-item:active { background: #F8F8FA; }
+        .menu-item:active { opacity: 0.5; }
         .menu-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
         }
-        .menu-icon svg { width: 20px; height: 20px; stroke-width: 2; }
-        .menu-icon.purple { background: linear-gradient(135deg, #F0EEFF, #E4E0FF); }
+        .menu-icon svg { width: 16px; height: 16px; stroke-width: 1.8; }
+        .menu-icon.purple { background: #F0EEFF; }
         .menu-icon.purple svg { stroke: #6C5CE7; }
-        .menu-icon.teal { background: linear-gradient(135deg, #E0F7F7, #C8F0F0); }
+        .menu-icon.teal { background: #E0F7F7; }
         .menu-icon.teal svg { stroke: #00B4D8; }
-        .menu-icon.orange { background: linear-gradient(135deg, #FFF3E0, #FFE8C8); }
+        .menu-icon.orange { background: #FFF3E0; }
         .menu-icon.orange svg { stroke: #F39C12; }
-        .menu-icon.green { background: linear-gradient(135deg, #E8F8F0, #D4F5E4); }
+        .menu-icon.green { background: #E8F8F0; }
         .menu-icon.green svg { stroke: #00B894; }
-        .menu-icon.pink { background: linear-gradient(135deg, #FCE4EC, #F8D0D8); }
+        .menu-icon.pink { background: #FCE4EC; }
         .menu-icon.pink svg { stroke: #E84393; }
-        .menu-icon.gray { background: linear-gradient(135deg, #F1F5F9, #E2E8F0); }
+        .menu-icon.gray { background: #F1F5F9; }
         .menu-icon.gray svg { stroke: #94A3B8; }
-        .menu-text { flex: 1; font-size: 14px; color: #1a1a2e; font-weight: 500; }
+        .menu-text { flex: 1; font-size: 15px; color: #1E293B; font-weight: 400; }
         .menu-arrow { color: var(--text-tertiary); }
         .menu-arrow svg { width: 16px; height: 16px; }
 
