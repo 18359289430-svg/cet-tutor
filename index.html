@@ -151,105 +151,51 @@
         #tab-home {
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
+            padding-bottom: 20px;
         }
         
-        /* 主视觉区 */
-        .home-hero {
-            background: linear-gradient(145deg, #5B4EC9 0%, #7C6FF0 40%, #9B8DF8 100%);
-            padding: 24px 24px 28px;
-            border-radius: 0 0 24px 24px;
-            position: relative;
-            overflow: hidden;
-        }
-        .home-hero::before {
-            content: '';
-            position: absolute;
-            top: -30px;
-            right: -20px;
-            width: 120px;
-            height: 120px;
-            background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
-            border-radius: 50%;
-        }
-        .home-hero-inner { position: relative; z-index: 1; }
-        .home-hero-top {
+        /* 顶部问候区 */
+        .home-header {
+            padding: 20px 20px 0;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 16px;
         }
-        .home-greeting {
-            font-size: 13px;
-            color: rgba(255,255,255,0.55);
-            font-weight: 400;
+        .home-greeting-text {
+            font-size: 22px;
+            font-weight: 800;
+            color: #1a1a2e;
+            letter-spacing: -0.5px;
+        }
+        .home-header-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         .home-streak-pill {
             display: flex;
             align-items: center;
             gap: 4px;
-            background: rgba(255,255,255,0.14);
-            padding: 4px 10px;
-            border-radius: 12px;
-            color: white;
-            font-weight: 600;
+            background: #FFF8E8;
+            padding: 5px 12px;
+            border-radius: 20px;
+            color: #F39C12;
+            font-weight: 700;
             font-size: 12px;
             cursor: pointer;
         }
-        .home-streak-pill svg { width: 12px; height: 12px; }
-        .home-hero-title {
-            font-size: 24px;
-            font-weight: 800;
-            color: white;
-            line-height: 1.25;
-            letter-spacing: -0.5px;
-            margin-bottom: 18px;
-        }
-        .home-cta-btn {
-            width: 100%;
-            padding: 14px 24px;
-            background: white;
-            color: #5B4EC9;
-            border: none;
-            border-radius: 14px;
-            font-size: 15px;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            transition: all 0.2s;
-        }
-        .home-cta-btn:active { transform: scale(0.97); }
-        .home-cta-btn svg { width: 16px; height: 16px; }
-        .home-cta-hint {
-            text-align: center;
-            margin-top: 6px;
-            font-size: 11px;
-            color: rgba(255,255,255,0.45);
-        }
-        .home-hero-bottom {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 14px;
-        }
+        .home-streak-pill svg { width: 14px; height: 14px; }
         .home-countdown-chip {
-            font-size: 11px;
-            color: rgba(255,255,255,0.55);
-            background: rgba(255,255,255,0.08);
-            padding: 4px 10px;
-            border-radius: 10px;
+            font-size: 12px;
+            color: #94a3b8;
+            font-weight: 500;
         }
         
         /* 功能入口 - 百词斩风格横排4图标 */
         .home-func-row {
             display: flex;
             justify-content: space-around;
-            padding: 20px 12px 16px;
-            background: white;
-            margin: 0 0 10px;
+            padding: 20px 12px 8px;
         }
         .func-item {
             display: flex;
@@ -261,14 +207,14 @@
         }
         .func-item:active { opacity: 0.5; }
         .func-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
+            width: 46px;
+            height: 46px;
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
-        .func-icon svg { width: 22px; height: 22px; stroke-width: 1.6; }
+        .func-icon svg { width: 22px; height: 22px; stroke-width: 1.8; }
         .func-icon.purple { background: #F0EEFF; }
         .func-icon.purple svg { stroke: #6C5CE7; }
         .func-icon.green { background: #E8F8F0; }
@@ -280,18 +226,86 @@
         .func-label {
             font-size: 11px;
             font-weight: 500;
-            color: #333;
+            color: #555;
         }
 
-        /* 每日一练 - 内容卡片 */
+        /* 内容卡片 - 百词斩横向卡片风格 */
+        .home-section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1a1a2e;
+            padding: 20px 20px 12px;
+            letter-spacing: -0.3px;
+        }
+        
+        .home-promo-card {
+            margin: 0 16px 12px;
+            background: white;
+            border-radius: 16px;
+            padding: 16px 18px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            cursor: pointer;
+            transition: all 0.15s;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+            border: 1px solid #F5F5F5;
+        }
+        .home-promo-card:active { transform: scale(0.98); }
+        .home-promo-left { flex: 1; min-width: 0; }
+        .home-promo-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 4px;
+            letter-spacing: -0.2px;
+        }
+        .home-promo-desc {
+            font-size: 12px;
+            color: #94a3b8;
+            line-height: 1.4;
+        }
+        .home-promo-tag {
+            display: inline-block;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 6px;
+            margin-top: 6px;
+        }
+        .home-promo-tag.purple { background: #F0EEFF; color: #6C5CE7; }
+        .home-promo-tag.green { background: #E8F8F0; color: #00B894; }
+        .home-promo-tag.orange { background: #FFF8E8; color: #F39C12; }
+        .home-promo-tag.pink { background: #FCE4EC; color: #E84393; }
+        .home-promo-right {
+            width: 64px;
+            height: 64px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .home-promo-right svg { width: 32px; height: 32px; }
+        .home-promo-right.purple-bg { background: #F0EEFF; }
+        .home-promo-right.purple-bg svg { stroke: #6C5CE7; }
+        .home-promo-right.green-bg { background: #E8F8F0; }
+        .home-promo-right.green-bg svg { stroke: #00B894; }
+        .home-promo-right.orange-bg { background: #FFF8E8; }
+        .home-promo-right.orange-bg svg { stroke: #F39C12; }
+        .home-promo-right.pink-bg { background: #FCE4EC; }
+        .home-promo-right.pink-bg svg { stroke: #E84393; }
+        
+        /* 每日一练卡片 */
         .daily-card {
-            margin: 0 16px 20px;
+            margin: 0 16px 12px;
             background: white;
             border-radius: 16px;
             overflow: hidden;
             cursor: pointer;
             transition: all 0.2s;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+            border: 1px solid #F5F5F5;
         }
         .daily-card:active { transform: scale(0.98); }
         .daily-card-inner {
@@ -301,19 +315,19 @@
             gap: 14px;
         }
         .daily-card-icon-wrap {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
+            width: 46px;
+            height: 46px;
+            border-radius: 14px;
             background: #E8F8F0;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
         }
-        .daily-card-icon-wrap svg { width: 20px; height: 20px; stroke: #00B894; stroke-width: 2; }
+        .daily-card-icon-wrap svg { width: 22px; height: 22px; stroke: #00B894; stroke-width: 1.8; }
         .daily-card-body { flex: 1; min-width: 0; }
-        .daily-card-title { font-size: 14px; font-weight: 700; color: #1a1a2e; }
-        .daily-card-sub { font-size: 12px; color: #999; margin-top: 2px; }
+        .daily-card-title { font-size: 15px; font-weight: 700; color: #1a1a2e; }
+        .daily-card-sub { font-size: 12px; color: #94a3b8; margin-top: 2px; }
         .daily-card-badge {
             font-size: 12px;
             font-weight: 700;
@@ -331,7 +345,7 @@
         
 
         
-        /* ========== 诊断页 - 重设计 ========== */
+        /* ========== 诊断页 - 百词斩风格 ========== */
         .diagnosis-page {
             display: flex;
             flex-direction: column;
@@ -343,26 +357,26 @@
             align-items: center;
             gap: 12px;
             background: white;
-            border-bottom: 1px solid rgba(0,0,0,0.04);
+            border-bottom: 1px solid #F0F0F0;
             flex-shrink: 0;
         }
         .diag-back {
             width: 36px;
             height: 36px;
             border-radius: 10px;
-            background: #F5F5FA;
+            background: #F5F5F5;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             border: none;
         }
-        .diag-back:active { background: #EDEDF5; }
+        .diag-back:active { background: #EEEEEE; }
         .diag-back svg { width: 20px; height: 20px; stroke: var(--text-primary); stroke-width: 2; }
         .diag-header-info { flex: 1; }
-        .diag-header-title { font-size: 16px; font-weight: 700; color: var(--text-primary); }
-        .diag-header-sub { font-size: 11px; color: var(--text-tertiary); margin-top: 1px; }
-        .diag-header-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); flex-shrink: 0; }
+        .diag-header-title { font-size: 17px; font-weight: 800; color: #1a1a2e; letter-spacing: -0.3px; }
+        .diag-header-sub { font-size: 12px; color: #94a3b8; margin-top: 1px; }
+        .diag-header-dot { width: 8px; height: 8px; border-radius: 50%; background: #00B894; flex-shrink: 0; }
         
         /* 诊断页内容 - 可滚动 */
         .diag-body {
@@ -370,32 +384,34 @@
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
             background: #FFFFFF;
+            padding-bottom: 20px;
         }
         
-        /* AI角色卡 - 简约白卡 */
+        /* AI角色卡 - 百词斩横向大卡 */
         .diag-ai-card {
             margin: 16px 16px 0;
-            background: white;
+            background: linear-gradient(135deg, #F0EEFF 0%, #E8F0FF 100%);
             border-radius: 16px;
-            padding: 16px 18px;
+            padding: 20px 18px;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
         }
         .diag-ai-avatar-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background: #E8F8F0;
+            width: 52px;
+            height: 52px;
+            border-radius: 16px;
+            background: white;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
         }
-        .diag-ai-avatar-icon svg { width: 22px; height: 22px; stroke: #00B894; }
+        .diag-ai-avatar-icon svg { width: 26px; height: 26px; stroke: #6C5CE7; }
         .diag-ai-info { flex: 1; }
-        .diag-ai-name { font-size: 15px; font-weight: 700; color: #1a1a2e; }
-        .diag-ai-desc { font-size: 12px; color: #999; margin-top: 1px; }
+        .diag-ai-name { font-size: 16px; font-weight: 800; color: #1a1a2e; letter-spacing: -0.3px; }
+        .diag-ai-desc { font-size: 12px; color: #64748b; margin-top: 2px; }
         .diag-ai-online {
             font-size: 11px;
             color: #00B894;
@@ -403,6 +419,10 @@
             align-items: center;
             gap: 4px;
             flex-shrink: 0;
+            background: #E8F8F0;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-weight: 600;
         }
         .online-dot {
             width: 6px;
@@ -416,11 +436,11 @@
             50% { opacity: 0.4; }
         }
         
-        /* 快捷功能 - 4图标行 */
+        /* 快捷功能 - 横排4图标 */
         .diag-quick-grid {
             display: flex;
             justify-content: space-around;
-            padding: 16px 12px 0;
+            padding: 20px 12px 0;
         }
         .diag-quick-item {
             display: flex;
@@ -434,30 +454,94 @@
         .diag-quick-item span {
             font-size: 11px;
             font-weight: 500;
-            color: #333;
+            color: #555;
         }
         .diag-quick-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
+            width: 46px;
+            height: 46px;
+            border-radius: 14px;
             background: #F0EEFF;
             display: flex;
             align-items: center;
             justify-content: center;
         }
-        .diag-quick-icon svg { width: 22px; height: 22px; stroke: #6C5CE7; stroke-width: 1.6; }
-        .diag-quick-icon.teal { background: #E8FFF5; }
+        .diag-quick-icon svg { width: 22px; height: 22px; stroke: #6C5CE7; stroke-width: 1.8; }
+        .diag-quick-icon.teal { background: #E8F8F0; }
         .diag-quick-icon.teal svg { stroke: #00B894; }
         .diag-quick-icon.orange { background: #FFF8E8; }
         .diag-quick-icon.orange svg { stroke: #F39C12; }
-        .diag-quick-icon.pink { background: #FFF0F5; }
+        .diag-quick-icon.pink { background: #FCE4EC; }
         .diag-quick-icon.pink svg { stroke: #E84393; }
+        
+        /* 功能卡片 - 百词斩横向卡片 */
+        .diag-section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1a1a2e;
+            padding: 20px 20px 12px;
+            letter-spacing: -0.3px;
+        }
+        .diag-promo-card {
+            margin: 0 16px 10px;
+            background: white;
+            border-radius: 16px;
+            padding: 16px 18px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            cursor: pointer;
+            transition: all 0.15s;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+            border: 1px solid #F5F5F5;
+        }
+        .diag-promo-card:active { transform: scale(0.98); }
+        .diag-promo-left { flex: 1; min-width: 0; }
+        .diag-promo-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 4px;
+        }
+        .diag-promo-desc {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+        .diag-promo-tag {
+            display: inline-block;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 6px;
+            margin-top: 4px;
+        }
+        .diag-promo-tag.purple { background: #F0EEFF; color: #6C5CE7; }
+        .diag-promo-tag.green { background: #E8F8F0; color: #00B894; }
+        .diag-promo-tag.orange { background: #FFF8E8; color: #F39C12; }
+        .diag-promo-tag.pink { background: #FCE4EC; color: #E84393; }
+        .diag-promo-right {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .diag-promo-right svg { width: 28px; height: 28px; }
+        .diag-promo-right.purple-bg { background: #F0EEFF; }
+        .diag-promo-right.purple-bg svg { stroke: #6C5CE7; }
+        .diag-promo-right.green-bg { background: #E8F8F0; }
+        .diag-promo-right.green-bg svg { stroke: #00B894; }
+        .diag-promo-right.orange-bg { background: #FFF8E8; }
+        .diag-promo-right.orange-bg svg { stroke: #F39C12; }
+        .diag-promo-right.pink-bg { background: #FCE4EC; }
+        .diag-promo-right.pink-bg svg { stroke: #E84393; }
         
         /* 快捷提问标签 */
         .diag-section-label {
-            font-size: 12px;
-            font-weight: 500;
-            color: #bbb;
+            font-size: 13px;
+            font-weight: 600;
+            color: #94a3b8;
             padding: 20px 20px 8px;
         }
         
@@ -470,11 +554,11 @@
         }
         .diag-bubble {
             padding: 8px 14px;
-            background: white;
-            border-radius: 16px;
+            background: #F5F5F5;
+            border-radius: 20px;
             font-size: 12px;
             font-weight: 500;
-            color: #666;
+            color: #555;
             cursor: pointer;
             transition: all 0.15s;
         }
@@ -485,22 +569,23 @@
         
         /* 开始对话按钮 */
         .diag-chat-btn {
-            margin: 0 16px 20px;
-            padding: 14px;
+            margin: 16px 16px 20px;
+            padding: 15px;
             background: #6C5CE7;
             color: white;
             border: none;
             border-radius: 14px;
             font-size: 15px;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
             transition: all 0.15s;
+            box-shadow: 0 4px 12px rgba(108,92,231,0.2);
         }
-        .diag-chat-btn:active { opacity: 0.8; }
+        .diag-chat-btn:active { opacity: 0.8; transform: scale(0.98); }
         .diag-chat-btn svg { width: 18px; height: 18px; }
         
         /* 聊天容器 - 诊断页 */
@@ -1089,74 +1174,111 @@
 
         <!-- 主内容 -->
         <div class="main-content">
-            <!-- 首页 - App化 -->
+            <!-- 首页 - 百词斩风格 -->
             <div class="tab-page active" id="tab-home">
-                <!-- 主视觉区 -->
-                <div class="home-hero">
-                    <div class="home-hero-inner">
-                        <div class="home-hero-top">
-                            <div class="home-greeting" id="greeting-text">早上好</div>
-                            <div class="home-streak-pill" id="home-streak" onclick="handleDailyTask()">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c.5 4-2 7-4 9.5C6 14 5.5 16 6 18c.7 3 3.5 4 6 4s5.3-1 6-4c.5-2 0-4-2-6.5C14 9 11.5 6 12 2z"/><path d="M12 22c-1.5 0-3-.8-3-3 0-1.5.8-2.5 2-4 .5-.6 1-1.5 1-2.5 0 1 .5 1.9 1 2.5 1.2 1.5 2 2.5 2 4 0 2.2-1.5 3-3 3z" fill="rgba(255,255,255,0.6)" stroke="none"/></svg>
-                                <span id="streak-num">0</span>天
-                            </div>
+                <!-- 顶部问候 -->
+                <div class="home-header">
+                    <div class="home-greeting-text" id="greeting-text">早上好</div>
+                    <div class="home-header-right">
+                        <div class="home-streak-pill" id="home-streak" onclick="handleDailyTask()">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#F39C12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c.5 4-2 7-4 9.5C6 14 5.5 16 6 18c.7 3 3.5 4 6 4s5.3-1 6-4c.5-2 0-4-2-6.5C14 9 11.5 6 12 2z"/></svg>
+                            <span id="streak-num">0</span>天
                         </div>
-                        <div class="home-hero-title">开始今天的<br>四级备考</div>
-                        <button class="home-cta-btn" id="home-cta-btn" onclick="handleHomeCta()">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                            <span id="home-cta-text">开始AI诊断</span>
-                        </button>
-                        <div class="home-cta-hint" id="home-cta-hint">5分钟找到你的备考短板</div>
-                        <div class="home-hero-bottom">
-                            <div class="home-countdown-chip" id="home-countdown">距考试34天</div>
-                        </div>
+                        <div class="home-countdown-chip" id="home-countdown">距考试34天</div>
                     </div>
                 </div>
 
-                <!-- 功能入口 - 百词斩风格横排4图标 -->
+                <!-- 功能入口 - 4图标 -->
                 <div class="home-func-row">
                     <div class="func-item" onclick="switchTab('diagnosis');setTimeout(()=>startDiagChat('开始AI诊断，帮我找出四级薄弱点'),300)">
                         <div class="func-icon purple">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                         </div>
                         <span class="func-label">AI诊断</span>
                     </div>
                     <div class="func-item" onclick="switchTab('diagnosis');setTimeout(()=>startDiagChat('查看我的备考计划'),300)">
                         <div class="func-icon orange">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                         </div>
                         <span class="func-label">备考计划</span>
                     </div>
                     <div class="func-item" onclick="handleDailyTask()">
                         <div class="func-icon green">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
                         </div>
                         <span class="func-label">每日一练</span>
                     </div>
                     <div class="func-item" onclick="switchTab('personality')">
                         <div class="func-icon pink">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
                         </div>
                         <span class="func-label">人格测试</span>
                     </div>
                 </div>
 
-                <!-- 每日一练 - 内容卡片 -->
+                <!-- 内容卡片 - 百词斩横向卡片 -->
+                <div class="home-section-title">为你推荐</div>
+                
+                <div class="home-promo-card" onclick="switchTab('diagnosis');setTimeout(()=>startDiagChat('开始AI诊断，帮我找出四级薄弱点'),300)">
+                    <div class="home-promo-left">
+                        <div class="home-promo-title">5分钟AI诊断</div>
+                        <div class="home-promo-desc">精准定位你的四级薄弱点</div>
+                        <div class="home-promo-tag purple">免费</div>
+                    </div>
+                    <div class="home-promo-right purple-bg">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    </div>
+                </div>
+
+                <div class="home-promo-card" onclick="handleDailyTask()">
+                    <div class="home-promo-left">
+                        <div class="home-promo-title">今日一练</div>
+                        <div class="home-promo-desc" id="daily-task-desc">每天3分钟，保持手感</div>
+                        <div class="home-promo-tag green">每日更新</div>
+                    </div>
+                    <div class="home-promo-right green-bg">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                    </div>
+                </div>
+
+                <div class="home-promo-card" onclick="switchTab('personality')">
+                    <div class="home-promo-left">
+                        <div class="home-promo-title">你是哪种备考人格？</div>
+                        <div class="home-promo-desc">8种人格卡，测测你的备考风格</div>
+                        <div class="home-promo-tag pink">超准</div>
+                    </div>
+                    <div class="home-promo-right pink-bg">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+                    </div>
+                </div>
+
+                <div class="home-promo-card" onclick="switchTab('diagnosis');setTimeout(()=>startDiagChat('帮我制定冲刺计划'),300)">
+                    <div class="home-promo-left">
+                        <div class="home-promo-title">30天速通四级</div>
+                        <div class="home-promo-desc">省时省力，AI定制冲刺方案</div>
+                        <div class="home-promo-tag orange">热门</div>
+                    </div>
+                    <div class="home-promo-right orange-bg">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                    </div>
+                </div>
+
+                <!-- 每日一练快捷卡 -->
                 <div class="daily-card" id="daily-task-card" onclick="handleDailyTask()">
                     <div class="daily-card-inner">
                         <div class="daily-card-icon-wrap">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
                         </div>
                         <div class="daily-card-body">
                             <div class="daily-card-title">今日一练</div>
-                            <div class="daily-card-sub" id="daily-task-desc">每天3分钟，保持手感</div>
+                            <div class="daily-card-sub" id="daily-task-sub">每天3分钟，保持手感</div>
                         </div>
                         <div class="daily-card-badge" id="daily-task-badge">GO</div>
                     </div>
                 </div>
             </div>
 
-            <!-- 诊断页 -->
+            <!-- 诊断页 - 百词斩风格 -->
             <div class="tab-page" id="tab-diagnosis">
                 <div class="diagnosis-page">
                     <!-- 顶部栏 -->
@@ -1165,7 +1287,7 @@
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
                         </button>
                         <div class="diag-header-info">
-                            <div class="diag-header-title" id="coze-title">AI诊断</div>
+                            <div class="diag-header-title" id="coze-title">AI教练</div>
                             <div class="diag-header-sub">四级备考AI私教 · 在线</div>
                         </div>
                         <div class="diag-header-dot"></div>
@@ -1173,10 +1295,10 @@
 
                     <!-- 诊断页内容 -->
                     <div class="diag-body" id="diag-body">
-                        <!-- AI角色卡 - 紫色大卡 -->
+                        <!-- AI角色卡 - 渐变背景大卡 -->
                         <div class="diag-ai-card">
                             <div class="diag-ai-avatar-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                             </div>
                             <div class="diag-ai-info">
                                 <div class="diag-ai-name">小过学长</div>
@@ -1185,7 +1307,7 @@
                             <div class="diag-ai-online"><span class="online-dot"></span>在线</div>
                         </div>
 
-                        <!-- 快捷功能 - 图标网格 -->
+                        <!-- 快捷功能 - 4图标 -->
                         <div class="diag-quick-grid">
                             <div class="diag-quick-item" onclick="startDiagChat('开始AI诊断，帮我找出四级薄弱点')">
                                 <div class="diag-quick-icon purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
@@ -1205,12 +1327,48 @@
                             </div>
                         </div>
 
-                        <!-- 快捷提问气泡 -->
+                        <!-- 功能卡片 - 百词斩横向卡片 -->
+                        <div class="diag-section-title">快速开始</div>
+
+                        <div class="diag-promo-card" onclick="startDiagChat('开始AI诊断，帮我找出四级薄弱点')">
+                            <div class="diag-promo-left">
+                                <div class="diag-promo-title">5分钟AI诊断</div>
+                                <div class="diag-promo-desc">精准定位你的四级薄弱点</div>
+                                <div class="diag-promo-tag purple">免费</div>
+                            </div>
+                            <div class="diag-promo-right purple-bg">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                            </div>
+                        </div>
+
+                        <div class="diag-promo-card" onclick="startDiagChat('帮我制定冲刺计划')">
+                            <div class="diag-promo-left">
+                                <div class="diag-promo-title">30天速通四级</div>
+                                <div class="diag-promo-desc">AI定制你的专属冲刺方案</div>
+                                <div class="diag-promo-tag orange">热门</div>
+                            </div>
+                            <div class="diag-promo-right orange-bg">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                            </div>
+                        </div>
+
+                        <div class="diag-promo-card" onclick="startDiagChat('帮我批改作文')">
+                            <div class="diag-promo-left">
+                                <div class="diag-promo-title">作文批改</div>
+                                <div class="diag-promo-desc">AI精准批改，逐句优化</div>
+                                <div class="diag-promo-tag pink">专业</div>
+                            </div>
+                            <div class="diag-promo-right pink-bg">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                            </div>
+                        </div>
+
+                        <!-- 快捷提问 -->
                         <div class="diag-section-label">试试问我</div>
                         <div class="diag-bubbles">
-                            <div class="diag-bubble" onclick="startDiagChat('同义替换总是做错怎么办')">同义替换总是做错怎么办</div>
-                            <div class="diag-bubble" onclick="startDiagChat('阅读怎么提高速度')">阅读怎么提高速度</div>
-                            <div class="diag-bubble" onclick="startDiagChat('翻译有什么技巧')">翻译有什么技巧</div>
+                            <div class="diag-bubble" onclick="startDiagChat('同义替换总是做错怎么办')">同义替换怎么办</div>
+                            <div class="diag-bubble" onclick="startDiagChat('阅读怎么提高速度')">阅读提速</div>
+                            <div class="diag-bubble" onclick="startDiagChat('翻译有什么技巧')">翻译技巧</div>
                         </div>
 
                         <!-- 开始对话按钮 -->
@@ -1810,15 +1968,7 @@
             // Daily task
             updateDailyTask();
             
-            var ctaText = document.getElementById('home-cta-text');
-            var ctaHint = document.getElementById('home-cta-hint');
-            if (data.diagnosis && data.diagnosis.type) {
-                ctaText.textContent = '继续AI陪练';
-                ctaHint.textContent = '你的备考人格：' + data.diagnosis.type;
-            } else {
-                ctaText.textContent = '开始AI诊断';
-                ctaHint.textContent = '5分钟找到你的备考短板';
-            }
+            // CTA no longer on home page, status handled by promo cards
         }
         
         // ===== 诊断页对话控制 =====
