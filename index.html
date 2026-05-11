@@ -640,6 +640,136 @@
             color: #555;
         }
 
+
+        /* ===== 首页内容区 ===== */
+        .home-section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1a1a2e;
+            padding: 20px 20px 12px;
+            letter-spacing: -0.3px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .home-section-more {
+            font-size: 12px;
+            font-weight: 500;
+            color: #6C5CE7;
+            cursor: pointer;
+        }
+
+        /* 备考Tips - 横滑卡片 */
+        .home-tips-scroll {
+            display: flex;
+            gap: 10px;
+            padding: 0 16px 4px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        .home-tips-scroll::-webkit-scrollbar { display: none; }
+        .home-tip-card {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 16px;
+            border-radius: 14px;
+            min-width: 220px;
+            cursor: pointer;
+            transition: all 0.15s;
+            flex-shrink: 0;
+        }
+        .home-tip-card:active { transform: scale(0.97); }
+        .home-tip-card.tip-purple {
+            background: linear-gradient(135deg, #F8F6FF, #F0EEFF);
+            border: 1px solid #E8E4FF;
+        }
+        .home-tip-card.tip-green {
+            background: linear-gradient(135deg, #F0FFF6, #E8F8F0);
+            border: 1px solid #D4F5E4;
+        }
+        .home-tip-card.tip-orange {
+            background: linear-gradient(135deg, #FFFAF0, #FFF3E0);
+            border: 1px solid #FFE8C8;
+        }
+        .home-tip-emoji { font-size: 28px; flex-shrink: 0; }
+        .home-tip-title { font-size: 14px; font-weight: 700; color: #1a1a2e; }
+        .home-tip-desc { font-size: 11px; color: #64748b; margin-top: 2px; line-height: 1.3; }
+
+        /* 学习数据横条 */
+        .home-data-bar {
+            display: flex;
+            align-items: center;
+            margin: 16px 16px 0;
+            padding: 16px 20px;
+            background: #FFFFFF;
+            border: 1px solid #F0F0F5;
+            border-radius: 14px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+        }
+        .home-data-item {
+            flex: 1;
+            text-align: center;
+        }
+        .home-data-num {
+            font-size: 20px;
+            font-weight: 800;
+            color: #6C5CE7;
+        }
+        .home-data-label {
+            font-size: 11px;
+            color: #94a3b8;
+            margin-top: 2px;
+        }
+        .home-data-divider {
+            width: 1px;
+            height: 28px;
+            background: #F0F0F5;
+            margin: 0 8px;
+        }
+        .home-data-cta {
+            font-size: 13px;
+            font-weight: 600;
+            color: #6C5CE7;
+            cursor: pointer;
+        }
+
+        /* 人格卡预览 - 横滑 */
+        .home-personality-preview {
+            display: flex;
+            gap: 10px;
+            padding: 0 16px 24px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        .home-personality-preview::-webkit-scrollbar { display: none; }
+        .home-preview-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            min-width: 80px;
+            padding: 12px 8px;
+            background: #FFFFFF;
+            border: 1px solid #F0F0F5;
+            border-radius: 14px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+            cursor: pointer;
+            transition: all 0.15s;
+            flex-shrink: 0;
+        }
+        .home-preview-card:active { transform: scale(0.95); }
+        .home-preview-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+        .home-preview-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .home-preview-name { font-size: 11px; font-weight: 600; color: #1a1a2e; white-space: nowrap; }
+
         /* ===== 学习页 ===== */
         .study-page {
             padding-bottom: 20px;
@@ -2000,6 +2130,7 @@
             initGreeting();
             initCountdown();
             renderPersonalities();
+            renderHomePersonalityPreview();
             initTabEvents();
             updateProfileStats();
             updateHomeStatus();
@@ -2069,6 +2200,20 @@
             }
             if (scroll) scroll.innerHTML = html;
             if (grid) grid.innerHTML = html;
+        }
+
+        function renderHomePersonalityPreview() {
+            var container = document.getElementById('home-personality-preview');
+            if (!container) return;
+            var html = '';
+            for (var i = 0; i < Math.min(6, personalities.length); i++) {
+                var p = personalities[i];
+                html += '<div class="home-preview-card" onclick="switchTab(\'personality\');setTimeout(function(){showPersonalityDetail(\'' + p.type + '\')},300)">';
+                html += '<div class="home-preview-avatar"><img src="' + p.img + '" alt="' + p.type + '" onerror="this.style.display=\'none\'"></div>';
+                html += '<div class="home-preview-name">' + p.type + '</div>';
+                html += '</div>';
+            }
+            container.innerHTML = html;
         }
 
         function showPersonalityDetail(type) {
@@ -2337,6 +2482,12 @@
             if (streakEl) streakEl.textContent = streakCount + '天';
             if (tasksEl) tasksEl.textContent = tasksCount + '次';
             if (diagEl) diagEl.textContent = (data.diagnosis && data.diagnosis.type) ? '已诊断' : '未诊断';
+            
+            // Home data bar
+            var barStreak = document.getElementById('home-bar-streak');
+            var barTasks = document.getElementById('home-bar-tasks');
+            if (barStreak) barStreak.textContent = streakCount;
+            if (barTasks) barTasks.textContent = tasksCount;
             
             // Study page streak badge
             var studyStreakNum = document.getElementById('study-streak-num');
