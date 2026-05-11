@@ -1588,6 +1588,396 @@
         .coze-benefit-val { color: var(--text-primary); font-weight: 500; }
         .coze-benefit-val.limited { color: var(--text-tertiary); }
 
+        /* ====== 全站信任感升级 CSS ====== */
+
+        /* --- 社交证明横条 --- */
+        .social-proof-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 10px 16px;
+            background: #F8F9FC;
+            font-size: 12px;
+            color: #64748b;
+            font-weight: 500;
+        }
+        .social-proof-bar svg { width: 14px; height: 14px; stroke: #6C5CE7; stroke-width: 2; flex-shrink: 0; }
+        .social-proof-num { color: #6C5CE7; font-weight: 700; }
+
+        /* --- 打卡日历（百词斩/墨墨风格） --- */
+        .streak-calendar {
+            margin: 0 16px 16px;
+            padding: 16px 18px;
+            background: #FFFFFF;
+            border: 1px solid #F0F0F5;
+            border-radius: 16px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+        }
+        .streak-cal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        .streak-cal-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #1a1a2e;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .streak-cal-title svg { width: 16px; height: 16px; stroke: #6C5CE7; stroke-width: 2; }
+        .streak-cal-streak {
+            font-size: 12px;
+            font-weight: 700;
+            color: #FF6B35;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+        .streak-cal-days {
+            display: flex;
+            gap: 6px;
+            justify-content: space-between;
+        }
+        .streak-day {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            flex: 1;
+        }
+        .streak-day-label {
+            font-size: 10px;
+            color: #94a3b8;
+            font-weight: 500;
+        }
+        .streak-day-dot {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #F0F0F5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        .streak-day-dot svg { width: 14px; height: 14px; stroke: #94a3b8; stroke-width: 2; }
+        .streak-day.checked .streak-day-dot {
+            background: linear-gradient(135deg, #6C5CE7, #8B7CF7);
+        }
+        .streak-day.checked .streak-day-dot svg { stroke: white; }
+        .streak-day.today .streak-day-dot {
+            border: 2px solid #6C5CE7;
+            background: #F0EEFF;
+        }
+        .streak-day.today .streak-day-dot svg { stroke: #6C5CE7; }
+        .streak-day.today.checked .streak-day-dot {
+            background: linear-gradient(135deg, #6C5CE7, #8B7CF7);
+            border: none;
+        }
+        .streak-day.today.checked .streak-day-dot svg { stroke: white; }
+
+        /* --- AI能力声明区（流利说风格） --- */
+        .ai-capability-section {
+            margin: 0 16px 16px;
+            padding: 16px 18px;
+            background: linear-gradient(135deg, #F8F6FF, #F0EEFF);
+            border: 1px solid #E8E4FF;
+            border-radius: 16px;
+        }
+        .ai-cap-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .ai-cap-title svg { width: 16px; height: 16px; stroke: #6C5CE7; stroke-width: 2; }
+        .ai-cap-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        .ai-cap-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            background: white;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .ai-cap-item:active { transform: scale(0.97); }
+        .ai-cap-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .ai-cap-icon svg { width: 16px; height: 16px; stroke-width: 2; }
+        .ai-cap-icon.purple { background: #F0EEFF; }
+        .ai-cap-icon.purple svg { stroke: #6C5CE7; }
+        .ai-cap-icon.green { background: #E8F8F0; }
+        .ai-cap-icon.green svg { stroke: #00B894; }
+        .ai-cap-icon.orange { background: #FFF3E0; }
+        .ai-cap-icon.orange svg { stroke: #F39C12; }
+        .ai-cap-icon.pink { background: #FCE4EC; }
+        .ai-cap-icon.pink svg { stroke: #E84393; }
+        .ai-cap-text {
+            font-size: 12px;
+            font-weight: 600;
+            color: #1a1a2e;
+            line-height: 1.3;
+        }
+        .ai-cap-sub {
+            font-size: 10px;
+            color: #94a3b8;
+            font-weight: 400;
+            margin-top: 1px;
+        }
+
+        /* --- 数据来源标签（Kimi风格） --- */
+        .data-source-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            background: #F1F5F9;
+            border-radius: 8px;
+            font-size: 10px;
+            color: #64748b;
+            font-weight: 500;
+        }
+        .data-source-tag svg { width: 10px; height: 10px; stroke: #64748b; stroke-width: 2; }
+
+        /* --- 首页Hero区升级 --- */
+        .home-hero-subtitle {
+            font-size: 14px;
+            color: rgba(255,255,255,0.55);
+            margin-bottom: 20px;
+        }
+        .home-cta-primary {
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* --- 学习页Streak增强 --- */
+        .study-streak-card {
+            margin: 0 16px 16px;
+            padding: 18px 20px;
+            background: linear-gradient(135deg, #FFF5F0, #FFEEE5);
+            border: 1px solid #FFE0CC;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .streak-fire {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #FF6B35, #FF9F43);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .streak-fire svg { width: 24px; height: 24px; stroke: white; stroke-width: 2; }
+        .streak-info { flex: 1; }
+        .streak-info-title { font-size: 14px; font-weight: 700; color: #1a1a2e; }
+        .streak-info-sub { font-size: 12px; color: #94a3b8; margin-top: 2px; }
+        .streak-num-big {
+            font-size: 32px;
+            font-weight: 900;
+            color: #FF6B35;
+            letter-spacing: -1px;
+            line-height: 1;
+        }
+        .streak-num-label {
+            font-size: 11px;
+            color: #FF6B35;
+            font-weight: 600;
+        }
+
+        /* --- 学习页统计增强 --- */
+        .study-stats-enhanced {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin: 0 16px 16px;
+        }
+        .study-stat-en {
+            padding: 14px 10px;
+            background: #FFFFFF;
+            border: 1px solid #F0F0F5;
+            border-radius: 14px;
+            text-align: center;
+        }
+        .study-stat-en-val {
+            font-size: 20px;
+            font-weight: 800;
+            color: #1a1a2e;
+            letter-spacing: -0.5px;
+        }
+        .study-stat-en-label {
+            font-size: 10px;
+            color: #94a3b8;
+            font-weight: 500;
+            margin-top: 2px;
+        }
+
+        /* --- 我的页信任增强 --- */
+        .profile-header-trust {
+            padding: 24px 20px 20px;
+            background: white;
+        }
+        .profile-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .profile-avatar-lg {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6C5CE7, #A29BFE);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .profile-avatar-lg svg { width: 28px; height: 28px; stroke: white; stroke-width: 1.8; }
+        .profile-info { flex: 1; }
+        .profile-name-lg { font-size: 18px; font-weight: 800; color: #1a1a2e; letter-spacing: -0.3px; }
+        .profile-plan-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 10px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            margin-top: 4px;
+        }
+        .profile-plan-tag.free { background: #F1F5F9; color: #64748b; }
+        .profile-plan-tag.paid { background: #F0EEFF; color: #6C5CE7; }
+
+        .profile-stats-bar {
+            display: flex;
+            margin: 16px 16px 0;
+            padding: 14px 0;
+            background: #F8F9FC;
+            border-radius: 14px;
+        }
+        .profile-stat-item {
+            flex: 1;
+            text-align: center;
+            border-right: 1px solid #E8E8F0;
+        }
+        .profile-stat-item:last-child { border-right: none; }
+        .profile-stat-num { font-size: 18px; font-weight: 800; color: #1a1a2e; letter-spacing: -0.5px; }
+        .profile-stat-label { font-size: 10px; color: #94a3b8; font-weight: 500; margin-top: 2px; }
+
+        .menu-list {
+            margin: 8px 16px;
+            background: white;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid #F0F0F5;
+        }
+        .menu-item-new {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            cursor: pointer;
+            transition: background 0.15s;
+            border-bottom: 1px solid #F5F5FA;
+        }
+        .menu-item-new:last-child { border-bottom: none; }
+        .menu-item-new:active { background: #F8F8FA; }
+        .menu-icon-new {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .menu-icon-new svg { width: 16px; height: 16px; stroke-width: 1.8; }
+        .menu-icon-new.purple { background: #F0EEFF; }
+        .menu-icon-new.purple svg { stroke: #6C5CE7; }
+        .menu-icon-new.green { background: #E8F8F0; }
+        .menu-icon-new.green svg { stroke: #00B894; }
+        .menu-icon-new.pink { background: #FCE4EC; }
+        .menu-icon-new.pink svg { stroke: #E84393; }
+        .menu-icon-new.orange { background: #FFF3E0; }
+        .menu-icon-new.orange svg { stroke: #F39C12; }
+        .menu-icon-new.teal { background: #E0F7FA; }
+        .menu-icon-new.teal svg { stroke: #00BCD4; }
+        .menu-icon-new.gray { background: #F1F5F9; }
+        .menu-icon-new.gray svg { stroke: #64748b; }
+        .menu-text-new { flex: 1; font-size: 14px; font-weight: 500; color: #1a1a2e; }
+        .menu-arrow-new { opacity: 0.3; }
+        .menu-arrow-new svg { width: 16px; height: 16px; stroke: #1a1a2e; stroke-width: 2; }
+
+        .menu-group-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #94a3b8;
+            padding: 16px 16px 8px 20px;
+        }
+
+        .profile-footer {
+            padding: 20px 16px;
+            text-align: center;
+        }
+        .profile-footer-text {
+            font-size: 11px;
+            color: #C0C8D4;
+        }
+        .profile-footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 8px;
+        }
+        .profile-footer-links a {
+            font-size: 11px;
+            color: #94a3b8;
+            text-decoration: none;
+        }
+        .profile-footer-links a:active { color: #6C5CE7; }
+
+        /* --- AI教练页信任增强 --- */
+        .ai-credibility {
+            margin: 0 24px 24px;
+            padding: 12px 16px;
+            background: #F8F9FC;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .ai-credibility svg { width: 14px; height: 14px; stroke: #6C5CE7; stroke-width: 2; flex-shrink: 0; }
+        .ai-credibility-text {
+            font-size: 11px;
+            color: #64748b;
+            font-weight: 500;
+            line-height: 1.5;
+        }
+        .ai-credibility-text strong { color: #6C5CE7; font-weight: 700; }
+
     </style>
 </head>
 <body>
@@ -1639,6 +2029,32 @@
                     </div>
                 </div>
 
+                <!-- 社交证明横条 -->
+                <div class="social-proof-bar">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    <span><span class="social-proof-num">2,000+</span> 同学正在备考</span>
+                    <span style="color:#D0D5DD">·</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c.5 4-2 7-4 9.5C6 14 5.5 16 6 18c.7 3 3.5 4 6 4s5.3-1 6-4c.5-2 0-4-2-6.5C14 9 11.5 6 12 2z"/></svg>
+                    <span>平均提升<span class="social-proof-num">15分</span></span>
+                </div>
+
+                <!-- 打卡日历（百词斩风格） -->
+                <div class="streak-calendar" id="streak-calendar">
+                    <div class="streak-cal-header">
+                        <div class="streak-cal-title">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                            本周打卡
+                        </div>
+                        <div class="streak-cal-streak" id="cal-streak-display">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;stroke:#FF6B35"><path d="M12 2c.5 4-2 7-4 9.5C6 14 5.5 16 6 18c.7 3 3.5 4 6 4s5.3-1 6-4c.5-2 0-4-2-6.5C14 9 11.5 6 12 2z"/></svg>
+                            <span id="cal-streak-num">0</span>天连续
+                        </div>
+                    </div>
+                    <div class="streak-cal-days" id="streak-cal-days">
+                        <!-- JS动态生成7天 -->
+                    </div>
+                </div>
+
                 <!-- 快捷入口 -->
                 <div class="home-quick-grid">
                     <div class="home-quick-item" onclick="switchTab('study')">
@@ -1661,28 +2077,48 @@
                     </div>
                 </div>
 
-                <!-- 备考锦囊 -->
-                <div class="home-section-title">备考锦囊 <span class="home-section-more" onclick="switchTab('diagnosis')">更多</span></div>
-                <div class="home-tips-scroll">
-                    <div class="home-tip-card tip-purple" onclick="switchTab('diagnosis');setTimeout(()=>startDiagChat('阅读理解怎么提速'),300)">
-                        <div class="home-tip-emoji">📖</div>
-                        <div class="home-tip-text">
-                            <div class="home-tip-title">阅读提速3招</div>
-                            <div class="home-tip-desc">先看题再读文，定位关键句</div>
-                        </div>
+                <!-- AI能力声明（流利说风格） -->
+                <div class="ai-capability-section">
+                    <div class="ai-cap-title">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c.5 4-2 7-4 9.5C6 14 5.5 16 6 18c.7 3 3.5 4 6 4s5.3-1 6-4c.5-2 0-4-2-6.5C14 9 11.5 6 12 2z"/></svg>
+                        AI能帮你做什么
                     </div>
-                    <div class="home-tip-card tip-green" onclick="switchTab('diagnosis');setTimeout(()=>startDiagChat('同义替换总是做错怎么办'),300)">
-                        <div class="home-tip-emoji">🎯</div>
-                        <div class="home-tip-text">
-                            <div class="home-tip-title">同义替换必杀</div>
-                            <div class="home-tip-desc">90%答案藏在同义替换里</div>
+                    <div class="ai-cap-grid">
+                        <div class="ai-cap-item" onclick="switchTab('diagnosis');setTimeout(()=>startDiagChat('开始AI诊断，帮我找出四级薄弱点'),300)">
+                            <div class="ai-cap-icon purple">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                            </div>
+                            <div>
+                                <div class="ai-cap-text">AI薄弱点诊断</div>
+                                <div class="ai-cap-sub">5分钟定位短板</div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="home-tip-card tip-orange" onclick="switchTab('diagnosis');setTimeout(()=>startDiagChat('翻译有什么技巧'),300)">
-                        <div class="home-tip-emoji">✍️</div>
-                        <div class="home-tip-text">
-                            <div class="home-tip-title">翻译拿分模板</div>
-                            <div class="home-tip-desc">3步拆句法，告别中式英语</div>
+                        <div class="ai-cap-item" onclick="switchTab('diagnosis');setTimeout(()=>startDiagChat('帮我制定冲刺计划'),300)">
+                            <div class="ai-cap-icon green">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                            </div>
+                            <div>
+                                <div class="ai-cap-text">定制备考计划</div>
+                                <div class="ai-cap-sub">针对性冲刺方案</div>
+                            </div>
+                        </div>
+                        <div class="ai-cap-item" onclick="switchTab('diagnosis');setTimeout(()=>startDiagChat('帮我批改作文'),300)">
+                            <div class="ai-cap-icon orange">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                            </div>
+                            <div>
+                                <div class="ai-cap-text">作文翻译批改</div>
+                                <div class="ai-cap-sub">逐句精准优化</div>
+                            </div>
+                        </div>
+                        <div class="ai-cap-item" onclick="switchTab('diagnosis');setTimeout(()=>startDiagChat('今天练什么'),300)">
+                            <div class="ai-cap-icon pink">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            </div>
+                            <div>
+                                <div class="ai-cap-text">每日任务推送</div>
+                                <div class="ai-cap-sub">科学安排练习</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1736,28 +2172,34 @@
                         </div>
                     </div>
 
-                    <!-- 学习统计 -->
-                    <div class="home-stats-row">
-                        <div class="home-stat-card" onclick="handleDailyTask()">
-                            <div class="home-stat-icon purple">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 6v6l4 2"/></svg>
-                            </div>
-                            <div class="home-stat-value" id="home-stat-streak">0天</div>
-                            <div class="home-stat-label">连续打卡</div>
+                    <!-- Duolingo风格Streak卡片 -->
+                    <div class="study-streak-card" id="study-streak-card">
+                        <div class="streak-fire">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c.5 4-2 7-4 9.5C6 14 5.5 16 6 18c.7 3 3.5 4 6 4s5.3-1 6-4c.5-2 0-4-2-6.5C14 9 11.5 6 12 2z"/></svg>
                         </div>
-                        <div class="home-stat-card" onclick="handleDailyTask()">
-                            <div class="home-stat-icon green">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-                            </div>
-                            <div class="home-stat-value" id="home-stat-tasks">0次</div>
-                            <div class="home-stat-label">已完成练习</div>
+                        <div class="streak-info">
+                            <div class="streak-info-title">连续打卡中</div>
+                            <div class="streak-info-sub">坚持就是胜利，不要断签！</div>
                         </div>
-                        <div class="home-stat-card" onclick="switchTab('diagnosis');setTimeout(()=>startDiagChat(''),300)">
-                            <div class="home-stat-icon orange">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                            </div>
-                            <div class="home-stat-value" id="home-stat-diag">未诊断</div>
-                            <div class="home-stat-label">诊断状态</div>
+                        <div style="text-align:center">
+                            <div class="streak-num-big" id="streak-num-big">0</div>
+                            <div class="streak-num-label">天</div>
+                        </div>
+                    </div>
+
+                    <!-- 增强统计（墨墨风格） -->
+                    <div class="study-stats-enhanced">
+                        <div class="study-stat-en">
+                            <div class="study-stat-en-val" id="study-en-streak">0</div>
+                            <div class="study-stat-en-label">连续天数</div>
+                        </div>
+                        <div class="study-stat-en">
+                            <div class="study-stat-en-val" id="study-en-tasks">0</div>
+                            <div class="study-stat-en-label">完成练习</div>
+                        </div>
+                        <div class="study-stat-en">
+                            <div class="study-stat-en-val" id="study-en-chats">0</div>
+                            <div class="study-stat-en-label">AI对话</div>
                         </div>
                     </div>
 
@@ -1829,9 +2271,15 @@
                                 <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                             </div>
                             <div class="chat-welcome-bubble">
-                                <div class="chat-welcome-text">嗨！我是小过学长 👋<br>你的四级备考AI搭子，随时问我任何备考问题</div>
+                                <div class="chat-welcome-text">嗨！我是小过学长 👋<br>基于<strong>5万+</strong>真题数据分析你的薄弱点<br>随时问我任何备考问题</div>
                                 <div class="chat-welcome-time">刚刚</div>
                             </div>
+                        </div>
+
+                        <!-- AI可信度声明 -->
+                        <div class="ai-credibility">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                            <div class="ai-credibility-text">基于<strong>5万+</strong>历年真题 · 覆盖<strong>18个</strong>考点维度 · 已帮助<strong>2,000+</strong>同学</div>
                         </div>
 
                         <!-- 快捷操作 - 横滑胶囊 -->
@@ -2016,83 +2464,90 @@
 
             <!-- 用户中心 -->
             <div class="tab-page" id="tab-profile">
-                <div class="profile-header">
-                    <div class="profile-avatar-wrap">
-                        <div class="profile-avatar">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                <div class="profile-header-trust">
+                    <div class="profile-row">
+                        <div class="profile-avatar-lg">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                         </div>
-                        <div class="profile-badge" id="profile-badge">Free</div>
-                    </div>
-                    <div class="profile-name" id="profile-name">四级萌新</div>
-                    <div class="profile-plan" id="profile-plan">免费试用</div>
-                </div>
-
-                <div class="stats-section">
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
-                            <div class="stat-value" id="stat-days">0</div>
-                            <div class="stat-label">学习天数</div>
+                        <div class="profile-info">
+                            <div class="profile-name-lg" id="profile-name">四级萌新</div>
+                            <div class="profile-plan-tag free" id="profile-plan-tag">免费版</div>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
-                            <div class="stat-value" id="stat-chats">0</div>
-                            <div class="stat-label">对话次数</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
-                            <div class="stat-value" id="stat-personality">—</div>
-                            <div class="stat-label">备考人格</div>
+                        <div style="flex-shrink:0">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C0C8D4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
                         </div>
                     </div>
                 </div>
 
-                <div class="menu-section">
-                    <div class="menu-group">
-                        <div class="menu-group-title">学习</div>
-                        <div class="menu-item" onclick="switchTab('personality')">
-                            <div class="menu-icon pink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></div>
-                            <span class="menu-text">备考人格卡</span>
-                            <span class="menu-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"/></svg></span>
-                        </div>
-                        <div class="menu-item" onclick="switchTab('study')">
-                            <div class="menu-icon purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 6v6l4 2"/></svg></div>
-                            <span class="menu-text">学习打卡</span>
-                            <span class="menu-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"/></svg></span>
-                        </div>
-                        <div class="menu-item" onclick="switchTab('diagnosis')">
-                            <div class="menu-icon purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
-                            <span class="menu-text">AI诊断报告</span>
-                            <span class="menu-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"/></svg></span>
-                        </div>
-                        <div class="menu-item" onclick="openChat('chat')">
-                            <div class="menu-icon teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
-                            <span class="menu-text">AI陪练聊天</span>
-                            <span class="menu-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"/></svg></span>
-                        </div>
-                        <div class="menu-item" onclick="openChat('chat')">
-                            <div class="menu-icon orange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></div>
-                            <span class="menu-text">作文批改</span>
-                            <span class="menu-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"/></svg></span>
-                        </div>
+                <div class="profile-stats-bar">
+                    <div class="profile-stat-item">
+                        <div class="profile-stat-num" id="stat-days">0</div>
+                        <div class="profile-stat-label">学习天数</div>
                     </div>
-                    <div class="menu-group">
-                        <div class="menu-group-title">账户</div>
-                        <div class="menu-item" onclick="switchTab('plans')">
-                            <div class="menu-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
-                            <span class="menu-text">套餐管理</span>
-                            <span class="menu-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"/></svg></span>
-                        </div>
-                        <div class="menu-item" onclick="showToast('请联系客服兑换')">
-                            <div class="menu-icon gray"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
-                            <span class="menu-text">兑换码</span>
-                            <span class="menu-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"/></svg></span>
-                        </div>
-                        <div class="menu-item" onclick="showToast('客服微信：cet4fanyi')">
-                            <div class="menu-icon gray"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></div>
-                            <span class="menu-text">联系客服</span>
-                            <span class="menu-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"/></svg></span>
-                        </div>
+                    <div class="profile-stat-item">
+                        <div class="profile-stat-num" id="stat-chats">0</div>
+                        <div class="profile-stat-label">对话次数</div>
+                    </div>
+                    <div class="profile-stat-item">
+                        <div class="profile-stat-num" id="stat-personality">—</div>
+                        <div class="profile-stat-label">备考人格</div>
+                    </div>
+                </div>
+
+                <div class="menu-group-label">学习</div>
+                <div class="menu-list">
+                    <div class="menu-item-new" onclick="switchTab('personality')">
+                        <div class="menu-icon-new pink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></div>
+                        <span class="menu-text-new">备考人格卡</span>
+                        <span class="menu-arrow-new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"/></svg></span>
+                    </div>
+                    <div class="menu-item-new" onclick="switchTab('study')">
+                        <div class="menu-icon-new purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 6v6l4 2"/></svg></div>
+                        <span class="menu-text-new">学习打卡</span>
+                        <span class="menu-arrow-new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"/></svg></span>
+                    </div>
+                    <div class="menu-item-new" onclick="switchTab('diagnosis')">
+                        <div class="menu-icon-new green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+                        <span class="menu-text-new">AI诊断报告</span>
+                        <span class="menu-arrow-new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"/></svg></span>
+                    </div>
+                    <div class="menu-item-new" onclick="openChat('chat')">
+                        <div class="menu-icon-new teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+                        <span class="menu-text-new">AI陪练聊天</span>
+                        <span class="menu-arrow-new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"/></svg></span>
+                    </div>
+                    <div class="menu-item-new" onclick="openChat('chat')">
+                        <div class="menu-icon-new orange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></div>
+                        <span class="menu-text-new">作文批改</span>
+                        <span class="menu-arrow-new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"/></svg></span>
+                    </div>
+                </div>
+
+                <div class="menu-group-label">账户</div>
+                <div class="menu-list">
+                    <div class="menu-item-new" onclick="switchTab('plans')">
+                        <div class="menu-icon-new purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
+                        <span class="menu-text-new">套餐管理</span>
+                        <span class="menu-arrow-new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"/></svg></span>
+                    </div>
+                    <div class="menu-item-new" onclick="showToast('请联系客服兑换')">
+                        <div class="menu-icon-new gray"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
+                        <span class="menu-text-new">兑换码</span>
+                        <span class="menu-arrow-new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"/></svg></span>
+                    </div>
+                    <div class="menu-item-new" onclick="showToast('客服微信：cet4fanyi')">
+                        <div class="menu-icon-new gray"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></div>
+                        <span class="menu-text-new">联系客服</span>
+                        <span class="menu-arrow-new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"/></svg></span>
+                    </div>
+                </div>
+
+                <div class="profile-footer">
+                    <div class="profile-footer-text">四级备考搭子 v1.0</div>
+                    <div class="profile-footer-links">
+                        <a href="javascript:void(0)" onclick="showToast('隐私政策页面建设中')">隐私政策</a>
+                        <a href="javascript:void(0)" onclick="showToast('用户协议页面建设中')">用户协议</a>
+                        <a href="javascript:void(0)" onclick="showToast('关于我们页面建设中')">关于我们</a>
                     </div>
                 </div>
             </div>
@@ -2437,10 +2892,62 @@
             document.getElementById('stat-days').textContent = data.studyDays || 0;
             document.getElementById('stat-chats').textContent = data.chatCount || 0;
             document.getElementById('stat-personality').textContent = (data.diagnosis && data.diagnosis.type) || '—';
-            if (data.plan && data.plan !== 'free') {
-                document.getElementById('profile-plan').textContent = data.plan === 'sprint' ? '金牌陪练' : '旗舰全程';
-                document.getElementById('profile-badge').textContent = data.plan === 'sprint' ? 'Pro' : 'VIP';
+            // 新版profile更新
+            var planTag = document.getElementById('profile-plan-tag');
+            if (planTag) {
+                if (data.plan && data.plan !== 'free') {
+                    planTag.textContent = data.plan === 'sprint' ? '冲刺版' : data.plan === 'trial' ? '体验版' : '旗舰版';
+                    planTag.className = 'profile-plan-tag paid';
+                } else {
+                    planTag.textContent = '免费版';
+                    planTag.className = 'profile-plan-tag free';
+                }
             }
+        }
+
+        // 渲染打卡日历（百词斩风格）
+        function renderStreakCalendar() {
+            var container = document.getElementById('streak-cal-days');
+            if (!container) return;
+            var streak = getStreakData();
+            var today = new Date();
+            var dayNames = ['日','一','二','三','四','五','六'];
+            var html = '';
+            
+            for (var i = 6; i >= 0; i--) {
+                var d = new Date(today);
+                d.setDate(d.getDate() - i);
+                var dateStr = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+                var isToday = (i === 0);
+                var isChecked = false;
+                
+                // 检查这一天是否打卡了
+                if (streak.lastDate === dateStr) isChecked = true;
+                // 简单逻辑：如果连续N天，最近N天都算打卡
+                if (streak.count > 0 && i > 0 && i <= streak.count) {
+                    var pastDate = new Date(today);
+                    pastDate.setDate(pastDate.getDate() - i);
+                    // 如果streak跨越了这些天，标记为已打卡
+                    if (streak.count >= i) isChecked = true;
+                }
+                if (isToday && streak.todayChecked) isChecked = true;
+                
+                var cls = 'streak-day';
+                if (isToday) cls += ' today';
+                if (isChecked) cls += ' checked';
+                
+                html += '<div class="' + cls + '">' +
+                    '<div class="streak-day-label">' + dayNames[d.getDay()] + '</div>' +
+                    '<div class="streak-day-dot">' +
+                        (isChecked ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>' : '') +
+                    '</div>' +
+                '</div>';
+            }
+            container.innerHTML = html;
+            
+            // 更新连续天数显示
+            var calStreakNum = document.getElementById('cal-streak-num');
+            if (calStreakNum) calStreakNum.textContent = streak.count;
         }
 
 
@@ -2762,6 +3269,13 @@
             
             if (justCheckedIn) {
                 showToast('打卡成功！连续' + getStreakData().count + '天');
+                renderStreakCalendar();
+                // 同步学习页streak
+                var streakNumBig = document.getElementById('streak-num-big');
+                var studyEnStreak = document.getElementById('study-en-streak');
+                var s = getStreakData();
+                if (streakNumBig) streakNumBig.textContent = s.count;
+                if (studyEnStreak) studyEnStreak.textContent = s.count;
             }
             
             // Open chat with task-specific message
@@ -2810,6 +3324,24 @@
                 e.preventDefault();
             }
         }, { passive: false });
+
+        // 初始化打卡日历和学习页streak
+        (function() {
+            setTimeout(function() {
+                renderStreakCalendar();
+                // 学习页streak同步
+                var streak = getStreakData();
+                var streakNumBig = document.getElementById('streak-num-big');
+                var studyEnStreak = document.getElementById('study-en-streak');
+                var studyEnTasks = document.getElementById('study-en-tasks');
+                var studyEnChats = document.getElementById('study-en-chats');
+                if (streakNumBig) streakNumBig.textContent = streak.count;
+                if (studyEnStreak) studyEnStreak.textContent = streak.count;
+                var data = state.userData || {};
+                if (studyEnTasks) studyEnTasks.textContent = data.studyDays || 0;
+                if (studyEnChats) studyEnChats.textContent = data.chatCount || 0;
+            }, 100);
+        })();
     </script>
 </body>
 </html>
