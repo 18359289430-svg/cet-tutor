@@ -1985,7 +1985,8 @@
 
     
 /* ===== Custom Chat UI ===== */
-.custom-chat-page { display:flex; flex-direction:column; height:100%; background:#F7F7F8; }
+.custom-chat-page { display:flex; flex-direction:column; height:100%; background:#F7F7F8; overflow:hidden; }
+        .tab-page:has(.custom-chat-page) > *:last-child { padding-bottom: 0; }
 .custom-chat-header {
     display:flex; align-items:center; padding:12px 16px; background:#fff;
     border-bottom:1px solid #E5E5EA; flex-shrink:0; gap:12px;
@@ -2055,6 +2056,7 @@
 .custom-chat-input-area {
     flex-shrink:0; padding:12px 16px; background:#fff;
     border-top:1px solid #E5E5EA;
+    padding-bottom: calc(12px + 56px + env(safe-area-inset-bottom));
 }
 .custom-chat-input-row { display:flex; gap:8px; align-items:flex-end; }
 .custom-chat-input {
@@ -2074,7 +2076,6 @@
 .custom-chat-send:active { background:#5849C4; transform:scale(0.92); }
 .custom-chat-send svg { width:16px; height:16px; stroke:white; stroke-width:2.5; fill:none; }
 .custom-chat-send:disabled { background:#D1D5DB; cursor:default; }
-.custom-chat-round-info { font-size:11px; color:#94A3B8; text-align:center; margin-top:6px; }
 .custom-chat-card {
     margin-top:8px; padding:10px 12px; border-radius:10px;
     background:#F0EEFF; border:1px solid #D4CFFF; font-size:13px;
@@ -2408,7 +2409,7 @@
                                 <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
                             </button>
                         </div>
-                        <div class="custom-chat-round-info" id="chat-round-info"></div>
+                        
                     </div>
                 </div>
             </div>
@@ -2948,14 +2949,11 @@
             var text = input.value.trim();
             if (!text || chatState.isStreaming) return;
 
-            // Show user message
             appendMessage('user', text);
             input.value = '';
             autoResizeInput(input);
-
             chatState.isStreaming = true;
             chatState.chatRounds++;
-            updateRoundInfo();
 
             // Create conversation if needed
             if (!chatState.conversationId) {
@@ -2965,36 +2963,35 @@
                     if (createData.data && createData.data.id) {
                         chatState.conversationId = createData.data.id;
                     } else {
-                        appendMessage('ai', '连接失败，请刷新重试');
+                        appendMessage('ai', '连接失败: ' + (createData.msg || '请刷新重试'));
                         chatState.isStreaming = false;
                         return;
                     }
                 } catch (e) {
-                    appendMessage('ai', '网络错误，请检查网络连接');
+                    appendMessage('ai', '网络错误，请检查网络');
                     chatState.isStreaming = false;
                     return;
                 }
             }
 
-            // Show typing indicator
             appendTypingIndicator();
 
-            // Send message to Coze API via server proxy
             var userId = (state.userData && state.userData.uid) || 'user_' + Date.now();
             var payload = {
                 bot_id: chatState.botId,
                 user_id: userId,
                 conversation_id: chatState.conversationId,
                 messages: [{ role: 'user', content: text, content_type: 'text' }],
-                stream: true,
-                parameters: {
+                stream: false,
+                auto_save_history: true,
+                custom_variables: {
                     user_plan: (state.userData && state.userData.plan) || 'free',
                     user_personality: (state.userData && state.userData.diagnosis && state.userData.diagnosis.type) || '',
                     study_days: String((state.userData && state.userData.studyDays) || 0),
                     today_task: getPlanTodayTaskText() || '',
-                    plan_summary: getPlanSummary(),
-                    last_context: getChatSummary(),
-                    pending_task: getPendingTask()
+                    plan_summary: getPlanSummary() || '',
+                    last_context: getChatSummary() || '',
+                    pending_task: getPendingTask() || ''
                 }
             };
 
@@ -3006,99 +3003,77 @@
                 });
 
                 if (!resp.ok) {
+                    var errText = await resp.text();
                     removeTypingIndicator();
-                    appendMessage('ai', '请求失败，请重试');
+                    appendMessage('ai', '请求失败(' + resp.status + ')，请重试');
                     chatState.isStreaming = false;
                     return;
                 }
 
-                var chatId = resp.headers.get('X-Chat-Id');
-                chatState.chatId = chatId;
+                var result = await resp.json();
+                // Non-stream: need to poll for completion
+                if (result.data && result.data.id && result.data.conversation_id) {
+                    chatState.chatId = result.data.id;
+                    var chatId = result.data.id;
+                    var convId = result.data.conversation_id;
+                    var status = result.data.status;
 
-                // Read SSE stream
-                var reader = resp.body.getReader();
-                var decoder = new TextDecoder();
-                var fullText = '';
-                var aiMsgDiv = null;
-                var buffer = '';
-
-                while (true) {
-                    var result = await reader.read();
-                    if (result.done) break;
-
-                    buffer += decoder.decode(result.value, { stream: true });
-                    var lines = buffer.split('\n');
-                    buffer = lines.pop();
-
-                    for (var i = 0; i < lines.length; i++) {
-                        var line = lines[i].trim();
-                        if (!line || !line.startsWith('event:')) continue;
-
-                        var event_type = line.substring(6).trim();
-                        // Next line should be data:
-                        var dataLine = '';
-                        while (i + 1 < lines.length && !lines[i+1].startsWith('event:')) {
-                            i++;
-                            if (lines[i].startsWith('data:')) {
-                                dataLine = lines[i].substring(5).trim();
-                            }
-                        }
-
-                        if (event_type === 'conversation.message.delta' && dataLine) {
+                    // Poll until completed
+                    if (status === 'in_progress' || status === 'created') {
+                        var maxPolls = 60;
+                        for (var p = 0; p < maxPolls; p++) {
+                            await new Promise(r => setTimeout(r, 1500));
                             try {
-                                var msgData = JSON.parse(dataLine);
-                                if (msgData.type === 'answer' && msgData.content) {
-                                    fullText += msgData.content;
-                                    removeTypingIndicator();
-                                    if (!aiMsgDiv) {
-                                        aiMsgDiv = appendMessage('ai', fullText);
-                                        aiMsgDiv.id = 'streaming-msg';
-                                    } else {
-                                        aiMsgDiv.querySelector('.custom-chat-bubble').innerHTML = formatBotText(fullText);
-                                    }
-                                    scrollChatToBottom();
+                                var pollResp = await fetch('/api/chat/retrieve?conversation_id=' + convId + '&chat_id=' + chatId);
+                                var pollData = await pollResp.json();
+                                if (pollData.data && (pollData.data.status === 'completed' || pollData.data.status === 'failed')) {
+                                    status = pollData.data.status;
+                                    break;
                                 }
-                            } catch (e) { /* skip invalid JSON */ }
-                        }
-
-                        if (event_type === 'conversation.message.completed' && dataLine) {
-                            try {
-                                var msgData = JSON.parse(dataLine);
-                                if (msgData.type === 'answer' && msgData.content) {
-                                    fullText = msgData.content;
-                                    removeTypingIndicator();
-                                    if (aiMsgDiv) {
-                                        aiMsgDiv.querySelector('.custom-chat-bubble').innerHTML = formatBotText(fullText);
-                                    } else {
-                                        aiMsgDiv = appendMessage('ai', fullText);
-                                    }
-                                }
-                                if (msgData.type === 'verbose_image' || msgData.type === 'follow_up') {
-                                    // Skip non-answer messages
-                                }
-                            } catch (e) {}
-                        }
-
-                        if (event_type === 'conversation.chat.completed') {
-                            removeTypingIndicator();
+                            } catch(e) { /* retry */ }
                         }
                     }
+
+                    if (status === 'completed') {
+                        // Fetch messages
+                        try {
+                            var msgResp = await fetch('/api/chat/messages?conversation_id=' + convId + '&chat_id=' + chatId);
+                            var msgData = await msgResp.json();
+                            var fullText = '';
+                            if (msgData.data) {
+                                for (var m = 0; m < msgData.data.length; m++) {
+                                    var msg = msgData.data[m];
+                                    if (msg.type === 'answer' && msg.content) {
+                                        fullText = msg.content;
+                                    }
+                                }
+                            }
+                            removeTypingIndicator();
+                            if (fullText) {
+                                var aiDiv = appendMessage('ai', fullText);
+                                // Parse markers
+                                var resultMatch = fullText.match(/\[RESULT:(.+?)\]/);
+                                if (resultMatch) parseDiagnosisResult(resultMatch[1]);
+                                var planMatch = fullText.match(/\[PLAN:(.+?)\]/);
+                                if (planMatch) parsePlanResult(planMatch[1]);
+                                var taskMatch = fullText.match(/\[TASK:(.+?)\]/);
+                                if (taskMatch) parseTaskDone(taskMatch[1]);
+                                onBotReply();
+                            } else {
+                                appendMessage('ai', 'AI未返回内容，请重试');
+                            }
+                        } catch(e) {
+                            removeTypingIndicator();
+                            appendMessage('ai', '获取回复失败，请重试');
+                        }
+                    } else {
+                        removeTypingIndicator();
+                        appendMessage('ai', 'AI处理超时，请重试');
+                    }
+                } else {
+                    removeTypingIndicator();
+                    appendMessage('ai', '请求异常: ' + (result.msg || '未知错误'));
                 }
-
-                // Final processing
-                if (fullText) {
-                    // Parse markers: [RESULT:...] [PLAN:...] [TASK:done]
-                    var resultMatch = fullText.match(/\[RESULT:(.+?)\]/);
-                    if (resultMatch) parseDiagnosisResult(resultMatch[1]);
-                    var planMatch = fullText.match(/\[PLAN:(.+?)\]/);
-                    if (planMatch) parsePlanResult(planMatch[1]);
-                    var taskMatch = fullText.match(/\[TASK:(.+?)\]/);
-                    if (taskMatch) parseTaskDone(taskMatch[1]);
-
-                    // Handle bot reply for streak/check-in
-                    onBotReply();
-                }
-
             } catch (e) {
                 removeTypingIndicator();
                 appendMessage('ai', '网络异常，请重试');
@@ -3148,18 +3123,7 @@
             }
         }
 
-        function updateRoundInfo() {
-            var el = document.getElementById('chat-round-info');
-            if (!el) return;
-            var userData = state.userData || {};
-            var plan = userData.plan || 'free';
-            var maxRounds = plan === 'free' ? 20 : 999;
-            if (plan === 'free') {
-                el.textContent = '对话轮次 ' + chatState.chatRounds + '/' + maxRounds;
-            } else {
-                el.textContent = '';
-            }
-        }
+        function updateRoundInfo() {}
 
         function showClearChatModal() {
             var overlay = document.createElement('div');
@@ -3183,7 +3147,6 @@
             chatState.chatRounds = 0;
             chatState.messages = [];
             chatState.isStreaming = false;
-            updateRoundInfo();
         }
 
         function toggleFaq(el) { el.parentElement.classList.toggle('open'); }

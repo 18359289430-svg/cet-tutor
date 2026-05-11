@@ -579,7 +579,9 @@ async function handleChatSend(req, res) {
             auto_save_history: stream === false
         };
         if (conversation_id) payload.conversation_id = conversation_id;
-        if (parameters) payload.custom_variables = parameters;
+        // Pass custom_variables from client (could be in parameters or custom_variables)
+        if (body.custom_variables) payload.custom_variables = body.custom_variables;
+        else if (parameters) payload.custom_variables = parameters;
 
         const resp = await fetch(COZE_API_BASE + '/v3/chat', {
             method: 'POST',
