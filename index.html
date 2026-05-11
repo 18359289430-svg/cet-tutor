@@ -17,7 +17,7 @@
             --primary: #6C5CE7;
             --primary-light: #A29BFE;
             --primary-dark: #5849C4;
-            --bg: #F8F9FA;
+            --bg: #FFFFFF;
             --card-bg: #ffffff;
             --card-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02);
             --card-shadow-hover: 0 4px 16px rgba(0,0,0,0.08);
@@ -34,7 +34,7 @@
         html, body {
             height: 100%;
             overflow: hidden;
-            background: #1a1a2e;
+            background: #FFFFFF;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             color: var(--text-primary);
             font-size: 15px;
@@ -83,7 +83,7 @@
             flex: 1;
             position: relative;
             overflow: hidden;
-            background: var(--bg);
+            background: #FFFFFF;
         }
         .tab-page {
             position: absolute;
@@ -103,6 +103,7 @@
         }
         .tab-page::-webkit-scrollbar { display: none; }
         .tab-page.active { opacity: 1; visibility: visible; }
+        .tab-page { background: #FFFFFF; }
         /* 确保内容不被Tab栏遮挡 */
         .tab-page > *:last-child { padding-bottom: calc(70px + var(--safe-bottom)); }
         
@@ -111,7 +112,7 @@
             flex-shrink: 0;
             height: calc(60px + var(--safe-bottom));
             padding-bottom: var(--safe-bottom);
-            background: rgba(255,255,255,0.95);
+            background: #FFFFFF;
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             display: flex;
@@ -148,14 +149,13 @@
         
         /* ========== 首页 ========== */
         #tab-home {
-            background: #F7F7FA;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
         }
         
         /* 主视觉区 */
         .home-hero {
-            background: linear-gradient(145deg, #4A3CB5 0%, #6C5CE7 40%, #8B7CF7 100%);
+            background: linear-gradient(145deg, #5B4EC9 0%, #7C6FF0 40%, #9B8DF8 100%);
             padding: 24px 24px 28px;
             border-radius: 0 0 24px 24px;
             position: relative;
@@ -208,7 +208,7 @@
             width: 100%;
             padding: 14px 24px;
             background: white;
-            color: #4A3CB5;
+            color: #5B4EC9;
             border: none;
             border-radius: 14px;
             font-size: 15px;
@@ -218,7 +218,7 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
             transition: all 0.2s;
         }
         .home-cta-btn:active { transform: scale(0.97); }
@@ -264,12 +264,19 @@
             width: 44px;
             height: 44px;
             border-radius: 12px;
-            background: #F0EEFF;
             display: flex;
             align-items: center;
             justify-content: center;
         }
-        .func-icon svg { width: 22px; height: 22px; stroke: #6C5CE7; stroke-width: 1.6; }
+        .func-icon svg { width: 22px; height: 22px; stroke-width: 1.6; }
+        .func-icon.purple { background: #F0EEFF; }
+        .func-icon.purple svg { stroke: #6C5CE7; }
+        .func-icon.green { background: #E8F8F0; }
+        .func-icon.green svg { stroke: #00B894; }
+        .func-icon.orange { background: #FFF3E0; }
+        .func-icon.orange svg { stroke: #F39C12; }
+        .func-icon.pink { background: #FCE4EC; }
+        .func-icon.pink svg { stroke: #E84393; }
         .func-label {
             font-size: 11px;
             font-weight: 500;
@@ -284,7 +291,7 @@
             overflow: hidden;
             cursor: pointer;
             transition: all 0.2s;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
         }
         .daily-card:active { transform: scale(0.98); }
         .daily-card-inner {
@@ -297,21 +304,21 @@
             width: 44px;
             height: 44px;
             border-radius: 12px;
-            background: linear-gradient(135deg, #6C5CE7, #8B7CF7);
+            background: #E8F8F0;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
         }
-        .daily-card-icon-wrap svg { width: 20px; height: 20px; stroke: white; stroke-width: 2; }
+        .daily-card-icon-wrap svg { width: 20px; height: 20px; stroke: #00B894; stroke-width: 2; }
         .daily-card-body { flex: 1; min-width: 0; }
         .daily-card-title { font-size: 14px; font-weight: 700; color: #1a1a2e; }
         .daily-card-sub { font-size: 12px; color: #999; margin-top: 2px; }
         .daily-card-badge {
             font-size: 12px;
             font-weight: 700;
-            color: #6C5CE7;
-            background: #F0EEFF;
+            color: #00B894;
+            background: #E8F8F0;
             padding: 6px 14px;
             border-radius: 10px;
             white-space: nowrap;
@@ -362,6 +369,7 @@
             flex: 1;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
+            background: #FFFFFF;
         }
         
         /* AI角色卡 - 简约白卡 */
@@ -378,13 +386,13 @@
             width: 44px;
             height: 44px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #6C5CE7, #8B7CF7);
+            background: #E8F8F0;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
         }
-        .diag-ai-avatar-icon svg { width: 22px; height: 22px; }
+        .diag-ai-avatar-icon svg { width: 22px; height: 22px; stroke: #00B894; }
         .diag-ai-info { flex: 1; }
         .diag-ai-name { font-size: 15px; font-weight: 700; color: #1a1a2e; }
         .diag-ai-desc { font-size: 12px; color: #999; margin-top: 1px; }
@@ -534,6 +542,7 @@
         /* 人格卡Tab页 */
         .personality-page {
             padding-bottom: 20px;
+            background: #FFFFFF;
         }
         .personality-page-header {
             padding: 24px 20px 16px;
@@ -593,7 +602,7 @@
             border-radius: 20px;
             padding: 18px 14px 16px;
             text-align: center;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.03);
             scroll-snap-align: start;
             cursor: pointer;
             transition: all 0.2s;
@@ -637,7 +646,7 @@
             background: white;
             border-radius: 20px;
             padding: 20px;
-            box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.03);
             position: relative;
             overflow: hidden;
         }
@@ -676,7 +685,7 @@
         .coze-header {
             padding: 12px 16px;
             padding-top: calc(12px + var(--safe-top));
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            background: linear-gradient(135deg, #5B4EC9 0%, #9B8DF8 100%);
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -710,7 +719,7 @@
             border-radius: 20px;
             padding: 20px;
             margin-bottom: 12px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.03);
             cursor: pointer;
             transition: all 0.2s;
             border: 2px solid transparent;
@@ -754,13 +763,13 @@
             border: none;
         }
         .plan-btn:active { transform: scale(0.98); }
-        .plan-card:not(.recommended) .plan-btn { background: #F8F9FA; color: var(--primary); }
+        .plan-card:not(.recommended) .plan-btn { background: #F5F5F5; color: var(--primary); }
         .plan-card.recommended .plan-btn { background: var(--primary); color: white; }
         
         /* FAQ */
         .faq-section { padding: 0 16px 20px; }
         .faq-title { font-size: 15px; font-weight: 600; color: var(--text-primary); margin-bottom: 12px; }
-        .faq-item { background: white; border-radius: 14px; margin-bottom: 8px; overflow: hidden; }
+        .faq-item { background: white; border-radius: 14px; margin-bottom: 8px; overflow: hidden; box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
         .faq-question {
             padding: 14px 16px;
             font-size: 14px;
@@ -785,7 +794,7 @@
         /* 用户中心 */
         .profile-header {
             padding: 24px 20px 28px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            background: linear-gradient(135deg, #5B4EC9 0%, #8B7CF7 50%, #A29BFE 100%);
             text-align: center;
         }
         .profile-avatar-wrap { position: relative; width: 72px; height: 72px; margin: 0 auto 12px; }
@@ -826,7 +835,7 @@
             border-radius: 16px;
             padding: 16px 8px;
             text-align: center;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.03);
         }
         .stat-icon {
             width: 36px;
@@ -849,7 +858,7 @@
         
         /* 菜单 */
         .menu-section { padding: 0 16px 20px; }
-        .menu-group { background: white; border-radius: 16px; overflow: hidden; margin-bottom: 10px; }
+        .menu-group { background: white; border-radius: 16px; overflow: hidden; margin-bottom: 10px; box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
         .menu-group-title {
             padding: 12px 16px 8px;
             font-size: 11px;
@@ -865,10 +874,10 @@
             gap: 12px;
             cursor: pointer;
             transition: background 0.15s;
-            border-bottom: 0.5px solid #F8F9FA;
+            border-bottom: 0.5px solid #F0F0F0;
         }
         .menu-item:last-child { border-bottom: none; }
-        .menu-item:active { background: #F8F9FA; }
+        .menu-item:active { background: #F5F5F5; }
         .menu-icon {
             width: 36px;
             height: 36px;
@@ -929,12 +938,12 @@
         
         /* 人格详情 */
         .personality-detail {
-            background: linear-gradient(135deg, #F8F7FF 0%, white 100%);
+            background: #FFFFFF;
             border-radius: 24px;
             padding: 28px 20px;
             text-align: center;
             margin-bottom: 20px;
-            border: 2px solid rgba(108,92,231,0.1);
+            border: 1px solid #F0F0F0;
         }
         .detail-avatar {
             width: 96px;
@@ -960,7 +969,7 @@
             border: 1px solid rgba(108,92,231,0.15);
         }
         .detail-advice {
-            background: white;
+            background: #FAFAFA;
             border-radius: 16px;
             padding: 16px;
             margin-bottom: 20px;
@@ -1034,13 +1043,13 @@
 
 
         
-        .current-plan-bar { margin: 0 16px 12px; padding: 10px 16px; background: #1a1a2e; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .current-plan-bar { margin: 0 16px 12px; padding: 10px 16px; background: #FFFFFF; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; }
         .current-plan-label { font-size: 12px; color: rgba(255,255,255,0.6); }
         .current-plan-name { font-size: 13px; color: white; font-weight: 600; }
         .coze-price-sign { font-size: 14px; font-weight: 600; color: var(--text-primary); margin-right: 1px; }
         .coze-cards { padding: 16px 0 16px 16px; display: flex; gap: 10px; overflow-x: auto; -webkit-overflow-scrolling: touch; scroll-snap-type: x mandatory; scrollbar-width: none; padding-right: 16px; }
         .coze-cards::-webkit-scrollbar { display: none; }
-        .coze-card { flex-shrink: 0; width: 180px; background: white; border-radius: 14px; padding: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.04); cursor: pointer; transition: all 0.2s; border: 1.5px solid transparent; scroll-snap-align: start; display: flex; flex-direction: column; position: relative; }
+        .coze-card { flex-shrink: 0; width: 180px; background: white; border-radius: 14px; padding: 14px; box-shadow: 0 1px 4px rgba(0,0,0,0.03); cursor: pointer; transition: all 0.2s; border: 1.5px solid transparent; scroll-snap-align: start; display: flex; flex-direction: column; position: relative; }
         .coze-card:active { transform: scale(0.98); }
         .coze-card.recommended { border-color: var(--primary); }
         .coze-card.selected { border-color: var(--primary); background: rgba(108,92,231,0.02); }
@@ -1058,9 +1067,9 @@
         .coze-card-btn:active { transform: scale(0.98); }
         .coze-card-btn.primary { background: var(--primary); color: white; }
         .coze-card-btn.outline { background: rgba(108,92,231,0.06); color: var(--primary); }
-        .coze-benefits { margin: 0 16px 16px; padding: 16px; background: white; border-radius: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
+        .coze-benefits { margin: 0 16px 16px; padding: 16px; background: white; border-radius: 14px; box-shadow: 0 1px 4px rgba(0,0,0,0.03); }
         .coze-benefits-title { font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 10px; }
-        .coze-benefit-item { font-size: 12px; color: var(--text-secondary); display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 0.5px solid #F8F9FA; }
+        .coze-benefit-item { font-size: 12px; color: var(--text-secondary); display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 0.5px solid #F0F0F0; }
         .coze-benefit-item:last-child { border-bottom: none; }
         .coze-benefit-check { color: var(--primary); font-weight: 600; margin-right: 6px; }
         .coze-benefit-val { color: var(--text-primary); font-weight: 500; }
@@ -1107,25 +1116,25 @@
                 <!-- 功能入口 - 百词斩风格横排4图标 -->
                 <div class="home-func-row">
                     <div class="func-item" onclick="switchTab('diagnosis');setTimeout(()=>startDiagChat('开始AI诊断，帮我找出四级薄弱点'),300)">
-                        <div class="func-icon">
+                        <div class="func-icon purple">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                         </div>
                         <span class="func-label">AI诊断</span>
                     </div>
                     <div class="func-item" onclick="switchTab('diagnosis');setTimeout(()=>startDiagChat('查看我的备考计划'),300)">
-                        <div class="func-icon">
+                        <div class="func-icon orange">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                         </div>
                         <span class="func-label">备考计划</span>
                     </div>
                     <div class="func-item" onclick="handleDailyTask()">
-                        <div class="func-icon">
+                        <div class="func-icon green">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
                         </div>
                         <span class="func-label">每日一练</span>
                     </div>
                     <div class="func-item" onclick="switchTab('personality')">
-                        <div class="func-icon">
+                        <div class="func-icon pink">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
                         </div>
                         <span class="func-label">人格测试</span>
