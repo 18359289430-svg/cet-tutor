@@ -188,7 +188,7 @@
             justify-content: space-between;
             margin-bottom: 16px;
         }
-        .home-hero-left { flex: 1; }
+
         .home-greeting {
             font-size: 13px;
             color: rgba(255,255,255,0.65);
@@ -201,18 +201,7 @@
             line-height: 1.3;
             letter-spacing: -0.5px;
         }
-        .home-hero-char-wrap {
-            width: 80px;
-            height: 80px;
-            flex-shrink: 0;
-            margin-left: 16px;
-        }
-        .home-hero-char {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            filter: drop-shadow(0 4px 12px rgba(0,0,0,0.15));
-        }
+
         .home-hero-bottom {
             display: flex;
             align-items: center;
@@ -407,14 +396,17 @@
             gap: 14px;
             box-shadow: 0 2px 16px rgba(0,0,0,0.04);
         }
-        .diag-ai-avatar-img {
-            width: 52px;
-            height: 52px;
+        .diag-ai-avatar-icon {
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
-            object-fit: cover;
+            background: linear-gradient(135deg, var(--primary), #8B7CF7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             flex-shrink: 0;
-            border: 2px solid rgba(108,92,231,0.15);
         }
+        .diag-ai-avatar-icon svg { width: 24px; height: 24px; }
         .diag-ai-info { flex: 1; }
         .diag-ai-name { font-size: 16px; font-weight: 700; color: var(--text-primary); }
         .diag-ai-desc { font-size: 12px; color: var(--text-tertiary); margin-top: 2px; }
@@ -1074,13 +1066,8 @@
                 <div class="home-hero">
                     <div class="home-hero-inner">
                         <div class="home-hero-top">
-                            <div class="home-hero-left">
-                                <div class="home-greeting" id="greeting-text">早上好</div>
-                                <div class="home-hero-title">开始今天的<br>四级备考</div>
-                            </div>
-                            <div class="home-hero-char-wrap">
-                                <img src="/imgs/juanzong.webp" alt="" class="home-hero-char" id="home-hero-char">
-                            </div>
+                            <div class="home-greeting" id="greeting-text">早上好</div>
+                            <div class="home-hero-title">开始今天的<br>四级备考</div>
                         </div>
                         <div class="home-hero-bottom">
                             <div class="home-streak-pill" id="home-streak" onclick="handleDailyTask()">
@@ -1163,7 +1150,9 @@
                     <div class="diag-body" id="diag-body">
                         <!-- AI角色卡 - 百词斩风格 -->
                         <div class="diag-ai-card">
-                            <img src="/imgs/foxi.webp" alt="" class="diag-ai-avatar-img">
+                            <div class="diag-ai-avatar-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                            </div>
                             <div class="diag-ai-info">
                                 <div class="diag-ai-name">小过学长</div>
                                 <div class="diag-ai-desc">你的四级备考AI搭子</div>
@@ -1771,17 +1760,7 @@
                 homeCountdown.textContent = '距考试' + diff + '天';
             }
             
-            // Update hero character based on personality
-            var heroChar = document.getElementById('home-hero-char');
-            if (heroChar && personality !== '--') {
-                var charMap = {
-                    '佛系随缘选手':'foxi','脑补大师':'naobu','偏科大佬':'pianke','摆烂冠军':'bailan',
-                    '全对卷王':'juanzong','吗喽型选手':'malou','临时抱佛脚选手':'linshi','资料囤积狂':'tunji'
-                };
-                var charFile = charMap[personality];
-                if (charFile) heroChar.src = '/imgs/' + charFile + '.webp';
-            }
-            
+
             // Streak
             updateStreak();
             
