@@ -6,7 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="theme-color" content="#6C5CE7">
-    <title>四级备考搭子 - AI智能诊断</title>
+    <title>四级备考搭子</title>
     <style>
         :root {
             --primary: #6C5CE7;
@@ -14,46 +14,43 @@
             --primary-dark: #5849C4;
             --bg: #F8F9FA;
             --card-bg: #ffffff;
-            --card-bg-glass: rgba(255, 255, 255, 0.72);
-            --card-border: #f1f5f9;
             --card-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02);
-            --card-shadow-hover: 0 4px 16px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
-            --card-shadow-promoted: 0 4px 24px rgba(108,92,231,0.12), 0 1px 2px rgba(0,0,0,0.04);
-            --card-radius: 20px;
-            --card-radius-sm: 16px;
+            --card-shadow-hover: 0 4px 16px rgba(0,0,0,0.08);
             --text-primary: #1a1a2e;
             --text-secondary: #475569;
             --text-tertiary: #94a3b8;
-            --brand-purple: #6C5CE7;
-            --brand-purple-light: rgba(108,92,231,0.08);
             --success: #00B894;
-            --warning: #FDCB6E;
-            --border: #EAEAEF;
             --danger: #E17055;
             --safe-bottom: env(safe-area-inset-bottom, 20px);
             --safe-top: env(safe-area-inset-top, 44px);
+            --app-height: 100vh;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         html, body {
             height: 100%;
             overflow: hidden;
-            background: var(--bg);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: #1a1a2e;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             color: var(--text-primary);
             font-size: 15px;
             line-height: 1.5;
             -webkit-font-smoothing: antialiased;
         }
+        
+        /* App容器 - 固定高度，禁止整体滚动 */
         .app {
             display: flex;
             flex-direction: column;
-            height: 100%;
+            height: var(--app-height);
             max-width: 430px;
             margin: 0 auto;
             background: var(--bg);
             position: relative;
             overflow: hidden;
+            border-radius: 0;
         }
+        
+        /* 状态栏 */
         .status-bar {
             height: 44px;
             padding-top: var(--safe-top);
@@ -61,39 +58,27 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            position: relative;
-            z-index: 200;
             flex-shrink: 0;
-            border-bottom: 1px solid #F1F5F9;
         }
         .status-bar-content {
             display: flex;
             align-items: center;
             justify-content: space-between;
             width: 100%;
-            padding: 0 16px;
+            padding: 0 20px;
         }
-        .brand { font-size: 16px; font-weight: 700; color: #6C5CE7; letter-spacing: -0.3px; }
-        .countdown { 
-            font-size: 12px; 
-            color: #94A3B8; 
-            display: flex; 
-            align-items: center; 
-            gap: 5px;
-            font-weight: 500;
+        .brand { font-size: 17px; font-weight: 700; color: var(--primary); letter-spacing: -0.3px; }
+        .countdown { font-size: 12px; color: var(--text-tertiary); display: flex; align-items: center; gap: 5px; font-weight: 500; }
+        .countdown-dot { width: 6px; height: 6px; background: var(--danger); border-radius: 50%; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        
+        /* 主内容区 - 内部滚动 */
+        .main-content {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            background: var(--bg);
         }
-        .countdown-dot {
-            width: 6px;
-            height: 6px;
-            background: var(--danger);
-            border-radius: 50%;
-            animation: pulse 1.5s infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(0.8); }
-        }
-        .main-content { flex: 1; overflow: hidden; position: relative; }
         .tab-page {
             position: absolute;
             top: 0;
@@ -105,22 +90,30 @@
             -webkit-overflow-scrolling: touch;
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.25s ease, visibility 0.25s ease;
-            padding-bottom: calc(76px + var(--safe-bottom));
+            transition: opacity 0.2s ease;
+            /* 隐藏滚动条但保持滚动功能 */
+            scrollbar-width: none;
+            -ms-overflow-style: none;
         }
-        .tab-page.active { opacity: 1; visibility: visible; }
         .tab-page::-webkit-scrollbar { display: none; }
+        .tab-page.active { opacity: 1; visibility: visible; }
+        /* 确保内容不被Tab栏遮挡 */
+        .tab-page > *:last-child { padding-bottom: calc(70px + var(--safe-bottom)); }
+        
+        /* 底部Tab - 固定定位 */
         .tab-bar {
             position: absolute;
             bottom: 0;
             left: 0;
             right: 0;
-            height: calc(56px + var(--safe-bottom));
+            height: calc(60px + var(--safe-bottom));
             padding-bottom: var(--safe-bottom);
-            background: #FFFFFF;
-            border-top: 1px solid #F1F5F9;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             display: flex;
-            z-index: 200;
+            z-index: 100;
+            border-top: 0.5px solid rgba(0,0,0,0.06);
         }
         .tab-item {
             flex: 1;
@@ -128,93 +121,227 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 2px;
-            color: #CBD5E1;
+            gap: 3px;
+            color: var(--text-tertiary);
             cursor: pointer;
-            transition: color 0.15s;
+            transition: all 0.15s;
+            position: relative;
         }
-        .tab-item:active { opacity: 0.7; }
-        .tab-item.active { color: #6C5CE7; }
-        .tab-icon { width: 22px; height: 22px; }
-        .tab-icon svg { width: 22px; height: 22px; }
+        .tab-item.active { color: var(--primary); }
+        .tab-item.active::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 0 0 3px 3px;
+        }
+        .tab-icon { width: 24px; height: 24px; }
+        .tab-icon svg { width: 24px; height: 24px; }
         .tab-label { font-size: 10px; font-weight: 500; }
-        .tab-item.active .tab-label { font-weight: 600; }
-        .hero-section {
-            padding: 32px 20px 24px;
-            text-align: center;
-            background: linear-gradient(180deg, #F8F7FF 0%, #FAFAFA 100%);
+        
+        /* ========== 首页 - App化设计 ========== */
+        #tab-home {
+            background: linear-gradient(180deg, #FFFFFF 0%, #F8F9FA 100%);
         }
-        .hero-emoji { margin-bottom: 12px; display: flex; align-items: center; justify-content: center; }
-        .hero-title { 
-            font-size: 24px; 
-            font-weight: 700; 
-            color: #0F172A; 
-            margin-bottom: 6px; 
+        
+        /* 顶部问候区 */
+        .home-header {
+            padding: 20px 20px 16px;
+            background: transparent;
+        }
+        .home-greeting {
+            font-size: 13px;
+            color: var(--text-tertiary);
+            margin-bottom: 4px;
+        }
+        .home-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
             letter-spacing: -0.5px;
-            line-height: 1.3;
+            line-height: 1.2;
         }
-        .hero-title-accent {
-            color: #0F172A;
+        .home-title span { color: var(--primary); }
+        
+        /* 主卡片 - 像App的"今日"卡片 */
+        .today-card {
+            margin: 0 16px 16px;
+            background: linear-gradient(135deg, var(--primary) 0%, #8B7CF7 50%, var(--primary-light) 100%);
+            border-radius: 24px;
+            padding: 24px 20px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(108,92,231,0.3);
         }
-        .hero-subtitle { font-size: 14px; color: #94A3B8; margin-bottom: 20px; line-height: 1.5; }
-        .btn-primary {
-            display: inline-flex;
+        .today-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -30%;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .today-card::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -20%;
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .today-card-content { position: relative; z-index: 1; }
+        .today-label {
+            font-size: 11px;
+            color: rgba(255,255,255,0.7);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        .today-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+        .today-preview {
+            background: rgba(255,255,255,0.15);
+            border-radius: 16px;
+            padding: 14px;
+            margin-bottom: 16px;
+            backdrop-filter: blur(10px);
+        }
+        .today-preview-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .today-preview-avatar {
+            width: 32px;
+            height: 32px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .today-preview-avatar svg { width: 18px; height: 18px; stroke: white; }
+        .today-preview-name { font-size: 13px; color: white; font-weight: 500; }
+        .today-preview-status { font-size: 10px; color: rgba(255,255,255,0.6); margin-left: auto; }
+        .today-messages { display: flex; flex-direction: column; gap: 8px; }
+        .today-msg { font-size: 13px; color: rgba(255,255,255,0.9); line-height: 1.4; }
+        .today-msg.bot { padding-left: 0; }
+        .today-msg.user { text-align: right; color: white; font-weight: 500; }
+        .today-typing {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+        .today-typing span {
+            width: 6px;
+            height: 6px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 50%;
+            animation: typingBounce 1.2s infinite;
+        }
+        .today-typing span:nth-child(2) { animation-delay: 0.2s; }
+        .today-typing span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typingBounce {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+            30% { transform: translateY(-5px); opacity: 1; }
+        }
+        
+        /* 主CTA按钮 */
+        .today-cta {
+            position: relative;
+            z-index: 1;
+        }
+        .btn-start {
+            width: 100%;
+            padding: 16px 24px;
+            background: white;
+            color: var(--primary);
+            border: none;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            padding: 14px 32px;
-            background: #6C5CE7;
-            color: white;
-            border: none;
-            border-radius: 14px;
-            font-size: 15px;
-            font-weight: 600;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+            transition: all 0.2s;
+        }
+        .btn-start:active { transform: scale(0.97); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .btn-start svg { width: 20px; height: 20px; }
+        .today-hint { text-align: center; margin-top: 10px; font-size: 12px; color: rgba(255,255,255,0.7); }
+        
+        /* 快捷入口 - 像App的Action Row */
+        .quick-actions {
+            display: flex;
+            gap: 8px;
+            padding: 0 16px 20px;
+        }
+        .quick-action {
+            flex: 1;
+            background: white;
+            border-radius: 16px;
+            padding: 16px 12px;
+            text-align: center;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
             cursor: pointer;
             transition: all 0.2s;
-            box-shadow: 0 4px 16px rgba(108,92,231,0.3);
+            border: none;
         }
-        .btn-primary:active { transform: scale(0.96); box-shadow: 0 2px 8px rgba(108,92,231,0.2); }
-        .btn-primary svg { width: 18px; height: 18px; }
-
-        /* ========== 瓷片区卡片 - 彩色图标 ========== */
-        .tiles-section { padding: 0 16px 24px; }
-        .tiles-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
-        .tile-card {
-            background: #FFFFFF;
-            border-radius: 16px;
-            padding: 18px 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            cursor: pointer;
-            transition: all 0.15s ease;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.03);
-        }
-        .tile-card:active { transform: scale(0.97); background: #FAFAFA; }
-        .tile-icon {
-            width: 42px;
-            height: 42px;
+        .quick-action:active { transform: scale(0.97); background: #FAFAFA; }
+        .quick-icon {
+            width: 40px;
+            height: 40px;
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
+            margin: 0 auto 8px;
         }
-        .tile-icon.diagnosis { background: rgba(108,92,231,0.08); }
-        .tile-icon.diagnosis svg { stroke: #6C5CE7; }
-        .tile-icon.plan { background: rgba(0,206,209,0.08); }
-        .tile-icon.plan svg { stroke: #00CED1; }
-        .tile-icon.review { background: rgba(255,165,2,0.08); }
-        .tile-icon.review svg { stroke: #FFA502; }
-        .tile-icon.simulate { background: rgba(255,118,117,0.08); }
-        .tile-icon.simulate svg { stroke: #FF7675; }
-        .tile-title { font-size: 15px; font-weight: 600; color: #2D3436; }
-        .tile-desc { font-size: 12px; color: #B2BEC3; line-height: 1.4; }
-
-        /* ========== 人格卡 - 高端重做 ========== */
-        .personality-section { padding: 0 0 24px; }
-        .section-header { padding: 0 20px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
-        .section-title { font-size: 17px; font-weight: 600; color: var(--text-primary); }
-        .section-tag { font-size: 11px; color: var(--primary); background: rgba(108, 92, 231, 0.08); padding: 4px 10px; border-radius: 10px; }
+        .quick-icon svg { width: 20px; height: 20px; stroke-width: 1.8; }
+        .quick-icon.purple { background: rgba(108,92,231,0.1); }
+        .quick-icon.purple svg { stroke: var(--primary); }
+        .quick-icon.teal { background: rgba(0,206,209,0.1); }
+        .quick-icon.teal svg { stroke: #00CED1; }
+        .quick-icon.orange { background: rgba(255,165,2,0.1); }
+        .quick-icon.orange svg { stroke: #FFA502; }
+        .quick-label { font-size: 12px; color: var(--text-secondary); font-weight: 500; }
+        
+        /* 人格卡区域 - App化 */
+        .personality-section {
+            padding: 0 0 20px;
+        }
+        .section-header {
+            padding: 0 20px;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .section-title { font-size: 17px; font-weight: 700; color: var(--text-primary); }
+        .section-tag {
+            font-size: 11px;
+            color: var(--primary);
+            background: rgba(108,92,231,0.08);
+            padding: 4px 10px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
         .personality-scroll {
             display: flex;
             gap: 12px;
@@ -227,18 +354,17 @@
         .personality-scroll::-webkit-scrollbar { display: none; }
         .personality-card {
             flex-shrink: 0;
-            width: 150px;
-            background: var(--card-bg);
+            width: 140px;
+            background: white;
             border-radius: 20px;
-            padding: 16px 12px;
+            padding: 18px 14px 16px;
             text-align: center;
-            box-shadow: var(--card-shadow);
+            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
             scroll-snap-align: start;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.2s;
             border: none;
             position: relative;
-            overflow: hidden;
         }
         .personality-card::before {
             content: '';
@@ -246,994 +372,940 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 3px;
+            height: 4px;
+            border-radius: 20px 20px 0 0;
         }
-        .personality-card:active { transform: scale(0.97); }
+        .personality-card:active { transform: scale(0.96); }
+        .personality-card:nth-child(8n+1)::before { background: linear-gradient(90deg, #FFA502, #FF7675); }
+        .personality-card:nth-child(8n+2)::before { background: linear-gradient(90deg, var(--primary), var(--primary-light)); }
+        .personality-card:nth-child(8n+3)::before { background: linear-gradient(90deg, #00CED1, #55EFC4); }
+        .personality-card:nth-child(8n+4)::before { background: linear-gradient(90deg, #00B894, #55EFC4); }
+        .personality-card:nth-child(8n+5)::before { background: linear-gradient(90deg, #FF7675, #FD79A8); }
+        .personality-card:nth-child(8n+6)::before { background: linear-gradient(90deg, #6C5CE7, #A29BFE); }
+        .personality-card:nth-child(8n+7)::before { background: linear-gradient(90deg, #FDCB6E, #F39C12); }
+        .personality-card:nth-child(8n+8)::before { background: linear-gradient(90deg, #00CED1, #0984E3); }
         .personality-avatar {
             width: 60px;
             height: 60px;
             border-radius: 50%;
-            margin: 8px auto 10px;
+            margin: 0 auto 10px;
+            overflow: hidden;
+            position: relative;
+        }
+        .personality-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .personality-badge {
+            position: absolute;
+            bottom: -2px;
+            right: -2px;
+            width: 20px;
+            height: 20px;
+            background: var(--primary);
+            border-radius: 50%;
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 30px;
-            border: 2px solid transparent;
-            background-clip: padding-box;
+            border: 2px solid white;
         }
-        .personality-type { font-size: 15px; font-weight: 600; color: var(--text-primary); margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .personality-honor {
-            font-size: 10px;
-            display: inline-block;
-            padding: 2px 8px;
-            border-radius: 6px;
-        }
-
-        /* ========== 首页定价卡 - 高端重做 ========== */
-        .pricing-section { padding: 0 16px 24px; }
+        .personality-type { font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .personality-honor { font-size: 10px; padding: 2px 8px; border-radius: 6px; font-weight: 600; }
+        
+        /* 定价卡片 */
+        .pricing-section { padding: 0 16px 20px; }
         .pricing-card {
-            background: var(--card-bg);
+            background: white;
             border-radius: 20px;
-            padding: 24px 20px;
-            box-shadow: var(--card-shadow-promoted);
+            padding: 20px;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.06);
             position: relative;
             overflow: hidden;
-            border-top: 3px solid var(--primary);
         }
-        .pricing-header { display: flex; align-items: baseline; gap: 8px; margin-bottom: 6px; }
-        .pricing-name { font-size: 18px; font-weight: 600; color: var(--text-primary); }
-        .pricing-price { font-size: 32px; font-weight: 700; color: var(--text-primary); letter-spacing: -1px; }
-        .pricing-price small { font-size: 16px; font-weight: 500; color: var(--text-tertiary); text-decoration: line-through; margin-left: 4px; }
-        .pricing-features {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin: 16px 0 20px;
+        .pricing-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
         }
-        .pricing-feature {
-            font-size: 13px;
-            color: var(--text-secondary);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            line-height: 1.4;
-        }
-        .pricing-feature::before {
-            content: '·';
-            color: var(--primary);
-            font-weight: 700;
-            font-size: 16px;
-        }
-        .btn-block {
+        .pricing-header { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+        .pricing-name { font-size: 16px; font-weight: 600; color: var(--text-primary); }
+        .pricing-tag { font-size: 10px; background: rgba(108,92,231,0.1); color: var(--primary); padding: 2px 8px; border-radius: 6px; font-weight: 600; }
+        .pricing-price { font-size: 28px; font-weight: 700; color: var(--text-primary); letter-spacing: -1px; margin-bottom: 12px; }
+        .pricing-price small { font-size: 14px; color: var(--text-tertiary); text-decoration: line-through; font-weight: 400; }
+        .pricing-features { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+        .pricing-feature { font-size: 13px; color: var(--text-secondary); display: flex; align-items: center; gap: 6px; }
+        .pricing-feature::before { content: '✓'; color: var(--success); font-weight: 600; font-size: 12px; }
+        .btn-pricing {
             width: 100%;
             padding: 14px;
             background: var(--primary);
             color: white;
             border: none;
-            border-radius: 12px;
+            border-radius: 14px;
             font-size: 15px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
         }
-        .btn-block:active { transform: scale(0.98); background: var(--primary-dark); }
-        .pricing-trial-hint { text-align: center; margin-top: 14px; font-size: 13px; color: var(--text-tertiary); }
-        .pricing-trial-hint a { color: var(--primary); text-decoration: none; font-weight: 500; }
+        .btn-pricing:active { transform: scale(0.98); background: var(--primary-dark); }
+        .pricing-hint { text-align: center; margin-top: 12px; font-size: 12px; color: var(--text-tertiary); }
+        .pricing-hint a { color: var(--primary); text-decoration: none; font-weight: 500; }
 
-        .diagnosis-page { display: flex; flex-direction: column; height: 100%; padding-bottom: 0 !important; }
-        .diagnosis-header { padding: 20px; text-align: center; background: var(--card-bg); border-bottom: 1px solid var(--card-border); }
-        .diagnosis-title { font-size: 18px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
-        .diagnosis-desc { font-size: 13px; color: var(--text-secondary); }
-        .chat-container { flex: 1; position: relative; overflow: hidden; }
-
-        /* ========== 套餐卡片 - 高端重做 ========== */
-        .plans-section { padding: 20px 16px; }
-        .plan-card {
-            background: var(--card-bg);
-            border-radius: 20px;
-            padding: 24px 20px;
-            margin-bottom: 12px;
-            box-shadow: var(--card-shadow);
-            position: relative;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            border: none;
-        }
-        .plan-card:hover { box-shadow: var(--card-shadow-hover); }
-        .plan-card:active { transform: scale(0.99); }
-        .plan-card.recommended {
-            border-top: 3px solid var(--primary);
-            box-shadow: var(--card-shadow-promoted);
-        }
-        .plan-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
-        .plan-name { font-size: 17px; font-weight: 600; color: var(--text-primary); }
-        .plan-price-wrap { text-align: right; }
-        .plan-price { font-size: 24px; font-weight: 700; color: var(--text-primary); letter-spacing: -0.5px; }
-        .plan-price.free { color: var(--success); }
-        .plan-original-price { font-size: 13px; color: var(--text-tertiary); text-decoration: line-through; margin-top: 2px; display: block; }
-        .plan-features {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-bottom: 16px;
-        }
-        .plan-feature {
-            font-size: 13px;
-            color: var(--text-secondary);
+        /* 诊断页 */
+        .diagnosis-page { display: flex; flex-direction: column; height: 100%; }
+        .coze-header {
+            padding: 12px 16px;
+            padding-top: calc(12px + var(--safe-top));
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
             display: flex;
             align-items: center;
-            gap: 8px;
-        }
-        .plan-feature::before {
-            content: '✓';
-            color: var(--primary);
-            font-weight: 600;
-            font-size: 12px;
+            justify-content: space-between;
             flex-shrink: 0;
         }
+        .coze-back-btn {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: white;
+        }
+        .coze-back-btn svg { width: 22px; height: 22px; }
+        .coze-title { font-size: 16px; font-weight: 600; color: white; }
+        .coze-status { font-size: 11px; color: rgba(255,255,255,0.7); display: flex; align-items: center; gap: 4px; }
+        .coze-status::before { content: ''; width: 6px; height: 6px; background: #55EFC4; border-radius: 50%; }
+        .chat-container { flex: 1; overflow: hidden; }
+
+        /* 套餐页 */
+        .plans-header {
+            padding: 20px 20px 16px;
+            background: white;
+        }
+        .plans-title { font-size: 24px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
+        .plans-subtitle { font-size: 14px; color: var(--text-tertiary); }
+        .plans-section { padding: 0 16px 20px; }
+        .plan-card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+        .plan-card:active { transform: scale(0.99); }
+        .plan-card.recommended {
+            border-color: var(--primary);
+            box-shadow: 0 4px 20px rgba(108,92,231,0.15);
+        }
+        .plan-card.recommended::before {
+            content: '最受欢迎';
+            position: absolute;
+            top: 12px;
+            right: -24px;
+            background: var(--primary);
+            color: white;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 3px 30px;
+            transform: rotate(45deg);
+        }
+        .plan-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+        .plan-name { font-size: 16px; font-weight: 600; color: var(--text-primary); }
+        .plan-price-wrap { text-align: right; }
+        .plan-price { font-size: 24px; font-weight: 700; color: var(--text-primary); }
+        .plan-price.free { color: var(--success); }
+        .plan-original { font-size: 12px; color: var(--text-tertiary); text-decoration: line-through; }
+        .plan-features { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+        .plan-feature { font-size: 13px; color: var(--text-secondary); display: flex; align-items: center; gap: 6px; }
+        .plan-feature::before { content: '✓'; color: var(--success); font-weight: 600; font-size: 11px; }
         .plan-btn {
             width: 100%;
             padding: 12px;
-            background: #f8fafc;
-            color: var(--primary);
-            border: 1px solid var(--primary);
             border-radius: 12px;
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
+            border: none;
         }
-        .plan-btn:active { transform: scale(0.98); background: rgba(108,92,231,0.05); }
-        .plan-card.recommended .plan-btn {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
+        .plan-btn:active { transform: scale(0.98); }
+        .plan-card:not(.recommended) .plan-btn { background: #F8F9FA; color: var(--primary); }
+        .plan-card.recommended .plan-btn { background: var(--primary); color: white; }
+        
+        /* FAQ */
+        .faq-section { padding: 0 16px 20px; }
+        .faq-title { font-size: 15px; font-weight: 600; color: var(--text-primary); margin-bottom: 12px; }
+        .faq-item { background: white; border-radius: 14px; margin-bottom: 8px; overflow: hidden; }
+        .faq-question {
+            padding: 14px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
         }
-
-        .faq-section { padding: 0 16px 24px; }
-        .faq-title { font-size: 17px; font-weight: 600; color: var(--text-primary); margin-bottom: 12px; }
-        .faq-item { background: var(--card-bg); border-radius: 12px; margin-bottom: 8px; overflow: hidden; border: 1px solid var(--card-border); }
-        .faq-question { padding: 14px 16px; font-size: 14px; font-weight: 500; color: var(--text-primary); display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
         .faq-question svg { width: 16px; height: 16px; color: var(--text-tertiary); transition: transform 0.2s; }
         .faq-item.open .faq-question svg { transform: rotate(180deg); }
-        .faq-answer { padding: 0 16px; max-height: 0; overflow: hidden; transition: all 0.3s ease; }
+        .faq-answer {
+            padding: 0 16px;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
         .faq-item.open .faq-answer { padding: 0 16px 14px; max-height: 200px; }
         .faq-answer p { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
 
-        /* ========== 用户中心 - 品牌色头像区 ========== */
+        /* 用户中心 */
         .profile-header {
-            padding: 28px 20px 32px;
-            background: linear-gradient(135deg, #6C5CE7 0%, #A29BFE 100%);
+            padding: 24px 20px 28px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
             text-align: center;
-            position: relative;
         }
-        .profile-avatar-wrap {
-            position: relative;
-            width: 64px;
-            height: 64px;
-            margin: 0 auto 10px;
-        }
+        .profile-avatar-wrap { position: relative; width: 72px; height: 72px; margin: 0 auto 12px; }
         .profile-avatar {
-            width: 64px;
-            height: 64px;
+            width: 72px;
+            height: 72px;
             border-radius: 50%;
-            background: rgba(255,255,255,0.25);
+            background: rgba(255,255,255,0.2);
             display: flex;
             align-items: center;
             justify-content: center;
             border: 3px solid rgba(255,255,255,0.4);
         }
-        .profile-avatar svg { stroke: white; }
-        .profile-avatar-badge {
+        .profile-avatar svg { width: 32px; height: 32px; stroke: white; }
+        .profile-badge {
             position: absolute;
-            bottom: -2px;
-            right: -2px;
-            background: #FFFFFF;
-            color: #6C5CE7;
-            font-size: 9px;
+            bottom: 0;
+            right: 0;
+            background: white;
+            color: var(--primary);
+            font-size: 10px;
             font-weight: 700;
-            padding: 2px 8px;
+            padding: 3px 10px;
             border-radius: 10px;
         }
-        .profile-name { 
-            font-size: 17px; 
-            font-weight: 600; 
-            color: #FFFFFF;
-            margin-bottom: 6px;
+        .profile-name { font-size: 18px; font-weight: 600; color: white; margin-bottom: 6px; }
+        .profile-plan { font-size: 13px; color: rgba(255,255,255,0.8); }
+        
+        /* 统计卡片 */
+        .stats-section { padding: 0 16px; margin-top: -16px; margin-bottom: 16px; }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
         }
-        .profile-plan-chip { 
-            font-size: 12px; 
-            color: rgba(255,255,255,0.9); 
-            background: rgba(255,255,255,0.2); 
-            padding: 3px 12px; 
-            border-radius: 12px; 
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            font-weight: 500;
-        }
-        .profile-plan-chip .plan-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: #55EFC4;
-        }
-
-        /* ========== 数据统计 - 彩色图标 ========== */
-        .stats-section { padding: 0 16px 16px; margin-top: -14px; position: relative; z-index: 2; }
-        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
         .stat-card {
-            background: #FFFFFF;
-            border-radius: 14px;
-            padding: 14px 8px 12px;
+            background: white;
+            border-radius: 16px;
+            padding: 16px 8px;
             text-align: center;
-            box-shadow: 0 2px 12px rgba(108,92,231,0.06);
+            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
         }
-        .stat-icon-mini {
-            width: 28px;
-            height: 28px;
-            border-radius: 8px;
+        .stat-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 6px;
+            margin: 0 auto 8px;
         }
-        .stat-icon-mini svg { stroke-width: 2; }
-        .stat-card:nth-child(1) .stat-icon-mini { background: rgba(108,92,231,0.08); }
-        .stat-card:nth-child(1) .stat-icon-mini svg { stroke: #6C5CE7; }
-        .stat-card:nth-child(2) .stat-icon-mini { background: rgba(0,206,209,0.08); }
-        .stat-card:nth-child(2) .stat-icon-mini svg { stroke: #00CED1; }
-        .stat-card:nth-child(3) .stat-icon-mini { background: rgba(255,165,2,0.08); }
-        .stat-card:nth-child(3) .stat-icon-mini svg { stroke: #FFA502; }
-        .stat-value { font-size: 20px; font-weight: 700; color: #2D3436; margin-bottom: 2px; letter-spacing: -0.3px; }
-        .stat-label { font-size: 11px; color: #B2BEC3; font-weight: 500; }
-
-        /* ========== 功能列表 - 彩色图标 ========== */
-        .menu-section { padding: 0 16px 24px; }
-        .menu-group {
-            background: #FFFFFF;
-            border-radius: 14px;
-            overflow: hidden;
-            margin-bottom: 8px;
-            box-shadow: 0 1px 6px rgba(0,0,0,0.03);
-        }
+        .stat-icon svg { width: 18px; height: 18px; stroke-width: 2; }
+        .stat-card:nth-child(1) .stat-icon { background: rgba(108,92,231,0.1); }
+        .stat-card:nth-child(1) .stat-icon svg { stroke: var(--primary); }
+        .stat-card:nth-child(2) .stat-icon { background: rgba(0,206,209,0.1); }
+        .stat-card:nth-child(2) .stat-icon svg { stroke: #00CED1; }
+        .stat-card:nth-child(3) .stat-icon { background: rgba(255,165,2,0.1); }
+        .stat-card:nth-child(3) .stat-icon svg { stroke: #FFA502; }
+        .stat-value { font-size: 20px; font-weight: 700; color: var(--text-primary); margin-bottom: 2px; }
+        .stat-label { font-size: 11px; color: var(--text-tertiary); }
+        
+        /* 菜单 */
+        .menu-section { padding: 0 16px 20px; }
+        .menu-group { background: white; border-radius: 16px; overflow: hidden; margin-bottom: 10px; }
         .menu-group-title {
-            font-size: 12px;
+            padding: 12px 16px 8px;
+            font-size: 11px;
             font-weight: 600;
-            color: #B2BEC3;
-            padding: 14px 16px 6px;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         .menu-item {
             display: flex;
             align-items: center;
-            padding: 13px 16px;
+            padding: 14px 16px;
+            gap: 12px;
             cursor: pointer;
             transition: background 0.15s;
             border-bottom: 0.5px solid #F8F9FA;
         }
         .menu-item:last-child { border-bottom: none; }
         .menu-item:active { background: #F8F9FA; }
-        .menu-icon-wrap {
-            width: 34px;
-            height: 34px;
+        .menu-icon {
+            width: 36px;
+            height: 36px;
             border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: 12px;
+            flex-shrink: 0;
         }
-        .menu-icon-wrap svg { width: 17px; height: 17px; }
-        .menu-icon-wrap.report { background: rgba(108,92,231,0.08); color: #6C5CE7; }
-        .menu-icon-wrap.report svg { stroke: #6C5CE7; }
-        .menu-icon-wrap.code { background: rgba(0,206,209,0.08); color: #00CED1; }
-        .menu-icon-wrap.code svg { stroke: #00CED1; }
-        .menu-icon-wrap.service { background: rgba(255,165,2,0.08); color: #FFA502; }
-        .menu-icon-wrap.service svg { stroke: #FFA502; }
-        .menu-icon-wrap.setting { background: rgba(116,125,140,0.08); color: #74849C; }
-        .menu-icon-wrap.setting svg { stroke: #74849C; }
-        .menu-icon-wrap.about { background: rgba(108,92,231,0.06); color: #A29BFE; }
-        .menu-icon-wrap.about svg { stroke: #A29BFE; }
-        .menu-text { flex: 1; font-size: 15px; font-weight: 500; color: #2D3436; }
-        .menu-arrow { 
-            color: #DFE6E9; 
-            width: 16px; 
-            height: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+        .menu-icon svg { width: 18px; height: 18px; stroke-width: 1.8; }
+        .menu-icon.purple { background: rgba(108,92,231,0.1); }
+        .menu-icon.purple svg { stroke: var(--primary); }
+        .menu-icon.teal { background: rgba(0,206,209,0.1); }
+        .menu-icon.teal svg { stroke: #00CED1; }
+        .menu-icon.orange { background: rgba(255,165,2,0.1); }
+        .menu-icon.orange svg { stroke: #FFA502; }
+        .menu-icon.green { background: rgba(85,239,196,0.15); }
+        .menu-icon.green svg { stroke: #00B894; }
+        .menu-icon.gray { background: rgba(148,163,184,0.15); }
+        .menu-icon.gray svg { stroke: #94A3B8; }
+        .menu-text { flex: 1; font-size: 14px; color: var(--text-primary); }
+        .menu-arrow { color: var(--text-tertiary); }
         .menu-arrow svg { width: 16px; height: 16px; }
 
-        /* ========== 升级横幅 - 品牌色点缀 ========== */
-        .upgrade-banner {
-            margin: 12px 16px 16px;
-            background: linear-gradient(135deg, rgba(108,92,231,0.06) 0%, rgba(162,155,254,0.06) 100%);
-            border-radius: 14px;
-            padding: 14px 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            cursor: pointer;
-        }
-        .upgrade-banner:active { opacity: 0.9; }
-        .upgrade-text h4 { color: #2D3436; font-size: 14px; font-weight: 600; margin-bottom: 2px; }
-        .upgrade-text p { color: #B2BEC3; font-size: 12px; }
-        .upgrade-btn { 
-            background: #6C5CE7; 
-            color: #FFFFFF; 
-            border: none; 
-            padding: 8px 16px; 
-            border-radius: 10px; 
-            font-size: 13px; 
-            font-weight: 600; 
-            cursor: pointer;
-            white-space: nowrap;
-        }
-
-        /* ========== Bottom Sheet - 高端重做 ========== */
-        .bottom-sheet-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.4); z-index: 500; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
-        .bottom-sheet-overlay.show { opacity: 1; visibility: visible; }
-        .bottom-sheet {
-            position: fixed;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%) translateY(100%);
-            width: 100%;
-            max-width: 430px;
-            background: var(--card-bg);
-            border-radius: 24px 24px 0 0;
-            z-index: 600;
-            transition: transform 0.3s ease;
-            max-height: 85vh;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 -4px 24px rgba(0,0,0,0.1);
-        }
-        .bottom-sheet.show { transform: translateX(-50%) translateY(0); }
-        .bottom-sheet-handle { width: 36px; height: 4px; background: var(--card-border); border-radius: 2px; margin: 12px auto 0; flex-shrink: 0; }
-        .bottom-sheet-header { padding: 16px 20px; border-bottom: 0.5px solid var(--card-border); flex-shrink: 0; }
-        .bottom-sheet-title { font-size: 17px; font-weight: 600; color: var(--text-primary); text-align: center; }
-        .bottom-sheet-content { flex: 1; overflow-y: auto; padding: 20px; }
-        .bottom-sheet-tabs { display: flex; gap: 8px; margin-bottom: 20px; }
-        .sheet-tab { flex: 1; padding: 12px; background: #f8fafc; border: 1px solid var(--card-border); border-radius: 10px; font-size: 14px; font-weight: 500; color: var(--text-secondary); cursor: pointer; text-align: center; transition: all 0.2s; }
-        .sheet-tab.active { background: var(--primary); border-color: var(--primary); color: white; }
-        .sheet-content { display: none; }
-        .sheet-content.active { display: block; }
-        .qr-section { text-align: center; }
-        .qr-code { width: 200px; height: 200px; margin: 0 auto 16px; border-radius: 12px; overflow: hidden; }
-        .qr-code img { width: 100%; height: 100%; object-fit: cover; }
-        .qr-amount { font-size: 24px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
-        .qr-order { font-size: 12px; color: var(--text-tertiary); margin-bottom: 16px; }
-        .qr-hint { font-size: 13px; color: var(--text-secondary); margin-bottom: 16px; padding: 12px; background: #f8fafc; border-radius: 8px; }
-        .activate-form { display: flex; flex-direction: column; gap: 12px; }
-        .activate-input { width: 100%; padding: 14px 16px; border: 1px solid var(--card-border); border-radius: 10px; font-size: 15px; outline: none; transition: border-color 0.2s; background: #fafafa; }
-        .activate-input:focus { border-color: var(--primary); background: white; }
-        .activate-hint { font-size: 12px; color: var(--text-tertiary); text-align: center; }
-
-        .toast { position: fixed; top: 80px; left: 50%; transform: translateX(-50%) translateY(-20px); background: rgba(0, 0, 0, 0.8); color: white; padding: 12px 24px; border-radius: 24px; font-size: 14px; z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.3s ease; max-width: 90%; text-align: center; }
-        .toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
-        .loading-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255, 255, 255, 0.95); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; opacity: 0; visibility: hidden; transition: all 0.3s; }
-        .loading-overlay.show { opacity: 1; visibility: visible; }
-        .loading-spinner { width: 40px; height: 40px; border: 3px solid var(--card-border); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .loading-text { margin-top: 16px; font-size: 14px; color: var(--text-secondary); }
-
-        /* ========== 人格详情弹窗 - 高端重做 ========== */
-        .personality-detail-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); z-index: 500; opacity: 0; visibility: hidden; transition: all 0.3s; }
-        .personality-detail-overlay.show { opacity: 1; visibility: visible; }
-        .personality-detail {
-            position: fixed;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%) translateY(100%);
-            width: 100%;
-            max-width: 430px;
-            background: var(--card-bg);
-            border-radius: 24px 24px 0 0;
-            z-index: 600;
-            transition: transform 0.3s ease;
-            max-height: 80vh;
-            overflow-y: auto;
-            box-shadow: 0 -4px 24px rgba(0,0,0,0.1);
-        }
-        .personality-detail.show { transform: translateX(-50%) translateY(0); }
-        .personality-detail-header { padding: 24px 20px; text-align: center; background: linear-gradient(180deg, var(--bg) 0%, var(--card-bg) 100%); }
-        .personality-detail-avatar { width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-size: 40px; border: 3px solid rgba(108,92,231,0.15); }
-        .personality-detail-type { font-size: 20px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
-        .personality-detail-honor { font-size: 14px; color: var(--primary); margin-bottom: 8px; }
-        .personality-detail-comment { font-size: 14px; color: var(--text-secondary); font-style: italic; }
-        .personality-detail-body { padding: 20px; }
-        .radar-chart-container { width: 100%; max-width: 280px; margin: 0 auto 20px; }
-        .radar-chart-container canvas { width: 100% !important; height: auto !important; }
-
-        .chat-panel {
+        /* 模态框 */
+        .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: var(--bg);
-            z-index: 300;
-            transform: translateX(100%);
-            transition: transform 0.3s ease;
-            display: flex;
-            flex-direction: column;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
         }
-        .chat-panel.show { transform: translateX(0); }
-        .chat-header {
-            height: calc(44px + var(--safe-top));
-            padding-top: var(--safe-top);
-            background: var(--card-bg);
-            border-bottom: 1px solid var(--card-border);
+        .modal-overlay.show { display: flex; }
+        .modal-sheet {
+            background: white;
+            border-radius: 24px 24px 0 0;
+            width: 100%;
+            max-width: 430px;
+            max-height: 85vh;
+            overflow-y: auto;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+        .modal-overlay.show .modal-sheet { transform: translateY(0); }
+        .modal-handle {
+            width: 36px;
+            height: 4px;
+            background: #E2E8F0;
+            border-radius: 2px;
+            margin: 12px auto;
+        }
+        .modal-content { padding: 0 20px 32px; }
+        
+        /* 人格详情 */
+        .personality-detail {
+            background: linear-gradient(135deg, #F8F7FF 0%, white 100%);
+            border-radius: 24px;
+            padding: 28px 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            border: 2px solid rgba(108,92,231,0.1);
+        }
+        .detail-avatar {
+            width: 96px;
+            height: 96px;
+            border-radius: 50%;
+            margin: 0 auto 16px;
+            overflow: hidden;
+            border: 4px solid white;
+            box-shadow: 0 8px 24px rgba(108,92,231,0.2);
+        }
+        .detail-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .detail-type { font-size: 22px; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; }
+        .detail-honor { font-size: 12px; padding: 4px 14px; border-radius: 10px; display: inline-block; margin-bottom: 12px; font-weight: 600; }
+        .detail-desc { font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px; }
+        .detail-traits { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+        .detail-trait {
+            font-size: 12px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            background: white;
+            color: var(--primary);
+            font-weight: 500;
+            border: 1px solid rgba(108,92,231,0.15);
+        }
+        .detail-advice {
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+        .detail-advice-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 10px;
             display: flex;
             align-items: center;
-            padding-left: 16px;
-            flex-shrink: 0;
+            gap: 6px;
         }
-        .chat-back { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; margin-right: 8px; }
-        .chat-back svg { width: 20px; height: 20px; color: var(--text-primary); }
-        .chat-title { flex: 1; font-size: 17px; font-weight: 600; color: var(--text-primary); text-align: center; }
-        .chat-actions { display: flex; align-items: center; gap: 4px; }
-        .chat-clear-btn { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 50%; transition: background 0.2s; }
-        .chat-clear-btn:active { background: rgba(0,0,0,0.05); }
-        .chat-clear-btn svg { width: 18px; height: 18px; color: var(--text-secondary); }
-        .chat-round-counter { font-size: 11px; color: var(--text-tertiary); padding: 2px 8px; background: rgba(108,92,231,0.08); border-radius: 10px; }
-        .chat-body { flex: 1; overflow: hidden; position: relative; }
-        .chat-body > div { height: 100% !important; }
-        @media (min-width: 768px) {
-            .app { border-left: 1px solid var(--card-border); border-right: 1px solid var(--card-border); box-shadow: 0 0 40px rgba(0,0,0,0.1); }
+        .detail-advice-title svg { stroke: var(--primary); width: 18px; height: 18px; }
+        .detail-advice p { font-size: 13px; color: var(--text-secondary); line-height: 1.7; }
+        .detail-actions { display: flex; gap: 10px; }
+        .detail-actions button { flex: 1; padding: 14px; border-radius: 14px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; border: none; }
+        .btn-start-detail { background: var(--primary); color: white; }
+        .btn-start-detail:active { transform: scale(0.97); }
+        .btn-close-detail { background: #F1F5F9; color: var(--text-secondary); }
+        
+        /* Toast */
+        .toast {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            background: rgba(30,30,40,0.9);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 9999;
+            opacity: 0;
+            transition: all 0.3s;
+            pointer-events: none;
+            max-width: 280px;
+            text-align: center;
         }
-    
-/* Coze风格套餐页 */
-.coze-plans-current { margin: 0; padding: 16px 20px; background: #1a1a2e; }
-.coze-current-info { display: flex; justify-content: space-between; align-items: center; }
-.coze-current-left { display: flex; align-items: center; gap: 8px; }
-.coze-current-dot { width: 8px; height: 8px; border-radius: 50%; background: #00B894; flex-shrink: 0; }
-.coze-current-name { font-size: 15px; font-weight: 600; color: white; }
-.coze-current-renew { font-size: 12px; color: rgba(255,255,255,0.5); }
-.coze-tabs { display: flex; padding: 16px 16px 0; gap: 0; background: var(--bg); }
-.coze-tab { flex: 1; text-align: center; padding: 10px 0; font-size: 14px; font-weight: 500; color: var(--text-tertiary); border-bottom: 2px solid transparent; cursor: pointer; transition: all 0.2s; }
-.coze-tab.active { color: var(--primary); border-bottom-color: var(--primary); font-weight: 600; }
-.coze-cards { padding: 16px 0 16px 16px; display: flex; gap: 10px; overflow-x: auto; -webkit-overflow-scrolling: touch; scroll-snap-type: x mandatory; scrollbar-width: none; padding-right: 16px; }
-.coze-cards::-webkit-scrollbar { display: none; }
-.coze-card { flex-shrink: 0; width: 180px; background: var(--card-bg); border-radius: 14px; padding: 14px; box-shadow: var(--card-shadow); cursor: pointer; transition: all 0.2s; border: 1.5px solid transparent; scroll-snap-align: start; display: flex; flex-direction: column; position: relative; }
-.coze-card:active { transform: scale(0.98); }
-.coze-card.recommended { border-color: var(--primary); }
-.coze-card.selected { border-color: var(--primary); background: rgba(108,92,231,0.02); }
-.coze-card-badge { position: absolute; top: -1px; right: 12px; background: var(--primary); color: white; font-size: 10px; font-weight: 600; padding: 2px 8px 4px; border-radius: 0 0 6px 6px; }
-.coze-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; }
-.coze-card-name { font-size: 14px; font-weight: 700; color: var(--text-primary); }
-.coze-card-price { display: flex; align-items: baseline; gap: 1px; }
-.coze-price-symbol { font-size: 12px; font-weight: 600; color: var(--text-primary); }
-.coze-price-num { font-size: 22px; font-weight: 700; color: var(--text-primary); letter-spacing: -1px; line-height: 1; }
-.coze-price-original { font-size: 11px; color: var(--text-tertiary); text-decoration: line-through; margin-left: 4px; }
-.coze-card-tag { font-size: 10px; color: #E17055; font-weight: 600; margin-bottom: 8px; }
-.coze-card.recommended .coze-card-tag { color: var(--primary); }
-.coze-card-features { list-style: none; padding: 0; margin: 0 0 10px; flex: 1; }
-.coze-card-features li { font-size: 11px; color: var(--text-secondary); padding: 2px 0; line-height: 1.5; }
-.coze-card-btn { width: 100%; padding: 8px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.15s; border: none; margin-top: auto; }
-.coze-card-btn:active { transform: scale(0.98); }
-.coze-card-btn.primary { background: var(--primary); color: white; }
-.coze-card-btn.outline { background: rgba(108,92,231,0.06); color: var(--primary); }
-.coze-benefits { margin: 0 16px 16px; padding: 16px; background: var(--card-bg); border-radius: 14px; box-shadow: var(--card-shadow); }
-.coze-benefits-header { margin-bottom: 10px; }
-.coze-benefits-title { font-size: 14px; font-weight: 600; color: var(--text-primary); }
-.coze-benefits-list { display: flex; flex-direction: column; gap: 6px; }
-.coze-benefit-item { font-size: 12px; color: var(--text-secondary); display: flex; align-items: center; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--card-border); }
-.coze-benefit-item:last-child { border-bottom: none; }
-.coze-benefit-left { display: flex; align-items: center; gap: 6px; }
-.coze-benefit-check { color: var(--primary); font-weight: 600; font-size: 11px; }
-.coze-benefit-val { font-size: 12px; color: var(--text-primary); font-weight: 500; }
-.coze-benefit-val.limited { color: var(--text-tertiary); }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        
+        /* Loading */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.95);
+            z-index: 9998;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+        }
+        .loading-overlay.show { display: flex; }
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #F1F5F9;
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loading-text { font-size: 14px; color: var(--text-secondary); }
 
-
-.coze-faq { padding: 0 16px 24px; }
-.coze-faq-title { font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 10px; }
+        /* Coze聊天样式覆盖 */
+        .coze-chat-container { width: 100%; height: 100%; }
+        .coze-cards { padding: 16px 0 16px 16px; display: flex; gap: 10px; overflow-x: auto; -webkit-overflow-scrolling: touch; scroll-snap-type: x mandatory; scrollbar-width: none; padding-right: 16px; }
+        .coze-cards::-webkit-scrollbar { display: none; }
+        .coze-card { flex-shrink: 0; width: 180px; background: white; border-radius: 14px; padding: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.04); cursor: pointer; transition: all 0.2s; border: 1.5px solid transparent; scroll-snap-align: start; display: flex; flex-direction: column; position: relative; }
+        .coze-card:active { transform: scale(0.98); }
+        .coze-card.recommended { border-color: var(--primary); }
+        .coze-card.selected { border-color: var(--primary); background: rgba(108,92,231,0.02); }
+        .coze-card-badge { position: absolute; top: -1px; right: 12px; background: var(--primary); color: white; font-size: 10px; font-weight: 600; padding: 2px 8px 4px; border-radius: 0 0 6px 6px; }
+        .coze-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; }
+        .coze-card-name { font-size: 14px; font-weight: 700; color: var(--text-primary); }
+        .coze-card-price { display: flex; align-items: baseline; }
+        .coze-price-num { font-size: 22px; font-weight: 700; color: var(--text-primary); letter-spacing: -1px; }
+        .coze-price-original { font-size: 11px; color: var(--text-tertiary); text-decoration: line-through; margin-left: 4px; }
+        .coze-card-tag { font-size: 10px; color: var(--danger); font-weight: 600; margin-bottom: 8px; }
+        .coze-card.recommended .coze-card-tag { color: var(--primary); }
+        .coze-card-features { list-style: none; padding: 0; margin: 0 0 10px; flex: 1; }
+        .coze-card-features li { font-size: 11px; color: var(--text-secondary); padding: 2px 0; }
+        .coze-card-btn { width: 100%; padding: 8px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.15s; border: none; margin-top: auto; }
+        .coze-card-btn:active { transform: scale(0.98); }
+        .coze-card-btn.primary { background: var(--primary); color: white; }
+        .coze-card-btn.outline { background: rgba(108,92,231,0.06); color: var(--primary); }
+        .coze-benefits { margin: 0 16px 16px; padding: 16px; background: white; border-radius: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
+        .coze-benefits-title { font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 10px; }
+        .coze-benefit-item { font-size: 12px; color: var(--text-secondary); display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 0.5px solid #F8F9FA; }
+        .coze-benefit-item:last-child { border-bottom: none; }
+        .coze-benefit-check { color: var(--primary); font-weight: 600; margin-right: 6px; }
+        .coze-benefit-val { color: var(--text-primary); font-weight: 500; }
+        .coze-benefit-val.limited { color: var(--text-tertiary); }
 
     </style>
 </head>
 <body>
     <div class="app">
+        <!-- 状态栏 -->
         <div class="status-bar">
             <div class="status-bar-content">
                 <div class="brand">四级备考搭子</div>
                 <div class="countdown"><span class="countdown-dot"></span><span id="countdown-text">距考试--天</span></div>
             </div>
         </div>
+
+        <!-- 主内容 -->
         <div class="main-content">
+            <!-- 首页 - App化 -->
             <div class="tab-page active" id="tab-home">
-                <div class="hero-section">
-                    <div class="hero-emoji"><svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#6C5CE7" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M8 7h8"/><path d="M8 11h6"/></svg></div>
-                    <h1 class="hero-title">AI智能诊断<span class="hero-title-accent">备考</span></h1>
-                    <p class="hero-subtitle">5分钟找到你的备考人格和弱项</p>
-                    <button class="btn-primary" onclick="openChat('diagnosis')">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-                        开始AI诊断
-                    </button>
+                <!-- 问候区 -->
+                <div class="home-header">
+                    <div class="home-greeting" id="greeting-text">早上好</div>
+                    <h1 class="home-title">开始今天的<span>备考</span>吧</h1>
                 </div>
-                <div class="tiles-section">
-                    <div class="tiles-grid">
-                        <div class="tile-card" onclick="openChat('diagnosis')">
-                            <div class="tile-icon diagnosis"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
-                            <div class="tile-title">AI诊断</div>
-                            <div class="tile-desc">智能分析你的备考短板</div>
+
+                <!-- 今日主卡片 -->
+                <div class="today-card">
+                    <div class="today-card-content">
+                        <div class="today-label">AI陪练</div>
+                        <div class="today-title">5分钟找到你的备考人格</div>
+                        
+                        <!-- 对话预览 -->
+                        <div class="today-preview">
+                            <div class="today-preview-header">
+                                <div class="today-preview-avatar">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                                </div>
+                                <span class="today-preview-name">AI陪练</span>
+                                <span class="today-preview-status">在线</span>
+                            </div>
+                            <div class="today-messages">
+                                <div class="today-msg bot">嗨！准备好聊聊你的四级备考了吗？</div>
+                                <div class="today-msg user">准备好了，开始吧</div>
+                                <div class="today-typing"><span></span><span></span><span></span></div>
+                            </div>
                         </div>
-                        <div class="tile-card" onclick="switchTab('plans')">
-                            <div class="tile-icon plan"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="2"/><path d="M9 14l2 2 4-4"/></svg></div>
-                            <div class="tile-title">备考计划</div>
-                            <div class="tile-desc">定制专属学习路径</div>
-                        </div>
-                        <div class="tile-card" onclick="switchTab('plans')">
-                            <div class="tile-icon review"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg></div>
-                            <div class="tile-title">作文批改</div>
-                            <div class="tile-desc">AI精批指出每处问题</div>
-                        </div>
-                        <div class="tile-card" onclick="switchTab('plans')">
-                            <div class="tile-icon simulate"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="m9 15 2 2 4-4"/></svg></div>
-                            <div class="tile-title">全真模拟</div>
-                            <div class="tile-desc">还原真实考试环境</div>
+
+                        <!-- 主CTA -->
+                        <div class="today-cta">
+                            <button class="btn-start" onclick="openChat('diagnosis')">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                                开始AI诊断
+                            </button>
+                            <div class="today-hint">已有 10,000+ 用户完成诊断</div>
                         </div>
                     </div>
                 </div>
+
+                <!-- 快捷入口 -->
+                <div class="quick-actions">
+                    <button class="quick-action" onclick="openChat('chat')">
+                        <div class="quick-icon purple">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                        </div>
+                        <div class="quick-label">AI聊天</div>
+                    </button>
+                    <button class="quick-action" onclick="document.getElementById('personality-scroll').scrollIntoView({behavior:'smooth'})">
+                        <div class="quick-icon teal">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        </div>
+                        <div class="quick-label">人格卡</div>
+                    </button>
+                    <button class="quick-action" onclick="switchTab('plans')">
+                        <div class="quick-icon orange">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                        </div>
+                        <div class="quick-label">套餐</div>
+                    </button>
+                </div>
+
+                <!-- 人格卡区域 -->
                 <div class="personality-section">
-                    <div class="section-header"><span class="section-title">备考人格卡</span><span class="section-tag">8种类型</span></div>
+                    <div class="section-header">
+                        <span class="section-title">备考人格卡</span>
+                        <span class="section-tag">8种类型</span>
+                    </div>
                     <div class="personality-scroll" id="personality-scroll"></div>
                 </div>
 
+                <!-- 定价卡片 -->
+                <div class="pricing-section">
+                    <div class="pricing-card">
+                        <div class="pricing-header">
+                            <span class="pricing-name">金牌陪练</span>
+                            <span class="pricing-tag">限时</span>
+                        </div>
+                        <div class="pricing-price">¥29 <small>¥99</small></div>
+                        <div class="pricing-features">
+                            <div class="pricing-feature">无限次AI答疑</div>
+                            <div class="pricing-feature">每日作文精批</div>
+                            <div class="pricing-feature">弱项专项训练</div>
+                        </div>
+                        <button class="btn-pricing" onclick="switchTab('plans')">立即开通</button>
+                        <div class="pricing-hint"><a href="javascript:void(0)" onclick="openChat('diagnosis')">先免费诊断 →</a></div>
+                    </div>
+                </div>
             </div>
+
+            <!-- 诊断页 -->
             <div class="tab-page" id="tab-diagnosis">
                 <div class="diagnosis-page">
-                    <div class="diagnosis-header">
-                        <div class="diagnosis-title">AI智能诊断</div>
-                        <div class="diagnosis-desc">完成测试，获取你的专属备考人格报告</div>
+                    <div class="coze-header">
+                        <div class="coze-back-btn" onclick="switchTab('home')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+                        </div>
+                        <span class="coze-title" id="coze-title">AI诊断</span>
+                        <span class="coze-status">在线</span>
                     </div>
-                    <div class="chat-container" id="chat-container-diagnosis"></div>
+                    <div class="chat-container">
+                        <div class="coze-chat-container" id="diagnosis-chat-container"></div>
+                    </div>
                 </div>
             </div>
+
+            <!-- 套餐页 -->
             <div class="tab-page" id="tab-plans">
-                <div class="coze-plans-current" id="coze-current-plan">
-                    <div class="coze-current-info">
-                        <div class="coze-current-left">
-                            <span class="coze-current-dot"></span>
-                            <span class="coze-current-name" id="coze-plan-name">免费版</span>
+                <div class="plans-header">
+                    <h1 class="plans-title">选择方案</h1>
+                    <p class="plans-subtitle">解锁更多能力，提升备考效率</p>
+                </div>
+                <div class="plans-section">
+                    <div class="plan-card">
+                        <div class="plan-header">
+                            <span class="plan-name">免费试用</span>
+                            <div class="plan-price-wrap">
+                                <span class="plan-price free">免费</span>
+                            </div>
                         </div>
-                        <span class="coze-current-renew">体验完整功能 →</span>
+                        <div class="plan-features">
+                            <div class="plan-feature">AI答疑 50次</div>
+                            <div class="plan-feature">作文批改 1次</div>
+                            <div class="plan-feature">每日任务推送</div>
+                        </div>
+                        <button class="plan-btn" onclick="openChat('chat')">免费使用</button>
+                    </div>
+                    <div class="plan-card recommended">
+                        <div class="plan-header">
+                            <span class="plan-name">金牌陪练</span>
+                            <div class="plan-price-wrap">
+                                <span class="plan-price">¥29</span>
+                                <span class="plan-original">¥99</span>
+                            </div>
+                        </div>
+                        <div class="plan-features">
+                            <div class="plan-feature">AI答疑 30天无限</div>
+                            <div class="plan-feature">作文批改 每日1次</div>
+                            <div class="plan-feature">弱项专项训练</div>
+                            <div class="plan-feature">考前7天冲刺</div>
+                        </div>
+                        <button class="plan-btn" onclick="openChat('chat')">立即开通</button>
+                    </div>
+                    <div class="plan-card">
+                        <div class="plan-header">
+                            <span class="plan-name">旗舰全程</span>
+                            <div class="plan-price-wrap">
+                                <span class="plan-price">¥99</span>
+                                <span class="plan-original">¥299</span>
+                            </div>
+                        </div>
+                        <div class="plan-features">
+                            <div class="plan-feature">AI答疑 无限</div>
+                            <div class="plan-feature">作文批改 无限</div>
+                            <div class="plan-feature">完整备考计划</div>
+                            <div class="plan-feature">六级衔接指导</div>
+                        </div>
+                        <button class="plan-btn" onclick="openChat('chat')">立即开通</button>
                     </div>
                 </div>
-                <div class="coze-tabs">
-                    <div class="coze-tab" onclick="switchCozeTab(this, 'trial')">体验版</div>
-                    <div class="coze-tab active" onclick="switchCozeTab(this, 'sprint')">冲刺版</div>
-                    <div class="coze-tab" onclick="switchCozeTab(this, 'flagship')">旗舰版</div>
-                </div>
-                <div class="coze-cards">
-                    <div class="coze-card" data-plan="trial" onclick="selectCozeCard(this, 'trial')">
-                        <div class="coze-card-top">
-                            <div class="coze-card-name">体验版</div>
-                            <div class="coze-card-price"><span class="coze-price-symbol">¥</span><span class="coze-price-num">4.9</span></div>
+                <div class="faq-section">
+                    <div class="faq-title">常见问题</div>
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            购买后可以退款吗？
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
                         </div>
-                        <div class="coze-card-tag">5折限时</div>
-                        <ul class="coze-card-features">
-                            <li>✓ AI答疑50次</li>
-                            <li>✓ 作文批改1次</li>
-                            <li>✓ 每日任务</li>
-                        </ul>
-                        <button class="coze-card-btn outline" onclick="event.stopPropagation();openBottomSheet('trial')">¥4.9 体验</button>
+                        <div class="faq-answer"><p>购买后7天内如需退款，请联系客服。有效期从开通之日起计算。</p></div>
                     </div>
-                    <div class="coze-card recommended selected" data-plan="sprint" onclick="selectCozeCard(this, 'sprint')">
-                        <div class="coze-card-badge">推荐</div>
-                        <div class="coze-card-top">
-                            <div class="coze-card-name">冲刺版</div>
-                            <div class="coze-card-price"><span class="coze-price-symbol">¥</span><span class="coze-price-num">49</span><span class="coze-price-original">¥99</span></div>
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            到考试前可以一直用吗？
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
                         </div>
-                        <div class="coze-card-tag">5折限时</div>
-                        <ul class="coze-card-features">
-                            <li>✓ 30天AI答疑</li>
-                            <li>✓ 每日批改1次</li>
-                            <li>✓ 弱项专项训练</li>
-                            <li>✓ 考前7天冲刺</li>
-                        </ul>
-                        <button class="coze-card-btn primary" onclick="event.stopPropagation();openBottomSheet('sprint')">¥49 开通</button>
+                        <div class="faq-answer"><p>金牌陪练有效期30天，旗舰全程有效期至当次考试结束。</p></div>
                     </div>
-                    <div class="coze-card" data-plan="flagship" onclick="selectCozeCard(this, 'flagship')">
-                        <div class="coze-card-top">
-                            <div class="coze-card-name">旗舰版</div>
-                            <div class="coze-card-price"><span class="coze-price-symbol">¥</span><span class="coze-price-num">149</span></div>
-                        </div>
-                        <div class="coze-card-tag">全套服务</div>
-                        <ul class="coze-card-features">
-                            <li>✓ 无限AI答疑</li>
-                            <li>✓ 无限作文批改</li>
-                            <li>✓ 完整备考计划</li>
-                            <li>✓ 六级衔接指导</li>
-                        </ul>
-                        <button class="coze-card-btn outline" onclick="event.stopPropagation();openBottomSheet('flagship')">¥149 开通</button>
-                    </div>
-                </div>
-                <div class="coze-benefits">
-                    <div class="coze-benefits-header">
-                        <span class="coze-benefits-title">套餐权益</span>
-                    </div>
-                    <div class="coze-benefits-list" id="coze-benefits-list"></div>
-                </div>
-                <div class="coze-faq">
-                    <h3 class="coze-faq-title">常见问题</h3>
-                    <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span>付费后如何开始使用？</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-answer"><p>支付成功后，系统会自动生成激活码。在"我的-激活码兑换"中激活即可。</p></div></div>
-                    <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span>激活码有效期多久？</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-answer"><p>体验版1天，冲刺版30天，旗舰版至考试结束。</p></div></div>
-                    <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span>和免费版有什么区别？</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-answer"><p>免费版仅1次AI诊断。付费版享AI答疑、作文精批、每日任务等。</p></div></div>
                 </div>
             </div>
+
+            <!-- 用户中心 -->
             <div class="tab-page" id="tab-profile">
                 <div class="profile-header">
                     <div class="profile-avatar-wrap">
-                        <div class="profile-avatar" id="profile-avatar"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
-                        <div class="profile-avatar-badge" id="profile-avatar-badge">FREE</div>
+                        <div class="profile-avatar">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        </div>
+                        <div class="profile-badge" id="profile-badge">Free</div>
                     </div>
-                    <div class="profile-name" id="profile-name">备考选手</div>
-                    <div class="profile-plan-chip" id="profile-plan"><span class="plan-dot"></span>免费版</div>
+                    <div class="profile-name" id="profile-name">四级萌新</div>
+                    <div class="profile-plan" id="profile-plan">免费试用</div>
                 </div>
+
                 <div class="stats-section">
                     <div class="stats-grid">
-                        <div class="stat-card"><div class="stat-icon-mini"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg></div><div class="stat-value" id="stat-plan">-</div><div class="stat-label">当前套餐</div></div>
-                        <div class="stat-card"><div class="stat-icon-mini"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div><div class="stat-value" id="stat-diagnosis">0</div><div class="stat-label">诊断次数</div></div>
-                        <div class="stat-card"><div class="stat-icon-mini"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></div><div class="stat-value" id="stat-review">0</div><div class="stat-label">批改次数</div></div>
+                        <div class="stat-card">
+                            <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+                            <div class="stat-value" id="stat-days">0</div>
+                            <div class="stat-label">学习天数</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+                            <div class="stat-value" id="stat-chats">0</div>
+                            <div class="stat-label">对话次数</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+                            <div class="stat-value" id="stat-personality">—</div>
+                            <div class="stat-label">备考人格</div>
+                        </div>
                     </div>
                 </div>
-                <div class="upgrade-banner" id="upgrade-banner" onclick="switchTab('plans')">
-                    <div class="upgrade-text"><h4>升级解锁全部功能</h4><p>冲刺版仅¥49，旗舰版¥149</p></div>
-                    <button class="upgrade-btn">立即升级</button>
-                </div>
+
                 <div class="menu-section">
                     <div class="menu-group">
-                        <div class="menu-group-title">功能</div>
-                        <div class="menu-item" onclick="showReport()"><div class="menu-icon-wrap report"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg></div><span class="menu-text">我的报告</span><span class="menu-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span></div>
-                        <div class="menu-item" onclick="showCodeRedeem()"><div class="menu-icon-wrap code"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg></div><span class="menu-text">激活码兑换</span><span class="menu-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span></div>
-                        <div class="menu-item" onclick="showService()"><div class="menu-icon-wrap service"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><span class="menu-text">联系客服</span><span class="menu-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span></div>
+                        <div class="menu-group-title">学习</div>
+                        <div class="menu-item" onclick="switchTab('diagnosis')">
+                            <div class="menu-icon purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
+                            <span class="menu-text">AI诊断报告</span>
+                            <span class="menu-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"/></svg></span>
+                        </div>
+                        <div class="menu-item" onclick="openChat('chat')">
+                            <div class="menu-icon teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+                            <span class="menu-text">AI陪练聊天</span>
+                            <span class="menu-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"/></svg></span>
+                        </div>
+                        <div class="menu-item" onclick="openChat('chat')">
+                            <div class="menu-icon orange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></div>
+                            <span class="menu-text">作文批改</span>
+                            <span class="menu-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"/></svg></span>
+                        </div>
                     </div>
                     <div class="menu-group">
-                        <div class="menu-group-title">其他</div>
-                        <div class="menu-item" onclick="showAbout()"><div class="menu-icon-wrap about"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></div><span class="menu-text">关于我们</span><span class="menu-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span></div>
+                        <div class="menu-group-title">账户</div>
+                        <div class="menu-item" onclick="switchTab('plans')">
+                            <div class="menu-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
+                            <span class="menu-text">套餐管理</span>
+                            <span class="menu-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"/></svg></span>
+                        </div>
+                        <div class="menu-item" onclick="showToast('请联系客服兑换')">
+                            <div class="menu-icon gray"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
+                            <span class="menu-text">兑换码</span>
+                            <span class="menu-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"/></svg></span>
+                        </div>
+                        <div class="menu-item" onclick="showToast('客服微信：cet4fanyi')">
+                            <div class="menu-icon gray"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></div>
+                            <span class="menu-text">联系客服</span>
+                            <span class="menu-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"/></svg></span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- 底部Tab -->
         <div class="tab-bar">
-            <div class="tab-item active" data-tab="home" onclick="switchTab('home')"><div class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div><span class="tab-label">首页</span></div>
-            <div class="tab-item" data-tab="diagnosis" onclick="switchTab('diagnosis')"><div class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div><span class="tab-label">诊断</span></div>
-            <div class="tab-item" data-tab="plans" onclick="switchTab('plans')"><div class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg></div><span class="tab-label">套餐</span></div>
-            <div class="tab-item" data-tab="profile" onclick="switchTab('profile')"><div class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><span class="tab-label">我的</span></div>
+            <div class="tab-item active" data-tab="home">
+                <div class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>
+                <span class="tab-label">首页</span>
+            </div>
+            <div class="tab-item" data-tab="diagnosis">
+                <div class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
+                <span class="tab-label">诊断</span>
+            </div>
+            <div class="tab-item" data-tab="plans">
+                <div class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></div>
+                <span class="tab-label">套餐</span>
+            </div>
+            <div class="tab-item" data-tab="profile">
+                <div class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+                <span class="tab-label">我的</span>
+            </div>
         </div>
     </div>
-    <div class="bottom-sheet-overlay" id="bottom-sheet-overlay" onclick="closeBottomSheet()"></div>
-    <div class="bottom-sheet" id="bottom-sheet">
-        <div class="bottom-sheet-handle"></div>
-        <div class="bottom-sheet-header"><div class="bottom-sheet-title" id="sheet-title">开通服务</div></div>
-        <div class="bottom-sheet-content">
-            <div class="bottom-sheet-tabs">
-                <button class="sheet-tab active" data-tab="wechat" onclick="switchSheetTab('wechat')">微信支付</button>
-                <button class="sheet-tab" data-tab="code" onclick="switchSheetTab('code')">激活码</button>
-            </div>
-            <div class="sheet-content active" id="sheet-wechat">
-                <div class="qr-section">
-                    <div class="qr-code"><img src="/wechat-qr.jpg" alt="微信收款码" loading="lazy" id="qr-code-img"></div>
-                    <div class="qr-amount" id="qr-amount">¥0</div>
-                    <div class="qr-order" id="qr-order">订单号：-</div>
-                    <div class="qr-hint">👆 截图保存二维码<br>打开微信扫一扫识别图中二维码付款<br>付款完成后点击下方按钮</div>
-                    <button class="btn-block" onclick="confirmPayment()" id="paid-btn">我已付款</button>
+
+    <!-- 人格详情弹窗 -->
+    <div class="modal-overlay" id="personality-modal">
+        <div class="modal-sheet">
+            <div class="modal-handle"></div>
+            <div class="modal-content">
+                <div class="personality-detail" id="detail-card"></div>
+                <div class="detail-advice">
+                    <div class="detail-advice-title">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                        备考建议
+                    </div>
+                    <p id="detail-advice-text"></p>
+                </div>
+                <div class="detail-actions">
+                    <button class="btn-close-detail" onclick="closePersonalityModal()">关闭</button>
+                    <button class="btn-start-detail" onclick="startPractice()">开始练习</button>
                 </div>
             </div>
-            <div class="sheet-content" id="sheet-code">
-                <div class="activate-form">
-                    <input type="text" class="activate-input" id="activate-code" placeholder="请输入激活码" autocomplete="off">
-                    <button class="btn-block" onclick="submitActivateCode()">立即激活</button>
-                    <p class="activate-hint">激活码格式：CET4T-XXXXX / CET4S-XXXXX / CET4F-XXXXX</p>
-                </div>
-            </div>
         </div>
     </div>
-    <div class="chat-panel" id="chat-panel">
-        <div class="chat-header"><div class="chat-back" onclick="closeChat()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></div><div class="chat-title" id="chat-title">AI诊断</div><div class="chat-actions"><span class="chat-round-counter" id="chat-round">0轮</span><div class="chat-clear-btn" onclick="clearChat()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14"/></svg></div></div></div>
-        <div class="chat-body" id="chat-body"></div>
-    </div>
-    <div class="personality-detail-overlay" id="personality-overlay" onclick="closePersonalityDetail()"></div>
-    <div class="personality-detail" id="personality-detail">
-        <div class="bottom-sheet-handle"></div>
-        <div class="personality-detail-header">
-            <div class="personality-detail-avatar" id="detail-avatar"></div>
-            <div class="personality-detail-type" id="detail-type"></div>
-            <div class="personality-detail-honor" id="detail-honor"></div>
-            <div class="personality-detail-comment" id="detail-comment"></div>
-        </div>
-        <div class="personality-detail-body"><div class="radar-chart-container"><canvas id="radar-canvas" width="280" height="280"></canvas></div></div>
-    </div>
+
+    <!-- Toast -->
     <div class="toast" id="toast"></div>
-    <div class="loading-overlay" id="loading"><div class="loading-spinner"></div><div class="loading-text">加载中...</div></div>
-    <script src="https://lf-cdn.coze.cn/obj/unpkg/flow-platform/chat-app-sdk/1.2.0-beta.20/libs/cn/index.js"></script>
+
+    <!-- Loading -->
+    <div class="loading-overlay" id="loading">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">加载中...</div>
+    </div>
+
     <script>
-        var CONFIG = {
-            botIds: { diagnosis: '7636289658620215331', sprint: '7637702903679631395', flagship: '7637815810610036774' },
-            plans: { free: { name: '免费版', price: 0 }, trial: { name: '体验版', price: 4.9 }, sprint: { name: '冲刺版', price: 49 }, flagship: { name: '旗舰版', price: 149 } },
-            personalities: [
-                { type:'佛系随缘选手', color:'#F5C6AA', emoji:'😌', img:'imgs/foxi.webp', honor:'佛系陪跑员', comment:'你很佛系，但四级不佛', scores:{细节定位:95,推理判断:33,同义替换:66,主旨归纳:77,态度判断:93} },
-                { type:'脑补大师', color:'#C4A8E0', emoji:'💭', img:'imgs/naobu.webp', honor:'四级白日梦家', comment:'笔在卷子上，魂在银河系', scores:{细节定位:40,推理判断:75,同义替换:50,主旨归纳:30,态度判断:60} },
-                { type:'偏科大佬', color:'#FFB6C1', emoji:'📚', img:'imgs/pianke.webp', honor:'阅读王者·翻译菜鸡', comment:'一半封神，一半白给', scores:{细节定位:98,推理判断:20,同义替换:95,主旨归纳:99,态度判断:25} },
-                { type:'摆烂冠军', color:'#A8C4D8', emoji:'🛋️', img:'imgs/bailan.webp', honor:'四级陪跑一级选手', comment:'重在参与，随缘就好', scores:{细节定位:10,推理判断:15,同义替换:5,主旨归纳:20,态度判断:80} },
-                { type:'全对卷王', color:'#E8E8E8', emoji:'🏆', img:'imgs/juanzong.webp', honor:'四级人形标准答案', comment:'别人考四级，你考四级解析', scores:{细节定位:100,推理判断:98,同义替换:100,主旨归纳:100,态度判断:95} },
-                { type:'吗喽型选手', color:'#C4956A', emoji:'🐒', img:'imgs/malou.webp', honor:'熬夜硬肝特种兵', comment:'咖啡续着命，单词记不住', scores:{细节定位:35,推理判断:40,同义替换:25,主旨归纳:30,态度判断:20} },
-                { type:'临时抱佛脚选手', color:'#FFA500', emoji:'🙏', img:'imgs/linshi.webp', honor:'考前突击大师', comment:'平时不烧香，考前抱佛脚', scores:{细节定位:60,推理判断:55,同义替换:70,主旨归纳:65,态度判断:50} },
-                { type:'资料囤积狂', color:'#4A7C8C', emoji:'📦', img:'imgs/tunji.webp', honor:'四级资料收藏家', comment:'收藏=学会，囤满=稳过', scores:{细节定位:85,推理判断:70,同义替换:80,主旨归纳:75,态度判断:60} }
-            ]
+        var personalities = [
+            { type: '狐狸型', img: 'imgs/foxi.webp', honor: '效率王者', honorBg: 'rgba(255,165,2,0.1)', honorColor: '#E17055', desc: '效率至上，善于利用碎片时间', traits: ['时间管理', '目标导向', '自律'], advice: '建议你采用「番茄工作法」，每次专注25分钟，每天完成3-4个番茄时段。重点突破听力真题，每天精听一段。' },
+            { type: '脑牛型', img: 'imgs/naobu.webp', honor: '笔记达人', honorBg: 'rgba(108,92,231,0.1)', honorColor: '#6C5CE7', desc: '热爱总结，笔记整理能力强', traits: ['善于总结', '逻辑清晰', '耐心'], advice: '你的笔记能力是很大优势。建议建立「错题本」电子化，用不同颜色标注高频考点和易错点。每周复习一次笔记。' },
+            { type: '偏科型', img: 'imgs/pianke.webp', honor: '单项突破', honorBg: 'rgba(0,206,209,0.1)', honorColor: '#00CED1', desc: '某单项特别突出，其他需提升', traits: ['专项强', '专注力高', '突破型'], advice: '建议先做一套全真模拟，找出拖后腿的单项。然后用「木桶理论」重点补足短板，均衡发展后再冲刺拔高。' },
+            { type: '摆烂型', img: 'imgs/bailan.webp', honor: '逆袭潜力', honorBg: 'rgba(85,239,196,0.1)', honorColor: '#00B894', desc: '目前状态需要调整，即将发力', traits: ['潜力大', '后劲足', '可塑性强'], advice: '不要给自己太大压力！建议从最简单的任务开始，比如每天背10个核心词汇、看1篇真题阅读。循序渐进，慢慢进入状态。' },
+            { type: '卷宗型', img: 'imgs/juanzong.webp', honor: '努力模范', honorBg: 'rgba(255,118,117,0.1)', honorColor: '#FF7675', desc: '学习勤奋，但方法需要优化', traits: ['勤奋', '坚持', '执行力强'], advice: '你的努力值得肯定！但建议适当休息，避免疲劳战术。试试「间隔重复法」背单词，效率会比死记硬背提升3倍。' },
+            { type: '码楼型', img: 'imgs/malou.webp', honor: '稳扎稳打', honorBg: 'rgba(108,92,231,0.1)', honorColor: '#6C5CE7', desc: '基础扎实，按部就班备考', traits: ['基础好', '心态稳', '计划性强'], advice: '你的基础不错，可以尝试挑战更高难度。多做历年真题，熟悉出题套路。作文方面多积累高级句型和连接词。' },
+            { type: '临时型', img: 'imgs/linshi.webp', honor: '冲刺选手', honorBg: 'rgba(255,165,2,0.1)', honorColor: '#FFA502', desc: '习惯临时抱佛脚，需要提前规划', traits: ['适应力强', '爆发力足', '临场发挥好'], advice: '临时抱佛脚虽然有效，但风险太大！建议至少提前1个月开始准备，每天投入1-2小时，保持学习节奏。' },
+            { type: '囤积型', img: 'imgs/tunji.webp', honor: '资料收藏家', honorBg: 'rgba(0,206,209,0.1)', honorColor: '#00CED1', desc: '收藏很多资料，但很少行动', traits: ['信息广', '资源多', '需要行动'], advice: '资料在精不在多！建议你从现在开始，每天完成一个小目标：比如做一套听力、写一篇翻译。行动比收藏更重要！' }
+        ];
+
+        var state = {
+            currentTab: 'home',
+            userData: null,
+            chatRounds: 0,
+            resultObserver: null,
+            selectedPersonality: null
         };
-        var state = { currentTab: 'home', currentPlan: 'free', currentOrderId: null, chatClient: null, diagnosisCount: 0, reviewCount: 0, userData: null };
-        document.addEventListener('DOMContentLoaded', function() { initPersonalityCards(); updateCountdown(); loadUserData(); renderCozeBenefits('sprint'); setInterval(updateCountdown, 86400000); });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserData();
+            initGreeting();
+            initCountdown();
+            renderPersonalities();
+            initTabEvents();
+            updateProfileStats();
+        });
+
+        function loadUserData() {
+            try {
+                var data = localStorage.getItem('cet_user');
+                if (data) state.userData = JSON.parse(data);
+            } catch(e) {}
+        }
+
+        function initGreeting() {
+            var hour = new Date().getHours();
+            var greeting = '晚上好';
+            if (hour < 12) greeting = '早上好';
+            else if (hour < 18) greeting = '下午好';
+            document.getElementById('greeting-text').textContent = greeting;
+        }
+
+        function initCountdown() {
+            var text = document.getElementById('countdown-text');
+            var examDate = new Date('2026-06-14');
+            var now = new Date();
+            var diff = Math.ceil((examDate - now) / (1000 * 60 * 60 * 24));
+            text.textContent = diff > 0 ? '距考试 ' + diff + ' 天' : '考试季';
+        }
+
+        function initTabEvents() {
+            document.querySelectorAll('.tab-item').forEach(function(item) {
+                item.addEventListener('click', function() {
+                    var tab = this.dataset.tab;
+                    switchTab(tab);
+                });
+            });
+        }
+
         function switchTab(tab) {
             state.currentTab = tab;
-            var items = document.querySelectorAll('.tab-item');
-            for (var i = 0; i < items.length; i++) { items[i].classList.toggle('active', items[i].dataset.tab === tab); }
-            var pages = document.querySelectorAll('.tab-page');
-            for (var j = 0; j < pages.length; j++) { pages[j].classList.toggle('active', pages[j].id === 'tab-' + tab); }
-            if (tab === 'diagnosis') { initDiagnosisChat(); }
+            document.querySelectorAll('.tab-page').forEach(function(page) {
+                page.classList.toggle('active', page.id === 'tab-' + tab);
+            });
+            document.querySelectorAll('.tab-item').forEach(function(item) {
+                item.classList.toggle('active', item.dataset.tab === tab);
+            });
+            if (tab === 'diagnosis') {
+                initDiagnosisChat('diagnosis');
+            }
         }
-        function initPersonalityCards() {
+
+        function renderPersonalities() {
             var container = document.getElementById('personality-scroll');
             var html = '';
-            var colors = ['#F5C6AA','#C4A8E0','#FFB6C1','#A8C4D8','#E8E8E8','#C4956A','#FFA500','#4A7C8C'];
-            for (var i = 0; i < CONFIG.personalities.length; i++) {
-                var p = CONFIG.personalities[i];
-                var c = colors[i] || '#E0E0E0';
-                html += '<div class="personality-card" onclick="showPersonalityDetail(\'" + p.type + "\')" style="--p-color:' + c + '">' +
-                    '<div class="personality-avatar" style="background:' + c + '20;">' + (p.img ? '<img src="' + p.img + '" loading="lazy" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" />' : p.emoji) + '</div>' +
-                    '<div class="personality-type">' + p.type + '</div>' +
-                    '<span class="personality-honor" style="background:' + c + '25; color:#666;">' + p.honor + '</span></div>';
+            for (var i = 0; i < personalities.length; i++) {
+                var p = personalities[i];
+                html += '<div class="personality-card" onclick="showPersonalityDetail(\'' + p.type + '\')">';
+                html += '<div class="personality-avatar"><img src="' + p.img + '" alt="' + p.type + '" onerror="this.style.display=\'none\'"><div class="personality-badge">' + (i + 1) + '</div></div>';
+                html += '<div class="personality-type">' + p.type + '</div>';
+                html += '<span class="personality-honor" style="background:' + p.honorBg + ';color:' + p.honorColor + '">' + p.honor + '</span>';
+                html += '</div>';
             }
             container.innerHTML = html;
         }
+
         function showPersonalityDetail(type) {
             var p = null;
-            for (var i = 0; i < CONFIG.personalities.length; i++) { if (CONFIG.personalities[i].type === type) { p = CONFIG.personalities[i]; break; } }
+            for (var i = 0; i < personalities.length; i++) {
+                if (personalities[i].type === type) { p = personalities[i]; break; }
+            }
             if (!p) return;
-            var detailAvatar = document.getElementById('detail-avatar');
-            detailAvatar.style.background = p.color;
-            if (p.img) { detailAvatar.innerHTML = '<img src="' + p.img + '" loading="lazy" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" />'; } else { detailAvatar.textContent = p.emoji; }
-            document.getElementById('detail-type').textContent = p.type;
-            document.getElementById('detail-honor').textContent = p.honor;
-            document.getElementById('detail-comment').textContent = p.comment;
-            drawRadarChart(p.scores);
-            document.getElementById('personality-overlay').classList.add('show');
-            document.getElementById('personality-detail').classList.add('show');
-        }
-        function closePersonalityDetail() { document.getElementById('personality-overlay').classList.remove('show'); document.getElementById('personality-detail').classList.remove('show'); }
-        function drawRadarChart(scores) {
-            var canvas = document.getElementById('radar-canvas');
-            var ctx = canvas.getContext('2d');
-            var centerX = 140, centerY = 140, radius = 100;
-            var labels = Object.keys(scores);
-            var values = Object.values(scores);
-            var angleStep = (Math.PI * 2) / labels.length;
-            ctx.clearRect(0, 0, 280, 280);
-            ctx.strokeStyle = '#EAEAEF'; ctx.lineWidth = 1;
-            for (var level = 1; level <= 5; level++) {
-                ctx.beginPath();
-                var r = radius * level / 5;
-                for (var i = 0; i <= labels.length; i++) {
-                    var angle = i * angleStep - Math.PI / 2;
-                    var x = centerX + r * Math.cos(angle);
-                    var y = centerY + r * Math.sin(angle);
-                    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-                }
-                ctx.closePath(); ctx.stroke();
-            }
-            for (var j = 0; j < labels.length; j++) {
-                var ang = j * angleStep - Math.PI / 2;
-                ctx.beginPath(); ctx.moveTo(centerX, centerY);
-                ctx.lineTo(centerX + radius * Math.cos(ang), centerY + radius * Math.sin(ang)); ctx.stroke();
-            }
-            ctx.fillStyle = 'rgba(108, 92, 231, 0.3)'; ctx.strokeStyle = '#6C5CE7'; ctx.lineWidth = 2; ctx.beginPath();
-            for (var k = 0; k < values.length; k++) {
-                var a = k * angleStep - Math.PI / 2;
-                var rr = values[k] / 100 * radius;
-                var xx = centerX + rr * Math.cos(a);
-                var yy = centerY + rr * Math.sin(a);
-                if (k === 0) ctx.moveTo(xx, yy); else ctx.lineTo(xx, yy);
-            }
-            ctx.closePath(); ctx.fill(); ctx.stroke();
-            ctx.fillStyle = '#6C5CE7';
-            for (var m = 0; m < values.length; m++) {
-                var ag = m * angleStep - Math.PI / 2;
-                var ra = values[m] / 100 * radius;
-                var x1 = centerX + ra * Math.cos(ag);
-                var y1 = centerY + ra * Math.sin(ag);
-                ctx.beginPath(); ctx.arc(x1, y1, 4, 0, Math.PI * 2); ctx.fill();
-            }
-            ctx.fillStyle = '#666'; ctx.font = '11px -apple-system, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-            for (var n = 0; n < labels.length; n++) {
-                var angLabel = n * angleStep - Math.PI / 2;
-                var labelRadius = radius + 20;
-                var lx = centerX + labelRadius * Math.cos(angLabel);
-                var ly = centerY + labelRadius * Math.sin(angLabel);
-                ctx.fillText(labels[n], lx, ly);
-            }
+            state.selectedPersonality = p;
+            var traitsHtml = p.traits.map(function(t) { return '<span class="detail-trait">' + t + '</span>'; }).join('');
+            document.getElementById('detail-card').innerHTML = 
+                '<div class="detail-avatar"><img src="' + p.img + '" alt="' + p.type + '" onerror="this.style.display=\'none\'"></div>' +
+                '<div class="detail-type">' + p.type + '</div>' +
+                '<span class="detail-honor" style="background:' + p.honorBg + ';color:' + p.honorColor + '">' + p.honor + '</span>' +
+                '<p class="detail-desc">' + p.desc + '</p>' +
+                '<div class="detail-traits">' + traitsHtml + '</div>';
+            document.getElementById('detail-advice-text').textContent = p.advice;
+            document.getElementById('personality-modal').classList.add('show');
         }
 
-        function updateCountdown() {
-            var examDate = new Date('2026-06-13');
-            var today = new Date();
-            var diff = Math.ceil((examDate - today) / (1000 * 60 * 60 * 24));
-            document.getElementById('countdown-text').textContent = '距考试' + (diff > 0 ? diff : 0) + '天';
+        function closePersonalityModal() {
+            document.getElementById('personality-modal').classList.remove('show');
         }
-        function openBottomSheet(plan) {
-            state.currentPlan = plan;
-            var planConfig = CONFIG.plans[plan];
-            document.getElementById('sheet-title').textContent = '开通' + planConfig.name;
-            document.getElementById('qr-amount').textContent = '¥' + planConfig.price;
-            document.getElementById('qr-order').textContent = '订单号：生成中...';
-            switchSheetTab('wechat');
-            document.getElementById('bottom-sheet-overlay').classList.add('show');
-            document.getElementById('bottom-sheet').classList.add('show');
-            if (plan === 'free') { activateFree(); return; }
-            createOrder(plan);
+
+        function startPractice() {
+            closePersonalityModal();
+            openChat('chat');
         }
-        function closeBottomSheet() { document.getElementById('bottom-sheet-overlay').classList.remove('show'); document.getElementById('bottom-sheet').classList.remove('show'); }
-        function switchSheetTab(tab) {
-            var tabs = document.querySelectorAll('.sheet-tab');
-            for (var i = 0; i < tabs.length; i++) { tabs[i].classList.toggle('active', tabs[i].dataset.tab === tab); }
-            var contents = document.querySelectorAll('.sheet-content');
-            for (var j = 0; j < contents.length; j++) { contents[j].classList.toggle('active', contents[j].id === 'sheet-' + tab); }
+
+        function openChat(mode) {
+            mode = mode || 'diagnosis';
+            document.getElementById('coze-title').textContent = mode === 'diagnosis' ? 'AI诊断' : 'AI陪练';
+            switchTab('diagnosis');
+            setTimeout(function() { initDiagnosisChat(mode); }, 100);
         }
-        async function createOrder(plan) {
-            try {
-                showLoading('创建订单中...');
-                var res = await fetch('/api/create-order', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ plan: plan }) });
-                var data = await res.json();
-                if (data.orderId) { state.currentOrderId = data.orderId; document.getElementById('qr-order').textContent = '订单号：' + data.orderId; pollOrderStatus(data.orderId); }
-            } catch (e) { showToast('创建订单失败，请重试'); }
-            finally { hideLoading(); }
-        }
-        function pollOrderStatus(orderId) {
-            var checkInterval = setInterval(async function() {
-                try {
-                    var res = await fetch('/api/check-order?order_id=' + orderId);
-                    var data = await res.json();
-                    if (data.status === 'activated') { clearInterval(checkInterval); activateSuccess(data.plan, data.token); }
-                } catch (e) { console.error('检查订单失败', e); }
-            }, 3000);
-            setTimeout(function() { clearInterval(checkInterval); }, 600000);
-        }
-        async function confirmPayment() {
-            if (!state.currentOrderId) { showToast('请先创建订单'); return; }
-            showLoading('验证支付中...');
-            try {
-                var res = await fetch('/api/check-order?order_id=' + state.currentOrderId);
-                var data = await res.json();
-                if (data.status === 'activated') { activateSuccess(data.plan, data.token); }
-                else { showToast('订单尚未支付，请确认已付款后重试'); }
-            } catch (e) { showToast('验证失败，请稍后重试'); }
-            finally { hideLoading(); }
-        }
-        async function submitActivateCode() {
-            var code = document.getElementById('activate-code').value.trim().toUpperCase();
-            if (!code) { showToast('请输入激活码'); return; }
-            showLoading('激活中...');
-            try {
-                var res = await fetch('/api/activate-with-code', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code: code }) });
-                var data = await res.json();
-                if (data.success) { activateSuccess(data.plan, data.token); }
-                else { showToast(data.error || '激活失败'); }
-            } catch (e) { showToast('激活失败，请稍后重试'); }
-            finally { hideLoading(); }
-        }
-        function activateFree() { var token = 'free_' + Date.now(); activateSuccess('free', token); }
-        function activateSuccess(plan, token) {
-            state.currentPlan = plan;
-            state.userData = { plan: plan, token: token, activatedAt: Date.now() };
-            localStorage.setItem('cet_user', JSON.stringify(state.userData));
-            closeBottomSheet();
-            showToast('已开通' + CONFIG.plans[plan].name + '！');
-            updateProfileUI();
-            switchTab('profile');
-        }
-        function loadUserData() {
-            try {
-                var saved = localStorage.getItem('cet_user');
-                if (saved) { state.userData = JSON.parse(saved); state.currentPlan = state.userData.plan; }
-            } catch (e) {}
-            updateProfileUI();
-        }
-        function updateProfileUI() {
-            var planName = CONFIG.plans[state.currentPlan] ? CONFIG.plans[state.currentPlan].name : '免费版';
-            var planChip = document.getElementById('profile-plan');
-            var badge = document.getElementById('profile-avatar-badge');
-            // Update plan chip
-            if (planChip) {
-                planChip.innerHTML = '<span class="plan-dot"></span>' + planName;
-                var dot = planChip.querySelector('.plan-dot');
-                var dotColors = { free: '#55EFC4', trial: '#55EFC4', sprint: '#55EFC4', flagship: '#55EFC4' };
-                if (dot) { dot.style.background = dotColors[state.currentPlan] || '#94A3B8'; }
-            }
-            // Update badge
-            if (badge) {
-                var badgeMap = { free: 'FREE', trial: 'TRY', sprint: 'PRO', flagship: 'MAX' };
-                var badgeBgMap = { free: '#FFFFFF', trial: '#FFFFFF', sprint: '#FFFFFF', flagship: '#FFFFFF' };
-                var badgeColorMap = { free: '#6C5CE7', trial: '#6C5CE7', sprint: '#00CED1', flagship: '#FFA502' };
-                badge.textContent = badgeMap[state.currentPlan] || 'FREE';
-                badge.style.background = badgeBgMap[state.currentPlan] || '#FFFFFF';
-                badge.style.color = badgeColorMap[state.currentPlan] || '#6C5CE7';
-            }
-            document.getElementById('stat-plan').textContent = planName;
-            var cozePlanName = document.getElementById('coze-plan-name');
-            if (cozePlanName) { cozePlanName.textContent = planName; }
-            var upgradeBanner = document.getElementById('upgrade-banner');
-            if (state.currentPlan !== 'free') { upgradeBanner.style.display = 'none'; }
-        }
-        function openChat(type) {
-            var titles = { diagnosis: 'AI智能诊断', sprint: '冲刺版助手', flagship: '旗舰版助手' };
-            document.getElementById('chat-title').textContent = titles[type] || 'AI助手';
-            state.chatType = type;
+
+        function initDiagnosisChat(mode) {
+            mode = mode || 'diagnosis';
+            var container = document.getElementById('diagnosis-chat-container');
+            container.innerHTML = '';
             state.chatRounds = 0;
-            updateChatRound();
-            document.getElementById('chat-panel').classList.add('show');
-            initChat(type);
-        }
-        function closeChat() {
-            document.getElementById('chat-panel').classList.remove('show');
-            if (state.chatClient) { try { state.chatClient.hideChatBot(); } catch(e){} }
-        }
-        // Save chat summary before page unload
-        window.addEventListener('beforeunload', function() {
-            if (state.chatType && state.chatRounds > 0) {
-                var topic = '';
-                try { var pd = JSON.parse(localStorage.getItem('cet_user')||'{}'); var pt = pd.pendingTask; if (pt && pt.type) { topic = '练习'+pt.type+'，进度'+pt.done+'/'+pt.total; } else if (state.chatType === 'diagnosis') { topic = '完成了AI备考诊断'; } else if (pd.plan_data) { topic = '练习了今日备考任务'; } else { topic = '进行了备考咨询'; } } catch(e) { topic = '进行了备考咨询'; }
-                saveChatSummary(topic);
-            }
-        });
-        function clearChat() {
-            if (confirm('清空当前对话？')) {
-                state.chatRounds = 0;
-                updateChatRound();
-                initChat(state.chatType || 'diagnosis');
-                showToast('对话已清空');
-            }
-        }
-        function updateChatRound() {
-            var el = document.getElementById('chat-round');
-            if (el) el.textContent = state.chatRounds + '轮';
-        }
-        function getUserContext() {
-            var ctx = {};
+            if (state.resultObserver) { state.resultObserver.disconnect(); state.resultObserver = null; }
+            var botId = mode === 'diagnosis' ? '7462543557442478120' : '7492072964089749508';
             try {
-                var data = JSON.parse(localStorage.getItem('cet_user') || '{}');
-                ctx.plan = data.plan || 'free';
-                ctx.personality = (data.diagnosis && data.diagnosis.type) || '';
-                ctx.activatedAt = data.activatedAt || '';
-                if (ctx.activatedAt) {
-                    var days = Math.floor((Date.now() - ctx.activatedAt) / 86400000);
-                    ctx.studyDays = days > 0 ? days : 1;
-                } else {
-                    ctx.studyDays = 0;
-                }
-            } catch(e) {}
-            return ctx;
-        }
-        function initChat(type) {
-            var botId = CONFIG.botIds[type] || CONFIG.botIds.diagnosis;
-            if (state.chatClient) { try { state.chatClient.destroy(); } catch(e){} state.chatClient = null; }
-            try {
-                state.chatClient = new CozeWebSDK.WebChatClient({
+                if (window.chatClient) { try { window.chatClient.destroy(); } catch(e) {} window.chatClient = null; }
+                window.chatClient = new CozeWebSDK.ChatClient({
                     config: {
-                        botId: botId,
-                        isIframe: false,
-                        botInfo: {
-                            parameters: (function() {
-                                var ctx = getUserContext();
-                                return {
-                                    user_plan: ctx.plan || 'free',
-                                    user_personality: ctx.personality || '',
-                                    study_days: String(ctx.studyDays || 0),
-                                    today_task: getTodayTask(),
-                                    plan_summary: getPlanSummary(),
-                                    last_context: getChatSummary(),
-                                    pending_task: getPendingTask()
-                                };
-                            })()
+                        bot_id: botId,
+                        user: { id: String('user_' + Date.now()), name: 'CET用户' },
+                        extra: {
+                            user_plan: (state.userData && state.userData.plan) || 'free',
+                            user_personality: (state.userData && state.userData.diagnosis && state.userData.diagnosis.type) || '',
+                            study_days: String((state.userData && state.userData.studyDays) || 0),
+                            today_task: getTodayTask(),
+                            plan_summary: getPlanSummary(),
+                            last_context: getChatSummary(),
+                            pending_task: getPendingTask()
                         }
                     },
                     auth: {
@@ -1245,83 +1317,37 @@
                 });
                 state.chatClient.showChatBot();
                 startResultObserver(document.body);
-            } catch (e) { console.error('Chat SDK init error:', e); showToast('聊天加载失败，请刷新重试'); }
+            } catch (e) { console.error('Chat init error:', e); }
         }
 
-        function initDiagnosisChat() {
-            if (state.chatClient) { try { state.chatClient.destroy(); } catch(e){} state.chatClient = null; }
-            try {
-                state.chatClient = new CozeWebSDK.WebChatClient({
-                    config: {
-                        botId: CONFIG.botIds.diagnosis,
-                        isIframe: false,
-                        botInfo: {
-                            parameters: (function() {
-                                var ctx = getUserContext();
-                                return {
-                                    user_plan: ctx.plan || 'free',
-                                    user_personality: ctx.personality || '',
-                                    study_days: String(ctx.studyDays || 0),
-                                    today_task: getTodayTask(),
-                                    plan_summary: getPlanSummary(),
-                                    last_context: getChatSummary(),
-                                    pending_task: getPendingTask()
-                                };
-                            })()
-                        }
-                    },
-                    auth: {
-                        type: 'token',
-                        token: 'pat_hAOthvv429aDEqWspP4lITuL3DAU7VZJiGlVrnmA1zuoZ4IWW2kmxYzXUbGvZTYb',
-                        onRefreshToken: function() { return 'pat_hAOthvv429aDEqWspP4lITuL3DAU7VZJiGlVrnmA1zuoZ4IWW2kmxYzXUbGvZTYb'; }
-                    },
-                    ui: { asstBtn: { isNeed: false } }
-                });
-                state.chatClient.showChatBot();
-                startResultObserver(document.body);
-            } catch (e) { console.error('Diagnosis chat init error:', e); }
-        }
         function startResultObserver(container) {
-            if (state.resultObserver) { state.resultObserver.disconnect(); }
+            if (state.resultObserver) state.resultObserver.disconnect();
             state.resultObserver = new MutationObserver(function(mutations) {
                 mutations.forEach(function(m) {
                     m.addedNodes.forEach(function(node) {
                         if (node.nodeType === 1) {
-                            // Count Bot replies as rounds
-                            var isBotMsg = false;
-                            if (node.querySelector) {
-                                var botMsgs = node.querySelectorAll('[class*="bot"],[class*="assistant"],[class*="ai-"],[data-role="assistant"]');
-                                if (botMsgs.length > 0) isBotMsg = true;
-                            }
-                            if (isBotMsg || (node.className && typeof node.className === 'string' && (node.className.indexOf('bot') >= 0 || node.className.indexOf('assistant') >= 0))) {
-                                state.chatRounds = (state.chatRounds || 0) + 1;
-                                updateChatRound();
-                                if (state.chatRounds === 20) {
-                                    showToast('已对话20轮，如需继续建议清空对话');
-                                }
-                            }
                             var texts = node.querySelectorAll ? node.querySelectorAll('div,span,p,li') : [];
                             texts.forEach(function(el) {
                                 var t = el.textContent || '';
                                 var resultMatch = t.match(/\[RESULT:(.+?)\]/);
-                                if (resultMatch) { parseDiagnosisResult(resultMatch[1]); }
+                                if (resultMatch) parseDiagnosisResult(resultMatch[1]);
                             });
                             var t = node.textContent || '';
                             var resultMatch = t.match(/\[RESULT:(.+?)\]/);
-                            if (resultMatch) { parseDiagnosisResult(resultMatch[1]); }
+                            if (resultMatch) parseDiagnosisResult(resultMatch[1]);
                         }
                     });
                 });
             });
             state.resultObserver.observe(container, { childList: true, subtree: true });
         }
+
         function parseDiagnosisResult(resultStr) {
             var params = {};
-            var pairs = resultStr.split('|');
-            for (var i = 0; i < pairs.length; i++) {
-                var kv = pairs[i].split('=');
-                if (kv.length === 2) { params[kv[0].trim()] = kv[1].trim(); }
-            }
+            resultStr.split('|').forEach(function(pair) {
+                var kv = pair.split('=');
+                if (kv.length === 2) params[kv[0].trim()] = kv[1].trim();
+            });
             if (params.type) {
                 state.userData = state.userData || {};
                 state.userData.diagnosis = params;
@@ -1330,160 +1356,80 @@
                 setTimeout(function() { showPersonalityDetail(params.type); }, 1500);
             }
         }
-        function saveChatSummary(topic) {
-            try {
-                var data = JSON.parse(localStorage.getItem('cet_user') || '{}');
-                data.chatSummary = {
-                    topic: topic || '',
-                    timestamp: Date.now(),
-                    plan: data.plan || 'free',
-                    personality: (data.diagnosis && data.diagnosis.type) || ''
-                };
-                localStorage.setItem('cet_user', JSON.stringify(data));
-            } catch(e) {}
-        }
+
         function getChatSummary() {
             try {
                 var data = JSON.parse(localStorage.getItem('cet_user') || '{}');
                 var s = data.chatSummary;
                 if (!s || !s.topic) return '';
-                var timeStr = '';
                 var hoursAgo = Math.floor((Date.now() - s.timestamp) / 3600000);
-                if (hoursAgo < 1) timeStr = '刚刚';
-                else if (hoursAgo < 24) timeStr = hoursAgo + '小时前';
-                else timeStr = Math.floor(hoursAgo / 24) + '天前';
+                var timeStr = hoursAgo < 1 ? '刚刚' : hoursAgo < 24 ? hoursAgo + '小时前' : Math.floor(hoursAgo / 24) + '天前';
                 return timeStr + '对话：' + s.topic;
             } catch(e) { return ''; }
         }
-        function parsePlanResult(planStr) {
-            var tasks = planStr.split('|');
-            var plan = [];
-            for (var i = 0; i < tasks.length; i++) {
-                var parts = tasks[i].split(':');
-                if (parts.length >= 2) {
-                    plan.push({ day: parts[0].trim(), task: parts.slice(1).join(':').trim() });
-                }
-            }
-            if (plan.length > 0) {
-                state.userData = state.userData || {};
-                state.userData.plan_data = plan;
-                state.userData.planCreatedAt = Date.now();
-                localStorage.setItem('cet_user', JSON.stringify(state.userData));
-                showToast('备考计划已保存！共' + plan.length + '天');
-            }
-        }
+
         function getTodayTask() {
             try {
                 var data = JSON.parse(localStorage.getItem('cet_user') || '{}');
                 var plan = data.plan_data;
                 if (!plan || plan.length === 0) return '';
-                var createdAt = data.planCreatedAt || data.activatedAt || Date.now();
-                var daysPassed = Math.floor((Date.now() - createdAt) / 86400000);
-                var todayIndex = Math.min(daysPassed, plan.length - 1);
-                if (todayIndex < 0) todayIndex = 0;
-                var today = plan[todayIndex];
-                return (today.day || ('第' + (todayIndex + 1) + '天')) + ': ' + (today.task || '');
+                var daysPassed = Math.floor((Date.now() - (data.planCreatedAt || data.activatedAt || Date.now())) / 86400000);
+                var today = plan[Math.min(daysPassed, plan.length - 1)];
+                return (today.day || ('第' + (daysPassed + 1) + '天')) + ': ' + (today.task || '');
             } catch(e) { return ''; }
         }
-        function parseTaskResult(taskStr) {
-            try {
-                var parts = taskStr.split('|');
-                var task = { type: parts[0]||'', content: parts[1]||'', total: parseInt(parts[2])||0, done: parseInt(parts[3])||0, timestamp: Date.now() };
-                var data = JSON.parse(localStorage.getItem('cet_user')||'{}');
-                data.pendingTask = task;
-                localStorage.setItem('cet_user', JSON.stringify(data));
-            } catch(e) {}
-        }
-        function getPendingTask() {
-            try {
-                var data = JSON.parse(localStorage.getItem('cet_user')||'{}');
-                var t = data.pendingTask;
-                if (!t || !t.type) return '';
-                if ((Date.now() - t.timestamp) / 3600000 > 48) return '';
-                return t.type+'|'+t.content+'|'+t.total+'|'+t.done;
-            } catch(e) { return ''; }
-        }
+
         function getPlanSummary() {
             try {
                 var data = JSON.parse(localStorage.getItem('cet_user') || '{}');
                 var plan = data.plan_data;
                 if (!plan || plan.length === 0) return '';
-                var summary = [];
-                for (var i = 0; i < plan.length; i++) {
-                    summary.push(plan[i].day + ':' + plan[i].task);
-                }
-                return summary.join('|');
+                return plan.map(function(p) { return p.day + ':' + p.task; }).join('|');
             } catch(e) { return ''; }
         }
-        function showReport() { if (state.userData && state.userData.diagnosis) { showPersonalityDetail(state.userData.diagnosis.type); } else { showToast('请先完成AI诊断'); switchTab('diagnosis'); } }
-        function showCodeRedeem() { openBottomSheet(state.currentPlan); switchSheetTab('code'); }
-        function showService() { showToast('客服微信：cet4fanyi'); }
-        function showAbout() { showToast('四级备考搭子·金牌陪练 v1.0'); }
-        var cozeBenefits = {
-            trial: [
-                {name:'AI答疑', val:'50次'},
-                {name:'作文批改', val:'1次'},
-                {name:'每日任务推送', val:'✓'},
-                {name:'弱项专项训练', val:'—', limited:true},
-                {name:'考前7天冲刺', val:'—', limited:true},
-                {name:'完整备考计划', val:'—', limited:true},
-                {name:'六级衔接指导', val:'—', limited:true},
-                {name:'有效期', val:'1天'}
-            ],
-            sprint: [
-                {name:'AI答疑', val:'30天无限'},
-                {name:'作文批改', val:'每日1次'},
-                {name:'每日任务推送', val:'✓'},
-                {name:'弱项专项训练', val:'✓'},
-                {name:'考前7天冲刺', val:'✓'},
-                {name:'完整备考计划', val:'—', limited:true},
-                {name:'六级衔接指导', val:'—', limited:true},
-                {name:'有效期', val:'30天'}
-            ],
-            flagship: [
-                {name:'AI答疑', val:'无限'},
-                {name:'作文批改', val:'无限'},
-                {name:'每日任务推送', val:'✓'},
-                {name:'弱项专项训练', val:'✓'},
-                {name:'考前7天冲刺', val:'✓'},
-                {name:'完整备考计划', val:'✓'},
-                {name:'六级衔接指导', val:'✓'},
-                {name:'有效期', val:'至考试结束'}
-            ]
-        };
-        var currentCozePlan = 'sprint';
-        function selectCozeCard(card, plan) {
-            currentCozePlan = plan;
-            var cards = document.querySelectorAll('.coze-card');
-            for (var i = 0; i < cards.length; i++) { cards[i].classList.remove('selected'); }
-            card.classList.add('selected');
-            renderCozeBenefits(plan);
-            card.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-        }
-        function renderCozeBenefits(plan) {
-            var list = document.getElementById('coze-benefits-list');
-            var benefits = cozeBenefits[plan] || cozeBenefits.sprint;
-            var html = '';
-            for (var i = 0; i < benefits.length; i++) {
-                var b = benefits[i];
-                var valClass = b.limited ? ' limited' : '';
-                html += '<div class="coze-benefit-item"><span class="coze-benefit-left"><span class="coze-benefit-check">✓</span>' + b.name + '</span><span class="coze-benefit-val' + valClass + '">' + b.val + '</span></div>';
-            }
-            list.innerHTML = html;
+
+        function getPendingTask() {
+            try {
+                var data = JSON.parse(localStorage.getItem('cet_user') || '{}');
+                var t = data.pendingTask;
+                if (!t || !t.type || (Date.now() - t.timestamp) / 3600000 > 48) return '';
+                return t.type + '|' + t.content + '|' + t.total + '|' + t.done;
+            } catch(e) { return ''; }
         }
 
-        function switchCozeTab(el, plan) {
-            var tabs = document.querySelectorAll('.coze-tab');
-            for (var i = 0; i < tabs.length; i++) { tabs[i].classList.toggle('active', tabs[i] === el); }
-            var card = document.querySelector('.coze-card[data-plan="' + plan + '"]');
-            if (card) { selectCozeCard(card, plan); }
+        function updateProfileStats() {
+            var data = state.userData || {};
+            document.getElementById('stat-days').textContent = data.studyDays || 0;
+            document.getElementById('stat-chats').textContent = data.chatCount || 0;
+            document.getElementById('stat-personality').textContent = (data.diagnosis && data.diagnosis.type) || '—';
+            if (data.plan && data.plan !== 'free') {
+                document.getElementById('profile-plan').textContent = data.plan === 'sprint' ? '金牌陪练' : '旗舰全程';
+                document.getElementById('profile-badge').textContent = data.plan === 'sprint' ? 'Pro' : 'VIP';
+            }
         }
+
         function toggleFaq(el) { el.parentElement.classList.toggle('open'); }
-        function showToast(msg) { var toast = document.getElementById('toast'); toast.textContent = msg; toast.classList.add('show'); setTimeout(function() { toast.classList.remove('show'); }, 2500); }
-        function showLoading(msg) { var loading = document.getElementById('loading'); loading.querySelector('.loading-text').textContent = msg || '加载中...'; loading.classList.add('show'); }
+        function showToast(msg) {
+            var toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(function() { toast.classList.remove('show'); }, 2500);
+        }
+        function showLoading(msg) {
+            var loading = document.getElementById('loading');
+            loading.querySelector('.loading-text').textContent = msg || '加载中...';
+            loading.classList.add('show');
+        }
         function hideLoading() { document.getElementById('loading').classList.remove('show'); }
-        document.addEventListener('touchstart', function() {}, { passive: true });
-        document.body.addEventListener('touchmove', function(e) { if (e.target.closest('.tab-page')) { e.stopPropagation(); } }, { passive: false });
+
+        // 禁止整体滚动，只允许内部滚动
+        document.body.addEventListener('touchmove', function(e) {
+            if (e.target.closest('.tab-page')) {
+                // 内部页面可以滚动
+            } else {
+                e.preventDefault();
+            }
+        }, { passive: false });
     </script>
 </body>
 </html>
