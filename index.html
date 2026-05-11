@@ -2793,7 +2793,7 @@
             };
             var botId = botMap[mode] || botMap['diagnosis'];
             try {
-                if (state.chatClient) { try { state.chatClient.destroy(); } catch(e) {} state.chatClient = null; }
+                if (state.chatClient) { stopChatRoundTracker(); try { state.chatClient.destroy(); } catch(e) {} state.chatClient = null; }
                 state.chatClient = new CozeWebSDK.WebChatClient({
                     config: {
                         botId: botId,
@@ -2830,8 +2830,54 @@
                     container.appendChild(sdkIframe);
                 }
                 startResultObserver(document.body);
+                // 启动对话轮次检测（每3秒轮询一次Coze SDK消息数量）
+                startChatRoundTracker();
             } catch (e) { console.error('Chat init error:', e); }
         }
+
+        // ===== 对话轮次检测 =====
+        // 用MutationObserver监听Coze SDK容器的DOM变化
+        // Bot回复会导致iframe内容变化，外部可观测到子树突变
+        // 节流：至少8秒间隔才计1轮，避免一次回复多次触发
+
+        var _roundObserver = null;
+        var _lastRoundTime = 0;
+        var ROUND_COOLDOWN = 8000; // 8秒冷却
+
+        function startChatRoundTracker() {
+            state.chatRounds = 0;
+            _lastRoundTime = 0;
+
+            // 延迟启动，等SDK渲染完
+            setTimeout(function() {
+                var cozeEl = document.querySelector('[id^="coze-web-chat"]');
+                if (!cozeEl) return;
+
+                _roundObserver = new MutationObserver(function(mutations) {
+                    var now = Date.now();
+                    // 节流：冷却期内忽略
+                    if (now - _lastRoundTime < ROUND_COOLDOWN) return;
+
+                    // 有DOM变化，说明有新消息
+                    _lastRoundTime = now;
+                    onBotReply();
+                });
+
+                _roundObserver.observe(cozeEl, {
+                    childList: true,
+                    subtree: true,
+                    attributes: true
+                });
+            }, 2000);
+        }
+
+        function stopChatRoundTracker() {
+            if (_roundObserver) {
+                _roundObserver.disconnect();
+                _roundObserver = null;
+            }
+        }
+
 
         function startResultObserver(container) {
             if (state.resultObserver) state.resultObserver.disconnect();
@@ -3263,42 +3309,64 @@
         }
         
         function handleDailyTask() {
-            var daily = getTodayTask();
-            var isDone = daily.completed.length > 0;
-            
-            if (isDone) {
-                showToast('今日一练已完成，明天继续！');
+            var streak = getStreakData();
+            var today = getTodayStr();
+            var todayChecked = streak.todayChecked && streak.lastDate === today;
+
+            if (todayChecked) {
+                showToast('今日已打卡，明天继续！');
                 return;
             }
-            
-            // Start the daily task - open chat with the task topic
-            var task = dailyTasks[daily.taskIndex];
-            
-            // Mark as completed and do check-in
-            daily.completed.push(task.type);
-            saveDailyTaskData(daily);
-            
-            var justCheckedIn = doCheckIn();
-            
-            updateDailyTask();
-            
-            if (justCheckedIn) {
-                showToast('打卡成功！连续' + getStreakData().count + '天');
-                renderStreakCalendar();
-                // 同步学习页streak
-                var streakNumBig = document.getElementById('streak-num-big');
-                var studyEnStreak = document.getElementById('study-en-streak');
-                var s = getStreakData();
-                if (streakNumBig) streakNumBig.textContent = s.count;
-                if (studyEnStreak) studyEnStreak.textContent = s.count;
-            }
-            
-            // Open chat with task-specific message
+
+            // 打开AI对话，不立即打卡
+            // 打卡将在用户与AI对话满2轮后自动触发（见onBotReply）
+            showToast('和AI聊2轮即可打卡');
             var data = state.userData || {};
             if (data.diagnosis && data.diagnosis.type) {
                 openChat('chat');
             } else {
                 openChat('diagnosis');
+            }
+        }
+
+        // ===== 对话轮次追踪 & 自动打卡 =====
+        var REQUIRED_ROUNDS = 2; // 至少2轮对话才算学习完成
+
+        function onBotReply() {
+            // 每检测到一次Bot回复，轮次+1
+            state.chatRounds = (state.chatRounds || 0) + 1;
+
+            var streak = getStreakData();
+            var today = getTodayStr();
+            var todayChecked = streak.todayChecked && streak.lastDate === today;
+
+            if (todayChecked) return; // 今天已打卡，不重复
+
+            if (state.chatRounds >= REQUIRED_ROUNDS) {
+                // 达标！自动打卡
+                var daily = getTodayTask();
+                if (daily.completed.length === 0) {
+                    var task = dailyTasks[daily.taskIndex];
+                    daily.completed.push(task.type);
+                    saveDailyTaskData(daily);
+                }
+
+                var justCheckedIn = doCheckIn();
+                if (justCheckedIn) {
+                    showToast('学习完成！连续打卡' + getStreakData().count + '天');
+                    renderStreakCalendar();
+                    var streakNumBig = document.getElementById('streak-num-big');
+                    var studyEnStreak = document.getElementById('study-en-streak');
+                    var s = getStreakData();
+                    if (streakNumBig) streakNumBig.textContent = s.count;
+                    if (studyEnStreak) studyEnStreak.textContent = s.count;
+                }
+                updateDailyTask();
+                updateHomeStatus();
+            } else {
+                // 还没达标，提示进度
+                var remaining = REQUIRED_ROUNDS - state.chatRounds;
+                showToast('再聊' + remaining + '轮即可打卡');
             }
         }
 
