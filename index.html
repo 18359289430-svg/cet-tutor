@@ -389,14 +389,6 @@
         }
 
         /* 内容区标题 */
-        .home-section-title {
-            font-size: 17px;
-            font-weight: 700;
-            color: #1a1a2e;
-            padding: 22px 20px 14px;
-            letter-spacing: -0.3px;
-        }
-        
         /* 内容卡片 - 有质感的卡片 */
         .home-promo-card {
             margin: 0 16px 12px;
@@ -1658,6 +1650,54 @@
                         <span>人格测试</span>
                     </div>
                 </div>
+
+                <!-- 备考锦囊 -->
+                <div class="home-section-title">备考锦囊 <span class="home-section-more" onclick="switchTab('diagnosis')">更多</span></div>
+                <div class="home-tips-scroll">
+                    <div class="home-tip-card tip-purple" onclick="switchTab('diagnosis');setTimeout(()=>startDiagChat('阅读理解怎么提速'),300)">
+                        <div class="home-tip-emoji">📖</div>
+                        <div class="home-tip-text">
+                            <div class="home-tip-title">阅读提速3招</div>
+                            <div class="home-tip-desc">先看题再读文，定位关键句</div>
+                        </div>
+                    </div>
+                    <div class="home-tip-card tip-green" onclick="switchTab('diagnosis');setTimeout(()=>startDiagChat('同义替换总是做错怎么办'),300)">
+                        <div class="home-tip-emoji">🎯</div>
+                        <div class="home-tip-text">
+                            <div class="home-tip-title">同义替换必杀</div>
+                            <div class="home-tip-desc">90%答案藏在同义替换里</div>
+                        </div>
+                    </div>
+                    <div class="home-tip-card tip-orange" onclick="switchTab('diagnosis');setTimeout(()=>startDiagChat('翻译有什么技巧'),300)">
+                        <div class="home-tip-emoji">✍️</div>
+                        <div class="home-tip-text">
+                            <div class="home-tip-title">翻译拿分模板</div>
+                            <div class="home-tip-desc">3步拆句法，告别中式英语</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 学习数据横条 -->
+                <div class="home-data-bar" id="home-data-bar">
+                    <div class="home-data-item">
+                        <div class="home-data-num" id="home-bar-streak">0</div>
+                        <div class="home-data-label">天连续</div>
+                    </div>
+                    <div class="home-data-divider"></div>
+                    <div class="home-data-item">
+                        <div class="home-data-num" id="home-bar-tasks">0</div>
+                        <div class="home-data-label">次练习</div>
+                    </div>
+                    <div class="home-data-divider"></div>
+                    <div class="home-data-item" onclick="switchTab('study')">
+                        <div class="home-data-cta">查看详情 →</div>
+                    </div>
+                </div>
+
+                <!-- 人格卡预览 -->
+                <div class="home-section-title">备考人格 <span class="home-section-more" onclick="switchTab('personality')">查看全部</span></div>
+                <div class="home-personality-preview" id="home-personality-preview"></div>
+
             </div>
 
             <!-- 学习页 -->
