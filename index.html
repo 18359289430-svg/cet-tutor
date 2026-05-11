@@ -256,7 +256,7 @@
             border: 1px solid rgba(255,255,255,0.08);
         }
         
-        /* 快捷功能 - 2x2卡片网格 */
+        /* 快捷功能 - 百词斩渐变卡片 */
         .home-quick-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -264,82 +264,107 @@
             padding: 20px 20px 12px;
         }
         .quick-card {
-            background: white;
-            border-radius: 18px;
-            padding: 16px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            box-shadow: 0 2px 12px rgba(108,92,231,0.06);
+            border-radius: 20px;
+            padding: 20px 16px 18px;
+            position: relative;
+            overflow: hidden;
             cursor: pointer;
             transition: all 0.15s;
         }
         .quick-card:active { transform: scale(0.96); }
+        .quick-card-deco {
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            font-size: 28px;
+            opacity: 0.15;
+            color: white;
+            line-height: 1;
+        }
+        .quick-card-content { position: relative; z-index: 1; }
         .quick-card-icon {
-            width: 42px;
-            height: 42px;
-            border-radius: 14px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.25);
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-shrink: 0;
+            margin-bottom: 12px;
         }
-        .quick-card-icon svg { width: 20px; height: 20px; stroke-width: 1.8; }
-        .quick-card-icon.purple { background: rgba(108,92,231,0.1); }
-        .quick-card-icon.purple svg { stroke: var(--primary); }
-        .quick-card-icon.teal { background: rgba(0,206,209,0.1); }
-        .quick-card-icon.teal svg { stroke: #00CED1; }
-        .quick-card-icon.orange { background: rgba(255,165,2,0.1); }
-        .quick-card-icon.orange svg { stroke: #FFA502; }
-        .quick-card-icon.pink { background: rgba(255,118,117,0.1); }
-        .quick-card-icon.pink svg { stroke: #FF7675; }
-        .quick-card-text { flex: 1; }
-        .quick-card-name { font-size: 14px; font-weight: 700; color: var(--text-primary); }
-        .quick-card-sub { font-size: 11px; color: var(--text-tertiary); margin-top: 1px; }
+        .quick-card-icon svg { width: 20px; height: 20px; stroke: white; stroke-width: 1.8; }
+        .quick-card-name { font-size: 15px; font-weight: 700; color: white; }
+        .quick-card-sub { font-size: 11px; color: rgba(255,255,255,0.75); margin-top: 2px; }
+        /* 渐变配色 */
+        .quick-card.gradient-purple {
+            background: linear-gradient(145deg, #6C5CE7, #A29BFE);
+            box-shadow: 0 4px 16px rgba(108,92,231,0.25);
+        }
+        .quick-card.gradient-teal {
+            background: linear-gradient(145deg, #00B894, #55EFC4);
+            box-shadow: 0 4px 16px rgba(0,184,148,0.25);
+        }
+        .quick-card.gradient-orange {
+            background: linear-gradient(145deg, #FDCB6E, #F39C12);
+            box-shadow: 0 4px 16px rgba(243,156,18,0.25);
+        }
+        .quick-card.gradient-pink {
+            background: linear-gradient(145deg, #FD79A8, #E84393);
+            box-shadow: 0 4px 16px rgba(232,67,147,0.25);
+        }
 
-        /* 每日一练卡片 */
+        /* 每日一练 - 百词斩渐变大卡 */
         .daily-card {
             margin: 8px 20px 20px;
-            background: white;
-            border-radius: 18px;
-            padding: 18px 20px;
-            box-shadow: 0 2px 16px rgba(108,92,231,0.06);
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
             cursor: pointer;
             transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
         }
         .daily-card:active { transform: scale(0.98); }
-        .daily-card-left {
+        .daily-card.gradient-daily {
+            background: linear-gradient(145deg, #6C5CE7, #8B7CF7);
+            box-shadow: 0 4px 16px rgba(108,92,231,0.25);
+        }
+        .daily-card.gradient-daily.done-state {
+            background: linear-gradient(145deg, #00B894, #55EFC4);
+            box-shadow: 0 4px 16px rgba(0,184,148,0.25);
+        }
+        .daily-card-inner {
+            padding: 20px;
             display: flex;
             align-items: center;
             gap: 14px;
         }
-        .daily-card-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 14px;
-            background: linear-gradient(135deg, rgba(108,92,231,0.12), rgba(108,92,231,0.04));
+        .daily-card-icon-wrap {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
         }
-        .daily-card-icon svg { width: 20px; height: 20px; stroke: var(--primary); stroke-width: 1.8; }
+        .daily-card-icon-wrap svg { width: 22px; height: 22px; stroke: white; stroke-width: 2; }
         .daily-card-body { flex: 1; min-width: 0; }
-        .daily-card-title { font-size: 14px; font-weight: 700; color: var(--text-primary); }
-        .daily-card-sub { font-size: 12px; color: var(--text-tertiary); margin-top: 2px; }
+        .daily-card-title { font-size: 16px; font-weight: 700; color: white; }
+        .daily-card-sub { font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 2px; }
         .daily-card-badge {
-            font-size: 11px;
-            padding: 6px 12px;
-            border-radius: 12px;
-            font-weight: 600;
+            font-size: 13px;
+            font-weight: 800;
+            color: white;
+            background: rgba(255,255,255,0.22);
+            padding: 8px 16px;
+            border-radius: 14px;
             white-space: nowrap;
             flex-shrink: 0;
+            letter-spacing: 0.5px;
         }
-        .daily-card-badge.pending { background: rgba(108,92,231,0.08); color: var(--primary); }
-        .daily-card-badge.done { background: rgba(0,184,148,0.1); color: var(--success); }
+        .daily-card-badge.done-badge {
+            background: rgba(255,255,255,0.22);
+        }
         
 
         
@@ -1123,7 +1148,7 @@
         <div class="main-content">
             <!-- 首页 - App化 -->
             <div class="tab-page active" id="tab-home">
-                <!-- 主视觉区 - 大紫卡片包含CTA -->
+                <!-- 主视觉区 - 大紫卡片 -->
                 <div class="home-hero">
                     <div class="home-hero-inner">
                         <div class="home-hero-top">
@@ -1145,58 +1170,62 @@
                     </div>
                 </div>
 
-                <!-- 快捷功能 - 2x2卡片 -->
+                <!-- 快捷功能 - 百词斩风格渐变卡片 -->
                 <div class="home-quick-grid">
-                    <div class="quick-card" onclick="switchTab('diagnosis');setTimeout(()=>startDiagChat('开始AI诊断，帮我找出四级薄弱点'),300)">
-                        <div class="quick-card-icon purple">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                        </div>
-                        <div class="quick-card-text">
+                    <div class="quick-card gradient-purple" onclick="switchTab('diagnosis');setTimeout(()=>startDiagChat('开始AI诊断，帮我找出四级薄弱点'),300)">
+                        <div class="quick-card-deco">✦</div>
+                        <div class="quick-card-content">
+                            <div class="quick-card-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                            </div>
                             <div class="quick-card-name">AI诊断</div>
                             <div class="quick-card-sub">5分钟找弱点</div>
                         </div>
                     </div>
-                    <div class="quick-card" onclick="switchTab('diagnosis');setTimeout(()=>startDiagChat('查看我的备考计划'),300)">
-                        <div class="quick-card-icon teal">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                        </div>
-                        <div class="quick-card-text">
+                    <div class="quick-card gradient-teal" onclick="switchTab('diagnosis');setTimeout(()=>startDiagChat('查看我的备考计划'),300)">
+                        <div class="quick-card-deco">◆</div>
+                        <div class="quick-card-content">
+                            <div class="quick-card-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                            </div>
                             <div class="quick-card-name">备考计划</div>
                             <div class="quick-card-sub">个性化方案</div>
                         </div>
                     </div>
-                    <div class="quick-card" onclick="handleDailyTask()">
-                        <div class="quick-card-icon orange">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-                        </div>
-                        <div class="quick-card-text">
+                    <div class="quick-card gradient-orange" onclick="handleDailyTask()">
+                        <div class="quick-card-deco">★</div>
+                        <div class="quick-card-content">
+                            <div class="quick-card-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                            </div>
                             <div class="quick-card-name">每日一练</div>
                             <div class="quick-card-sub" id="daily-task-title">3分钟保持手感</div>
                         </div>
                     </div>
-                    <div class="quick-card" onclick="switchTab('personality')">
-                        <div class="quick-card-icon pink">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
-                        </div>
-                        <div class="quick-card-text">
+                    <div class="quick-card gradient-pink" onclick="switchTab('personality')">
+                        <div class="quick-card-deco">♥</div>
+                        <div class="quick-card-content">
+                            <div class="quick-card-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+                            </div>
                             <div class="quick-card-name">人格测试</div>
                             <div class="quick-card-sub">你是哪一种</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 每日一练卡片 -->
-                <div class="daily-card" id="daily-task-card" onclick="handleDailyTask()">
-                    <div class="daily-card-left">
-                        <div class="daily-card-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                <!-- 每日一练 - 百词斩风格渐变大卡 -->
+                <div class="daily-card gradient-daily" id="daily-task-card" onclick="handleDailyTask()">
+                    <div class="daily-card-inner">
+                        <div class="daily-card-icon-wrap">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
                         </div>
                         <div class="daily-card-body">
                             <div class="daily-card-title">今日一练</div>
                             <div class="daily-card-sub" id="daily-task-desc">每天3分钟，保持手感</div>
                         </div>
+                        <div class="daily-card-badge" id="daily-task-badge">GO</div>
                     </div>
-                    <div class="daily-card-badge pending" id="daily-task-badge">待完成</div>
                 </div>
             </div>
 
@@ -2043,13 +2072,13 @@
             if (descEl) descEl.textContent = task.desc;
             
             if (isDone) {
-                if (badgeEl) { badgeEl.textContent = '已完成'; badgeEl.className = 'daily-card-badge done'; }
-                if (barEl) barEl.style.width = '100%';
-                if (textEl) textEl.textContent = '1/1';
+                if (badgeEl) { badgeEl.textContent = '✓'; badgeEl.className = 'daily-card-badge done-badge'; }
+                var dailyCard = document.getElementById('daily-task-card');
+                if (dailyCard) dailyCard.classList.add('done-state');
             } else {
-                if (badgeEl) { badgeEl.textContent = '待完成'; badgeEl.className = 'daily-card-badge pending'; }
-                if (barEl) barEl.style.width = '0%';
-                if (textEl) textEl.textContent = '0/1';
+                if (badgeEl) { badgeEl.textContent = 'GO'; badgeEl.className = 'daily-card-badge'; }
+                var dailyCard = document.getElementById('daily-task-card');
+                if (dailyCard) dailyCard.classList.remove('done-state');
             }
         }
         
