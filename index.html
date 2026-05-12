@@ -2783,7 +2783,7 @@
         }
 
         function renderPersonalities() {
-            var scroll = document.getElementById('personality-scroll');
+            var scroll = document.getElementById('personality-grid');
             var grid = document.getElementById('personality-grid');
             var html = '';
             for (var i = 0; i < personalities.length; i++) {
@@ -3244,7 +3244,7 @@
         }
 
         function closeClearChatModal() {
-            var modal = document.getElementById('clear-modal');
+            var modal = document.document.querySelector('.chat-clear-modal');
             if (modal) modal.remove();
         }
 
@@ -3303,6 +3303,44 @@
                 if (studyEnChats) studyEnChats.textContent = data.chatCount || 0;
             }, 100);
         })();
-    </script>
+    
+function handleHomeCta() {
+    var user = JSON.parse(localStorage.getItem('cet_user') || '{}');
+    if (user.plan === 'free' || !user.plan) {
+        switchTab('diagnosis');
+        setTimeout(function(){ startDiagChat('开始AI诊断，帮我找出四级薄弱点'); }, 300);
+    } else {
+        switchTab('diagnosis');
+    }
+}
+
+function selectPlan(plan) {
+    var cards = document.querySelectorAll('.coze-card');
+    cards.forEach(function(c) { c.classList.remove('selected'); });
+    var target = document.querySelector('.coze-card[data-plan="' + plan + '"]');
+    if (target) target.classList.add('selected');
+    var ctaBtn = document.getElementById('plan-cta-btn');
+    if (ctaBtn) {
+        var prices = { free: '当前方案', trial: '¥4.9 立即体验', sprint: '¥49 开始冲刺', flagship: '¥149 旗舰陪伴' };
+        ctaBtn.textContent = prices[plan] || '选择方案';
+    }
+}
+
+function showStudyHistory() { showToast('学习记录功能开发中'); }
+function showDiagHistory() { showToast('诊断记录功能开发中'); }
+
+function closeModal(id) { 
+    var modal = document.getElementById(id);
+    if (modal) modal.style.display = 'none';
+}
+
+function openPayment(plan) {
+    var user = JSON.parse(localStorage.getItem('cet_user') || '{}');
+    var planNames = { trial: '体验版', sprint: '冲刺版', flagship: '旗舰版' };
+    var planPrices = { trial: '4.9', sprint: '49', flagship: '149' };
+    showToast('请选择支付方式购买' + (planNames[plan] || plan) + ' ¥' + (planPrices[plan] || ''));
+}
+
+</script>
 </body>
 </html>
