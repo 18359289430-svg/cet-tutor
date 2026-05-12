@@ -2864,30 +2864,56 @@
         function openChat(mode) {
             mode = mode || 'diagnosis';
             var data = state.userData || {};
-            // 2-bot architecture: diagnosis bot or companion bot
             var hasDiagnosis = data.personality || (data.diagnosis && data.diagnosis.type);
             if (mode === 'chat') {
                 mode = hasDiagnosis ? 'companion' : 'diagnosis';
             } else if (mode === 'diagnosis' && hasDiagnosis) {
-                // Already diagnosed, go to companion
                 mode = 'companion';
             }
             var botMap = {
                 'diagnosis': '7636289658620215331',
                 'companion': '7637702903679631395'
             };
-            chatState.botId = botMap[mode] || botMap['diagnosis'];
-            // 切回陪练模式时，从localStorage恢复conversation_id
+            var newBotId = botMap[mode] || botMap['diagnosis'];
+            
+            // 关键：切换Bot时必须重置conversationId，否则用旧Bot会话调新Bot会报错
+            if (chatState.botId !== newBotId) {
+                // 保存当前Bot的会话到localStorage
+                if (chatState.botId === botMap['companion'] && chatState.conversationId) {
+                    localStorage.setItem('cet_companion_conv', chatState.conversationId);
+                }
+                if (chatState.botId === botMap['diagnosis'] && chatState.conversationId) {
+                    localStorage.setItem('cet_diagnosis_conv', chatState.conversationId);
+                }
+                // 切换Bot，重置会话状态
+                chatState.botId = newBotId;
+                chatState.conversationId = null;
+                chatState.chatId = null;
+                chatState.chatRounds = 0;
+                chatState.messages = [];
+                chatState.isStreaming = false;
+                chatState.currentStreamText = '';
+            }
+            
+            document.getElementById('chat-title').textContent = mode === 'diagnosis' ? '小过学长' : 'AI陪练';
+            
+            // 陪练模式：恢复之前的会话
             if (mode === 'companion') {
-                var savedConv = localStorage.getItem('cet_companion_conv_backup') || localStorage.getItem('cet_companion_conv');
+                var savedConv = localStorage.getItem('cet_companion_conv');
                 if (savedConv && !chatState.conversationId) {
                     chatState.conversationId = savedConv;
-                    // 从Coze服务端加载历史消息
                     loadChatHistory(savedConv);
                 }
             }
-            document.getElementById('chat-title').textContent = mode === 'diagnosis' ? '小过学长' : 'AI陪练';
-            // 显示/隐藏重新诊断按钮
+            // 诊断模式：恢复之前的诊断会话
+            if (mode === 'diagnosis') {
+                var savedDiagConv = localStorage.getItem('cet_diagnosis_conv');
+                if (savedDiagConv && !chatState.conversationId) {
+                    chatState.conversationId = savedDiagConv;
+                    loadChatHistory(savedDiagConv);
+                }
+            }
+            
             var rediagBtn = document.getElementById('btn-rediag');
             if (rediagBtn) rediagBtn.style.display = (mode === 'companion' && hasDiagnosis) ? 'flex' : 'none';
             switchTab('diagnosis');
