@@ -573,7 +573,7 @@ async function handleChatSend(req, res) {
             user_id: user_id,
             additional_messages: messages,
             stream: stream !== false,
-            auto_save_history: stream === false
+            auto_save_history: true
         };
         if (conversation_id) payload.conversation_id = conversation_id;
         // Pass custom_variables from client (could be in parameters or custom_variables)

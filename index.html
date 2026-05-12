@@ -3240,7 +3240,7 @@
                 user_id: userId,
                 conversation_id: chatState.conversationId,
                 messages: [{ role: 'user', content: contextPrefix + text, content_type: 'text' }],
-                stream: false,
+                stream: true,
                 auto_save_history: true,
                 custom_variables: {
                     user_plan: userPlan,
@@ -3268,73 +3268,94 @@
                     return;
                 }
 
-                var result = await resp.json();
-                // Non-stream: need to poll for completion
-                if (result.data && result.data.id && result.data.conversation_id) {
-                    chatState.chatId = result.data.id;
-                    var chatId = result.data.id;
-                    var convId = result.data.conversation_id;
-                    var status = result.data.status;
+                // Stream SSE: read chunks and display in real-time
+                removeTypingIndicator();
+                var aiDiv = appendMessage('ai', '');
+                var bubbleEl = aiDiv.querySelector('.custom-chat-bubble');
+                var timeEl = aiDiv.querySelector('.custom-chat-time');
+                var fullText = '';
+                chatState.currentStreamText = '';
 
-                    // Poll until completed
-                    if (status === 'in_progress' || status === 'created') {
-                        var maxPolls = 60;
-                        for (var p = 0; p < maxPolls; p++) {
-                            await new Promise(r => setTimeout(r, 1500));
-                            try {
-                                var pollResp = await fetch('/api/chat/retrieve?conversation_id=' + convId + '&chat_id=' + chatId);
-                                var pollData = await pollResp.json();
-                                if (pollData.data && (pollData.data.status === 'completed' || pollData.data.status === 'failed')) {
-                                    status = pollData.data.status;
-                                    break;
-                                }
-                            } catch(e) { /* retry */ }
-                        }
-                    }
+                var reader = resp.body.getReader();
+                var decoder = new TextDecoder();
+                var buffer = '';
 
-                    if (status === 'completed') {
-                        // Fetch messages with retry (Coze API may need a moment after completion)
-                        var fullText = '';
-                        var fetchOk = false;
-                        for (var retry = 0; retry < 3; retry++) {
-                            try {
-                                if (retry > 0) await new Promise(r => setTimeout(r, 1000));
-                                var msgResp = await fetch('/api/chat/messages?conversation_id=' + convId + '&chat_id=' + chatId);
-                                var msgData = await msgResp.json();
-                                if (msgData.data) {
-                                    for (var m = 0; m < msgData.data.length; m++) {
-                                        var msg = msgData.data[m];
-                                        if (msg.type === 'answer' && msg.content) {
-                                            fullText = msg.content;
-                                        }
-                                    }
+                while (true) {
+                    var result = await reader.read();
+                    if (result.done) break;
+                    buffer += decoder.decode(result.value, { stream: true });
+
+                    // Parse SSE events
+                    var lines = buffer.split('\n');
+                    buffer = lines.pop() || ''; // keep incomplete line
+
+                    for (var i = 0; i < lines.length; i++) {
+                        var line = lines[i].trim();
+                        if (!line || line.startsWith(':')) continue; // skip empty/comments
+                        if (line.startsWith('event:')) continue; // skip event type
+                        if (!line.startsWith('data:')) continue;
+
+                        var dataStr = line.substring(5).trim();
+                        if (dataStr === '[DONE]') continue;
+
+                        try {
+                            var evt = JSON.parse(dataStr);
+                            // Coze stream format: evt.type === 'conversation.message.delta' for text chunks
+                            if (evt.type === 'conversation.message.delta' && evt.data && evt.data.content && evt.data.type === 'answer') {
+                                fullText += evt.data.content;
+                                chatState.currentStreamText = fullText;
+                                if (bubbleEl) {
+                                    // Remove time element temporarily during streaming
+                                    if (timeEl && timeEl.parentNode === bubbleEl) bubbleEl.removeChild(timeEl);
+                                    bubbleEl.innerHTML = formatBotText(fullText);
+                                    if (timeEl) bubbleEl.appendChild(timeEl);
                                 }
-                                if (fullText) { fetchOk = true; break; }
-                            } catch(e) {
-                                // retry
+                                scrollChatToBottom();
                             }
+                            // Also capture conversation_id from conversation.chat.completed or message completed
+                            if (evt.type === 'conversation.chat.created' || evt.type === 'conversation.chat.in_progress') {
+                                if (evt.data && evt.data.conversation_id) {
+                                    chatState.conversationId = evt.data.conversation_id;
+                                }
+                                if (evt.data && evt.data.id) {
+                                    chatState.chatId = evt.data.id;
+                                }
+                            }
+                        } catch(e) {
+                            // skip non-JSON lines
                         }
-                        removeTypingIndicator();
-                        if (fetchOk && fullText) {
-                            var aiDiv = appendMessage('ai', fullText);
-                            // Parse markers
-                            var resultMatch = fullText.match(/\[RESULT:(.+?)\]/);
-                            if (resultMatch) parseDiagnosisResult(resultMatch[1]);
-                            var planMatch = fullText.match(/\[PLAN:(.+?)\]/);
-                            if (planMatch) parsePlanResult(planMatch[1]);
-                            var taskMatch = fullText.match(/\[TASK:(.+?)\]/);
-                            if (taskMatch) parseTaskDone(taskMatch[1]);
-                            onBotReply();
-                        } else {
-                            appendMessage('ai', '获取回复失败，请重试');
-                        }
-                    } else {
-                        removeTypingIndicator();
-                        appendMessage('ai', 'AI处理超时，请重试');
                     }
+                }
+
+                // Stream done - save conversation ID to localStorage
+                if (chatState.conversationId) {
+                    var botMap2 = { '7636289658620215331': 'diagnosis', '7637702903679631395': 'companion' };
+                    var currentBot = botMap2[chatState.botId];
+                    if (currentBot === 'companion') localStorage.setItem('cet_companion_conv', chatState.conversationId);
+                    if (currentBot === 'diagnosis') localStorage.setItem('cet_diagnosis_conv', chatState.conversationId);
+                }
+
+                // Stream done - finalize
+                if (fullText) {
+                    // Update final text with time
+                    if (bubbleEl && timeEl) {
+                        if (timeEl.parentNode === bubbleEl) bubbleEl.removeChild(timeEl);
+                        bubbleEl.innerHTML = formatBotText(fullText);
+                        bubbleEl.appendChild(timeEl);
+                    }
+                    // Parse markers
+                    var resultMatch = fullText.match(/\[RESULT:(.+?)\]/);
+                    if (resultMatch) parseDiagnosisResult(resultMatch[1]);
+                    var planMatch = fullText.match(/\[PLAN:(.+?)\]/);
+                    if (planMatch) parsePlanResult(planMatch[1]);
+                    var taskMatch = fullText.match(/\[TASK:(.+?)\]/);
+                    if (taskMatch) parseTaskDone(taskMatch[1]);
+                    onBotReply();
                 } else {
+                    // Fallback: if stream produced nothing, try non-stream fetch once
                     removeTypingIndicator();
-                    appendMessage('ai', '请求异常: ' + (result.msg || '未知错误'));
+                    if (aiDiv && aiDiv.parentNode) aiDiv.remove();
+                    appendMessage('ai', 'AI未返回内容，请重试');
                 }
             } catch (e) {
                 removeTypingIndicator();
