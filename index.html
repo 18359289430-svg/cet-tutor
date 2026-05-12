@@ -2897,12 +2897,21 @@
             
             document.getElementById('chat-title').textContent = mode === 'diagnosis' ? '小过学长' : 'AI陪练';
             
-            // 陪练模式：恢复之前的会话
+            // 陪练模式：恢复之前的会话，或显示过渡提示
             if (mode === 'companion') {
                 var savedConv = localStorage.getItem('cet_companion_conv');
                 if (savedConv && !chatState.conversationId) {
                     chatState.conversationId = savedConv;
                     loadChatHistory(savedConv);
+                } else if (!chatState.conversationId && hasDiagnosis) {
+                    // 第一次从诊断切过来，没有陪练历史，显示过渡提示
+                    var container = document.getElementById('chat-messages');
+                    container.innerHTML = '';
+                    var diagType = data.personality || (data.diagnosis && data.diagnosis.type) || '';
+                    appendMessage('system', '✅ 诊断完成！已为你切换到陪练模式');
+                    if (diagType) {
+                        appendMessage('system', '你是「' + diagType + '」，接下来的训练会针对你的薄弱点');
+                    }
                 }
             }
             // 诊断模式：恢复之前的诊断会话
