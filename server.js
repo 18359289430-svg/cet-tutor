@@ -214,9 +214,9 @@ async function handleApi(req, res, pathname) {
                 const amount = orderInfo.orderamount;
 
                 // 根据金额判断套餐
-                if (amount >= 140) {
+                if (amount >= 130) {
                     plan = 'flagship';
-                } else if (amount >= 40) {
+                } else if (amount >= 35) {
                     plan = 'sprint';
                 } else {
                     return sendJson(res, 400, { error: '订单金额与套餐不匹配' });

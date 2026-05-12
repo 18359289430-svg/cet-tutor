@@ -2585,7 +2585,7 @@
                         <div class="coze-card-badge">推荐</div>
                         <div class="coze-card-top">
                             <span class="coze-card-name">冲刺营</span>
-                            <div class="coze-card-price"><span class="coze-price-sign">¥</span><span class="coze-price-num">49</span></div>
+                            <div class="coze-card-price"><span class="coze-price-sign">¥</span><span class="coze-price-num">39</span></div>
                         </div>
                         <div class="coze-card-tag">45天高效冲刺</div>
                         <ul class="coze-card-features">
@@ -3825,7 +3825,7 @@ function selectPlan(plan) {
     if (target) target.classList.add('selected');
     var ctaBtn = document.getElementById('plan-cta-btn');
     if (ctaBtn) {
-        var prices = { free: '当前方案', sprint: '¥49 开始冲刺', flagship: '¥149 全程陪伴' };
+        var prices = { free: '当前方案', sprint: '¥39 开始冲刺', flagship: '¥149 全程陪伴' };
         ctaBtn.textContent = prices[plan] || '选择方案';
     }
 }
@@ -3847,8 +3847,8 @@ function openPayment(plan) {
     };
     // 面包多商品链接（创建后替换）
     var mbdLinks = {
-        sprint: 'https://mbd.pub/o/author-aWeSmG5r',
-        flagship: 'https://mbd.pub/o/author-aWeSmG5r'
+        sprint: 'https://mbd.pub/o/bread/YZaTk5ttbQ==',
+        flagship: 'https://mbd.pub/o/bread/YZaTk5tsbA=='
     };
 
     var existing = document.getElementById('pay-modal');
