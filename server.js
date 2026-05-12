@@ -9,8 +9,7 @@ try {
     const envPath = path.join(__dirname, '.env.local');
     if (fs.existsSync(envPath)) {
         const envContent = fs.readFileSync(envPath, 'utf8');
-        envContent.split('
-').forEach(line => {
+        envContent.split('\n').forEach(line => {
             const match = line.match(/^([A-Z_]+)=(.+)$/);
             if (match && !process.env[match[1]]) process.env[match[1]] = match[2].trim();
         });
