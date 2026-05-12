@@ -4,11 +4,46 @@ const path = require('path');
 const crypto = require('crypto');
 const zlib = require('zlib');
 
+// 加载本地环境变量文件（不提交到git）
+try {
+    const envPath = path.join(__dirname, '.env.local');
+    if (fs.existsSync(envPath)) {
+        const envContent = fs.readFileSync(envPath, 'utf8');
+        envContent.split('
+').forEach(line => {
+            const match = line.match(/^([A-Z_]+)=(.+)$/);
+            if (match && !process.env[match[1]]) process.env[match[1]] = match[2].trim();
+        });
+    }
+} catch(e) {}
+
 const PORT = process.env.PORT || 8080;
 
 // 管理员密钥
-const ADMIN_KEY = process.env.ADMIN_KEY || 'cet4admin2026';
-const SECRET_KEY = process.env.SECRET_KEY || 'cet4secret2026';
+const ADMIN_KEY = process.env.ADMIN_KEY || 'c4t_1aa6Nuh8qebPSgoVqQEQ';  // 生产环境请通过环境变量覆盖
+const SECRET_KEY = process.env.SECRET_KEY || 's4t_XpXkq69UuvV2btndLnRmvqru';  // 生产环境请通过环境变量覆盖
+
+// API 限流：每个IP每分钟最多60次请求
+const rateLimitMap = new Map();
+function checkRateLimit(req) {
+    const ip = req.headers['x-forwarded-for'] || req.headers['x-real-ip'] || req.socket.remoteAddress || 'unknown';
+    const now = Date.now();
+    const record = rateLimitMap.get(ip) || { count: 0, resetAt: now + 60000 };
+    if (now > record.resetAt) {
+        record.count = 0;
+        record.resetAt = now + 60000;
+    }
+    record.count++;
+    rateLimitMap.set(ip, record);
+    // 每5分钟清理一次过期记录
+    if (Math.random() < 0.01) {
+        for (const [k, v] of rateLimitMap) {
+            if (now > v.resetAt) rateLimitMap.delete(k);
+        }
+    }
+    return record.count <= 60;
+}
+
 
 // PayJS 配置（从环境变量读取）- 不再使用，改为手动收款模式
 const PAYJS_MCHID = process.env.PAYJS_MCHID || '';
@@ -19,7 +54,7 @@ const PAYJS_NOTIFY_URL = process.env.PAYJS_NOTIFY_URL || '';
 const WECHAT_PAYMENT_QR = process.env.WECHAT_PAYMENT_QR || '/wechat-qr.jpg';
 
 // 面包多 Developer Key（用于验证订单真实性）
-const MBD_DEVELOPER_KEY = process.env.MBD_DEVELOPER_KEY || '6696954:1wMlLp:brZojpSKPTuU0s-j8TwZTQWGvG0aP8Lk9yiNL1_bqr8';
+const MBD_DEVELOPER_KEY = process.env.MBD_DEVELOPER_KEY || '';  // 需在Railway环境变量中配置
 
 // Bot ID 配置（2个Bot）
 const BOT_ID_DIAGNOSIS = '7636289658620215331';
@@ -608,8 +643,13 @@ const server = http.createServer((req, res) => {
     const url = new URL(req.url, `http://localhost:${PORT}`);
     const pathname = decodeURIComponent(url.pathname);
 
-    // API路由
+    // API路由 - 先检查限流
     if (pathname.startsWith('/api/')) {
+        if (!checkRateLimit(req)) {
+            res.writeHead(429, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: '请求过于频繁，请稍后再试' }));
+            return;
+        }
         handleApi(req, res, pathname);
         return;
     }
