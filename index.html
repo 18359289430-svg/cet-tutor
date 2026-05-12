@@ -3068,17 +3068,26 @@
             appendTypingIndicator();
 
             var userId = (state.userData && state.userData.uid) || 'user_' + Date.now();
+            // 构建用户上下文信息，注入到消息中让Bot读取
+            var userPlan = (state.userData && state.userData.plan) || 'free';
+            var userPersonality = (state.userData && state.userData.diagnosis && state.userData.diagnosis.type) || '';
+            var studyDays = (state.userData && state.userData.studyDays) || 0;
+            var contextPrefix = '';
+            if (chatState.chatRounds <= 1 || !chatState.conversationId) {
+                // 首次对话时注入完整上下文
+                contextPrefix = '[系统信息] user_plan=' + userPlan + ', personality=' + userPersonality + ', study_days=' + studyDays + '\n\n';
+            }
             var payload = {
                 bot_id: chatState.botId,
                 user_id: userId,
                 conversation_id: chatState.conversationId,
-                messages: [{ role: 'user', content: text, content_type: 'text' }],
+                messages: [{ role: 'user', content: contextPrefix + text, content_type: 'text' }],
                 stream: false,
                 auto_save_history: true,
                 custom_variables: {
-                    user_plan: (state.userData && state.userData.plan) || 'free',
-                    user_personality: (state.userData && state.userData.diagnosis && state.userData.diagnosis.type) || '',
-                    study_days: String((state.userData && state.userData.studyDays) || 0),
+                    user_plan: userPlan,
+                    user_personality: userPersonality,
+                    study_days: String(studyDays),
                     today_task: getPlanTodayTaskText() || '',
                     plan_summary: getPlanSummary() || '',
                     last_context: getChatSummary() || '',
