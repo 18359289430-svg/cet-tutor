@@ -2853,7 +2853,8 @@
             isStreaming: false,
             messages: [],
             chatRounds: 0,
-            currentStreamText: ''
+            currentStreamText: '',
+            chatHistory: []
         };
 
         function openChat(mode) {
@@ -2888,6 +2889,7 @@
                 chatState.chatId = null;
                 chatState.chatRounds = 0;
                 chatState.messages = [];
+                chatState.chatHistory = [];
                 chatState.isStreaming = false;
                 chatState.currentStreamText = '';
             }
@@ -3239,7 +3241,7 @@
                 bot_id: chatState.botId,
                 user_id: userId,
                 conversation_id: chatState.conversationId,
-                messages: [{ role: 'user', content: contextPrefix + text, content_type: 'text' }],
+                messages: chatState.chatHistory.concat([{ role: 'user', content: contextPrefix + text, content_type: 'text' }]),
                 stream: true,
                 auto_save_history: true,
                 custom_variables: {
@@ -3348,6 +3350,13 @@
                         if (timeEl.parentNode === bubbleEl) bubbleEl.removeChild(timeEl);
                         bubbleEl.innerHTML = formatBotText(fullText);
                         bubbleEl.appendChild(timeEl);
+                    }
+                    // Save to chat history for context continuity
+                    chatState.chatHistory.push({ role: 'user', content: contextPrefix + text, content_type: 'text' });
+                    chatState.chatHistory.push({ role: 'assistant', content: fullText, content_type: 'text' });
+                    // Keep only last 20 messages (10 rounds) to avoid token limit
+                    if (chatState.chatHistory.length > 20) {
+                        chatState.chatHistory = chatState.chatHistory.slice(-20);
                     }
                     // Parse markers
                     var resultMatch = fullText.match(/\[RESULT:(.+?)\]/);
@@ -3548,6 +3557,7 @@ function showRediagModal() {
             chatState.chatId = null;
             chatState.chatRounds = 0;
             chatState.messages = [];
+            chatState.chatHistory = [];
             chatState.isStreaming = false;
             document.getElementById('chat-title').textContent = '小过学长';
             var rediagBtn = document.getElementById('btn-rediag');
@@ -3593,6 +3603,7 @@ function showClearChatModal() {
             chatState.chatId = null;
             chatState.chatRounds = 0;
             chatState.messages = [];
+            chatState.chatHistory = [];
             chatState.isStreaming = false;
         }
 
