@@ -19,12 +19,6 @@ try {
 
 const PORT = process.env.PORT || 8080;
 
-// 启动时检查关键环境变量
-if (!COZE_PAT) {
-    console.error('[启动失败] COZE_PAT 未配置！请在 .env.local 或 Railway 环境变量中设置');
-    process.exit(1);
-}
-
 // 管理员密钥
 const ADMIN_KEY = process.env.ADMIN_KEY || 'c4t_1aa6Nuh8qebPSgoVqQEQ';  // 生产环境请通过环境变量覆盖
 const SECRET_KEY = process.env.SECRET_KEY || 's4t_XpXkq69UuvV2btndLnRmvqru';  // 生产环境请通过环境变量覆盖
@@ -729,7 +723,7 @@ server.listen(PORT, () => {
 
 // ===== Coze Chat API 代理 =====
 const COZE_API_BASE = 'https://api.coze.cn';
-const COZE_PAT = process.env.COZE_PAT || '';  // 必须在.env.local或Railway环境变量中配置
+const COZE_PAT = process.env.COZE_PAT || 'pat_hAOthvv429aDEqWspP4lITuL3DAU7VZJiGlVrnmA1zuoZ4IWW2kmxYzXUbGvZTYb';  // 生产环境请通过环境变量覆盖
 
 // POST /api/chat/conversation - 创建对话
 async function handleCreateConversation(req, res) {
