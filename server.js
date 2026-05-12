@@ -114,7 +114,7 @@ function parseBody(req) {
 function sendJson(res, statusCode, data) {
     res.writeHead(statusCode, {
         'Content-Type': 'application/json; charset=utf-8',
-        'Access-Control-Allow-Origin': (req.headers.origin && (req.headers.origin.includes('cet-tutor') || req.headers.origin.includes('localhost')) ? req.headers.origin : 'https://cet-tutor-production.up.railway.app'),
+        'Access-Control-Allow-Origin': 'https://cet-tutor-production.up.railway.app',
         'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
         'Access-Control-Allow-Headers': 'Content-Type'
     });
@@ -808,7 +808,7 @@ async function handleChatSend(req, res) {
                 'Cache-Control': 'no-cache',
                 'Connection': 'keep-alive',
                 'X-Accel-Buffering': 'no',
-                'Access-Control-Allow-Origin': (req.headers.origin && (req.headers.origin.includes('cet-tutor') || req.headers.origin.includes('localhost')) ? req.headers.origin : 'https://cet-tutor-production.up.railway.app')
+                'Access-Control-Allow-Origin': 'https://cet-tutor-production.up.railway.app'
             });
             // Node.js 18+ fetch returns Web ReadableStream
             const reader = resp.body.getReader();
