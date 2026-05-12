@@ -18,6 +18,9 @@ const PAYJS_NOTIFY_URL = process.env.PAYJS_NOTIFY_URL || '';
 // 微信收款码URL（改为本地图片）
 const WECHAT_PAYMENT_QR = process.env.WECHAT_PAYMENT_QR || '/wechat-qr.jpg';
 
+// 面包多 Developer Key（用于验证订单真实性）
+const MBD_DEVELOPER_KEY = process.env.MBD_DEVELOPER_KEY || '';
+
 // Bot ID 配置（2个Bot）
 const BOT_ID_DIAGNOSIS = '7636289658620215331';
 const BOT_ID_COMPANION = '7637702903679631395';
@@ -167,6 +170,85 @@ async function handleApi(req, res, pathname) {
                 token: order.token,
                 orderId: order.orderId
             });
+        }
+
+        // POST /api/activate-with-mbd-order - 面包多订单号激活（全自动）
+        if (pathname === '/api/activate-with-mbd-order' && req.method === 'POST') {
+            const body = await parseBody(req);
+            const { order_id, plan: reqPlan } = body;
+
+            if (!order_id) {
+                return sendJson(res, 400, { error: '请输入面包多订单号' });
+            }
+
+            const orderIdTrimmed = order_id.trim();
+
+            // 确定套餐类型
+            let plan = reqPlan || 'sprint';
+            if (!PLANS[plan]) plan = 'sprint';
+
+            // 检查此订单号是否已激活过
+            const existingActivation = orders.get('mbd_' + orderIdTrimmed);
+            if (existingActivation && existingActivation.status === 'activated') {
+                return sendJson(res, 200, {
+                    success: true,
+                    plan: existingActivation.plan,
+                    token: existingActivation.token,
+                    orderId: existingActivation.orderId,
+                    alreadyActivated: true
+                });
+            }
+
+            // 验证面包多订单（调用面包多API）
+            try {
+                const mbdResp = await fetch('https://x.mianbaoduo.com/api/order-detail?order_id=' + encodeURIComponent(orderIdTrimmed), {
+                    headers: { 'x-token': MBD_DEVELOPER_KEY }
+                });
+                const mbdData = await mbdResp.json();
+
+                if (mbdData.code !== 200 || !mbdData.result || mbdData.result.state !== 'success') {
+                    return sendJson(res, 400, { error: '订单验证失败，请确认订单号是否正确且已付款' });
+                }
+
+                const orderInfo = mbdData.result;
+                const amount = orderInfo.orderamount;
+
+                // 根据金额判断套餐
+                if (amount >= 140) {
+                    plan = 'flagship';
+                } else if (amount >= 40) {
+                    plan = 'sprint';
+                } else {
+                    return sendJson(res, 400, { error: '订单金额与套餐不匹配' });
+                }
+
+                // 创建并激活
+                const activationId = 'mbd_' + orderIdTrimmed;
+                const token = crypto.createHash('md5').update(activationId + plan + SECRET_KEY).digest('hex');
+                orders.set(activationId, {
+                    orderId: activationId,
+                    mbdOrderId: orderIdTrimmed,
+                    plan,
+                    amount: PLANS[plan].price,
+                    status: 'activated',
+                    createdAt: Date.now(),
+                    activatedAt: Date.now(),
+                    token,
+                    source: 'mbd_order'
+                });
+
+                console.log(`[面包多订单激活] ${orderIdTrimmed} - ${PLANS[plan].name} - ¥${amount}`);
+
+                return sendJson(res, 200, {
+                    success: true,
+                    plan,
+                    token,
+                    orderId: activationId
+                });
+            } catch (e) {
+                console.error('MBD order verify error:', e);
+                return sendJson(res, 500, { error: '订单验证服务暂时不可用，请稍后重试' });
+            }
         }
 
         // POST /api/activate-with-code - 激活码激活

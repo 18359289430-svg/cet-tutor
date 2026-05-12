@@ -3875,7 +3875,12 @@ function openPayment(plan) {
             '</div>' +
             '<div class="pay-panel active" id="pay-panel-online">' +
                 '<a class="pay-mbd-link" href="' + (mbdLinks[plan] || '#') + '" target="_blank">购买' + (planNames[plan] || '') + '</a>' +
-                '<div class="pay-mbd-tip">购买后自动获得激活码，复制到「激活码」Tab即可开通</div>' +
+                '<div class="pay-mbd-tip">购买后复制面包多订单号，粘贴到下方即可自动开通</div>' +
+                '<div class="pay-input-row" style="margin-top:14px">' +
+                    '<input type="text" id="mbd-order-input" placeholder="粘贴面包多订单号" autocomplete="off" spellcheck="false">' +
+                    '<button id="mbd-activate-btn" onclick="activateWithMbdOrder(\'' + plan + '\')">验证激活</button>' +
+                '</div>' +
+                '<div id="mbd-activate-msg" style="font-size:12px;margin-top:8px;min-height:18px"></div>' +
                 '<div style="margin-top:16px;padding-top:16px;border-top:1px solid #F1F5F9">' +
                     '<div style="font-size:12px;color:#94a3b8;text-align:center;margin-bottom:8px">或微信扫码转账后联系客服获取激活码</div>' +
                     '<div class="pay-qr-box"><img src="/wechat-qr.jpg" alt="微信收款码"></div>' +
@@ -3927,17 +3932,14 @@ function activateWithCode() {
         btn.disabled = false;
         btn.textContent = '激活';
         if (resp.success) {
-            // 激活成功 - 更新用户数据
             state.userData = state.userData || {};
             state.userData.plan = resp.plan;
             state.userData.planToken = resp.token;
             state.userData.planOrderId = resp.orderId;
             state.userData.planActivatedAt = Date.now();
             localStorage.setItem('cet_user', JSON.stringify(state.userData));
-            // 更新UI
             updateProfileStats();
             updateHomeStatus();
-            // 显示成功弹窗
             showPaySuccess(resp.plan);
         } else {
             if (msgEl) { msgEl.style.color = '#E17055'; msgEl.textContent = resp.error || '激活码无效'; }
@@ -3945,6 +3947,48 @@ function activateWithCode() {
     }).catch(function(e) {
         btn.disabled = false;
         btn.textContent = '激活';
+        if (msgEl) { msgEl.style.color = '#E17055'; msgEl.textContent = '网络错误，请重试'; }
+    });
+}
+
+function activateWithMbdOrder(plan) {
+    var input = document.getElementById('mbd-order-input');
+    var msgEl = document.getElementById('mbd-activate-msg');
+    var btn = document.getElementById('mbd-activate-btn');
+    if (!input || !input.value.trim()) {
+        if (msgEl) { msgEl.style.color = '#E17055'; msgEl.textContent = '请输入面包多订单号'; }
+        return;
+    }
+    btn.disabled = true;
+    btn.textContent = '验证中...';
+    if (msgEl) { msgEl.style.color = '#64748B'; msgEl.textContent = '正在验证订单...'; }
+
+    fetch('/api/activate-with-mbd-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ order_id: input.value.trim(), plan: plan })
+    }).then(function(r) { return r.json(); }).then(function(resp) {
+        btn.disabled = false;
+        btn.textContent = '验证激活';
+        if (resp.success) {
+            state.userData = state.userData || {};
+            state.userData.plan = resp.plan;
+            state.userData.planToken = resp.token;
+            state.userData.planOrderId = resp.orderId;
+            state.userData.planActivatedAt = Date.now();
+            localStorage.setItem('cet_user', JSON.stringify(state.userData));
+            updateProfileStats();
+            updateHomeStatus();
+            if (resp.alreadyActivated) {
+                if (msgEl) { msgEl.style.color = '#6C5CE7'; msgEl.textContent = '此订单已激活过'; }
+            }
+            showPaySuccess(resp.plan);
+        } else {
+            if (msgEl) { msgEl.style.color = '#E17055'; msgEl.textContent = resp.error || '验证失败'; }
+        }
+    }).catch(function(e) {
+        btn.disabled = false;
+        btn.textContent = '验证激活';
         if (msgEl) { msgEl.style.color = '#E17055'; msgEl.textContent = '网络错误，请重试'; }
     });
 }
