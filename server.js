@@ -19,7 +19,7 @@ const PAYJS_NOTIFY_URL = process.env.PAYJS_NOTIFY_URL || '';
 const WECHAT_PAYMENT_QR = process.env.WECHAT_PAYMENT_QR || '/wechat-qr.jpg';
 
 // 面包多 Developer Key（用于验证订单真实性）
-const MBD_DEVELOPER_KEY = process.env.MBD_DEVELOPER_KEY || '';
+const MBD_DEVELOPER_KEY = process.env.MBD_DEVELOPER_KEY || '6696954:1wMlLp:brZojpSKPTuU0s-j8TwZTQWGvG0aP8Lk9yiNL1_bqr8';
 
 // Bot ID 配置（2个Bot）
 const BOT_ID_DIAGNOSIS = '7636289658620215331';
