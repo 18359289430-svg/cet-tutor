@@ -2813,6 +2813,9 @@
             updateProfileStats();
             updateHomeStatus();
             updatePlanDisplay();
+
+            // 领取链接自动激活：/claim?sprint&code=CET4S-XXXXX-YYYY
+            checkClaimUrl();
         });
 
         function loadUserData() {
@@ -2820,6 +2823,46 @@
                 var data = localStorage.getItem('cet_user');
                 if (data) state.userData = JSON.parse(data);
             } catch(e) {}
+        }
+
+        function checkClaimUrl() {
+            var params = new URLSearchParams(window.location.search);
+            var claimCode = params.get('code');
+            if (!claimCode) return;
+
+            // 如果已经有套餐了就不重复激活
+            if (state.userData && state.userData.plan && state.userData.plan !== 'free') {
+                showToast('您已开通' + (state.userData.plan === 'flagship' ? '全程营' : '冲刺营') + '，无需重复激活');
+                // 清除URL参数
+                window.history.replaceState({}, '', '/');
+                return;
+            }
+
+            // 自动激活
+            fetch('/api/activate-with-code', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ code: claimCode.trim() })
+            }).then(function(r) { return r.json(); }).then(function(resp) {
+                if (resp.success) {
+                    state.userData = state.userData || {};
+                    state.userData.plan = resp.plan;
+                    state.userData.planToken = resp.token;
+                    state.userData.planOrderId = resp.orderId;
+                    state.userData.planActivatedAt = Date.now();
+                    localStorage.setItem('cet_user', JSON.stringify(state.userData));
+                    updateProfileStats();
+                    updateHomeStatus();
+                    showToast('🎉 ' + (resp.plan === 'flagship' ? '全程营' : '冲刺营') + ' 已开通！');
+                } else {
+                    showToast('激活失败：' + (resp.error || '激活码无效'));
+                }
+                // 清除URL参数
+                window.history.replaceState({}, '', '/');
+            }).catch(function(e) {
+                showToast('网络错误，请重试');
+                window.history.replaceState({}, '', '/');
+            });
         }
 
         function initGreeting() {

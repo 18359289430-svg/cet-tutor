@@ -538,6 +538,14 @@ const server = http.createServer((req, res) => {
         return;
     }
 
+    // 领取链接（面包多付费内容里放这个URL）
+    // 格式：/claim?sprint&code=CET4S-XXXXX-YYYY
+    // 用户付款后点这个链接，前端自动激活
+    if (pathname === '/claim') {
+        sendHtml(res, html, req);
+        return;
+    }
+
     // 管理员页面
     if (pathname === '/admin-activate-cet4') {
         const adminHtml = fs.readFileSync(path.join(__dirname, 'admin.html'), 'utf-8');
