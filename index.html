@@ -2017,7 +2017,7 @@
 @keyframes msgIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
 .custom-chat-avatar {
     width:32px; height:32px; border-radius:50%; flex-shrink:0;
-    background:#8E8E93;
+    background:#FFFFFF; border:1.5px solid #E5E5EA;
     display:flex; align-items:center; justify-content:center;
 }
 .custom-chat-avatar svg { width:16px; height:16px; }
@@ -2405,7 +2405,7 @@
                         <!-- AI welcome message -->
                         <div class="custom-chat-msg ai">
                             <div class="custom-chat-avatar">
-                                <svg viewBox="0 0 24 24" fill="white"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                                <svg viewBox="0 0 24 24" fill="#8E8E93"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                             </div>
                             <div class="custom-chat-bubble">
                                 <p>嗨！我是小过学长 &#x1F44B;</p>
@@ -2933,7 +2933,7 @@
             var timeStr = getNowTime();
 
             if (role === 'ai') {
-                msgDiv.innerHTML = '<div class="custom-chat-avatar"><svg viewBox="0 0 24 24" fill="white"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>' +
+                msgDiv.innerHTML = '<div class="custom-chat-avatar"><svg viewBox="0 0 24 24" fill="#8E8E93"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>' +
                     '<div class="custom-chat-bubble">' + formatBotText(text) + '<div class="custom-chat-time">' + timeStr + '</div></div>';
             } else {
                 msgDiv.innerHTML = '<div class="custom-chat-bubble">' + escapeHtml(text) + '<div class="custom-chat-time">' + timeStr + '</div></div>';
@@ -2949,7 +2949,7 @@
             var msgDiv = document.createElement('div');
             msgDiv.className = 'custom-chat-msg ai';
             msgDiv.id = 'typing-indicator';
-            msgDiv.innerHTML = '<div class="custom-chat-avatar"><svg viewBox="0 0 24 24" fill="white"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>' +
+            msgDiv.innerHTML = '<div class="custom-chat-avatar"><svg viewBox="0 0 24 24" fill="#8E8E93"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>' +
                 '<div class="custom-chat-bubble"><div class="typing-indicator"><span></span><span></span><span></span></div></div>';
             container.appendChild(msgDiv);
             scrollChatToBottom();
