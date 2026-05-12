@@ -2356,14 +2356,14 @@
                     </div>
 
                     <!-- 备考计划入口 -->
-                    <div class="study-plan-card" onclick="switchTab('diagnosis');setTimeout(()=>startDiagChat('帮我制定冲刺计划'),300)">
+                    <div class="study-plan-card" id="study-plan-card" onclick="handlePlanCardClick()">
                         <div class="study-plan-left">
-                            <div class="study-plan-icon">
+                            <div class="study-plan-icon" id="study-plan-icon">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
                             </div>
                             <div class="study-plan-text">
-                                <div class="study-plan-title">AI备考计划</div>
-                                <div class="study-plan-desc">定制你的专属冲刺方案</div>
+                                <div class="study-plan-title" id="study-plan-title">AI备考计划</div>
+                                <div class="study-plan-desc" id="study-plan-desc">定制你的专属冲刺方案</div>
                             </div>
                         </div>
                         <svg class="chat-suggest-arrow" viewBox="0 0 24 24" fill="none" stroke="#C0C0C8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
@@ -2730,6 +2730,7 @@
             initTabEvents();
             updateProfileStats();
             updateHomeStatus();
+            updatePlanDisplay();
         });
 
         function loadUserData() {
@@ -3154,6 +3155,7 @@
                     }
                     updateDailyTask();
                     updateHomeStatus();
+            updatePlanDisplay();
                 } else {
                     var remaining = 2 - chatState.chatRounds;
                     showToast('再聊' + remaining + '轮即可打卡');
@@ -3339,6 +3341,118 @@ function openPayment(plan) {
     var planNames = { trial: '体验版', sprint: '冲刺版', flagship: '旗舰版' };
     var planPrices = { trial: '4.9', sprint: '49', flagship: '149' };
     showToast('请选择支付方式购买' + (planNames[plan] || plan) + ' ¥' + (planPrices[plan] || ''));
+}
+
+
+// === 计划系统核心函数 ===
+
+function parseDiagnosisResult(resultStr) {
+    try {
+        var parts = resultStr.split('|');
+        var diagData = {};
+        parts.forEach(function(p) {
+            var kv = p.split('=');
+            if (kv.length === 2) diagData[kv[0].trim()] = kv[1].trim();
+        });
+        if (diagData.type) {
+            state.userData.diagnosis = diagData;
+            state.userData.personality = diagData.type;
+            localStorage.setItem('cet_user', JSON.stringify(state.userData));
+            showToast('诊断完成！你是「' + diagData.type + '」');
+        }
+    } catch(e) { console.error('parseDiagnosisResult error', e); }
+}
+
+function parsePlanResult(planStr) {
+    try {
+        var days = planStr.split('|');
+        var planData = {};
+        days.forEach(function(d) {
+            var kv = d.split('=');
+            if (kv.length === 2) planData[kv[0].trim()] = kv[1].trim();
+        });
+        state.userData.plan_data = planData;
+        state.userData.plan_created = new Date().toISOString().split('T')[0];
+        localStorage.setItem('cet_user', JSON.stringify(state.userData));
+        showToast('备考计划已生成！');
+        // Update study page
+        updatePlanDisplay();
+    } catch(e) { console.error('parsePlanResult error', e); }
+}
+
+function parseTaskDone(taskStr) {
+    try {
+        // Mark today's task as done
+        var todayKey = 'day' + getPlanDayIndex();
+        if (state.userData.plan_data && state.userData.plan_data[todayKey]) {
+            state.userData.plan_data[todayKey + '_done'] = true;
+            localStorage.setItem('cet_user', JSON.stringify(state.userData));
+        }
+        // Trigger check-in
+        var streak = JSON.parse(localStorage.getItem('cet_streak') || '{"count":0,"lastDate":""}');
+        var today = new Date().toISOString().split('T')[0];
+        if (streak.lastDate !== today) {
+            streak.count = (streak.count || 0) + 1;
+            streak.lastDate = today;
+            localStorage.setItem('cet_streak', JSON.stringify(streak));
+        }
+        showToast('任务完成，已打卡！🔥');
+    } catch(e) { console.error('parseTaskDone error', e); }
+}
+
+function getPlanDayIndex() {
+    if (!state.userData || !state.userData.plan_created) return 1;
+    var created = new Date(state.userData.plan_created);
+    var now = new Date();
+    var diff = Math.floor((now - created) / (1000 * 60 * 60 * 24));
+    return Math.min(diff + 1, 30); // max 30 days
+}
+
+function getPlanTodayTaskText() {
+    if (!state.userData || !state.userData.plan_data) return '';
+    var dayIdx = getPlanDayIndex();
+    var todayKey = 'day' + dayIdx;
+    return state.userData.plan_data[todayKey] || '';
+}
+
+function getPlanSummary() {
+    if (!state.userData || !state.userData.plan_data) return '';
+    var parts = [];
+    for (var key in state.userData.plan_data) {
+        if (key.indexOf('_done') === -1) {
+            parts.push(key + '=' + state.userData.plan_data[key]);
+        }
+    }
+    return parts.join('|');
+}
+
+
+function handlePlanCardClick() {
+    var todayTask = getPlanTodayTaskText();
+    if (todayTask) {
+        // Has plan, go to AI coach to do today's task
+        switchTab('diagnosis');
+        setTimeout(function(){ startDiagChat('今天我该做什么？帮我安排今日任务'); }, 300);
+    } else {
+        // No plan, create one
+        switchTab('diagnosis');
+        setTimeout(function(){ startDiagChat('帮我制定冲刺计划'); }, 300);
+    }
+}
+
+function updatePlanDisplay() {
+    var titleEl = document.getElementById('study-plan-title');
+    var descEl = document.getElementById('study-plan-desc');
+    var todayTask = getPlanTodayTaskText();
+    var dayIdx = getPlanDayIndex();
+    
+    if (todayTask && titleEl && descEl) {
+        titleEl.textContent = 'Day ' + dayIdx + ' · 今日计划';
+        descEl.textContent = todayTask;
+    } else if (titleEl && descEl) {
+        titleEl.textContent = 'AI备考计划';
+        descEl.textContent = '定制你的专属冲刺方案';
+    }
 }
 
 </script>
