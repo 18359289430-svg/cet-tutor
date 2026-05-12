@@ -3485,10 +3485,10 @@ function checkChatLimit() {
     
     // Free users: 5 rounds per day
     var usage = getChatUsage();
-    var limit = 5;
+    var limit = 10;
     
     if (usage.count >= limit) {
-        return { limited: true, message: '今日免费额度已用完（5轮/天）🔄 明天恢复，或升级冲刺版无限聊～' };
+        return { limited: true, message: '今日免费额度已用完（10轮/天）🔄 明天恢复，或升级冲刺版无限聊～' };
     }
     
     return { limited: false, remaining: limit - usage.count };
