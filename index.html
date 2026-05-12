@@ -3293,35 +3293,39 @@
                     }
 
                     if (status === 'completed') {
-                        // Fetch messages
-                        try {
-                            var msgResp = await fetch('/api/chat/messages?conversation_id=' + convId + '&chat_id=' + chatId);
-                            var msgData = await msgResp.json();
-                            var fullText = '';
-                            if (msgData.data) {
-                                for (var m = 0; m < msgData.data.length; m++) {
-                                    var msg = msgData.data[m];
-                                    if (msg.type === 'answer' && msg.content) {
-                                        fullText = msg.content;
+                        // Fetch messages with retry (Coze API may need a moment after completion)
+                        var fullText = '';
+                        var fetchOk = false;
+                        for (var retry = 0; retry < 3; retry++) {
+                            try {
+                                if (retry > 0) await new Promise(r => setTimeout(r, 1000));
+                                var msgResp = await fetch('/api/chat/messages?conversation_id=' + convId + '&chat_id=' + chatId);
+                                var msgData = await msgResp.json();
+                                if (msgData.data) {
+                                    for (var m = 0; m < msgData.data.length; m++) {
+                                        var msg = msgData.data[m];
+                                        if (msg.type === 'answer' && msg.content) {
+                                            fullText = msg.content;
+                                        }
                                     }
                                 }
+                                if (fullText) { fetchOk = true; break; }
+                            } catch(e) {
+                                // retry
                             }
-                            removeTypingIndicator();
-                            if (fullText) {
-                                var aiDiv = appendMessage('ai', fullText);
-                                // Parse markers
-                                var resultMatch = fullText.match(/\[RESULT:(.+?)\]/);
-                                if (resultMatch) parseDiagnosisResult(resultMatch[1]);
-                                var planMatch = fullText.match(/\[PLAN:(.+?)\]/);
-                                if (planMatch) parsePlanResult(planMatch[1]);
-                                var taskMatch = fullText.match(/\[TASK:(.+?)\]/);
-                                if (taskMatch) parseTaskDone(taskMatch[1]);
-                                onBotReply();
-                            } else {
-                                appendMessage('ai', 'AI未返回内容，请重试');
-                            }
-                        } catch(e) {
-                            removeTypingIndicator();
+                        }
+                        removeTypingIndicator();
+                        if (fetchOk && fullText) {
+                            var aiDiv = appendMessage('ai', fullText);
+                            // Parse markers
+                            var resultMatch = fullText.match(/\[RESULT:(.+?)\]/);
+                            if (resultMatch) parseDiagnosisResult(resultMatch[1]);
+                            var planMatch = fullText.match(/\[PLAN:(.+?)\]/);
+                            if (planMatch) parsePlanResult(planMatch[1]);
+                            var taskMatch = fullText.match(/\[TASK:(.+?)\]/);
+                            if (taskMatch) parseTaskDone(taskMatch[1]);
+                            onBotReply();
+                        } else {
                             appendMessage('ai', '获取回复失败，请重试');
                         }
                     } else {
