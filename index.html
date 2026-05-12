@@ -2141,6 +2141,92 @@
 .chat-clear-dialog .btn-cancel { background:#F1F5F9; color:#475569; }
 .chat-clear-dialog .btn-confirm { background:#EF4444; color:#fff; }
 
+/* ====== 支付弹窗 ====== */
+.pay-modal {
+    position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.45);
+    display:flex; align-items:flex-end; justify-content:center; z-index:1001;
+    animation: fadeIn 0.2s;
+}
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+@keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
+.pay-sheet {
+    background:#fff; border-radius:20px 20px 0 0; width:100%; max-width:430px;
+    padding:20px 20px calc(20px + env(safe-area-inset-bottom));
+    animation: slideUp 0.3s cubic-bezier(0.16,1,0.3,1);
+}
+.pay-sheet-handle {
+    width:36px; height:4px; background:#E2E8F0; border-radius:2px; margin:0 auto 16px;
+}
+.pay-sheet-title {
+    font-size:18px; font-weight:700; color:#1a1a2e; text-align:center; margin-bottom:4px;
+}
+.pay-sheet-price {
+    font-size:32px; font-weight:800; color:#6C5CE7; text-align:center; margin-bottom:16px;
+}
+.pay-sheet-price small { font-size:14px; font-weight:600; }
+.pay-tabs {
+    display:flex; background:#F1F5F9; border-radius:10px; padding:3px; margin-bottom:16px;
+}
+.pay-tab {
+    flex:1; text-align:center; padding:8px; font-size:13px; font-weight:600;
+    border-radius:8px; color:#64748B; cursor:pointer; transition:all 0.2s;
+}
+.pay-tab.active { background:#fff; color:#1a1a2e; box-shadow:0 1px 3px rgba(0,0,0,0.08); }
+.pay-panel { display:none; }
+.pay-panel.active { display:block; }
+.pay-qr-box {
+    text-align:center; padding:12px;
+}
+.pay-qr-box img {
+    width:180px; height:180px; border-radius:12px; border:1px solid #E2E8F0;
+    object-fit:cover;
+}
+.pay-qr-tip {
+    font-size:12px; color:#94a3b8; margin-top:8px;
+}
+.pay-mbd-link {
+    display:block; margin-top:12px; padding:14px; background:#6C5CE7; color:#fff;
+    border-radius:12px; font-size:15px; font-weight:600; text-align:center;
+    text-decoration:none; transition:background 0.2s;
+}
+.pay-mbd-link:active { background:#5849C4; }
+.pay-mbd-tip { font-size:11px; color:#94a3b8; text-align:center; margin-top:8px; }
+.pay-input-row {
+    display:flex; gap:10px; margin-top:12px;
+}
+.pay-input-row input {
+    flex:1; padding:12px 14px; border:1.5px solid #E2E8F0; border-radius:10px;
+    font-size:15px; outline:none; transition:border-color 0.2s;
+    letter-spacing:1px;
+}
+.pay-input-row input:focus { border-color:#6C5CE7; }
+.pay-input-row button {
+    padding:12px 20px; background:#6C5CE7; color:#fff; border:none;
+    border-radius:10px; font-size:14px; font-weight:600; cursor:pointer;
+    white-space:nowrap;
+}
+.pay-input-row button:active { background:#5849C4; }
+.pay-input-row button:disabled { background:#A29BFE; cursor:not-allowed; }
+.pay-close {
+    position:absolute; top:16px; right:16px; width:28px; height:28px;
+    border-radius:50%; background:#F1F5F9; display:flex; align-items:center;
+    justify-content:center; cursor:pointer; border:none; color:#94a3b8;
+}
+.pay-feature-list {
+    text-align:left; margin:0 0 16px; padding:0;
+}
+.pay-feature-list li {
+    font-size:13px; color:#475569; padding:3px 0; list-style:none;
+}
+.pay-feature-list li::before {
+    content:'✓ '; color:#00B894; font-weight:700;
+}
+.pay-success-icon {
+    width:56px; height:56px; background:#00B894; border-radius:50%;
+    margin:0 auto 12px; display:flex; align-items:center; justify-content:center;
+}
+.pay-success-icon svg { width:28px; height:28px; }
+
 </style>
 </head>
 <body>
@@ -2609,7 +2695,7 @@
                         <span class="menu-text-new">套餐管理</span>
                         <span class="menu-arrow-new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"/></svg></span>
                     </div>
-                    <div class="menu-item-new" onclick="showToast('请联系客服兑换')">
+                    <div class="menu-item-new" onclick="openActivateCodeModal()">
                         <div class="menu-icon-new gray"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
                         <span class="menu-text-new">兑换码</span>
                         <span class="menu-arrow-new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"/></svg></span>
@@ -3125,6 +3211,26 @@
                 ctaText.textContent = hasDiag ? '继续AI陪练' : '开始AI诊断';
             }
             updateDailyTask();
+        }
+
+        function updateProfileStats() {
+            var data = state.userData || {};
+            // 更新套餐标签
+            var tagEl = document.getElementById('profile-plan-tag');
+            if (tagEl) {
+                var planNames = { sprint: '冲刺营', flagship: '全程营' };
+                var plan = data.plan || 'free';
+                tagEl.textContent = planNames[plan] || '免费版';
+                tagEl.className = 'profile-plan-tag ' + (plan !== 'free' ? 'paid' : 'free');
+            }
+            // 更新统计
+            var streak = getStreakData();
+            var daysEl = document.getElementById('stat-days');
+            if (daysEl) daysEl.textContent = streak.count || 0;
+            var chatsEl = document.getElementById('stat-chats');
+            if (chatsEl) chatsEl.textContent = (data.chatCount || 0);
+            var persEl = document.getElementById('stat-personality');
+            if (persEl) persEl.textContent = data.personality || '—';
         }
 
         function renderBenefits(selectedPlan) {
@@ -3690,10 +3796,149 @@ function closeModal(id) {
 }
 
 function openPayment(plan) {
-    var user = JSON.parse(localStorage.getItem('cet_user') || '{}');
     var planNames = { sprint: '冲刺营', flagship: '全程营' };
-    var planPrices = { sprint: '49', flagship: '149' };
-    showToast('请选择支付方式购买' + (planNames[plan] || plan) + ' ¥' + (planPrices[plan] || ''));
+    var planPrices = { sprint: 49, flagship: 149 };
+    var planFeatures = {
+        sprint: ['AI对话 无限','30天个性化计划+每日推送','作文批改 每日1次（逐句改写）','翻译批改 每日1次（参考译文）','针对短板的每日一练'],
+        flagship: ['AI对话 无限','30天个性化计划+每日推送','作文/翻译批改 无限（逐句改写+精讲）','针对短板的每日一练','深度精讲（为什么错+怎么避坑）','六级衔接指导']
+    };
+    // 面包多商品链接（创建后替换）
+    var mbdLinks = {
+        sprint: 'https://mbd.pub/o/author-aWeSmG5r',
+        flagship: 'https://mbd.pub/o/author-aWeSmG5r'
+    };
+
+    var existing = document.getElementById('pay-modal');
+    if (existing) existing.remove();
+
+    var featureHtml = (planFeatures[plan] || []).map(function(f) {
+        return '<li>' + f + '</li>';
+    }).join('');
+
+    var modal = document.createElement('div');
+    modal.className = 'pay-modal';
+    modal.id = 'pay-modal';
+    modal.onclick = function(e) { if (e.target === modal) closePayModal(); };
+    modal.innerHTML =
+        '<div class="pay-sheet" style="position:relative">' +
+            '<div class="pay-sheet-handle"></div>' +
+            '<button class="pay-close" onclick="closePayModal()"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2"><line x1="1" y1="1" x2="13" y2="13"/><line x1="13" y1="1" x2="1" y2="13"/></svg></button>' +
+            '<div class="pay-sheet-title">' + (planNames[plan] || plan) + '</div>' +
+            '<div class="pay-sheet-price"><small>¥</small>' + (planPrices[plan] || '') + '</div>' +
+            '<ul class="pay-feature-list">' + featureHtml + '</ul>' +
+            '<div class="pay-tabs">' +
+                '<div class="pay-tab active" onclick="switchPayTab(\'online\')">在线购买</div>' +
+                '<div class="pay-tab" onclick="switchPayTab(\'code\')">激活码</div>' +
+            '</div>' +
+            '<div class="pay-panel active" id="pay-panel-online">' +
+                '<a class="pay-mbd-link" href="' + (mbdLinks[plan] || '#') + '" target="_blank">购买' + (planNames[plan] || '') + '</a>' +
+                '<div class="pay-mbd-tip">购买后自动获得激活码，复制到「激活码」Tab即可开通</div>' +
+                '<div style="margin-top:16px;padding-top:16px;border-top:1px solid #F1F5F9">' +
+                    '<div style="font-size:12px;color:#94a3b8;text-align:center;margin-bottom:8px">或微信扫码转账后联系客服获取激活码</div>' +
+                    '<div class="pay-qr-box"><img src="/wechat-qr.jpg" alt="微信收款码"></div>' +
+                    '<div class="pay-qr-tip">转账备注：' + (planNames[plan] || '') + '</div>' +
+                '</div>' +
+            '</div>' +
+            '<div class="pay-panel" id="pay-panel-code">' +
+                '<div style="font-size:13px;color:#64748B;margin-bottom:4px">输入激活码开通</div>' +
+                '<div class="pay-input-row">' +
+                    '<input type="text" id="activate-code-input" placeholder="如 CET4S-A1B2C3" autocomplete="off" spellcheck="false">' +
+                    '<button id="activate-btn" onclick="activateWithCode()">激活</button>' +
+                '</div>' +
+                '<div id="activate-msg" style="font-size:12px;margin-top:8px;min-height:18px"></div>' +
+            '</div>' +
+        '</div>';
+    document.body.appendChild(modal);
+}
+
+function switchPayTab(tab) {
+    document.querySelectorAll('#pay-modal .pay-tab').forEach(function(t, i) {
+        t.classList.toggle('active', (tab === 'online' && i === 0) || (tab === 'code' && i === 1));
+    });
+    document.getElementById('pay-panel-online').classList.toggle('active', tab === 'online');
+    document.getElementById('pay-panel-code').classList.toggle('active', tab === 'code');
+}
+
+function closePayModal() {
+    var modal = document.getElementById('pay-modal');
+    if (modal) modal.remove();
+}
+
+function activateWithCode() {
+    var input = document.getElementById('activate-code-input');
+    var msgEl = document.getElementById('activate-msg');
+    var btn = document.getElementById('activate-btn');
+    if (!input || !input.value.trim()) {
+        if (msgEl) { msgEl.style.color = '#E17055'; msgEl.textContent = '请输入激活码'; }
+        return;
+    }
+    btn.disabled = true;
+    btn.textContent = '激活中...';
+    if (msgEl) { msgEl.style.color = '#64748B'; msgEl.textContent = ''; }
+
+    fetch('/api/activate-with-code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: input.value.trim() })
+    }).then(function(r) { return r.json(); }).then(function(resp) {
+        btn.disabled = false;
+        btn.textContent = '激活';
+        if (resp.success) {
+            // 激活成功 - 更新用户数据
+            state.userData = state.userData || {};
+            state.userData.plan = resp.plan;
+            state.userData.planToken = resp.token;
+            state.userData.planOrderId = resp.orderId;
+            state.userData.planActivatedAt = Date.now();
+            localStorage.setItem('cet_user', JSON.stringify(state.userData));
+            // 更新UI
+            updateProfileStats();
+            updateHomeStatus();
+            // 显示成功弹窗
+            showPaySuccess(resp.plan);
+        } else {
+            if (msgEl) { msgEl.style.color = '#E17055'; msgEl.textContent = resp.error || '激活码无效'; }
+        }
+    }).catch(function(e) {
+        btn.disabled = false;
+        btn.textContent = '激活';
+        if (msgEl) { msgEl.style.color = '#E17055'; msgEl.textContent = '网络错误，请重试'; }
+    });
+}
+
+function showPaySuccess(plan) {
+    var planNames = { sprint: '冲刺营', flagship: '全程营' };
+    var sheet = document.querySelector('#pay-modal .pay-sheet');
+    if (!sheet) return;
+    sheet.innerHTML =
+        '<div class="pay-sheet-handle"></div>' +
+        '<div class="pay-success-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>' +
+        '<div class="pay-sheet-title" style="margin-bottom:4px">激活成功</div>' +
+        '<div style="font-size:14px;color:#6C5CE7;font-weight:700;margin-bottom:16px">' + (planNames[plan] || plan) + ' 已开通</div>' +
+        '<button onclick="closePayModal();switchTab(\'diagnosis\');openChat(\'companion\')" style="width:100%;padding:14px;background:#6C5CE7;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer">开始AI陪练</button>' +
+        '<button onclick="closePayModal()" style="width:100%;padding:12px;background:transparent;color:#94a3b8;border:none;font-size:13px;cursor:pointer;margin-top:4px">稍后再说</button>';
+}
+
+function openActivateCodeModal() {
+    var existing = document.getElementById('pay-modal');
+    if (existing) existing.remove();
+    var modal = document.createElement('div');
+    modal.className = 'pay-modal';
+    modal.id = 'pay-modal';
+    modal.onclick = function(e) { if (e.target === modal) closePayModal(); };
+    modal.innerHTML =
+        '<div class="pay-sheet" style="position:relative">' +
+            '<div class="pay-sheet-handle"></div>' +
+            '<button class="pay-close" onclick="closePayModal()"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2"><line x1="1" y1="1" x2="13" y2="13"/><line x1="13" y1="1" x2="1" y2="13"/></svg></button>' +
+            '<div class="pay-sheet-title">兑换码</div>' +
+            '<div style="font-size:13px;color:#64748B;text-align:center;margin-bottom:16px">输入购买后获得的激活码开通套餐</div>' +
+            '<div class="pay-input-row">' +
+                '<input type="text" id="activate-code-input" placeholder="如 CET4S-A1B2C3" autocomplete="off" spellcheck="false">' +
+                '<button id="activate-btn" onclick="activateWithCode()">激活</button>' +
+            '</div>' +
+            '<div id="activate-msg" style="font-size:12px;margin-top:8px;min-height:18px"></div>' +
+        '</div>';
+    document.body.appendChild(modal);
 }
 
 
