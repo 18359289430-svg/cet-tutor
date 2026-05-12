@@ -3519,6 +3519,14 @@
                     });
                     chatState.messages = msgs;
                     chatState.chatRounds = msgs.filter(function(m) { return m.role === 'user'; }).length;
+                    // 重建chatHistory数组，保证刷新后Bot仍能获得对话上下文
+                    chatState.chatHistory = msgs.filter(function(m) { return m.role === 'user' || m.role === 'assistant'; }).map(function(m) {
+                        return { role: m.role, content: m.content || '', content_type: 'text' };
+                    });
+                    // 保留最近20条，避免token超限
+                    if (chatState.chatHistory.length > 20) {
+                        chatState.chatHistory = chatState.chatHistory.slice(-20);
+                    }
                     // 滚动到底部
                     container.scrollTop = container.scrollHeight;
                 }
