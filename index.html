@@ -2877,13 +2877,14 @@
                 'companion': '7637702903679631395'
             };
             chatState.botId = botMap[mode] || botMap['diagnosis'];
-            // 切回陪练模式时恢复之前的会话
-            if (mode === 'companion' && window._companionBackup && !chatState.conversationId) {
-                chatState.conversationId = window._companionBackup.conversationId;
-                chatState.chatId = window._companionBackup.chatId;
-                chatState.messages = window._companionBackup.messages.slice();
-                chatState.chatRounds = window._companionBackup.chatRounds;
-                window._companionBackup = null;
+            // 切回陪练模式时，从localStorage恢复conversation_id
+            if (mode === 'companion') {
+                var savedConv = localStorage.getItem('cet_companion_conv_backup') || localStorage.getItem('cet_companion_conv');
+                if (savedConv && !chatState.conversationId) {
+                    chatState.conversationId = savedConv;
+                    // 从Coze服务端加载历史消息
+                    loadChatHistory(savedConv);
+                }
             }
             document.getElementById('chat-title').textContent = mode === 'diagnosis' ? '小过学长' : 'AI陪练';
             // 显示/隐藏重新诊断按钮
@@ -3254,7 +3255,32 @@
         }
 
         
-        function showRediagModal() {
+        function loadChatHistory(conversationId) {
+            fetch('/api/chat/messages?conversation_id=' + conversationId, {
+                headers: { 'Content-Type': 'application/json' }
+            }).then(function(r) { return r.json(); }).then(function(resp) {
+                if (resp.code === 0 && resp.data) {
+                    var container = document.getElementById('chat-messages');
+                    container.innerHTML = '';
+                    var msgs = resp.data.filter(function(m) { return m.type === 'answer' || m.type === 'question'; });
+                    msgs.forEach(function(m) {
+                        if (m.role === 'assistant') {
+                            appendMessage('ai', m.content);
+                        } else if (m.role === 'user') {
+                            appendMessage('user', m.content);
+                        }
+                    });
+                    chatState.messages = msgs;
+                    chatState.chatRounds = msgs.filter(function(m) { return m.role === 'user'; }).length;
+                    // 滚动到底部
+                    container.scrollTop = container.scrollHeight;
+                }
+            }).catch(function(e) {
+                console.log('加载历史消息失败:', e);
+            });
+        }
+
+function showRediagModal() {
             var overlay = document.createElement('div');
             overlay.className = 'chat-clear-modal';
             overlay.id = 'rediag-modal';
@@ -3270,13 +3296,13 @@
         function confirmRediag() {
             closeRediagModal();
             // 保存陪练会话状态（不清空陪练记录）
-            if (!window._companionBackup) {
-                window._companionBackup = {
-                    conversationId: chatState.conversationId,
-                    chatId: chatState.chatId,
-                    messages: chatState.messages.slice(),
-                    chatRounds: chatState.chatRounds
-                };
+            // 保存陪练会话ID到localStorage
+            if (chatState.conversationId && chatState.botId === '7637702903679631395') {
+                localStorage.setItem('cet_companion_conv', chatState.conversationId);
+            }
+            var savedCompanionConv = localStorage.getItem('cet_companion_conv');
+            if (savedCompanionConv) {
+                localStorage.setItem('cet_companion_conv_backup', savedCompanionConv);
             }
             // 切换到诊断Bot，开新会话
             chatState.botId = '7636289658620215331';
