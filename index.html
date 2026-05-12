@@ -2485,10 +2485,10 @@
                         </div>
                         <div class="coze-card-tag">诊断+基础答疑</div>
                         <ul class="coze-card-features">
-                            <li>✓ AI诊断测试</li>
-                            <li>✓ 备考人格卡</li>
-                            <li>✓ AI答疑 10轮/天</li>
+                            <li>✓ AI诊断+人格卡</li>
+                            <li>✓ AI对话 10轮/天</li>
                             <li>✓ 每日一练+打卡</li>
+                            <li>✓ 作文/翻译 评分+问题标注</li>
                         </ul>
                         <button class="coze-card-btn outline" onclick="event.stopPropagation();openChat(&#39;diagnosis&#39;)">开始诊断</button>
                     </div>
@@ -2501,10 +2501,10 @@
                         <div class="coze-card-tag">30天高效冲刺</div>
                         <ul class="coze-card-features">
                             <li>✓ AI对话 无限</li>
-                            <li>✓ 作文批改 每日1次</li>
-                            <li>✓ 翻译批改 每日1次</li>
-                            <li>✓ 备考计划+每日推送</li>
-                            <li>✓ 考前冲刺方案</li>
+                            <li>✓ 30天个性化计划+每日推送</li>
+                            <li>✓ 作文批改 每日1次（逐句改写）</li>
+                            <li>✓ 翻译批改 每日1次（参考译文）</li>
+                            <li>✓ 针对短板的每日一练</li>
                         </ul>
                         <button class="coze-card-btn primary" onclick="event.stopPropagation();openPayment('sprint')">立即购买</button>
                     </div>
@@ -2516,10 +2516,10 @@
                         <div class="coze-card-tag">30天全程陪伴</div>
                         <ul class="coze-card-features">
                             <li>✓ AI对话 无限</li>
-                            <li>✓ 作文/翻译批改 无限</li>
-                            <li>✓ 完整学习计划</li>
-                            <li>✓ 每日任务+深度精讲</li>
-                            <li>✓ 考前冲刺方案</li>
+                            <li>✓ 30天个性化计划+每日推送</li>
+                            <li>✓ 作文/翻译批改 无限（逐句改写+精讲）</li>
+                            <li>✓ 针对短板的每日一练</li>
+                            <li>✓ 深度精讲（为什么错+怎么避坑）</li>
                             <li>✓ 六级衔接指导</li>
                         </ul>
                         <button class="coze-card-btn primary" onclick="event.stopPropagation();openPayment('flagship')">立即购买</button>
@@ -3382,6 +3382,7 @@ function parsePlanResult(planStr) {
         showToast('备考计划已生成！');
         // Update study page
         updatePlanDisplay();
+            updateDailyTask();
     } catch(e) { console.error('parsePlanResult error', e); }
 }
 
@@ -3461,6 +3462,125 @@ function updatePlanDisplay() {
 }
 
 
+// === 每日一练系统 ===
+var dailyTasks = [
+    {type: 'reading', name: '阅读理解', prompt: '练1篇阅读理解', icon: '📖'},
+    {type: 'vocab', name: '词汇积累', prompt: '背50个四级高频词', icon: '📝'},
+    {type: 'translate', name: '翻译练习', prompt: '练1段中译英', icon: '🔄'},
+    {type: 'attitude', name: '态度判断', prompt: '练3道态度判断题', icon: '🎯'},
+    {type: 'inference', name: '推理判断', prompt: '练3道推理判断题', icon: '🧠'},
+    {type: 'mainidea', name: '主旨归纳', prompt: '练3道主旨归纳题', icon: '📋'},
+    {type: 'words', name: '核心词替换', prompt: '练10组同义替换', icon: '✨'}
+];
+
+// 根据诊断短板生成个性化每日任务
+function getPersonalizedTasks() {
+    var user = state.userData || {};
+    var diag = user.diagnosis || {};
+    var dims = {
+        '细节定位': parseInt(diag['细节定位']) || 50,
+        '推理判断': parseInt(diag['推理判断']) || 50,
+        '同义替换': parseInt(diag['同义替换']) || 50,
+        '主旨归纳': parseInt(diag['主旨归纳']) || 50,
+        '态度判断': parseInt(diag['态度判断']) || 50
+    };
+    // 找最弱的2个维度
+    var sorted = Object.keys(dims).sort(function(a, b) { return dims[a] - dims[b]; });
+    var weak1 = sorted[0];
+    var weak2 = sorted[1];
+    var dimToTask = {
+        '细节定位': {type: 'reading', name: '细节定位专项', prompt: '练3道细节定位题，学会回原文找线索', icon: '🔍'},
+        '推理判断': {type: 'inference', name: '推理判断专项', prompt: '练3道推理判断题，学会从原文推导', icon: '🧠'},
+        '同义替换': {type: 'words', name: '同义替换专项', prompt: '练10组同义替换，识别替换陷阱', icon: '🔄'},
+        '主旨归纳': {type: 'mainidea', name: '主旨归纳专项', prompt: '练3道主旨归纳题，抓住文章核心', icon: '📋'},
+        '态度判断': {type: 'attitude', name: '态度判断专项', prompt: '练3道态度判断题，识别作者态度', icon: '🎯'}
+    };
+    return [dimToTask[weak1], dimToTask[weak2]];
+}
+
+function getDailyTaskInfo() {
+    try {
+        var data = localStorage.getItem('cet_daily');
+        if (!data) {
+            var today = new Date();
+            var dayIdx = (today.getDay() + 6) % 7; // Mon=0
+            return { taskIndex: dayIdx, completed: [], date: getTodayStr() };
+        }
+        var info = JSON.parse(data);
+        if (info.date !== getTodayStr()) {
+            var today = new Date();
+            var dayIdx = (today.getDay() + 6) % 7;
+            return { taskIndex: dayIdx, completed: [], date: getTodayStr() };
+        }
+        return info;
+    } catch(e) {
+        var today = new Date();
+        var dayIdx = (today.getDay() + 6) % 7;
+        return { taskIndex: dayIdx, completed: [], date: getTodayStr() };
+    }
+}
+
+function saveDailyTaskData(data) {
+    data.date = getTodayStr();
+    localStorage.setItem('cet_daily', JSON.stringify(data));
+}
+
+function updateDailyTask() {
+    var user = state.userData || {};
+    var plan = user.plan || 'free';
+    var titleEl = document.getElementById('daily-task-title');
+    var descEl = document.getElementById('daily-task-desc');
+    var badgeEl = document.getElementById('daily-task-badge');
+    if (!titleEl) return;
+
+    if (plan !== 'free' && user.personality) {
+        // 付费用户：针对短板的个性化任务
+        var pTasks = getPersonalizedTasks();
+        var today = new Date();
+        var dayIdx = today.getDate() % 2; // 交替练2个弱项
+        var task = pTasks[dayIdx] || pTasks[0];
+        titleEl.textContent = task.icon + ' ' + task.name;
+        descEl.textContent = task.prompt;
+    } else {
+        // 免费用户：通用7种轮换
+        var info = getDailyTaskInfo();
+        var task = dailyTasks[info.taskIndex];
+        if (task) {
+            titleEl.textContent = task.icon + ' ' + task.name;
+            descEl.textContent = task.prompt;
+        }
+    }
+
+    // 更新badge
+    var info = getDailyTaskInfo();
+    if (info.completed && info.completed.length > 0) {
+        if (badgeEl) { badgeEl.textContent = '✓'; badgeEl.style.background = 'var(--success)'; badgeEl.style.color = '#fff'; }
+    } else {
+        if (badgeEl) { badgeEl.textContent = 'GO'; badgeEl.style.background = ''; badgeEl.style.color = ''; }
+    }
+}
+
+function handleDailyTask() {
+    var user = state.userData || {};
+    var plan = user.plan || 'free';
+    var msg = '';
+
+    if (plan !== 'free' && user.personality) {
+        var pTasks = getPersonalizedTasks();
+        var today = new Date();
+        var dayIdx = today.getDate() % 2;
+        var task = pTasks[dayIdx] || pTasks[0];
+        msg = task.prompt;
+    } else {
+        var info = getDailyTaskInfo();
+        var task = dailyTasks[info.taskIndex];
+        msg = task ? task.prompt : '帮我练一下英语';
+    }
+
+    openChat('companion');
+    setTimeout(function() { sendSuggestion(msg); }, 300);
+}
+
 // === Chat limit system (GPT-style) ===
 function checkChatLimit() {
     var user = state.userData || {};
@@ -3476,7 +3596,7 @@ function checkChatLimit() {
     var limit = 10;
     
     if (usage.count >= limit) {
-        return { limited: true, message: '今日免费额度已用完（10轮/天），明天恢复。升级冲刺营即可无限对话～' };
+        return { limited: true, message: '今日免费额度已用完（10轮/天），明天恢复。升级冲刺营即可无限对话+逐句批改～' };
     }
     
     return { limited: false, remaining: limit - usage.count };
