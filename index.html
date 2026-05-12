@@ -2887,7 +2887,7 @@
         }
 
         function initCountdown() {
-            var examDate = new Date('2026-06-14');
+            var examDate = new Date('2026-06-13');
             var now = new Date();
             var diff = Math.ceil((examDate - now) / (1000 * 60 * 60 * 24));
             var text = document.getElementById('countdown-text');
@@ -3253,7 +3253,7 @@
             var data = state.userData || {};
             var homeCountdown = document.getElementById('home-countdown');
             if (homeCountdown) {
-                var examDate = new Date('2026-06-14');
+                var examDate = new Date('2026-06-13');
                 var now = new Date();
                 var diff = Math.ceil((examDate - now) / (1000*60*60*24));
                 homeCountdown.textContent = '距考试' + diff + '天';
