@@ -193,15 +193,33 @@ async function handleApi(req, res, pathname) {
                 });
             }
 
-            // 检查是否是预生成的激活码（面包多自动发货格式）
-            // 激活码格式: CET4S-XXXXX（冲刺营¥49）/ CET4F-XXXXX（全程营¥149）
-            // 兼容旧格式: CET4T-XXXXX（旧体验版）→冲刺营 / CET4R-XXXXX（旧报告版）→冲刺营 / CET4P-XXXXX（旧旗舰版）→全程营
-            const planMatch = codeTrimmed.match(/^(CET4T|CET4S|CET4F|CET4R|CET4P)-([A-Z0-9]+)$/);
+            // 检查是否是预生成的激活码（带签名验证）
+            // 激活码格式: CET4S-XXXXX-YYYY（前缀-随机码-6位签名）
+            // 签名 = HMAC-SHA256(前缀-随机码, SECRET_KEY) 的前6位
+            // 也兼容无签名格式 CET4S-XXXXX（用于管理员手动创建的订单）
+            const planMatch = codeTrimmed.match(/^(CET4T|CET4S|CET4F|CET4R|CET4P)-([A-Z0-9]+)(?:-([A-Z0-9]{6}))?$/);
             if (planMatch) {
                 let plan = 'sprint';
                 if (planMatch[1] === 'CET4F') plan = 'flagship';
                 else if (planMatch[1] === 'CET4P') plan = 'flagship';
                 // CET4T, CET4R, CET4S 都是 sprint
+
+                const prefix = planMatch[1];
+                const randomPart = planMatch[2];
+                const signature = planMatch[3]; // 可能为undefined（旧格式无签名）
+
+                // 验证签名（如果有签名的话）
+                if (signature) {
+                    const expectedSig = crypto.createHmac('sha256', SECRET_KEY)
+                        .update(prefix + '-' + randomPart)
+                        .digest('hex')
+                        .substring(0, 6)
+                        .toUpperCase();
+                    if (signature !== expectedSig) {
+                        return sendJson(res, 400, { error: '激活码无效，请检查后重试' });
+                    }
+                }
+                // 无签名的旧格式码：只允许已经存在于orders中的码（管理员预创建的）
 
                 // 检查是否已存在此激活码的订单
                 const existingOrder = orders.get(codeTrimmed);
@@ -230,7 +248,12 @@ async function handleApi(req, res, pathname) {
                     });
                 }
 
-                // 创建并激活订单
+                // 无签名码且不存在于orders中，拒绝（防止猜测格式白嫖）
+                if (!signature) {
+                    return sendJson(res, 400, { error: '激活码无效，请联系客服获取' });
+                }
+
+                // 有签名验证通过，创建并激活订单
                 const orderId = codeTrimmed;
                 const token = crypto.createHash('md5').update(orderId + plan + SECRET_KEY).digest('hex');
                 orders.set(orderId, {
@@ -345,6 +368,39 @@ async function handleApi(req, res, pathname) {
             console.log(`[订单删除] ${orderId}`);
 
             return sendJson(res, 200, { success: true });
+        }
+
+        // POST /api/admin-generate-code - 管理员批量生成激活码
+        if (pathname === '/api/admin-generate-code' && req.method === 'POST') {
+            const body = await parseBody(req);
+            const { plan, count, adminKey } = body;
+
+            if (!plan || !adminKey || !PLANS[plan]) {
+                return sendJson(res, 400, { error: '缺少必要参数' });
+            }
+
+            if (adminKey !== ADMIN_KEY) {
+                return sendJson(res, 401, { error: '管理员密钥错误' });
+            }
+
+            const num = Math.min(parseInt(count) || 1, 50); // 最多一次生成50个
+            const codes = [];
+
+            for (let i = 0; i < num; i++) {
+                const prefix = PLANS[plan].uidPrefix.replace('CET4', '').replace('D', 'S'); // CET4D→S, CET4S→S, CET4F→F
+                const randomPart = crypto.randomBytes(4).toString('hex').toUpperCase().substring(0, 5);
+                const signature = crypto.createHmac('sha256', SECRET_KEY)
+                    .update('CET4' + prefix + '-' + randomPart)
+                    .digest('hex')
+                    .substring(0, 6)
+                    .toUpperCase();
+                const code = 'CET4' + prefix + '-' + randomPart + '-' + signature;
+                codes.push(code);
+            }
+
+            console.log(`[生成激活码] ${PLANS[plan].name} × ${num}`);
+
+            return sendJson(res, 200, { success: true, plan, codes });
         }
 
         // ===== 旧版PayJS API（保留但不再使用）=====
