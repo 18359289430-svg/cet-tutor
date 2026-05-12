@@ -2487,52 +2487,38 @@
                         <ul class="coze-card-features">
                             <li>✓ AI诊断测试</li>
                             <li>✓ 备考人格卡</li>
-                            <li>✓ AI答疑 50次</li>
-                            <li>✓ 作文批改 1次</li>
+                            <li>✓ AI答疑 10轮/天</li>
+                            <li>✓ 每日一练+打卡</li>
                         </ul>
                         <button class="coze-card-btn outline" onclick="event.stopPropagation();openChat(&#39;diagnosis&#39;)">开始诊断</button>
-                    </div>
-                    <div class="coze-card" data-plan="trial" onclick="selectPlan('trial')">
-                        <div class="coze-card-top">
-                            <span class="coze-card-name">体验版</span>
-                            <div class="coze-card-price"><span class="coze-price-sign">¥</span><span class="coze-price-num">4.9</span></div>
-                        </div>
-                        <div class="coze-card-tag">体验AI陪练</div>
-                        <ul class="coze-card-features">
-                            <li>✓ 含免费版全部</li>
-                            <li>✓ AI答疑 7天</li>
-                            <li>✓ 作文批改 3次</li>
-                            <li>✓ 翻译批改 3次</li>
-                        </ul>
-                        <button class="coze-card-btn primary" onclick="event.stopPropagation();openPayment('trial')">立即购买</button>
                     </div>
                     <div class="coze-card recommended" data-plan="sprint" onclick="selectPlan('sprint')">
                         <div class="coze-card-badge">推荐</div>
                         <div class="coze-card-top">
-                            <span class="coze-card-name">冲刺版</span>
+                            <span class="coze-card-name">冲刺营</span>
                             <div class="coze-card-price"><span class="coze-price-sign">¥</span><span class="coze-price-num">49</span></div>
                         </div>
                         <div class="coze-card-tag">30天高效冲刺</div>
                         <ul class="coze-card-features">
-                            <li>✓ AI答疑 30天无限</li>
+                            <li>✓ AI对话 无限</li>
                             <li>✓ 作文批改 每日1次</li>
                             <li>✓ 翻译批改 每日1次</li>
-                            <li>✓ 每日任务推送</li>
-                            <li>✓ 考前7天冲刺</li>
+                            <li>✓ 备考计划+每日推送</li>
+                            <li>✓ 考前冲刺方案</li>
                         </ul>
                         <button class="coze-card-btn primary" onclick="event.stopPropagation();openPayment('sprint')">立即购买</button>
                     </div>
                     <div class="coze-card" data-plan="flagship" onclick="selectPlan('flagship')">
                         <div class="coze-card-top">
-                            <span class="coze-card-name">旗舰版</span>
+                            <span class="coze-card-name">全程营</span>
                             <div class="coze-card-price"><span class="coze-price-sign">¥</span><span class="coze-price-num">149</span></div>
                         </div>
-                        <div class="coze-card-tag">完整备考周期</div>
+                        <div class="coze-card-tag">30天全程陪伴</div>
                         <ul class="coze-card-features">
-                            <li>✓ AI答疑 无限</li>
+                            <li>✓ AI对话 无限</li>
                             <li>✓ 作文/翻译批改 无限</li>
                             <li>✓ 完整学习计划</li>
-                            <li>✓ 每日任务+打卡</li>
+                            <li>✓ 每日任务+深度精讲</li>
                             <li>✓ 考前冲刺方案</li>
                             <li>✓ 六级衔接指导</li>
                         </ul>
@@ -2557,7 +2543,7 @@
                             到考试前可以一直用吗？
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
                         </div>
-                        <div class="faq-answer"><p>体验版7天，冲刺版30天，旗舰版有效期至当次考试结束。</p></div>
+                        <div class="faq-answer"><p>冲刺营和全程营均为30天，从开通之日起计算。</p></div>
                     </div>
                 </div>
             </div>
@@ -2877,16 +2863,18 @@
 
         function openChat(mode) {
             mode = mode || 'diagnosis';
+            var data = state.userData || {};
+            // 2-bot architecture: diagnosis bot or companion bot
+            var hasDiagnosis = data.personality || (data.diagnosis && data.diagnosis.type);
             if (mode === 'chat') {
-                var data = state.userData || {};
-                if (data.plan === 'flagship') mode = 'flagship';
-                else if (data.plan === 'sprint') mode = 'sprint';
-                else mode = 'diagnosis';
+                mode = hasDiagnosis ? 'companion' : 'diagnosis';
+            } else if (mode === 'diagnosis' && hasDiagnosis) {
+                // Already diagnosed, go to companion
+                mode = 'companion';
             }
             var botMap = {
                 'diagnosis': '7636289658620215331',
-                'sprint': '7637702903679631395',
-                'flagship': '7637815810610036774'
+                'companion': '7636289658620215331'
             };
             chatState.botId = botMap[mode] || botMap['diagnosis'];
             document.getElementById('chat-title').textContent = mode === 'diagnosis' ? '小过学长' : 'AI陪练';
@@ -3340,7 +3328,7 @@ function selectPlan(plan) {
     if (target) target.classList.add('selected');
     var ctaBtn = document.getElementById('plan-cta-btn');
     if (ctaBtn) {
-        var prices = { free: '当前方案', trial: '¥4.9 立即体验', sprint: '¥49 开始冲刺', flagship: '¥149 旗舰陪伴' };
+        var prices = { free: '当前方案', sprint: '¥49 开始冲刺', flagship: '¥149 全程陪伴' };
         ctaBtn.textContent = prices[plan] || '选择方案';
     }
 }
@@ -3355,8 +3343,8 @@ function closeModal(id) {
 
 function openPayment(plan) {
     var user = JSON.parse(localStorage.getItem('cet_user') || '{}');
-    var planNames = { trial: '体验版', sprint: '冲刺版', flagship: '旗舰版' };
-    var planPrices = { trial: '4.9', sprint: '49', flagship: '149' };
+    var planNames = { sprint: '冲刺营', flagship: '全程营' };
+    var planPrices = { sprint: '49', flagship: '149' };
     showToast('请选择支付方式购买' + (planNames[plan] || plan) + ' ¥' + (planPrices[plan] || ''));
 }
 
@@ -3488,7 +3476,7 @@ function checkChatLimit() {
     var limit = 10;
     
     if (usage.count >= limit) {
-        return { limited: true, message: '今日免费额度已用完（10轮/天）🔄 明天恢复，或升级冲刺版无限聊～' };
+        return { limited: true, message: '今日免费额度已用完（10轮/天），明天恢复。升级冲刺营即可无限对话～' };
     }
     
     return { limited: false, remaining: limit - usage.count };
