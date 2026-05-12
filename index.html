@@ -2033,6 +2033,13 @@
 .custom-chat-msg.user .custom-chat-bubble {
     background:#6C5CE7; color:#fff; border-top-right-radius:4px;
 }
+.custom-chat-msg.system {
+    justify-content:center;
+}
+.custom-chat-msg.system .custom-chat-bubble {
+    background:#F5F5F7; color:#64748B; border-radius:12px;
+    text-align:center; font-size:13px; max-width:90%;
+}
 .custom-chat-bubble p { margin:0 0 8px 0; }
 .custom-chat-bubble p:last-child { margin-bottom:0; }
 .custom-chat-bubble strong { font-weight:600; }
@@ -2936,6 +2943,8 @@
             if (role === 'ai') {
                 msgDiv.innerHTML = '<div class="custom-chat-avatar"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>' +
                     '<div class="custom-chat-bubble">' + formatBotText(text) + '<div class="custom-chat-time">' + timeStr + '</div></div>';
+            } else if (role === 'system') {
+                msgDiv.innerHTML = '<div class="custom-chat-bubble">' + escapeHtml(text) + '</div>';
             } else {
                 msgDiv.innerHTML = '<div class="custom-chat-bubble">' + escapeHtml(text) + '<div class="custom-chat-time">' + timeStr + '</div></div>';
             }
@@ -2988,11 +2997,19 @@
             var text = input.value.trim();
             if (!text || chatState.isStreaming) return;
 
+            // Chat limit check
+            var limitResult = checkChatLimit();
+            if (limitResult.limited) {
+                appendMessage('system', limitResult.message);
+                return;
+            }
+
             appendMessage('user', text);
             input.value = '';
             autoResizeInput(input);
             chatState.isStreaming = true;
             chatState.chatRounds++;
+            incrementChatUsage();
 
             // Create conversation if needed
             if (!chatState.conversationId) {
@@ -3453,6 +3470,51 @@ function updatePlanDisplay() {
         titleEl.textContent = 'AI备考计划';
         descEl.textContent = '定制你的专属冲刺方案';
     }
+}
+
+
+// === Chat limit system (GPT-style) ===
+function checkChatLimit() {
+    var user = state.userData || {};
+    var plan = user.plan || 'free';
+    
+    // Paid users: unlimited chat
+    if (plan !== 'free') {
+        return { limited: false };
+    }
+    
+    // Free users: 5 rounds per day
+    var usage = getChatUsage();
+    var limit = 5;
+    
+    if (usage.count >= limit) {
+        return { limited: true, message: '今日免费额度已用完（5轮/天）🔄 明天恢复，或升级冲刺版无限聊～' };
+    }
+    
+    return { limited: false, remaining: limit - usage.count };
+}
+
+function getChatUsage() {
+    try {
+        var data = localStorage.getItem('cet_chat_usage');
+        if (!data) return { count: 0, date: '' };
+        var usage = JSON.parse(data);
+        var today = new Date().toISOString().split('T')[0];
+        // Reset if new day
+        if (usage.date !== today) {
+            return { count: 0, date: today };
+        }
+        return usage;
+    } catch(e) {
+        return { count: 0, date: '' };
+    }
+}
+
+function incrementChatUsage() {
+    var usage = getChatUsage();
+    usage.count++;
+    usage.date = new Date().toISOString().split('T')[0];
+    localStorage.setItem('cet_chat_usage', JSON.stringify(usage));
 }
 
 </script>
