@@ -3280,9 +3280,15 @@
                 var decoder = new TextDecoder();
                 var buffer = '';
 
+                var streamStartTime = Date.now();
+                var firstChunkReceived = false;
                 while (true) {
                     var result = await reader.read();
                     if (result.done) break;
+                    if (!firstChunkReceived) {
+                        firstChunkReceived = true;
+                        console.log('[Stream] First chunk received in', Date.now() - streamStartTime, 'ms');
+                    }
                     buffer += decoder.decode(result.value, { stream: true });
 
                     // Parse SSE events
