@@ -2600,7 +2600,7 @@
                     <div class="coze-card" data-plan="flagship" onclick="selectPlan('flagship')">
                         <div class="coze-card-top">
                             <span class="coze-card-name">全程营</span>
-                            <div class="coze-card-price"><span class="coze-price-sign">¥</span><span class="coze-price-num">149</span></div>
+                            <div class="coze-card-price"><span class="coze-price-sign">¥</span><span class="coze-price-num">148</span></div>
                         </div>
                         <div class="coze-card-tag">45天全程陪伴</div>
                         <ul class="coze-card-features">
@@ -3825,7 +3825,7 @@ function selectPlan(plan) {
     if (target) target.classList.add('selected');
     var ctaBtn = document.getElementById('plan-cta-btn');
     if (ctaBtn) {
-        var prices = { free: '当前方案', sprint: '¥38 开始冲刺', flagship: '¥149 全程陪伴' };
+        var prices = { free: '当前方案', sprint: '¥38 开始冲刺', flagship: '¥148 全程陪伴' };
         ctaBtn.textContent = prices[plan] || '选择方案';
     }
 }

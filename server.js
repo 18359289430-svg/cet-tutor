@@ -214,7 +214,7 @@ async function handleApi(req, res, pathname) {
                 const amount = orderInfo.orderamount;
 
                 // 根据金额判断套餐
-                if (amount >= 130) {
+                if (amount >= 128) {
                     plan = 'flagship';
                 } else if (amount >= 35) {
                     plan = 'sprint';
