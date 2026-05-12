@@ -3072,10 +3072,23 @@
             var userPlan = (state.userData && state.userData.plan) || 'free';
             var userPersonality = (state.userData && state.userData.diagnosis && state.userData.diagnosis.type) || '';
             var studyDays = (state.userData && state.userData.studyDays) || 0;
+            var isDiagBot = chatState.botId === '7636289658620215331';
             var contextPrefix = '';
+            
             if (chatState.chatRounds <= 1 || !chatState.conversationId) {
                 // 首次对话时注入完整上下文
                 contextPrefix = '[系统信息] user_plan=' + userPlan + ', personality=' + userPersonality + ', study_days=' + studyDays + '\n\n';
+            }
+            
+            // 诊断Bot：注入进度计数，帮助Bot知道当前第几题
+            if (isDiagBot && chatState.chatRounds > 1) {
+                var answeredCount = chatState.chatRounds - 1; // 用户已答题数（第1轮是开场白，不计数）
+                var nextQ = answeredCount + 1;
+                if (nextQ <= 18) {
+                    contextPrefix = '[进度] 用户已回答' + answeredCount + '题，请出第' + nextQ + '题。不要重复出已答过的题。\n\n';
+                } else if (answeredCount === 18) {
+                    contextPrefix = '[进度] 用户已答完全部18题，请生成诊断报告。\n\n';
+                }
             }
             var payload = {
                 bot_id: chatState.botId,
