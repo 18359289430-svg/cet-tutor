@@ -124,7 +124,6 @@ function sendJson(res, statusCode, data) {
 // 处理API请求
 async function handleApi(req, res, pathname) {
     // 统一设置CSP
-    res.setHeader('Content-Security-Policy', "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https: http:; font-src 'self' data:; connect-src 'self' https://api.coze.cn https://x.mianbaoduo.com https://cet-tutor-production.up.railway.app; frame-src 'none'");
 
     // 处理CORS预检
     if (req.method === 'OPTIONS') {
@@ -618,7 +617,6 @@ function shouldCompress(req, contentLength) {
 // 发送HTML响应（支持gzip压缩）
 function sendHtml(res, htmlContent, req) {
     const contentLength = Buffer.byteLength(htmlContent, 'utf-8');
-    res.setHeader('Content-Security-Policy', "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https: http:; font-src 'self' data:; connect-src 'self' https://api.coze.cn https://x.mianbaoduo.com https://cet-tutor-production.up.railway.app; frame-src 'none'");
     res.setHeader('X-Content-Type-Options', 'nosniff');
     res.setHeader('Cache-Control', 'public, max-age=300'); // HTML短缓存5分钟
     
@@ -671,7 +669,6 @@ const server = http.createServer((req, res) => {
     if (pathname === '/admin-activate-cet4') {
         const adminHtml = fs.readFileSync(path.join(__dirname, 'admin.html'), 'utf-8');
         const adminContentLength = Buffer.byteLength(adminHtml, 'utf-8');
-        res.setHeader('Content-Security-Policy', "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https: http:; font-src 'self' data:; connect-src 'self' https://api.coze.cn https://x.mianbaoduo.com https://cet-tutor-production.up.railway.app; frame-src 'none'");
         res.setHeader('Cache-Control', 'public, max-age=300');
         if (shouldCompress(req, adminContentLength)) {
             res.setHeader('Content-Type', 'text/html; charset=utf-8');
