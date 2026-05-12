@@ -1985,104 +1985,117 @@
 
     
 /* ===== Custom Chat UI ===== */
-.custom-chat-page { display:flex; flex-direction:column; height:100%; background:#F7F7F8; overflow:hidden; }
+.custom-chat-page { display:flex; flex-direction:column; height:100%; background:#FAFAFA; overflow:hidden; }
         .tab-page:has(.custom-chat-page) > *:last-child { padding-bottom: 0; }
+/* Header - DeepSeek极简风格 */
 .custom-chat-header {
-    display:flex; align-items:center; padding:12px 16px; background:#fff;
-    border-bottom:1px solid #E5E5EA; flex-shrink:0; gap:12px;
+    display:flex; align-items:center; padding:10px 16px; background:#fff;
+    border-bottom:0.5px solid #E5E5EA; flex-shrink:0; gap:8px;
 }
 .custom-chat-back {
-    width:32px; height:32px; border:none; background:none; cursor:pointer;
-    display:flex; align-items:center; justify-content:center; border-radius:8px;
+    width:28px; height:28px; border:none; background:none; cursor:pointer;
+    display:none; align-items:center; justify-content:center; border-radius:8px;
 }
 .custom-chat-back:active { background:#F0F0F5; }
-.custom-chat-back svg { width:20px; height:20px; stroke:#1E293B; stroke-width:2; }
+.custom-chat-back svg { width:18px; height:18px; stroke:#1E293B; stroke-width:2; }
 .custom-chat-header-center { flex:1; text-align:center; }
-.custom-chat-header-name { font-size:16px; font-weight:700; color:#1E293B; }
-.custom-chat-header-status { font-size:11px; color:#94A3B8; display:flex; align-items:center; justify-content:center; gap:4px; margin-top:1px; }
-.custom-chat-header-status .dot { width:6px; height:6px; border-radius:50%; background:#22C55E; }
+.custom-chat-header-name { font-size:15px; font-weight:600; color:#1E293B; letter-spacing:-0.3px; }
+.custom-chat-header-status { font-size:11px; color:#94A3B8; display:flex; align-items:center; justify-content:center; gap:4px; margin-top:2px; }
+.custom-chat-header-status .dot { width:5px; height:5px; border-radius:50%; background:#22C55E; }
 .custom-chat-actions-btn {
-    width:32px; height:32px; border:none; background:none; cursor:pointer;
+    width:28px; height:28px; border:none; background:none; cursor:pointer;
     display:flex; align-items:center; justify-content:center; border-radius:8px;
 }
 .custom-chat-actions-btn:active { background:#F0F0F5; }
-.custom-chat-actions-btn svg { width:18px; height:18px; stroke:#64748B; stroke-width:2; }
+.custom-chat-actions-btn svg { width:16px; height:16px; stroke:#94A3B8; stroke-width:2; }
+/* Messages area */
 .custom-chat-messages {
-    flex:1; overflow-y:auto; padding:16px; -webkit-overflow-scrolling:touch;
+    flex:1; overflow-y:auto; padding:20px 16px; -webkit-overflow-scrolling:touch;
     scrollbar-width:none; -ms-overflow-style:none;
 }
 .custom-chat-messages::-webkit-scrollbar { display:none; }
-.custom-chat-msg { display:flex; gap:8px; margin-bottom:16px; animation:msgIn 0.25s ease; }
+.custom-chat-msg { display:flex; gap:10px; margin-bottom:20px; animation:msgIn 0.2s ease; }
 .custom-chat-msg.user { flex-direction:row-reverse; }
-@keyframes msgIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+@keyframes msgIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+/* Avatar - 缩小 */
 .custom-chat-avatar {
-    width:32px; height:32px; border-radius:50%; flex-shrink:0;
+    width:28px; height:28px; border-radius:50%; flex-shrink:0; margin-top:2px;
     background:linear-gradient(135deg, #6C5CE7, #A29BFE);
     display:flex; align-items:center; justify-content:center;
 }
-.custom-chat-avatar svg { width:16px; height:16px; stroke:white; stroke-width:2; fill:none; }
+.custom-chat-avatar svg { width:14px; height:14px; stroke:white; stroke-width:2; fill:none; }
 .custom-chat-msg.user .custom-chat-avatar { display:none; }
+/* Bubbles - 更现代的圆角 */
 .custom-chat-bubble {
-    max-width:78%; padding:10px 14px; border-radius:16px; font-size:14px;
-    line-height:1.6; word-break:break-word; position:relative;
+    max-width:80%; padding:10px 14px; border-radius:18px; font-size:14px;
+    line-height:1.7; word-break:break-word; position:relative;
 }
 .custom-chat-msg.ai .custom-chat-bubble {
     background:#fff; color:#1E293B; border-top-left-radius:4px;
-    box-shadow:0 1px 2px rgba(0,0,0,0.06);
+    box-shadow:0 1px 3px rgba(0,0,0,0.04);
 }
 .custom-chat-msg.user .custom-chat-bubble {
     background:#6C5CE7; color:#fff; border-top-right-radius:4px;
 }
-.custom-chat-msg.system {
-    justify-content:center;
-}
+.custom-chat-msg.system { justify-content:center; }
 .custom-chat-msg.system .custom-chat-bubble {
-    background:#F5F5F7; color:#64748B; border-radius:12px;
-    text-align:center; font-size:13px; max-width:90%;
+    background:transparent; color:#94A3B8; border-radius:12px;
+    text-align:center; font-size:12px; max-width:90%; box-shadow:none;
 }
-.custom-chat-bubble p { margin:0 0 8px 0; }
+.custom-chat-bubble p { margin:0 0 6px 0; }
 .custom-chat-bubble p:last-child { margin-bottom:0; }
 .custom-chat-bubble strong { font-weight:600; }
+/* Typing */
 .typing-indicator { display:flex; gap:4px; padding:4px 0; }
 .typing-indicator span {
-    width:6px; height:6px; border-radius:50%; background:#94A3B8;
+    width:5px; height:5px; border-radius:50%; background:#94A3B8;
     animation:typingBounce 1.2s ease-in-out infinite;
 }
 .typing-indicator span:nth-child(2) { animation-delay:0.2s; }
 .typing-indicator span:nth-child(3) { animation-delay:0.4s; }
-@keyframes typingBounce { 0%,60%,100% { transform:translateY(0); } 30% { transform:translateY(-6px); } }
-.custom-chat-suggestions {
-    display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; margin-left:40px;
-}
+@keyframes typingBounce { 0%,60%,100% { transform:translateY(0); } 30% { transform:translateY(-5px); } }
+/* Suggestion chips */
+.custom-chat-suggestions { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; margin-left:38px; }
 .custom-chat-chip {
-    padding:6px 14px; border:1px solid #6C5CE7; border-radius:20px;
-    font-size:12px; color:#6C5CE7; background:#fff; cursor:pointer;
+    padding:5px 12px; border:1px solid #E5E5EA; border-radius:16px;
+    font-size:12px; color:#64748B; background:#fff; cursor:pointer;
     white-space:nowrap; transition:all 0.15s;
 }
-.custom-chat-chip:active { background:#6C5CE7; color:#fff; transform:scale(0.96); }
+.custom-chat-chip:active { background:#6C5CE7; color:#fff; border-color:#6C5CE7; transform:scale(0.96); }
+/* Input area - DeepSeek风格 */
 .custom-chat-input-area {
-    flex-shrink:0; padding:12px 16px; background:#fff;
-    border-top:1px solid #E5E5EA;
-    padding-bottom: calc(12px + 56px + env(safe-area-inset-bottom));
+    flex-shrink:0; padding:10px 16px 8px; background:#FAFAFA;
+    border-top:0.5px solid #E5E5EA;
+    padding-bottom: calc(8px + 56px + env(safe-area-inset-bottom));
 }
-.custom-chat-input-row { display:flex; gap:8px; align-items:flex-end; }
+.custom-chat-input-row { display:flex; gap:8px; align-items:flex-end; background:#fff; border-radius:22px; padding:4px 4px 4px 14px; box-shadow:0 1px 3px rgba(0,0,0,0.06); }
 .custom-chat-input {
-    flex:1; border:1px solid #E5E5EA; border-radius:20px; padding:10px 16px;
+    flex:1; border:none; border-radius:18px; padding:8px 0;
     font-size:14px; outline:none; resize:none; min-height:20px; max-height:100px;
-    line-height:1.4; font-family:inherit; background:#F7F7F8;
+    line-height:1.4; font-family:inherit; background:transparent;
     -webkit-appearance:none; appearance:none;
 }
-.custom-chat-input:focus { border-color:#6C5CE7; background:#fff; }
-.custom-chat-input::placeholder { color:#94A3B8; }
+.custom-chat-input:focus { background:transparent; }
+.custom-chat-input::placeholder { color:#C4C4C8; }
+.custom-chat-voice {
+    width:32px; height:32px; border-radius:50%; border:none;
+    background:transparent; cursor:pointer; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    transition:all 0.15s;
+}
+.custom-chat-voice svg { width:18px; height:18px; stroke:#94A3B8; stroke-width:1.8; fill:none; }
+.custom-chat-voice:active svg { stroke:#6C5CE7; }
 .custom-chat-send {
-    width:36px; height:36px; border-radius:50%; border:none;
+    width:32px; height:32px; border-radius:50%; border:none;
     background:#6C5CE7; cursor:pointer; flex-shrink:0;
     display:flex; align-items:center; justify-content:center;
     transition:all 0.15s;
 }
 .custom-chat-send:active { background:#5849C4; transform:scale(0.92); }
-.custom-chat-send svg { width:16px; height:16px; stroke:white; stroke-width:2.5; fill:none; }
-.custom-chat-send:disabled { background:#D1D5DB; cursor:default; }
+.custom-chat-send svg { width:15px; height:15px; stroke:white; stroke-width:2.5; fill:none; }
+.custom-chat-send:disabled { background:#E5E5EA; cursor:default; }
+.custom-chat-send:disabled svg { stroke:#C4C4C8; }
+/* Card in bubble */
 .custom-chat-card {
     margin-top:8px; padding:10px 12px; border-radius:10px;
     background:#F0EEFF; border:1px solid #D4CFFF; font-size:13px;
@@ -2095,8 +2108,33 @@
 .custom-chat-msg.ai .custom-chat-time { text-align:left; }
 
 /* Input area chips row */
+
+/* DeepSeek风格欢迎页 */
+.chat-welcome { display:flex; flex-direction:column; align-items:center; padding:30px 20px 20px; }
+.chat-welcome-logo {
+    width:56px; height:56px; border-radius:50%; background:linear-gradient(135deg,#6C5CE7,#A29BFE);
+    display:flex; align-items:center; justify-content:center; margin-bottom:16px;
+    box-shadow:0 4px 14px rgba(108,92,231,0.25);
+}
+.chat-welcome-logo svg { width:28px; height:28px; stroke:white; stroke-width:1.5; }
+.chat-welcome-title { font-size:20px; font-weight:700; color:#1E293B; margin-bottom:6px; }
+.chat-welcome-sub { font-size:13px; color:#94A3B8; margin-bottom:24px; }
+.chat-welcome-cards { width:100%; display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.chat-welcome-card {
+    display:flex; align-items:center; gap:10px; padding:12px; border-radius:14px;
+    background:#fff; border:1px solid #F0F0F5; cursor:pointer; transition:all 0.15s;
+}
+.chat-welcome-card:active { transform:scale(0.97); background:#F8F8FA; }
+.chat-welcome-card-icon {
+    width:36px; height:36px; border-radius:10px; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+}
+.chat-welcome-card-icon svg { width:18px; height:18px; stroke:white; stroke-width:2; }
+.chat-welcome-card-title { font-size:13px; font-weight:600; color:#1E293B; }
+.chat-welcome-card-desc { font-size:11px; color:#94A3B8; margin-top:2px; }
+
 .custom-chips-row {
-    display:flex; gap:6px; padding:0 4px; margin-bottom:8px; overflow-x:auto;
+    display:flex; gap:8px; padding:0 2px; margin-bottom:10px; overflow-x:auto;
     scrollbar-width:none; -ms-overflow-style:none; flex-shrink:0;
 }
 .custom-chips-row::-webkit-scrollbar { display:none; }
@@ -2512,24 +2550,8 @@
                     </div>
                     <!-- Input area -->
                     <div class="custom-chat-input-area" id="chat-input-area">
-                        <!-- Function chips -->
-                        <div class="custom-chips-row" id="input-chips">
-                            <div class="custom-chip-pill" onclick="sendSuggestion('开始AI诊断，帮我找出四级薄弱点')">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                                AI诊断
-                            </div>
-                            <div class="custom-chip-pill" onclick="sendSuggestion('帮我制定冲刺计划')">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                                制定计划
-                            </div>
-                            <div class="custom-chip-pill" onclick="sendSuggestion('帮我批改作文')">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                                批改作文
-                            </div>
-                            <div class="custom-chip-pill" onclick="sendSuggestion('今天练什么')">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                                今日任务
-                            </div>
+                        <!-- Quick chips after messages -->
+                        <div class="custom-chips-row" id="input-chips" style="display:none">
                         </div>
                         <!-- Input row -->
                         <div class="custom-chat-input-row">
@@ -3112,6 +3134,9 @@
         }
 
         function appendMessage(role, text) {
+    // 隐藏欢迎页
+    var welcomeEl = document.getElementById('chat-welcome');
+    if (welcomeEl) welcomeEl.style.display = 'none';
             var container = document.getElementById('chat-messages');
             var msgDiv = document.createElement('div');
             msgDiv.className = 'custom-chat-msg ' + role;
@@ -3334,6 +3359,9 @@
         }
 
         async function sendMessage() {
+    // 隐藏欢迎页
+    var welcomeEl = document.getElementById('chat-welcome');
+    if (welcomeEl) welcomeEl.style.display = 'none';
             var input = document.getElementById('chat-input');
             var text = input.value.trim();
             if (!text || chatState.isStreaming) return;
