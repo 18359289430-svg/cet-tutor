@@ -2887,7 +2887,7 @@
         }
 
         function initCountdown() {
-            var examDate = new Date('2026-06-13');
+            var examDate = new Date('2026-06-14');
             var now = new Date();
             var diff = Math.ceil((examDate - now) / (1000 * 60 * 60 * 24));
             var text = document.getElementById('countdown-text');
@@ -3211,7 +3211,7 @@
             if (lastStudyDay !== today) {
                 data.studyDays = (data.studyDays || 0) + 1;
                 data.lastStudyDay = today;
-                data.chatCount = (data.chatCount || 0);
+                data.chatCount = (data.chatCount || 0) + 1;
                 state.userData = data;
                 localStorage.setItem('cet_user', JSON.stringify(data));
             }
