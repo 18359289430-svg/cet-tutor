@@ -3516,10 +3516,47 @@
                     if (taskMatch) parseTaskDone(taskMatch[1]);
                     onBotReply();
                 } else {
-                    // Fallback: if stream produced nothing, try non-stream fetch once
-                    removeTypingIndicator();
-                    if (aiDiv && aiDiv.parentNode) aiDiv.remove();
-                    appendMessage('ai', 'AI未返回内容，请重试');
+                    // Fallback: stream produced nothing, try polling for the message
+                    console.log('[Stream] fullText is empty, falling back to message polling...');
+                    if (chatState.chatId && chatState.conversationId) {
+                        try {
+                            var pollResp = await fetch('/api/chat/messages?chat_id=' + chatState.chatId + '&conversation_id=' + chatState.conversationId);
+                            if (pollResp.ok) {
+                                var pollData = await pollResp.json();
+                                if (pollData.data && pollData.data.length > 0) {
+                                    for (var pi = pollData.data.length - 1; pi >= 0; pi--) {
+                                        if (pollData.data[pi].type === 'answer' && pollData.data[pi].content) {
+                                            fullText = pollData.data[pi].content;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        } catch(pollErr) {
+                            console.log('[Stream] Poll fallback failed:', pollErr);
+                        }
+                    }
+                    if (fullText) {
+                        if (bubbleEl && timeEl) {
+                            if (timeEl.parentNode === bubbleEl) bubbleEl.removeChild(timeEl);
+                            bubbleEl.innerHTML = formatBotText(fullText);
+                            bubbleEl.appendChild(timeEl);
+                        }
+                        chatState.chatHistory.push({ role: 'user', content: contextPrefix + text, content_type: 'text' });
+                        chatState.chatHistory.push({ role: 'assistant', content: fullText, content_type: 'text' });
+                        if (chatState.chatHistory.length > 20) chatState.chatHistory = chatState.chatHistory.slice(-20);
+                        var resultMatch2 = fullText.match(/\[RESULT:(.+?)\]/);
+                        if (resultMatch2) parseDiagnosisResult(resultMatch2[1]);
+                        var planMatch2 = fullText.match(/\[PLAN:(.+?)\]/);
+                        if (planMatch2) parsePlanResult(planMatch2[1]);
+                        var taskMatch2 = fullText.match(/\[TASK:(.+?)\]/);
+                        if (taskMatch2) parseTaskDone(taskMatch2[1]);
+                        onBotReply();
+                    } else {
+                        removeTypingIndicator();
+                        if (aiDiv && aiDiv.parentNode) aiDiv.remove();
+                        appendMessage('ai', 'AI未返回内容，请重试');
+                    }
                 }
             } catch (e) {
                 removeTypingIndicator();
