@@ -2587,10 +2587,10 @@
                             <span class="coze-card-name">冲刺营</span>
                             <div class="coze-card-price"><span class="coze-price-sign">¥</span><span class="coze-price-num">49</span></div>
                         </div>
-                        <div class="coze-card-tag">30天高效冲刺</div>
+                        <div class="coze-card-tag">45天高效冲刺</div>
                         <ul class="coze-card-features">
                             <li>✓ AI对话 无限</li>
-                            <li>✓ 30天个性化计划+每日推送</li>
+                            <li>✓ 45天个性化计划+每日推送</li>
                             <li>✓ 作文批改 每日1次（逐句改写）</li>
                             <li>✓ 翻译批改 每日1次（参考译文）</li>
                             <li>✓ 针对短板的每日一练</li>
@@ -2602,10 +2602,10 @@
                             <span class="coze-card-name">全程营</span>
                             <div class="coze-card-price"><span class="coze-price-sign">¥</span><span class="coze-price-num">149</span></div>
                         </div>
-                        <div class="coze-card-tag">30天全程陪伴</div>
+                        <div class="coze-card-tag">45天全程陪伴</div>
                         <ul class="coze-card-features">
                             <li>✓ AI对话 无限</li>
-                            <li>✓ 30天个性化计划+每日推送</li>
+                            <li>✓ 45天个性化计划+每日推送</li>
                             <li>✓ 作文/翻译批改 无限（逐句改写+精讲）</li>
                             <li>✓ 针对短板的每日一练</li>
                             <li>✓ 深度精讲（为什么错+怎么避坑）</li>
@@ -2632,7 +2632,7 @@
                             到考试前可以一直用吗？
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
                         </div>
-                        <div class="faq-answer"><p>冲刺营和全程营均为30天，从开通之日起计算。</p></div>
+                        <div class="faq-answer"><p>冲刺营和全程营均为45天，从开通之日起计算。</p></div>
                     </div>
                 </div>
             </div>
@@ -3280,16 +3280,16 @@
             selectedPlan = selectedPlan || 'free';
             var benefits = [
                 { name: 'AI诊断+人格卡', free: true, sprint: true, flagship: true },
-                { name: 'AI对话答疑', free: '10轮/天', sprint: '30天无限', flagship: '30天无限' },
+                { name: 'AI对话答疑', free: '10轮/天', sprint: '45天无限', flagship: '45天无限' },
                 { name: '作文批改', free: '评分+问题标注', sprint: '逐句改写', flagship: '改写+精讲' },
                 { name: '翻译批改', free: '评分+踩分点', sprint: '参考译文', flagship: '译文+思路精讲' },
                 { name: '每日一练', free: '通用轮换', sprint: '短板定制', flagship: '短板定制' },
-                { name: '备考计划', free: '3条建议', sprint: '30天计划', flagship: '30天计划+随时调' }
+                { name: '备考计划', free: '3条建议', sprint: '45天计划', flagship: '45天计划+随时调' }
             ];
             var html = '';
             benefits.forEach(function(b) {
                 var val = b[selectedPlan];
-                var isLimited = (typeof val === 'string' && val !== '30天无限');
+                var isLimited = (typeof val === 'string' && val !== '45天无限');
                 html += '<div class="coze-benefit-item"><span>' + b.name + '</span><span class="coze-benefit-val' + (isLimited ? ' limited' : '') + '">' + (val === true ? '✓' : val === false ? '—' : val) + '</span></div>';
             });
             var el = document.getElementById('benefits-content');
@@ -3842,8 +3842,8 @@ function openPayment(plan) {
     var planNames = { sprint: '冲刺营', flagship: '全程营' };
     var planPrices = { sprint: 49, flagship: 149 };
     var planFeatures = {
-        sprint: ['AI对话 无限','30天个性化计划+每日推送','作文批改 每日1次（逐句改写）','翻译批改 每日1次（参考译文）','针对短板的每日一练'],
-        flagship: ['AI对话 无限','30天个性化计划+每日推送','作文/翻译批改 无限（逐句改写+精讲）','针对短板的每日一练','深度精讲（为什么错+怎么避坑）','六级衔接指导']
+        sprint: ['AI对话 无限','45天个性化计划+每日推送','作文批改 每日1次（逐句改写）','翻译批改 每日1次（参考译文）','针对短板的每日一练'],
+        flagship: ['AI对话 无限','45天个性化计划+每日推送','作文/翻译批改 无限（逐句改写+精讲）','针对短板的每日一练','深度精讲（为什么错+怎么避坑）','六级衔接指导']
     };
     // 面包多商品链接（创建后替换）
     var mbdLinks = {
