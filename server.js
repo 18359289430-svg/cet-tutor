@@ -19,6 +19,12 @@ try {
 
 const PORT = process.env.PORT || 8080;
 
+// 启动时检查关键环境变量
+if (!COZE_PAT) {
+    console.error('[启动失败] COZE_PAT 未配置！请在 .env.local 或 Railway 环境变量中设置');
+    process.exit(1);
+}
+
 // 管理员密钥
 const ADMIN_KEY = process.env.ADMIN_KEY || 'c4t_1aa6Nuh8qebPSgoVqQEQ';  // 生产环境请通过环境变量覆盖
 const SECRET_KEY = process.env.SECRET_KEY || 's4t_XpXkq69UuvV2btndLnRmvqru';  // 生产环境请通过环境变量覆盖
@@ -63,8 +69,8 @@ const BOT_ID_COMPANION = '7637702903679631395';
 // 套餐配置（3层定价）
 const PLANS = {
     free: { name: '免费版', price: 0, uidPrefix: 'CET4D', botId: BOT_ID_DIAGNOSIS, needPay: false },
-    sprint: { name: '冲刺营', price: 49, uidPrefix: 'CET4S', botId: BOT_ID_COMPANION, needPay: true },
-    flagship: { name: '全程营', price: 149, uidPrefix: 'CET4F', botId: BOT_ID_COMPANION, needPay: true }
+    sprint: { name: '冲刺营', price: 38, uidPrefix: 'CET4S', botId: BOT_ID_COMPANION, needPay: true },
+    flagship: { name: '全程营', price: 148, uidPrefix: 'CET4F', botId: BOT_ID_COMPANION, needPay: true }
 };
 
 // 内存订单存储
@@ -115,7 +121,7 @@ function parseBody(req) {
 function sendJson(res, statusCode, data) {
     res.writeHead(statusCode, {
         'Content-Type': 'application/json; charset=utf-8',
-        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Origin': (req.headers.origin && (req.headers.origin.includes('cet-tutor') || req.headers.origin.includes('localhost')) ? req.headers.origin : 'https://cet-tutor-production.up.railway.app'),
         'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
         'Access-Control-Allow-Headers': 'Content-Type'
     });
@@ -125,7 +131,7 @@ function sendJson(res, statusCode, data) {
 // 处理API请求
 async function handleApi(req, res, pathname) {
     // 统一设置CSP
-    res.setHeader('Content-Security-Policy', "default-src * 'unsafe-inline' 'unsafe-eval' data: blob: http: https: ws: wss:; script-src * 'unsafe-inline' 'unsafe-eval' data: blob: http: https:; style-src * 'unsafe-inline' data: blob:; img-src * data: blob: http: https:; connect-src * data: blob: http: https: ws: wss:; worker-src * blob: data: http: https:; media-src * blob: data: http: https:;");
+    res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https://api.coze.cn https://x.mianbaoduo.com; frame-src 'none'");
 
     // 处理CORS预检
     if (req.method === 'OPTIONS') {
@@ -481,7 +487,7 @@ async function handleApi(req, res, pathname) {
                 return sendJson(res, 404, { error: '订单不存在' });
             }
 
-            orders.delete(orderId);
+            orders.delete(orderId); saveOrders();
             console.log(`[订单删除] ${orderId}`);
 
             return sendJson(res, 200, { success: true });
@@ -619,7 +625,7 @@ function shouldCompress(req, contentLength) {
 // 发送HTML响应（支持gzip压缩）
 function sendHtml(res, htmlContent, req) {
     const contentLength = Buffer.byteLength(htmlContent, 'utf-8');
-    res.setHeader('Content-Security-Policy', "default-src * 'unsafe-inline' 'unsafe-eval' data: blob: http: https: ws: wss:; script-src * 'unsafe-inline' 'unsafe-eval' data: blob: http: https:; style-src * 'unsafe-inline' data: blob:; img-src * data: blob: http: https:; connect-src * data: blob: http: https: ws: wss:; worker-src * blob: data: http: https:; media-src * blob: data: http: https:;");
+    res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https://api.coze.cn https://x.mianbaoduo.com; frame-src 'none'");
     res.setHeader('X-Content-Type-Options', 'nosniff');
     res.setHeader('Cache-Control', 'public, max-age=300'); // HTML短缓存5分钟
     
@@ -672,7 +678,7 @@ const server = http.createServer((req, res) => {
     if (pathname === '/admin-activate-cet4') {
         const adminHtml = fs.readFileSync(path.join(__dirname, 'admin.html'), 'utf-8');
         const adminContentLength = Buffer.byteLength(adminHtml, 'utf-8');
-        res.setHeader('Content-Security-Policy', "default-src * 'unsafe-inline' 'unsafe-eval' data: blob: http: https: ws: wss:; script-src * 'unsafe-inline' 'unsafe-eval' data: blob: http: https:; style-src * 'unsafe-inline' data: blob:; img-src * data: blob: http: https:; connect-src * data: blob: http: https: ws: wss:; worker-src * blob: data: http: https:; media-src * blob: data: http: https:;");
+        res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https://api.coze.cn https://x.mianbaoduo.com; frame-src 'none'");
         res.setHeader('Cache-Control', 'public, max-age=300');
         if (shouldCompress(req, adminContentLength)) {
             res.setHeader('Content-Type', 'text/html; charset=utf-8');
@@ -723,7 +729,7 @@ server.listen(PORT, () => {
 
 // ===== Coze Chat API 代理 =====
 const COZE_API_BASE = 'https://api.coze.cn';
-const COZE_PAT = 'pat_hAOthvv429aDEqWspP4lITuL3DAU7VZJiGlVrnmA1zuoZ4IWW2kmxYzXUbGvZTYb';
+const COZE_PAT = process.env.COZE_PAT || '';  // 必须在.env.local或Railway环境变量中配置
 
 // POST /api/chat/conversation - 创建对话
 async function handleCreateConversation(req, res) {
@@ -744,6 +750,24 @@ async function handleCreateConversation(req, res) {
     }
 }
 
+// 每日聊天限流（内存存储，重启清零）
+const chatLimitMap = new Map();
+function checkChatLimitBackend(userId) {
+    const today = new Date().toISOString().slice(0, 10);
+    const key = userId + ':' + today;
+    const record = chatLimitMap.get(key) || { count: 0 };
+    record.count++;
+    chatLimitMap.set(key, record);
+    // 清理3天前的记录
+    if (Math.random() < 0.05) {
+        const threeDaysAgo = new Date(Date.now() - 3 * 86400000).toISOString().slice(0, 10);
+        for (const [k] of chatLimitMap) {
+            if (k.split(':')[1] < threeDaysAgo) chatLimitMap.delete(k);
+        }
+    }
+    return record.count;
+}
+
 // POST /api/chat/send - 发送消息（流式）
 async function handleChatSend(req, res) {
     try {
@@ -752,6 +776,15 @@ async function handleChatSend(req, res) {
 
         if (!bot_id || !user_id || !messages) {
             return sendJson(res, 400, { error: '参数缺失' });
+        }
+
+        // 后端聊天限流：免费用户10次/天，付费用户无限
+        const chatCount = checkChatLimitBackend(user_id);
+        // 通过custom_variables判断套餐
+        const userPlan = (body.custom_variables && body.custom_variables.user_plan) || 
+                         (parameters && parameters.user_plan) || 'free';
+        if (userPlan === 'free' && chatCount > 10) {
+            return sendJson(res, 429, { error: '今日免费对话次数已用完，升级套餐可无限对话' });
         }
 
         const payload = {
@@ -782,7 +815,7 @@ async function handleChatSend(req, res) {
                 'Cache-Control': 'no-cache',
                 'Connection': 'keep-alive',
                 'X-Accel-Buffering': 'no',
-                'Access-Control-Allow-Origin': '*'
+                'Access-Control-Allow-Origin': (req.headers.origin && (req.headers.origin.includes('cet-tutor') || req.headers.origin.includes('localhost')) ? req.headers.origin : 'https://cet-tutor-production.up.railway.app')
             });
             // Node.js 18+ fetch returns Web ReadableStream
             const reader = resp.body.getReader();
