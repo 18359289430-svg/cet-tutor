@@ -2227,7 +2227,7 @@
                         AI能帮你做什么
                     </div>
                     <div class="ai-cap-grid">
-                        <div class="ai-cap-item" onclick="openChat('chat');setTimeout(()=>sendSuggestion('开始AI诊断，帮我找出四级薄弱点'),300)">
+                        <div class="ai-cap-item" onclick="switchTab('diagnosis');setTimeout(()=>startDiagChat('开始AI诊断，帮我找出四级薄弱点'),300)">
                             <div class="ai-cap-icon purple">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                             </div>
@@ -2236,7 +2236,7 @@
                                 <div class="ai-cap-sub">5分钟定位短板</div>
                             </div>
                         </div>
-                        <div class="ai-cap-item" onclick="openChat('companion');setTimeout(()=>sendSuggestion('帮我制定冲刺计划'),300)">
+                        <div class="ai-cap-item" onclick="switchTab('diagnosis');setTimeout(()=>startDiagChat('帮我制定冲刺计划'),300)">
                             <div class="ai-cap-icon green">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                             </div>
@@ -2245,7 +2245,7 @@
                                 <div class="ai-cap-sub">针对性冲刺方案</div>
                             </div>
                         </div>
-                        <div class="ai-cap-item" onclick="openChat('companion');setTimeout(()=>sendSuggestion('帮我批改作文'),300)">
+                        <div class="ai-cap-item" onclick="switchTab('diagnosis');setTimeout(()=>startDiagChat('帮我批改作文'),300)">
                             <div class="ai-cap-icon orange">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                             </div>
@@ -2254,7 +2254,7 @@
                                 <div class="ai-cap-sub">逐句精准优化</div>
                             </div>
                         </div>
-                        <div class="ai-cap-item" onclick="openChat('companion');setTimeout(()=>sendSuggestion('今天练什么'),300)">
+                        <div class="ai-cap-item" onclick="switchTab('diagnosis');setTimeout(()=>startDiagChat('今天练什么'),300)">
                             <div class="ai-cap-icon pink">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                             </div>
@@ -2376,7 +2376,7 @@
                         <svg class="chat-suggest-arrow" viewBox="0 0 24 24" fill="none" stroke="#C0C0C8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
                     </div>
 
-                    <div class="study-plan-card" onclick="openChat('companion');setTimeout(()=>sendSuggestion('帮我批改作文'),300)">
+                    <div class="study-plan-card" onclick="switchTab('diagnosis');setTimeout(()=>startDiagChat('帮我批改作文'),300)">
                         <div class="study-plan-left">
                             <div class="study-plan-icon pink">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
@@ -2403,10 +2403,7 @@
                             <div class="custom-chat-header-name" id="chat-title">小过学长</div>
                             <div class="custom-chat-header-status"><span class="dot"></span>四级备考AI私教 · 在线</div>
                         </div>
-                        <button class="custom-chat-actions-btn" id="btn-rediag" style="display:none" onclick="showRediagModal()" title="重新诊断">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-                        </button>
-                        <button class="custom-chat-actions-btn" onclick="showClearChatModal()" title="清空对话">
+                        <button class="custom-chat-actions-btn" onclick="showClearChatModal()">
                             <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                         </button>
                     </div>
@@ -2493,7 +2490,7 @@
                             <li>✓ 每日一练+打卡</li>
                             <li>✓ 作文/翻译 评分+问题标注</li>
                         </ul>
-                        <button class="coze-card-btn outline" onclick="event.stopPropagation();openChat('chat')">开始诊断</button>
+                        <button class="coze-card-btn outline" onclick="event.stopPropagation();openChat(&#39;diagnosis&#39;)">开始诊断</button>
                     </div>
                     <div class="coze-card recommended" data-plan="sprint" onclick="selectPlan('sprint')">
                         <div class="coze-card-badge">推荐</div>
@@ -2845,6 +2842,14 @@
             openChat('chat');
         }
 
+                function handleDailyTask() {
+            switchTab('diagnosis');
+            var taskText = getPlanTodayTaskText();
+            if (taskText) {
+                setTimeout(function() { sendSuggestion(taskText); }, 300);
+            }
+        }
+
 // ===== Custom Chat UI Logic =====
         var chatState = {
             conversationId: null,
@@ -2860,13 +2865,11 @@
             mode = mode || 'diagnosis';
             var data = state.userData || {};
             var hasDiagnosis = data.personality || (data.diagnosis && data.diagnosis.type);
-            // mode='chat' 表示默认模式：已诊断走陪练，未诊断走诊断
-            // mode='diagnosis' 表示明确要诊断，不自动跳转（重新诊断用）
-            // mode='companion' 表示明确要陪练
             if (mode === 'chat') {
                 mode = hasDiagnosis ? 'companion' : 'diagnosis';
+            } else if (mode === 'diagnosis' && hasDiagnosis) {
+                mode = 'companion';
             }
-            // 注意：mode='diagnosis' 时不自动跳转companion，让重新诊断按钮能正常工作
             var botMap = {
                 'diagnosis': '7636289658620215331',
                 'companion': '7637702903679631395'
@@ -2926,8 +2929,7 @@
         }
 
         function startDiagChat(initialMsg) {
-            // 'chat'模式：已诊断→陪练，未诊断→诊断
-            openChat('chat');
+            openChat('diagnosis');
             if (initialMsg) {
                 setTimeout(function() { sendSuggestion(initialMsg); }, 300);
             }
@@ -3040,9 +3042,6 @@
             appendMessage('user', text);
             input.value = '';
             autoResizeInput(input);
-            // 隐藏快捷chips（用户已经开始对话了）
-            var chips = document.getElementById('input-chips');
-            if (chips) chips.style.display = 'none';
             chatState.isStreaming = true;
             chatState.chatRounds++;
             incrementChatUsage();
@@ -3091,29 +3090,6 @@
                     contextPrefix = '[进度] 用户已答完全部18题，请生成诊断报告。\n\n';
                 }
             }
-            // 辅助函数：获取对话摘要
-            function getChatSummary() {
-                if (!chatState.messages || chatState.messages.length === 0) return '';
-                var recent = chatState.messages.slice(-6);
-                var parts = recent.map(function(m) {
-                    if (m.role === 'assistant') return 'AI:' + (m.content || '').substring(0, 50);
-                    if (m.role === 'user') return '用户:' + (m.content || '').substring(0, 50);
-                    return '';
-                }).filter(function(s) { return s; });
-                return parts.join('|').substring(0, 300);
-            }
-            // 辅助函数：获取待完成任务
-            function getPendingTask() {
-                var userData = state.userData || {};
-                if (!userData.plan_data) return '';
-                var dayIdx = getPlanDayIndex();
-                var todayKey = 'day' + dayIdx;
-                if (userData.plan_data[todayKey] && !userData.plan_data[todayKey + '_done']) {
-                    return 'daily|' + userData.plan_data[todayKey] + '|1|0';
-                }
-                return '';
-            }
-
             var payload = {
                 bot_id: chatState.botId,
                 user_id: userId,
@@ -3345,15 +3321,10 @@
                     container.innerHTML = '';
                     var msgs = resp.data.filter(function(m) { return m.type === 'answer' || m.type === 'question'; });
                     msgs.forEach(function(m) {
-                        var content = m.content || '';
-                        // 去掉注入的系统前缀，只显示用户真实消息
-                        if (m.role === 'user') {
-                            content = content.replace(/^\[系统信息\].*?\n\n/s, '').replace(/^\[进度\].*?\n\n/s, '');
-                        }
                         if (m.role === 'assistant') {
-                            appendMessage('ai', content);
-                        } else if (m.role === 'user' && content.trim()) {
-                            appendMessage('user', content);
+                            appendMessage('ai', m.content);
+                        } else if (m.role === 'user') {
+                            appendMessage('user', m.content);
                         }
                     });
                     chatState.messages = msgs;
@@ -3417,23 +3388,15 @@ function showClearChatModal() {
         }
 
         function closeClearChatModal() {
-            var modal = document.querySelector('#clear-modal');
+            var modal = document.document.querySelector('.chat-clear-modal');
             if (modal) modal.remove();
         }
 
         function confirmClearChat() {
             closeClearChatModal();
-            // 清空当前Bot的localStorage会话ID
-            var botMap = {'7636289658620215331': 'diagnosis', '7637702903679631395': 'companion'};
-            var mode = botMap[chatState.botId] || 'diagnosis';
-            if (mode === 'companion') {
-                localStorage.removeItem('cet_companion_conv');
-            } else {
-                localStorage.removeItem('cet_diagnosis_conv');
-            }
             var container = document.getElementById('chat-messages');
             container.innerHTML = '';
-            appendMessage('ai', '嗨！我是小过学长 👋\n基于**海量**真题数据分析你的薄弱点，随时问我任何备考问题');
+            appendMessage('ai', '嗨！我是小过学长 \u{1F44B}\n基于**海量**真题数据分析你的薄弱点，随时问我任何备考问题');
             // Show chips again
             var chips = document.getElementById('input-chips');
             if (chips) chips.style.display = '';
@@ -3487,14 +3450,11 @@ function showClearChatModal() {
     
 function handleHomeCta() {
     var user = JSON.parse(localStorage.getItem('cet_user') || '{}');
-    var hasDiag = user.personality || (user.diagnosis && user.diagnosis.type);
-    if (hasDiag) {
-        // 已诊断，直接进陪练
-        openChat('companion');
+    if (user.plan === 'free' || !user.plan) {
+        switchTab('diagnosis');
+        setTimeout(function(){ startDiagChat('开始AI诊断，帮我找出四级薄弱点'); }, 300);
     } else {
-        // 未诊断，进诊断
-        openChat('diagnosis');
-        setTimeout(function(){ sendSuggestion('开始AI诊断，帮我找出四级薄弱点'); }, 300);
+        switchTab('diagnosis');
     }
 }
 

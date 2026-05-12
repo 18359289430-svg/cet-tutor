@@ -18,17 +18,15 @@ const PAYJS_NOTIFY_URL = process.env.PAYJS_NOTIFY_URL || '';
 // 微信收款码URL（改为本地图片）
 const WECHAT_PAYMENT_QR = process.env.WECHAT_PAYMENT_QR || '/wechat-qr.jpg';
 
-// Bot ID 配置（3个Bot）
+// Bot ID 配置（2个Bot）
 const BOT_ID_DIAGNOSIS = '7636289658620215331';
-const BOT_ID_SPRINT = '7637702903679631395';
-const BOT_ID_PRO = '7637815810610036774';
+const BOT_ID_COMPANION = '7637702903679631395';
 
-// 套餐配置（4层定价）
+// 套餐配置（3层定价）
 const PLANS = {
     free: { name: '免费版', price: 0, uidPrefix: 'CET4D', botId: BOT_ID_DIAGNOSIS, needPay: false },
-    trial: { name: '体验版', price: 4.9, uidPrefix: 'CET4T', botId: BOT_ID_SPRINT, needPay: true },
-    sprint: { name: '冲刺版', price: 49, uidPrefix: 'CET4S', botId: BOT_ID_SPRINT, needPay: true },
-    pro: { name: '旗舰版', price: 149, uidPrefix: 'CET4F', botId: BOT_ID_PRO, needPay: true }
+    sprint: { name: '冲刺营', price: 49, uidPrefix: 'CET4S', botId: BOT_ID_COMPANION, needPay: true },
+    flagship: { name: '全程营', price: 149, uidPrefix: 'CET4F', botId: BOT_ID_COMPANION, needPay: true }
 };
 
 // 内存订单存储
@@ -196,15 +194,14 @@ async function handleApi(req, res, pathname) {
             }
 
             // 检查是否是预生成的激活码（面包多自动发货格式）
-            // 激活码格式: CET4T-XXXXX（体验¥4.9）/ CET4S-XXXXX（冲刺¥49）/ CET4F-XXXXX（旗舰¥149）
-            // 兼容旧格式: CET4R-XXXXX（报告¥1）→ 体验版 / CET4P-XXXXX（旗舰¥149）
+            // 激活码格式: CET4S-XXXXX（冲刺营¥49）/ CET4F-XXXXX（全程营¥149）
+            // 兼容旧格式: CET4T-XXXXX（旧体验版）→冲刺营 / CET4R-XXXXX（旧报告版）→冲刺营 / CET4P-XXXXX（旧旗舰版）→全程营
             const planMatch = codeTrimmed.match(/^(CET4T|CET4S|CET4F|CET4R|CET4P)-([A-Z0-9]+)$/);
             if (planMatch) {
-                let plan = 'trial';
-                if (planMatch[1] === 'CET4S') plan = 'sprint';
-                else if (planMatch[1] === 'CET4F') plan = 'pro';
-                else if (planMatch[1] === 'CET4P') plan = 'pro';
-                // CET4T 和 CET4R 都是 trial
+                let plan = 'sprint';
+                if (planMatch[1] === 'CET4F') plan = 'flagship';
+                else if (planMatch[1] === 'CET4P') plan = 'flagship';
+                // CET4T, CET4R, CET4S 都是 sprint
 
                 // 检查是否已存在此激活码的订单
                 const existingOrder = orders.get(codeTrimmed);
@@ -633,16 +630,17 @@ async function handleChatMessages(req, res) {
         const conversationId = url.searchParams.get('conversation_id');
         const chatId = url.searchParams.get('chat_id');
 
-        if (!conversationId || !chatId) {
-            return sendJson(res, 400, { error: '参数缺失' });
+        if (!conversationId) {
+            return sendJson(res, 400, { error: '缺少conversation_id' });
         }
 
-        const resp = await fetch(
-            COZE_API_BASE + '/v1/conversation/message/list?conversation_id=' + conversationId + '&chat_id=' + chatId,
-            {
-                headers: { 'Authorization': 'Bearer ' + COZE_PAT }
-            }
-        );
+        // chat_id可选：有时需要获取整个会话的消息（如加载历史）
+        let apiUrl = COZE_API_BASE + '/v1/conversation/message/list?conversation_id=' + conversationId;
+        if (chatId) apiUrl += '&chat_id=' + chatId;
+
+        const resp = await fetch(apiUrl, {
+            headers: { 'Authorization': 'Bearer ' + COZE_PAT }
+        });
         const data = await resp.json();
         sendJson(res, 200, data);
     } catch (e) {
