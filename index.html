@@ -3025,6 +3025,150 @@
             return div.innerHTML;
         }
 
+        // ===== 打卡/Streak 系统 =====
+        function getStreakData() {
+            try {
+                var d = localStorage.getItem('cet_streak');
+                return d ? JSON.parse(d) : { count: 0, lastDate: '', todayChecked: false };
+            } catch(e) {
+                return { count: 0, lastDate: '', todayChecked: false };
+            }
+        }
+
+        function saveStreakData(d) {
+            localStorage.setItem('cet_streak', JSON.stringify(d));
+        }
+
+        function getTodayStr() {
+            var now = new Date();
+            return now.getFullYear() + '-' + (now.getMonth()+1) + '-' + now.getDate();
+        }
+
+        function doCheckIn() {
+            var streak = getStreakData();
+            var today = getTodayStr();
+            if (streak.todayChecked && streak.lastDate === today) {
+                return false;
+            }
+            if (streak.lastDate !== today) {
+                if (streak.lastDate) {
+                    var last = new Date(streak.lastDate);
+                    var now = new Date(today);
+                    var diff = Math.floor((now - last) / 86400000);
+                    if (diff > 1) streak.count = 0;
+                }
+                streak.count++;
+                streak.lastDate = today;
+                streak.todayChecked = true;
+            }
+            saveStreakData(streak);
+            var data = state.userData || {};
+            var lastStudyDay = data.lastStudyDay || '';
+            if (lastStudyDay !== today) {
+                data.studyDays = (data.studyDays || 0) + 1;
+                data.lastStudyDay = today;
+                data.chatCount = (data.chatCount || 0);
+                state.userData = data;
+                localStorage.setItem('cet_user', JSON.stringify(data));
+            }
+            return true;
+        }
+
+        function renderStreakCalendar() {
+            var container = document.getElementById('streak-cal-days');
+            if (!container) return;
+            var streak = getStreakData();
+            var today = new Date();
+            var dayNames = ['日','一','二','三','四','五','六'];
+            var html = '';
+            for (var i = 6; i >= 0; i--) {
+                var d = new Date(today);
+                d.setDate(d.getDate() - i);
+                var dateStr = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+                var isToday = (i === 0);
+                var isChecked = false;
+                if (streak.lastDate === dateStr) isChecked = true;
+                if (streak.count > 0 && i > 0 && i <= streak.count) isChecked = true;
+                if (isToday && streak.todayChecked) isChecked = true;
+                var cls = 'streak-day';
+                if (isToday) cls += ' today';
+                if (isChecked) cls += ' checked';
+                html += '<div class="' + cls + '">' +
+                    '<div class="streak-day-label">' + dayNames[d.getDay()] + '</div>' +
+                    '<div class="streak-day-dot">' +
+                        (isChecked ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>' : '') +
+                    '</div>' +
+                '</div>';
+            }
+            container.innerHTML = html;
+            var calStreakNum = document.getElementById('cal-streak-num');
+            if (calStreakNum) calStreakNum.textContent = streak.count;
+        }
+
+        function updateHomeStatus() {
+            var data = state.userData || {};
+            var homeCountdown = document.getElementById('home-countdown');
+            if (homeCountdown) {
+                var examDate = new Date('2026-06-14');
+                var now = new Date();
+                var diff = Math.ceil((examDate - now) / (1000*60*60*24));
+                homeCountdown.textContent = '距考试' + diff + '天';
+            }
+            var streakEl = document.getElementById('home-streak');
+            var streak = getStreakData();
+            if (streakEl) streakEl.textContent = streak.count > 0 ? '🔥' + streak.count : '打卡';
+            var ctaText = document.getElementById('home-cta-text');
+            if (ctaText) {
+                var hasDiag = data.personality || (data.diagnosis && data.diagnosis.type);
+                ctaText.textContent = hasDiag ? '继续AI陪练' : '开始AI诊断';
+            }
+            updateDailyTask();
+        }
+
+        function renderBenefits(selectedPlan) {
+            selectedPlan = selectedPlan || 'free';
+            var benefits = [
+                { name: 'AI诊断+人格卡', free: true, sprint: true, flagship: true },
+                { name: 'AI对话答疑', free: '10轮/天', sprint: '30天无限', flagship: '30天无限' },
+                { name: '作文批改', free: '评分+问题标注', sprint: '逐句改写', flagship: '改写+精讲' },
+                { name: '翻译批改', free: '评分+踩分点', sprint: '参考译文', flagship: '译文+思路精讲' },
+                { name: '每日一练', free: '通用轮换', sprint: '短板定制', flagship: '短板定制' },
+                { name: '备考计划', free: '3条建议', sprint: '30天计划', flagship: '30天计划+随时调' }
+            ];
+            var html = '';
+            benefits.forEach(function(b) {
+                var val = b[selectedPlan];
+                var isLimited = (typeof val === 'string' && val !== '30天无限');
+                html += '<div class="coze-benefit-item"><span>' + b.name + '</span><span class="coze-benefit-val' + (isLimited ? ' limited' : '') + '">' + (val === true ? '✓' : val === false ? '—' : val) + '</span></div>';
+            });
+            var el = document.getElementById('benefits-content');
+            if (el) el.innerHTML = html;
+        }
+
+        // 辅助函数：获取对话摘要（给Bot传入最近对话上下文）
+        function getChatSummary() {
+            if (!chatState.messages || chatState.messages.length === 0) return '';
+            var recent = chatState.messages.slice(-6);
+            var parts = recent.map(function(m) {
+                if (m.role === 'assistant') return 'AI:' + (m.content || '').substring(0, 50);
+                if (m.role === 'user') return '用户:' + (m.content || '').substring(0, 50);
+                return '';
+            }).filter(function(s) { return s; });
+            return parts.join('|').substring(0, 300);
+        }
+
+        // 辅助函数：获取待完成任务
+        function getPendingTask() {
+            var userData = state.userData || {};
+            if (!userData.plan_data) return '';
+            var dayIdx = getPlanDayIndex();
+            var todayKey = 'day' + dayIdx;
+            if (userData.plan_data[todayKey] && !userData.plan_data[todayKey + '_done']) {
+                return 'daily|' + userData.plan_data[todayKey] + '|1|0';
+            }
+            return '';
+        }
+
         async function sendMessage() {
             var input = document.getElementById('chat-input');
             var text = input.value.trim();
@@ -3091,29 +3235,6 @@
                     contextPrefix = '[进度] 用户已答完全部18题，请生成诊断报告。\n\n';
                 }
             }
-            // 辅助函数：获取对话摘要
-            function getChatSummary() {
-                if (!chatState.messages || chatState.messages.length === 0) return '';
-                var recent = chatState.messages.slice(-6);
-                var parts = recent.map(function(m) {
-                    if (m.role === 'assistant') return 'AI:' + (m.content || '').substring(0, 50);
-                    if (m.role === 'user') return '用户:' + (m.content || '').substring(0, 50);
-                    return '';
-                }).filter(function(s) { return s; });
-                return parts.join('|').substring(0, 300);
-            }
-            // 辅助函数：获取待完成任务
-            function getPendingTask() {
-                var userData = state.userData || {};
-                if (!userData.plan_data) return '';
-                var dayIdx = getPlanDayIndex();
-                var todayKey = 'day' + dayIdx;
-                if (userData.plan_data[todayKey] && !userData.plan_data[todayKey + '_done']) {
-                    return 'daily|' + userData.plan_data[todayKey] + '|1|0';
-                }
-                return '';
-            }
-
             var payload = {
                 bot_id: chatState.botId,
                 user_id: userId,
