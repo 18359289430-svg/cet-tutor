@@ -5695,7 +5695,7 @@
             var todayChecked = streak.todayChecked && streak.lastDate === today;
             if (todayChecked) return;
 
-            var planTask = getPlanTodayTask();
+            var planTask = getPlanTodayTaskText();
             var userData = state.userData || {};
             var hasPlan = planTask && planTask.task && userData.plan && userData.plan !== 'free';
 
