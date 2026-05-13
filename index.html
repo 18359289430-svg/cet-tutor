@@ -4430,6 +4430,18 @@
             } catch(e) {}
         }
 
+        function restoreLastState() {
+            var lastTab = localStorage.getItem('cet_current_tab');
+            var lastChatMode = localStorage.getItem('cet_last_chat_mode');
+            // 只有在diagnosis tab且之前有过聊天才恢复
+            if (lastTab === 'diagnosis' && lastChatMode) {
+                var savedConvId = localStorage.getItem(lastChatMode === 'companion' ? 'cet_companion_conv' : 'cet_diagnosis_conv');
+                if (savedConvId) {
+                    openChat(lastChatMode);
+                }
+            }
+        }
+
         function checkClaimUrl() {
             var params = new URLSearchParams(window.location.search);
             var claimCode = params.get('code');
@@ -4499,6 +4511,7 @@
 
         function switchTab(tab) {
             state.currentTab = tab;
+            localStorage.setItem('cet_current_tab', tab);
             document.querySelectorAll('.tab-page').forEach(function(page) {
                 page.classList.toggle('active', page.id === 'tab-' + tab);
             });
@@ -4620,6 +4633,7 @@
                 // 切换Bot，重置会话状态
                 chatState.botId = newBotId;
                 chatState.conversationId = null;
+                localStorage.setItem('cet_last_chat_mode', mode);
                 chatState.chatId = null;
                 chatState.chatRounds = 0;
                 chatState.messages = [];
