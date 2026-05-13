@@ -2279,6 +2279,10 @@
         #coupon-input { flex: 1; }
         .coupon-success { color: #00B894 !important; }
         .coupon-error { color: #E17055 !important; }
+
+        /* 拼团提示 */
+        .group-banner { background: linear-gradient(135deg, #F0EEFF, #E8E4FF); border-radius: 12px; padding: 12px; margin: 16px; text-align: center; }
+        .group-banner strong { color: var(--primary); }
 </style>
 </head>
 <body>
@@ -2632,6 +2636,7 @@
                             <li>✓ 针对短板的每日一练</li>
                         </ul>
                         <button class="coze-card-btn primary" onclick="event.stopPropagation();openPayment('sprint')">立即购买</button>
+                        <button class="coze-card-btn outline" style="margin-top:8px;font-size:12px" onclick="event.stopPropagation();createGroup('sprint')">👥 3人拼团 ¥28/人</button>
                     </div>
                     <div class="coze-card" data-plan="flagship" onclick="selectPlan('flagship')">
                         <div class="coze-card-top">
@@ -2648,6 +2653,7 @@
                             <li>✓ 六级衔接指导</li>
                         </ul>
                         <button class="coze-card-btn primary" onclick="event.stopPropagation();openPayment('flagship')">立即购买</button>
+                        <button class="coze-card-btn outline" style="margin-top:8px;font-size:12px" onclick="event.stopPropagation();createGroup('flagship')">👥 3人拼团 ¥118/人</button>
                     </div>
                 </div>
                 <div class="coze-benefits" id="coze-benefits">
@@ -4489,6 +4495,54 @@ function incrementChatUsage() {
                 msgEl.className = 'coupon-error';
             });
         }
+
+        // 拼团功能
+        function createGroup(plan) {
+            // 生成拼团ID
+            var groupId = 'GP' + Date.now().toString(36) + Math.random().toString(36).substr(2, 4).toUpperCase();
+            var shareUrl = location.origin + location.pathname + '?group=' + groupId + '&plan=' + plan;
+            // 复制链接
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(shareUrl).then(function() {
+                    showToast('拼团链接已复制，快去分享给朋友吧！');
+                });
+            } else {
+                prompt('复制拼团链接:', shareUrl);
+            }
+            // 调用API创建拼团
+            fetch('/api/create-group', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({groupId: groupId, plan: plan, creator: getUserId()})
+            });
+        }
+        
+        // 页面加载时检测拼团参数
+        function checkGroupParam() {
+            var params = new URLSearchParams(location.search);
+            var groupId = params.get('group');
+            var plan = params.get('plan');
+            if (groupId && plan) {
+                // 显示拼团提示
+                var banner = document.createElement('div');
+                banner.className = 'group-banner';
+                banner.innerHTML = '<strong>👥 朋友邀请拼团</strong><br><small>冲刺营¥28/人 · 全程营¥118/人</small><br><button class="coze-card-btn primary" style="margin-top:10px;font-size:13px" onclick="joinGroup('' + groupId + '', '' + plan + '')">立即参团</button>';
+                var cards = document.getElementById('coze-cards');
+                if (cards) cards.parentNode.insertBefore(banner, cards);
+            }
+        }
+        
+        function joinGroup(groupId, plan) {
+            openPayment(plan);
+        }
+        
+        function getUserId() {
+            var userData = JSON.parse(localStorage.getItem('cet_user') || '{}');
+            return userData.uid || 'guest';
+        }
+        
+        // 页面加载时检查
+        document.addEventListener('DOMContentLoaded', checkGroupParam);
 </script>
 
     <!-- 人格卡分享弹窗 -->
