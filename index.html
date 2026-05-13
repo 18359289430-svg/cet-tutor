@@ -2286,6 +2286,332 @@
         /* 优惠码输入 */
 
         .pay-coupon-tip, .detail-coupon-tip { font-size: 13px; color: #6C5CE7; background: #f8f7ff; border: 1px dashed #6C5CE7; border-radius: 8px; padding: 8px 12px; margin: 8px 0; text-align: center; }
+        /* ========== 诊断报告页 ========== */
+        .report-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #F8F9FA;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .report-header {
+            padding: 16px 20px;
+            padding-top: calc(16px + var(--safe-top));
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: white;
+            flex-shrink: 0;
+            border-bottom: 1px solid #F1F5F9;
+        }
+
+        .report-back {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #F1F5F9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: none;
+        }
+        .report-back:active { background: #E2E8F0; }
+        .report-back svg { width: 20px; height: 20px; stroke: #475569; stroke-width: 2; }
+
+        .report-header-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: #1E293B;
+            letter-spacing: -0.3px;
+        }
+
+        .report-content {
+            flex: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding: 20px 16px;
+            padding-bottom: calc(80px + var(--safe-bottom));
+        }
+
+        /* 风险等级标签 */
+        .report-risk-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        .report-risk-high { background: #FEE2E2; color: #DC2626; }
+        .report-risk-mid { background: #FEF3C7; color: #D97706; }
+        .report-risk-low { background: #D1FAE5; color: #059669; }
+        .report-risk-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        /* 综合评分 */
+        .report-score-section {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .report-score-num {
+            font-size: 56px;
+            font-weight: 800;
+            color: var(--primary);
+            line-height: 1;
+            letter-spacing: -2px;
+        }
+        .report-score-denom {
+            font-size: 24px;
+            font-weight: 400;
+            color: #A29BFE;
+        }
+        .report-score-label {
+            font-size: 13px;
+            color: #94A3B8;
+            margin-top: 4px;
+        }
+
+        /* 雷达图区域 */
+        .report-radar-section {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+        .report-radar-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1E293B;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        .report-radar-canvas-wrap {
+            display: flex;
+            justify-content: center;
+        }
+        #report-radar-canvas {
+            max-width: 280px;
+        }
+
+        /* 五维分数卡片 */
+        .report-dims-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .report-dim-card {
+            background: white;
+            border-radius: 12px;
+            padding: 14px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+        .report-dim-name {
+            font-size: 12px;
+            color: #94A3B8;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .report-dim-score {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1E293B;
+            line-height: 1;
+        }
+        .report-dim-bar {
+            height: 4px;
+            background: #F1F5F9;
+            border-radius: 2px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+        .report-dim-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 0.6s ease;
+        }
+        .report-dim-tip {
+            font-size: 12px;
+            color: #64748B;
+            margin-top: 8px;
+            line-height: 1.4;
+        }
+
+        /* 专项建议卡片 */
+        .report-advice-section {
+            margin-bottom: 16px;
+        }
+        .report-section-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1E293B;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .report-advice-card {
+            background: linear-gradient(135deg, #6C5CE7 0%, #A29BFE 100%);
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 10px;
+            color: white;
+        }
+        .report-advice-label {
+            font-size: 11px;
+            font-weight: 600;
+            opacity: 0.8;
+            margin-bottom: 6px;
+        }
+        .report-advice-dim {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .report-advice-text {
+            font-size: 13px;
+            line-height: 1.6;
+            opacity: 0.95;
+        }
+
+        /* 备考建议 */
+        .report-tips-section {
+            margin-bottom: 16px;
+        }
+        .report-tip-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 12px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+        .report-tip-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            background: rgba(108,92,231,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 14px;
+        }
+        .report-tip-text {
+            font-size: 13px;
+            color: #475569;
+            line-height: 1.5;
+            flex: 1;
+        }
+
+        /* CTA按钮 */
+        .report-cta-section {
+            padding: 16px;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid #F1F5F9;
+            padding-bottom: calc(16px + var(--safe-bottom));
+            max-width: 430px;
+            margin: 0 auto;
+        }
+        .report-cta-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #6C5CE7 0%, #8B7CF7 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .report-cta-btn:active { transform: scale(0.98); opacity: 0.9; }
+        .report-secondary-btn {
+            width: 100%;
+            padding: 12px;
+            background: #F8F9FA;
+            color: #64748B;
+            border: 1px solid #E2E8F0;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .report-secondary-btn:active { background: #F1F5F9; }
+
+        /* 分享弹窗 */
+        .report-share-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .report-share-box {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            max-width: 320px;
+            margin: auto;
+            text-align: center;
+        }
+        .report-share-canvas-wrap {
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 12px;
+            background: #F8F9FA;
+        }
+        .report-share-canvas-wrap canvas {
+            width: 100%;
+            display: block;
+        }
+        .report-share-hint {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 16px;
+        }
+        .report-share-close {
+            width: 100%;
+            padding: 12px;
+            background: #F5F5F5;
+            border: none;
+            border-radius: 10px;
+            color: #666;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
     </style>
 </head>
 <body>
@@ -3668,7 +3994,11 @@
                     }
                     // Parse markers
                     var resultMatch = fullText.match(/\[RESULT:(.+?)\]/);
-                    if (resultMatch) parseDiagnosisResult(resultMatch[1]);
+                    if (resultMatch) {
+                        parseDiagnosisResult(resultMatch[1]);
+                        // 诊断完成，显示报告页
+                        setTimeout(function() { showDiagnosisReport(fullText); }, 500);
+                    }
                     var planMatch = fullText.match(/\[PLAN:(.+?)\]/);
                     if (planMatch) parsePlanResult(planMatch[1]);
                     var taskMatch = fullText.match(/\[TASK:(.+?)\]/);
@@ -3705,7 +4035,11 @@
                         chatState.chatHistory.push({ role: 'assistant', content: fullText, content_type: 'text' });
                         if (chatState.chatHistory.length > 20) chatState.chatHistory = chatState.chatHistory.slice(-20);
                         var resultMatch2 = fullText.match(/\[RESULT:(.+?)\]/);
-                        if (resultMatch2) parseDiagnosisResult(resultMatch2[1]);
+                        if (resultMatch2) {
+                            parseDiagnosisResult(resultMatch2[1]);
+                            // 诊断完成，显示报告页
+                            setTimeout(function() { showDiagnosisReport(fullText); }, 500);
+                        }
                         var planMatch2 = fullText.match(/\[PLAN:(.+?)\]/);
                         if (planMatch2) parsePlanResult(planMatch2[1]);
                         var taskMatch2 = fullText.match(/\[TASK:(.+?)\]/);
@@ -4651,11 +4985,537 @@ function preloadLimitInfo() {
         function closeShareCard() {
             document.getElementById('share-card-modal').style.display = 'none';
         }
+        
+
+// 五维维度配置
+const DIM_CONFIGS = {
+    '细节定位': { icon: '🔍', color: '#6C5CE7', desc: '能否快速定位原文关键信息' },
+    '推理判断': { icon: '🧠', color: '#00B894', desc: '能否从原文正确推导隐含信息' },
+    '同义替换': { icon: '🔄', color: '#FDCB6E', desc: '能否识别选项与原文的同义表达' },
+    '主旨归纳': { icon: '📋', color: '#E17055', desc: '能否准确把握文章中心和结构' },
+    '态度判断': { icon: '🎯', color: '#0984E3', desc: '能否判断作者的观点和态度' }
+};
+
+// 诊断数据（从Bot回复解析）
+var reportData = {
+    riskLevel: 'mid',
+    totalScore: 0,
+    dims: {},
+    weakDims: [],
+    advice: '',
+    tips: [],
+    personality: '',
+    botText: ''
+};
+
+// 解析诊断结果
+function parseDiagnosisReport(text) {
+    var data = {
+        riskLevel: 'mid',
+        totalScore: 0,
+        dims: {},
+        weakDims: [],
+        advice: '',
+        tips: [],
+        personality: '',
+        botText: text
+    };
+    
+    // 尝试解析结构化数据 [RESULT:xxx]
+    var resultMatch = text.match(/\[RESULT:(.+?)\]/);
+    if (resultMatch) {
+        var parts = resultMatch[1].split('|');
+        parts.forEach(function(p) {
+            var kv = p.split('=');
+            if (kv.length === 2) {
+                var key = kv[0].trim();
+                var val = kv[1].trim();
+                if (key === 'type' || key === 'personality') {
+                    data.personality = val;
+                } else if (key === 'risk' || key === 'riskLevel') {
+                    if (val.includes('高')) data.riskLevel = 'high';
+                    else if (val.includes('低')) data.riskLevel = 'low';
+                    else data.riskLevel = 'mid';
+                } else if (key === 'score' || key === 'total' || key === '综合评分') {
+                    data.totalScore = parseInt(val) || 0;
+                } else if (DIM_CONFIGS[key]) {
+                    data.dims[key] = parseInt(val) || 0;
+                }
+            }
+        });
+    }
+    
+    // 尝试解析五维数据（五维诊断块）
+    var dimMatch = text.match(/【五维诊断】([\s\S]*?)(?=【|$)/);
+    if (dimMatch) {
+        var dimBlock = dimMatch[1];
+        Object.keys(DIM_CONFIGS).forEach(function(dim) {
+            var m = dimBlock.match(new RegExp(dim + '[：:]?\\s*(\\d+)'));
+            if (m) data.dims[dim] = parseInt(m[1]);
+        });
+    }
+    
+    // 尝试解析综合评分
+    var scoreMatch = text.match(/综合[评分得分]：?\\s*(\\d+)/);
+    if (scoreMatch) data.totalScore = parseInt(scoreMatch[1]);
+    
+    // 尝试解析风险等级
+    var riskMatch = text.match(/风险[等级]：?\\s*([高低中危]+)/);
+    if (riskMatch) {
+        var r = riskMatch[1];
+        if (r.includes('高')) data.riskLevel = 'high';
+        else if (r.includes('低')) data.riskLevel = 'low';
+        else data.riskLevel = 'mid';
+    }
+    
+    // 尝试解析人格类型
+    var typeMatch = text.match(/你是[「"](.+?)[」"]|备考人格[：:]\\s*([^\\s【]+)/);
+    if (typeMatch) {
+        data.personality = typeMatch[1] || typeMatch[2] || data.personality;
+    }
+    
+    // 如果没有结构化数据，尝试从 state.userData.diagnosis 获取
+    if (Object.keys(data.dims).length === 0 && state.userData && state.userData.diagnosis) {
+        var diag = state.userData.diagnosis;
+        Object.keys(DIM_CONFIGS).forEach(function(dim) {
+            if (diag[dim]) data.dims[dim] = parseInt(diag[dim]);
+        });
+        if (diag.type) data.personality = diag.type;
+        if (diag.risk) {
+            if (diag.risk.includes('高')) data.riskLevel = 'high';
+            else if (diag.risk.includes('低')) data.riskLevel = 'low';
+        }
+    }
+    
+    // 计算综合评分（如果未解析到）
+    if (data.totalScore === 0 && Object.keys(data.dims).length > 0) {
+        var sum = 0, count = 0;
+        Object.keys(data.dims).forEach(function(k) { sum += data.dims[k]; count++; });
+        data.totalScore = Math.round(sum / count);
+    }
+    
+    // 找出最弱两项
+    var dimArr = Object.keys(data.dims).map(function(k) {
+        return { name: k, score: data.dims[k] };
+    }).sort(function(a, b) { return a.score - b.score; });
+    data.weakDims = dimArr.slice(0, 2);
+    
+    return data;
+}
+
+// 显示诊断报告页
+function showDiagnosisReport(text) {
+    reportData = parseDiagnosisReport(text);
+    
+    // 保存到 userData
+    if (state.userData) {
+        state.userData.diagnosis = state.userData.diagnosis || {};
+        Object.keys(reportData.dims).forEach(function(k) {
+            state.userData.diagnosis[k] = reportData.dims[k];
+        });
+        if (reportData.personality) {
+            state.userData.personality = reportData.personality;
+            state.userData.diagnosis.type = reportData.personality;
+        }
+        localStorage.setItem('cet_user', JSON.stringify(state.userData));
+    }
+    
+    renderReportPage();
+    
+    var overlay = document.getElementById('report-overlay');
+    if (overlay) {
+        overlay.style.display = 'flex';
+        // 动画效果
+        overlay.style.opacity = '0';
+        overlay.style.transition = 'opacity 0.3s';
+        requestAnimationFrame(function() {
+            overlay.style.opacity = '1';
+        });
+    }
+}
+
+// 关闭报告页
+function closeReportPage() {
+    var overlay = document.getElementById('report-overlay');
+    if (overlay) {
+        overlay.style.opacity = '0';
+        setTimeout(function() {
+            overlay.style.display = 'none';
+            overlay.style.opacity = '';
+        }, 300);
+    }
+}
+
+// 继续陪练
+function continuePractice() {
+    closeReportPage();
+    switchTab('diagnosis');
+    setTimeout(function() {
+        openChat('companion');
+    }, 350);
+}
+
+// 打开报告支付弹窗
+function openReportPayModal() {
+    openPayment('sprint');
+}
+
+// 渲染报告页面
+function renderReportPage() {
+    var content = document.getElementById('report-content');
+    if (!content) return;
+    
+    var d = reportData;
+    var riskLabels = { high: '高危风险', mid: '中危风险', low: '低危风险' };
+    var riskIcons = { high: '⚠️', mid: '📊', low: '✅' };
+    
+    // 生成五维卡片HTML
+    var dimCardsHtml = '';
+    Object.keys(DIM_CONFIGS).forEach(function(dim) {
+        var score = d.dims[dim] || 0;
+        var config = DIM_CONFIGS[dim];
+        var color = score >= 70 ? '#00B894' : score >= 40 ? '#FDCB6E' : '#E17055';
+        dimCardsHtml += 
+            '<div class="report-dim-card">' +
+                '<div class="report-dim-name">' + config.icon + ' ' + dim + '</div>' +
+                '<div class="report-dim-score" style="color:' + color + '">' + score + '</div>' +
+                '<div class="report-dim-bar">' +
+                    '<div class="report-dim-fill" style="width:' + score + '%;background:' + color + '"></div>' +
+                '</div>' +
+                '<div class="report-dim-tip">' + config.desc + '</div>' +
+            '</div>';
+    });
+    
+    // 生成弱项建议卡片
+    var weakAdviceHtml = '';
+    var adviceMap = {
+        '细节定位': { label: '细节定位专项', advice: '建议每天练习3道细节题，学会用关键词回原文定位。重点关注时间、数字、绝对词等信号词。' },
+        '推理判断': { label: '推理判断专项', advice: '需要加强推理能力训练，学会从原文信息推导隐含含义。避免主观臆断，一切答案从原文出发。' },
+        '同义替换': { label: '同义替换专项', advice: '高频同义替换词需要刻意记忆。注意识别选项和原文的改写方式，尤其是词性变换和近义词。' },
+        '主旨归纳': { label: '主旨归纳专项', advice: '练习抓取文章主旨和段落大意。先看首尾句和转折词，关注高频出现的名词和主题词。' },
+        '态度判断': { label: '态度判断专项', advice: '积累常见的态度词（如skeptical、optimistic等），注意作者是否直接表态还是引用他人观点。' }
+    };
+    d.weakDims.forEach(function(weak) {
+        var advice = adviceMap[weak.name] || { label: weak.name + '专项', advice: '建议针对性练习，提高' + weak.name + '能力。' };
+        weakAdviceHtml += 
+            '<div class="report-advice-card">' +
+                '<div class="report-advice-label">' + weak.score + '分 · 最薄弱项</div>' +
+                '<div class="report-advice-dim">' + advice.label + '</div>' +
+                '<div class="report-advice-text">' + advice.advice + '</div>' +
+            '</div>';
+    });
+    
+    // 生成备考建议
+    var tipsHtml = '';
+    var tips = [
+        { icon: '📅', text: '每天投入30分钟针对性训练，重点突破薄弱维度' },
+        { icon: '📝', text: '建立错题本，记录每道错题的考点和错误原因' },
+        { icon: '🎯', text: '定期复盘，用本工具重新诊断，验证提升效果' }
+    ];
+    tips.forEach(function(tip) {
+        tipsHtml += 
+            '<div class="report-tip-item">' +
+                '<div class="report-tip-icon">' + tip.icon + '</div>' +
+                '<div class="report-tip-text">' + tip.text + '</div>' +
+            '</div>';
+    });
+    
+    // 组装完整HTML
+    content.innerHTML = 
+        '<div style="text-align:center;margin-bottom:20px">' +
+            '<div class="report-risk-badge report-risk-' + d.riskLevel + '">' +
+                '<span class="report-risk-dot"></span>' +
+                riskIcons[d.riskLevel] + ' ' + riskLabels[d.riskLevel] +
+            '</div>' +
+        '</div>' +
+        
+        '<div class="report-score-section">' +
+            '<div class="report-score-num">' + d.totalScore + '<span class="report-score-denom">/100</span></div>' +
+            '<div class="report-score-label">综合能力评分' + (d.personality ? ' · ' + d.personality : '') + '</div>' +
+        '</div>' +
+        
+        '<div class="report-radar-section">' +
+            '<div class="report-radar-title">📊 五维能力雷达图</div>' +
+            '<div class="report-radar-canvas-wrap">' +
+                '<canvas id="report-radar-canvas" width="280" height="280"></canvas>' +
+            '</div>' +
+        '</div>' +
+        
+        '<div class="report-dims-grid">' + dimCardsHtml + '</div>' +
+        
+        (weakAdviceHtml ? '<div class="report-advice-section"><div class="report-section-title">💪 专项提升建议</div>' + weakAdviceHtml + '</div>' : '') +
+        
+        '<div class="report-tips-section">' +
+            '<div class="report-section-title">📚 备考建议</div>' +
+            tipsHtml +
+        '</div>' +
+        
+        '<div style="text-align:center;padding:16px 0;">' +
+            '<button style="padding:10px 20px;background:#F8F9FA;border:1px solid #E2E8F0;border-radius:8px;font-size:13px;color:#64748B;cursor:pointer" onclick="showReportShare()">📱 分享报告</button>' +
+        '</div>';
+    
+    // 绘制雷达图
+    setTimeout(function() {
+        drawReportRadar();
+    }, 100);
+}
+
+// 绘制报告页雷达图
+function drawReportRadar() {
+    var canvas = document.getElementById('report-radar-canvas');
+    if (!canvas) return;
+    
+    var ctx = canvas.getContext('2d');
+    var dpr = window.devicePixelRatio || 1;
+    var size = 260;
+    
+    canvas.width = size * dpr;
+    canvas.height = size * dpr;
+    canvas.style.width = size + 'px';
+    canvas.style.height = size + 'px';
+    ctx.scale(dpr, dpr);
+    
+    var centerX = size / 2;
+    var centerY = size / 2;
+    var maxRadius = 100;
+    
+    var dims = Object.keys(DIM_CONFIGS);
+    var n = dims.length;
+    var angleStep = (Math.PI * 2) / n;
+    
+    // 背景网格
+    ctx.strokeStyle = '#F1F5F9';
+    ctx.lineWidth = 1;
+    for (var r = 1; r <= 5; r++) {
+        ctx.beginPath();
+        for (var i = 0; i <= n; i++) {
+            var angle = i * angleStep - Math.PI / 2;
+            var x = centerX + Math.cos(angle) * (r * maxRadius / 5);
+            var y = centerY + Math.sin(angle) * (r * maxRadius / 5);
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+        }
+        ctx.closePath();
+        ctx.stroke();
+    }
+    
+    // 径向线
+    for (var i = 0; i < n; i++) {
+        var angle = i * angleStep - Math.PI / 2;
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.lineTo(centerX + Math.cos(angle) * maxRadius, centerY + Math.sin(angle) * maxRadius);
+        ctx.stroke();
+    }
+    
+    // 数据区域
+    var data = reportData.dims;
+    var gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, maxRadius);
+    gradient.addColorStop(0, 'rgba(108,92,231,0.3)');
+    gradient.addColorStop(1, 'rgba(108,92,231,0.1)');
+    
+    ctx.beginPath();
+    for (var i = 0; i <= n; i++) {
+        var idx = i % n;
+        var dimName = dims[idx];
+        var score = data[dimName] || 0;
+        var r = (score / 100) * maxRadius;
+        var angle = i * angleStep - Math.PI / 2;
+        var x = centerX + Math.cos(angle) * r;
+        var y = centerY + Math.sin(angle) * r;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+    }
+    ctx.closePath();
+    ctx.fillStyle = gradient;
+    ctx.fill();
+    ctx.strokeStyle = '#6C5CE7';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    
+    // 数据点
+    for (var i = 0; i < n; i++) {
+        var dimName = dims[i];
+        var score = data[dimName] || 0;
+        var r = (score / 100) * maxRadius;
+        var angle = i * angleStep - Math.PI / 2;
+        var x = centerX + Math.cos(angle) * r;
+        var y = centerY + Math.sin(angle) * r;
+        
+        ctx.beginPath();
+        ctx.arc(x, y, 4, 0, Math.PI * 2);
+        ctx.fillStyle = '#6C5CE7';
+        ctx.fill();
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+    }
+    
+    // 标签
+    ctx.fillStyle = '#475569';
+    ctx.font = '12px -apple-system, BlinkMacSystemFont, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    
+    for (var i = 0; i < n; i++) {
+        var dimName = dims[i];
+        var label = DIM_CONFIGS[dimName] ? dimName : dimName;
+        var angle = i * angleStep - Math.PI / 2;
+        var labelR = maxRadius + 20;
+        var x = centerX + Math.cos(angle) * labelR;
+        var y = centerY + Math.sin(angle) * labelR;
+        
+        var score = data[dimName] || 0;
+        var labelText = score + '分';
+        
+        // 绘制标签
+        ctx.fillStyle = '#64748B';
+        ctx.fillText(label, x, y);
+        ctx.fillStyle = '#475569';
+        ctx.font = '11px -apple-system, BlinkMacSystemFont, sans-serif';
+        ctx.fillText(labelText, x, y + 16);
+        ctx.font = '12px -apple-system, BlinkMacSystemFont, sans-serif';
+    }
+}
+
+// 显示报告分享
+function showReportShare() {
+    var modal = document.getElementById('report-share-modal');
+    if (modal) modal.style.display = 'flex';
+    
+    setTimeout(function() {
+        drawReportShareImage();
+    }, 100);
+}
+
+// 关闭报告分享
+function closeReportShare() {
+    var modal = document.getElementById('report-share-modal');
+    if (modal) modal.style.display = 'none';
+}
+
+// 绘制分享图片
+function drawReportShareImage() {
+    var canvas = document.getElementById('report-share-canvas');
+    if (!canvas) return;
+    
+    var ctx = canvas.getContext('2d');
+    var dpr = window.devicePixelRatio || 1;
+    
+    canvas.width = 280 * dpr;
+    canvas.height = 400 * dpr;
+    ctx.scale(dpr, dpr);
+    
+    // 背景
+    var gradient = ctx.createLinearGradient(0, 0, 280, 400);
+    gradient.addColorStop(0, '#6C5CE7');
+    gradient.addColorStop(1, '#A29BFE');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, 280, 400);
+    
+    // 标题
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 18px -apple-system, BlinkMacSystemFont, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('📊 我的四级诊断报告', 140, 40);
+    
+    // 风险等级
+    var riskLabels = { high: '⚠️ 高危风险', mid: '📊 中危风险', low: '✅ 低危风险' };
+    ctx.font = '14px -apple-system, BlinkMacSystemFont, sans-serif';
+    ctx.fillText(riskLabels[reportData.riskLevel] || '📊 中危风险', 140, 70);
+    
+    // 综合评分
+    ctx.font = 'bold 48px -apple-system, BlinkMacSystemFont, sans-serif';
+    ctx.fillText(reportData.totalScore, 140, 130);
+    ctx.font = '16px -apple-system, BlinkMacSystemFont, sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.7)';
+    ctx.fillText('/100 综合能力评分', 140, 155);
+    
+    // 人格类型
+    if (reportData.personality) {
+        ctx.fillStyle = 'rgba(255,255,255,0.9)';
+        ctx.font = '14px -apple-system, BlinkMacSystemFont, sans-serif';
+        ctx.fillText('你是「' + reportData.personality + '」', 140, 180);
+    }
+    
+    // 五维分数条
+    var dims = Object.keys(DIM_CONFIGS);
+    var barStartY = 210;
+    var barHeight = 28;
+    
+    dims.forEach(function(dim, i) {
+        var y = barStartY + i * barHeight;
+        var score = reportData.dims[dim] || 0;
+        var color = score >= 70 ? '#00B894' : score >= 40 ? '#FDCB6E' : '#E17055';
+        
+        // 维度名
+        ctx.fillStyle = '#fff';
+        ctx.font = '11px -apple-system, BlinkMacSystemFont, sans-serif';
+        ctx.textAlign = 'left';
+        ctx.fillText(DIM_CONFIGS[dim].icon + ' ' + dim, 20, y + 12);
+        
+        // 分数
+        ctx.textAlign = 'right';
+        ctx.fillText(score + '分', 260, y + 12);
+        
+        // 进度条背景
+        ctx.fillStyle = 'rgba(255,255,255,0.3)';
+        ctx.fillRect(20, y + 18, 240, 6);
+        
+        // 进度条填充
+        ctx.fillStyle = color;
+        ctx.fillRect(20, y + 18, 240 * score / 100, 6);
+    });
+    
+    // 底部提示
+    ctx.fillStyle = 'rgba(255,255,255,0.8)';
+    ctx.font = '11px -apple-system, BlinkMacSystemFont, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('四级备考搭子 · AI智能诊断', 140, 385);
+}
+
                 <div class="share-card-hint">长按保存图片</div>
             </div>
             <div class="share-card-tip">分享给朋友测测 👇</div>
             <div class="detail-coupon-tip">🎁 限时优惠：付款输入 <strong style="color:#6C5CE7">CET4VIP</strong> 享7折</div></div>
             <button class="share-card-close" onclick="closeShareCard()">关闭</button>
+        </div>
+    </div>
+
+    <!-- 诊断报告页 -->
+    <div class="report-overlay" id="report-overlay" style="display:none">
+        <div class="report-header">
+            <button class="report-back" onclick="closeReportPage()">
+                <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="15 18 9 12 15 6"/>
+                </svg>
+            </button>
+            <div class="report-header-title">诊断报告</div>
+        </div>
+        <div class="report-content" id="report-content">
+            <!-- 动态内容由JS填充 -->
+        </div>
+        <div class="report-cta-section">
+            <button class="report-cta-btn" onclick="openReportPayModal()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                    <path d="M2 17l10 5 10-5"/>
+                    <path d="M2 12l10 5 10-5"/>
+                </svg>
+                <span id="report-cta-text">升级冲刺营，针对性提升</span>
+            </button>
+            <button class="report-secondary-btn" onclick="continuePractice()">继续AI陪练</button>
+        </div>
+    </div>
+
+    <!-- 报告分享弹窗 -->
+    <div class="report-share-modal" id="report-share-modal" style="display:none" onclick="if(event.target===this)closeReportShare()">
+        <div class="report-share-box">
+            <div class="report-share-canvas-wrap" id="report-share-canvas-wrap">
+                <canvas id="report-share-canvas" width="280" height="400"></canvas>
+            </div>
+            <div class="report-share-hint">长按保存图片到相册</div>
+            <button class="report-share-close" onclick="closeReportShare()">关闭</button>
         </div>
     </div>
 </body>
