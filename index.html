@@ -2274,6 +2274,11 @@
         .share-card-tip { color: #666; font-size: 13px; margin-bottom: 16px; }
         .share-card-close { width: 100%; padding: 12px; background: #f5f5f5; border: none; border-radius: 10px; color: #666; font-size: 14px; cursor: pointer; }
         .btn-share-card { background: #F0EEFF !important; color: var(--primary) !important; }
+
+        /* 优惠码输入 */
+        #coupon-input { flex: 1; }
+        .coupon-success { color: #00B894 !important; }
+        .coupon-error { color: #E17055 !important; }
 </style>
 </head>
 <body>
@@ -4003,6 +4008,11 @@ function openPayment(plan) {
             '<div class="pay-panel active" id="pay-panel-online">' +
                 '<a class="pay-mbd-link" href="' + (mbdLinks[plan] || '#') + '" target="_blank">购买' + (planNames[plan] || '') + '</a>' +
                 '<div class="pay-mbd-tip">购买后复制面包多订单号，粘贴到下方即可自动开通</div>' +
+                '<div class="pay-input-row" style="margin-top:8px">' +
+                    '<input type="text" id="coupon-input" placeholder="优惠码（如有）" autocomplete="off" spellcheck="false">' +
+                    '<button id="coupon-apply-btn" onclick="applyCoupon()" style="font-size:12px;padding:10px 12px">使用</button>' +
+                '</div>' +
+                '<div id="coupon-msg" style="font-size:12px;margin-top:4px;color:#6C5CE7;display:none"></div>' +
                 '<div class="pay-input-row" style="margin-top:14px">' +
                     '<input type="text" id="mbd-order-input" placeholder="粘贴面包多订单号" autocomplete="off" spellcheck="false">' +
                     '<button id="mbd-activate-btn" onclick="activateWithMbdOrder(\'' + plan + '\')">验证激活</button>' +
@@ -4441,6 +4451,43 @@ function incrementChatUsage() {
         }
         function closeShareCard() {
             document.getElementById('share-card-modal').style.display = 'none';
+        }
+
+        // 优惠码
+        var appliedCoupon = null;
+        function applyCoupon() {
+            var code = document.getElementById('coupon-input').value.trim().toUpperCase();
+            if (!code) return;
+            var msgEl = document.getElementById('coupon-msg');
+            msgEl.style.display = 'block';
+            msgEl.textContent = '验证中...';
+            msgEl.className = '';
+            // 调用API验证优惠码
+            fetch('/api/validate-coupon', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({code: code})
+            }).then(function(r){ return r.json(); })
+            .then(function(data) {
+                if (data.valid) {
+                    appliedCoupon = data;
+                    msgEl.textContent = '✓ 优惠码有效，立减¥10';
+                    msgEl.className = 'coupon-success';
+                    // 更新价格显示
+                    var priceEl = document.querySelector('.pay-sheet-price');
+                    if (priceEl) {
+                        var originalPrice = parseInt(priceEl.textContent.replace(/[^0-9]/g, ''));
+                        priceEl.innerHTML = '<small>¥</small><s style="font-size:14px;color:#999;margin-right:4px">' + originalPrice + '</s>' + (originalPrice - 10);
+                    }
+                } else {
+                    msgEl.textContent = '✗ ' + (data.error || '优惠码无效');
+                    msgEl.className = 'coupon-error';
+                    appliedCoupon = null;
+                }
+            }).catch(function() {
+                msgEl.textContent = '✗ 验证失败，请重试';
+                msgEl.className = 'coupon-error';
+            });
         }
 </script>
 

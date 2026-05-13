@@ -135,6 +135,28 @@ async function handleApi(req, res, pathname) {
     try {
         // ===== 手动收款模式 API =====
 
+        // POST /api/validate-coupon - 验证优惠码
+        if (pathname === '/api/validate-coupon' && req.method === 'POST') {
+            const body = await parseBody(req);
+            const { code } = body;
+            if (!code) return sendJson(res, 400, { error: '缺少优惠码' });
+            
+            // 加载优惠码文件
+            let coupons = [];
+            try {
+                const couponPath = path.join(__dirname, 'coupons.json');
+                if (fs.existsSync(couponPath)) {
+                    coupons = JSON.parse(fs.readFileSync(couponPath, 'utf8')).coupons || [];
+                }
+            } catch(e) {}
+            
+            const coupon = coupons.find(c => c.code.toUpperCase() === code.toUpperCase());
+            if (!coupon) return sendJson(res, 200, { valid: false, error: '优惠码不存在' });
+            if (coupon.used) return sendJson(res, 200, { valid: false, error: '优惠码已使用' });
+            
+            return sendJson(res, 200, { valid: true, discount: 10, code: coupon.code });
+        }
+
         // POST /api/create-order - 创建订单（手动收款模式）
         if (pathname === '/api/create-order' && req.method === 'POST') {
             const body = await parseBody(req);
