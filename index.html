@@ -3579,6 +3579,47 @@
         }
         
         /* 45天计划进度条 */
+        /* 动态备考计划 */
+        .plan-today-card {
+            display: flex; align-items: center; gap: 12px;
+            background: #F8F7FF; border-radius: 12px; padding: 14px 16px; margin: 12px 0;
+            border: 1px solid #EDE9FE;
+        }
+        .plan-today-badge {
+            font-size: 11px; font-weight: 700; color: #fff;
+            padding: 2px 8px; border-radius: 6px; white-space: nowrap;
+        }
+        .plan-today-icon { font-size: 24px; }
+        .plan-today-info { flex: 1; }
+        .plan-today-title { font-size: 14px; font-weight: 600; color: #1a1a2e; }
+        .plan-today-desc { font-size: 12px; color: #64748B; margin-top: 2px; }
+        .plan-calendar {
+            display: flex; flex-direction: column; gap: 6px; margin: 12px 0;
+            max-height: 240px; overflow-y: auto;
+        }
+        .plan-cal-item {
+            display: flex; align-items: center; gap: 8px;
+            padding: 8px 12px; border-radius: 8px; background: #FAFAFA;
+            font-size: 13px; transition: background 0.15s;
+        }
+        .plan-cal-item.today { background: #F0EEFF; font-weight: 600; }
+        .plan-cal-item.done { opacity: 0.6; }
+        .plan-cal-item:hover { background: #F0F0F5; }
+        .plan-cal-item.today:hover { background: #E8E4FF; }
+        .plan-cal-day { font-size: 11px; color: #94A3B8; width: 36px; flex-shrink: 0; }
+        .plan-cal-info { display: flex; align-items: center; gap: 6px; flex: 1; }
+        .plan-cal-icon { font-size: 14px; }
+        .plan-cal-title { color: #334155; }
+        .plan-cal-check { color: #00B894; font-weight: 700; font-size: 14px; }
+        .plan-phase-legend {
+            display: flex; gap: 16px; justify-content: center;
+            font-size: 11px; color: #94A3B8; padding-top: 8px;
+        }
+        .plan-phase-dot {
+            display: inline-block; width: 8px; height: 8px;
+            border-radius: 50%; margin-right: 4px; vertical-align: middle;
+        }
+
         .progress-plan-header {
             display: flex;
             justify-content: space-between;
@@ -5057,6 +5098,93 @@
                     progress: progress,
                     startDate: profile.startDate
                 };
+            },
+
+            getDynamicPlan: function() {
+                var EXAM_DATE = new Date('2026-06-13');
+                var now = new Date(); now.setHours(0,0,0,0);
+                var profile = this.getUserProfile();
+                var startDate = profile.startDate ? new Date(profile.startDate) : now; startDate.setHours(0,0,0,0);
+                var scores = this.getAbilityScores();
+                
+                var daysRemaining = Math.max(1, Math.ceil((EXAM_DATE - now) / 864e5));
+                var daysPassed = Math.max(0, Math.floor((now - startDate) / 864e5));
+                var totalDays = Math.max(1, daysRemaining + daysPassed);
+                
+                var phase1End = Math.floor(totalDays * 0.33);
+                var phase2End = Math.floor(totalDays * 0.66);
+                
+                var dims = Object.keys(scores).map(function(k) { return { name: k, score: scores[k] }; });
+                dims.sort(function(a, b) { return a.score - b.score; });
+                var weakest = dims[0] ? dims[0].name : '推理判断';
+                var secondWeak = dims[1] ? dims[1].name : '同义替换';
+                
+                var dimCfg = {
+                    '细节定位': { icon: '🔍', type: 'reading', act: '练3道细节定位题' },
+                    '推理判断': { icon: '🧠', type: 'inference', act: '练3道推理判断题' },
+                    '同义替换': { icon: '🔄', type: 'words', act: '练10组同义替换' },
+                    '主旨归纳': { icon: '📋', type: 'mainidea', act: '练3道主旨归纳题' },
+                    '态度判断': { icon: '🎯', type: 'attitude', act: '练3道态度判断题' }
+                };
+                var wC = dimCfg[weakest] || dimCfg['推理判断'];
+                var sC = dimCfg[secondWeak] || dimCfg['同义替换'];
+                
+                var templates = {
+                    phase1: [
+                        { t: '词汇积累', d: '背30个核心词汇+做10组同义替换', i: '📚', y: 'words' },
+                        { t: weakest+'基础', d: wC.act+'，掌握基本方法', i: wC.icon, y: wC.type },
+                        { t: '语法梳理', d: '复习1个语法点+做5道语法题', i: '📐', y: 'grammar' },
+                        { t: secondWeak+'入门', d: sC.act+'，了解出题套路', i: sC.icon, y: sC.type },
+                        { t: '阅读基础', d: '做1篇阅读理解，精读+标注生词', i: '📖', y: 'reading' },
+                        { t: '听力入门', d: '听1段短文，做5道听力题', i: '🎧', y: 'listening' },
+                        { t: '综合练习', d: '做1套mini练习(各题型2道)', i: '✏️', y: 'mixed' }
+                    ],
+                    phase2: [
+                        { t: weakest+'强化', d: '集中练5道'+weakest+'题', i: wC.icon, y: wC.type },
+                        { t: '错题复习', d: '复习待复习错题，确保掌握', i: '🔁', y: 'review' },
+                        { t: secondWeak+'突破', d: '集中练5道'+secondWeak+'题', i: sC.icon, y: sC.type },
+                        { t: '作文训练', d: '写1篇作文+提交AI批改', i: '✍️', y: 'essay' },
+                        { t: '翻译训练', d: '做2段中译英+对照参考译文', i: '🌐', y: 'translation' },
+                        { t: '听力强化', d: '听2段材料+做10道题', i: '🎧', y: 'listening' },
+                        { t: '综合测试', d: '做1套模拟(各题型5道)', i: '📊', y: 'mixed' }
+                    ],
+                    phase3: [
+                        { t: '全真模拟', d: '限时做1套模拟题', i: '⏱️', y: 'mock' },
+                        { t: '错题冲刺', d: '重做所有未掌握错题', i: '🔥', y: 'review' },
+                        { t: weakest+'冲刺', d: '最后攻克弱项', i: '💪', y: wC.type },
+                        { t: '作文冲刺', d: '限时30分钟写1篇', i: '✍️', y: 'essay' },
+                        { t: '听力冲刺', d: '全真听力模拟', i: '🎧', y: 'listening' },
+                        { t: '查漏补缺', d: '根据错题本找盲点', i: '🔎', y: 'review' },
+                        { t: '考前放松', d: '轻松回顾笔记，早点休息', i: '😌', y: 'light' }
+                    ]
+                };
+                
+                var history = this.getPracticeHistory();
+                var calendar = [];
+                for (var d = 0; d < totalDays; d++) {
+                    var phase, pName, pColor;
+                    if (d < phase1End) { phase = 'phase1'; pName = '基础期'; pColor = '#6C5CE7'; }
+                    else if (d < phase2End) { phase = 'phase2'; pName = '强化期'; pColor = '#F39C12'; }
+                    else { phase = 'phase3'; pName = '冲刺期'; pColor = '#E74C3C'; }
+                    
+                    var tpl = templates[phase];
+                    var task = tpl[d % tpl.length];
+                    var tDate = new Date(startDate.getTime() + d * 864e5);
+                    var isToday = tDate.toDateString() === now.toDateString();
+                    var isPast = tDate < now && !isToday;
+                    var tStr = tDate.toISOString().slice(0,10);
+                    var completed = isPast || history.some(function(h) { return h.date === tStr; });
+                    
+                    var mm = String(tDate.getMonth()+1).padStart(2,'0');
+                    var dd = String(tDate.getDate()).padStart(2,'0');
+                    
+                    calendar.push({ day: d+1, date: mm+'/'+dd, phase: pName, phaseColor: pColor, title: task.t, desc: task.d, icon: task.i, type: task.y, isToday: isToday, isPast: isPast, completed: completed });
+                }
+                
+                var currentPhase = daysPassed < phase1End ? '基础期' : (daysPassed < phase2End ? '强化期' : '冲刺期');
+                var todayTask = calendar.find(function(c){ return c.isToday; }) || calendar[Math.min(daysPassed, calendar.length-1)];
+                
+                return { daysRemaining: daysRemaining, daysPassed: daysPassed, totalDays: totalDays, currentPhase: currentPhase, todayTask: todayTask, calendar: calendar, progress: Math.min(100, Math.round((daysPassed / totalDays) * 100)) };
             },
             
             // 获取预估分数
@@ -8291,29 +8419,63 @@ function drawReportShareImage() {
         }
         html += '</div>';
         
-        // 3. 45天计划进度条
+        // 3. 动态备考计划
+        var dynPlan = CET4Data.getDynamicPlan();
         html += '<div class="progress-card">';
         html += '<div class="progress-card-title">';
         html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>';
-        html += '45天备考计划';
+        html += '备考计划 · ' + dynPlan.currentPhase;
         html += '</div>';
         
-        if (planProgress) {
-            html += '<div class="progress-plan-header">';
-            html += '<span class="progress-plan-label">学习进度</span>';
-            html += '<span class="progress-plan-value">第' + planProgress.daysPassed + '天/45天</span>';
+        // 阶段进度条
+        html += '<div class="progress-plan-header">';
+        html += '<span class="progress-plan-label">距考试 ' + dynPlan.daysRemaining + ' 天</span>';
+        html += '<span class="progress-plan-value">第' + (dynPlan.daysPassed + 1) + '天/' + dynPlan.totalDays + '天</span>';
+        html += '</div>';
+        html += '<div class="progress-plan-bar">';
+        html += '<div class="progress-plan-fill" style="width:' + dynPlan.progress + '%"></div>';
+        html += '</div>';
+        
+        // 今日任务卡
+        if (dynPlan.todayTask) {
+            var tt = dynPlan.todayTask;
+            html += '<div class="plan-today-card">';
+            html += '<div class="plan-today-badge" style="background:' + tt.phaseColor + '">今日</div>';
+            html += '<div class="plan-today-icon">' + tt.icon + '</div>';
+            html += '<div class="plan-today-info">';
+            html += '<div class="plan-today-title">' + tt.title + '</div>';
+            html += '<div class="plan-today-desc">' + tt.desc + '</div>';
             html += '</div>';
-            html += '<div class="progress-plan-bar">';
-            html += '<div class="progress-plan-fill" style="width:' + planProgress.progress + '%"></div>';
             html += '</div>';
-            html += '<div class="progress-plan-footer">';
-            html += '<span>开始于 ' + planProgress.startDate + '</span>';
-            html += '<span>' + planProgress.progress + '%</span>';
-            html += '</div>';
-        } else {
-            html += '<div class="progress-no-data">开始学习后自动记录</div>';
         }
-        html += '<div class="progress-exam-countdown">距离四级考试还有 <strong>' + daysToExam + '</strong> 天</div>';
+        
+        // 计划日历（显示前后各3天+今天）
+        html += '<div class="plan-calendar">';
+        var calStart = Math.max(0, dynPlan.daysPassed - 3);
+        var calEnd = Math.min(dynPlan.calendar.length - 1, dynPlan.daysPassed + 3);
+        for (var ci = calStart; ci <= calEnd; ci++) {
+            var c = dynPlan.calendar[ci];
+            var cls = 'plan-cal-item';
+            if (c.isToday) cls += ' today';
+            else if (c.completed) cls += ' done';
+            html += '<div class="' + cls + '" style="border-left:3px solid ' + c.phaseColor + '">';
+            html += '<div class="plan-cal-day">' + c.date + '</div>';
+            html += '<div class="plan-cal-info">';
+            html += '<span class="plan-cal-icon">' + c.icon + '</span>';
+            html += '<span class="plan-cal-title">' + c.title + '</span>';
+            html += '</div>';
+            if (c.completed && !c.isToday) html += '<div class="plan-cal-check">✓</div>';
+            html += '</div>';
+        }
+        html += '</div>';
+        
+        // 阶段图例
+        html += '<div class="plan-phase-legend">';
+        html += '<span class="plan-phase-dot" style="background:#6C5CE7"></span>基础期';
+        html += '<span class="plan-phase-dot" style="background:#F39C12"></span>强化期';
+        html += '<span class="plan-phase-dot" style="background:#E74C3C"></span>冲刺期';
+        html += '</div>';
+        
         html += '</div>';
         
         // 4. 近7天练习热力图
