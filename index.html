@@ -2265,6 +2265,15 @@
 }
 .pay-success-icon svg { width:28px; height:28px; }
 
+
+        /* 人格卡分享弹窗 */
+        .share-card-box { background: white; border-radius: 20px; padding: 20px; max-width: 320px; margin: auto; text-align: center; }
+        .share-card-img-wrap { position: relative; border-radius: 12px; overflow: hidden; margin-bottom: 12px; }
+        .share-card-img-wrap img { width: 100%; display: block; }
+        .share-card-hint { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.6)); color: white; font-size: 13px; padding: 20px 12px 8px; text-align: center; }
+        .share-card-tip { color: #666; font-size: 13px; margin-bottom: 16px; }
+        .share-card-close { width: 100%; padding: 12px; background: #f5f5f5; border: none; border-radius: 10px; color: #666; font-size: 14px; cursor: pointer; }
+        .btn-share-card { background: #F0EEFF !important; color: var(--primary) !important; }
 </style>
 </head>
 <body>
@@ -2790,6 +2799,7 @@
                 <div class="detail-actions">
                     <button class="btn-close-detail" onclick="closePersonalityModal()">关闭</button>
                     <button class="btn-start-detail" onclick="startPractice()">开始练习</button>
+                    <button class="btn-share-card" onclick="showShareCard()">📱 保存人格卡</button>
                 </div>
             </div>
         </div>
@@ -4422,6 +4432,28 @@ function incrementChatUsage() {
     localStorage.setItem('cet_chat_usage', JSON.stringify(usage));
 }
 
+
+        // 人格卡分享
+        function showShareCard() {
+            var ptype = (state.userData && state.userData.personality) || '偏科大佬';
+            document.getElementById('share-card-img').src = '/public/人格卡/人格卡-' + ptype + '.jpg';
+            document.getElementById('share-card-modal').style.display = 'flex';
+        }
+        function closeShareCard() {
+            document.getElementById('share-card-modal').style.display = 'none';
+        }
 </script>
+
+    <!-- 人格卡分享弹窗 -->
+    <div class="modal-overlay" id="share-card-modal">
+        <div class="share-card-box">
+            <div class="share-card-img-wrap">
+                <img id="share-card-img" src="" />
+                <div class="share-card-hint">长按保存图片</div>
+            </div>
+            <div class="share-card-tip">分享给朋友测测 👇</div>
+            <button class="share-card-close" onclick="closeShareCard()">关闭</button>
+        </div>
+    </div>
 </body>
 </html>

@@ -687,6 +687,19 @@ const server = http.createServer((req, res) => {
         return;
     }
 
+    // public目录静态文件服务
+    const publicDir = path.join(__dirname, 'public');
+    if (fs.existsSync(publicDir) && pathname.startsWith('/public/')) {
+        const filePath = path.join(publicDir, pathname.slice(8));
+        if (fs.existsSync(filePath)) {
+            const ext = path.extname(filePath).toLowerCase();
+            res.setHeader('Cache-Control', 'public, max-age=604800');
+            res.setHeader('Content-Type', ext === '.jpg' || ext === '.jpeg' ? 'image/jpeg' : 'image/' + ext.slice(1));
+            res.end(fs.readFileSync(filePath));
+            return;
+        }
+    }
+
     // 静态资源（图片等）- 长缓存7天
     const ext = path.extname(pathname).toLowerCase();
     const imageExts = ['.jpg', '.jpeg', '.png', '.gif', '.svg', '.webp', '.ico', '.woff', '.woff2', '.ttf', '.otf'];
