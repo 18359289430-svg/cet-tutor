@@ -737,22 +737,27 @@ async function handleApi(req, res, pathname) {
         // 修复问题1：新增API - 获取剩余对话次数
         // 改为POST，前端带plan_token验证付费身份
         if (pathname === '/api/chat/remaining' && req.method === 'POST') {
-            const body = await parseBody(req);
-            const userId = body.user_id;
-            
-            if (!userId) {
-                return sendJson(res, 400, { error: '缺少user_id' });
+            try {
+                const body = await parseBody(req);
+                const userId = body.user_id;
+                
+                if (!userId) {
+                    return sendJson(res, 400, { error: '缺少user_id' });
+                }
+                
+                // 从后端订单验证真实套餐（用token验证，不信任前端）
+                const verifiedPlan = getVerifiedUserPlan(req, userId, body);
+                const remaining = verifiedPlan === 'free' ? getRemainingChats(userId) : -1; // -1表示无限
+                
+                return sendJson(res, 200, {
+                    remaining,
+                    plan: verifiedPlan,
+                    limit: verifiedPlan === 'free' ? 10 : -1
+                });
+            } catch (err) {
+                console.error('[/api/chat/remaining error]', err);
+                return sendJson(res, 500, { error: '获取剩余次数失败', detail: err.message });
             }
-            
-            // 从后端订单验证真实套餐（用token验证，不信任前端）
-            const verifiedPlan = getVerifiedUserPlan(req, userId, body);
-            const remaining = verifiedPlan === 'free' ? getRemainingChats(userId) : -1; // -1表示无限
-            
-            return sendJson(res, 200, {
-                remaining,
-                plan: verifiedPlan,
-                limit: verifiedPlan === 'free' ? 10 : -1
-            });
         }
 
         // 404
