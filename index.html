@@ -4189,7 +4189,7 @@
 
             <!-- 诊断页 -->
             <div class="tab-page" id="tab-diagnosis">
-                <div             <!-- 对话列表 -->
+                <!-- 对话列表 -->
             <div class="chat-list-view" id="chat-list-view">
                 <div class="chat-list-header">
                     <div class="chat-list-title">我的对话</div>
@@ -4231,7 +4231,7 @@
                 </div>
             </div>
 
-class="custom-chat-page" id="chat-page">
+<div class="custom-chat-page" id="chat-page">
                     <!-- Header -->
                     <div class="custom-chat-header">
                         <button class="custom-chat-back" onclick="handleChatBack()">
@@ -4469,7 +4469,7 @@ class="custom-chat-page" id="chat-page">
 
         <!-- 底部Tab -->
         <div class="tab-bar">
-            <div class="tab-item active" data-tab="home" onclick="handleChatBack()">
+            <div class="tab-item active" data-tab="home" onclick="switchTab('home')">
                 <div class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
                 <span class="tab-label">首页</span>
             </div>
@@ -4577,6 +4577,9 @@ class="custom-chat-page" id="chat-page">
             updateHomeStatus();
             updatePlanDisplay();
 
+            // 恢复上次的tab和聊天状态
+            restoreLastState();
+
             // 领取链接自动激活：/claim?sprint&code=CET4S-XXXXX-YYYY
             checkClaimUrl();
         });
@@ -4586,6 +4589,17 @@ class="custom-chat-page" id="chat-page">
                 var data = localStorage.getItem('cet_user');
                 if (data) state.userData = JSON.parse(data);
             } catch(e) {}
+        }
+
+        function restoreLastState() {
+            var lastTab = localStorage.getItem('cet_current_tab');
+            var lastChatMode = localStorage.getItem('cet_last_chat_mode');
+            if (lastTab === 'diagnosis' && lastChatMode) {
+                var savedConvId = localStorage.getItem(lastChatMode === 'companion' ? 'cet_companion_conv' : 'cet_diagnosis_conv');
+                if (savedConvId) {
+                    openChat(lastChatMode);
+                }
+            }
         }
 
         function checkClaimUrl() {
@@ -5503,8 +5517,6 @@ class="custom-chat-page" id="chat-page">
         }
 
         // ===== Custom Chat UI Logic =====
-
-// ===== Custom Chat UI Logic =====
         var chatState = {
             conversationId: null,
             botId: null,
