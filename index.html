@@ -3459,7 +3459,10 @@
                     plan_summary: getPlanSummary() || '',
                     last_context: getChatSummary() || '',
                     pending_task: getPendingTask() || ''
-                }
+                },
+                // 后端验证付费身份用（token不可伪造）
+                plan_token: (state.userData && state.userData.planToken) || '',
+                plan_order_id: (state.userData && state.userData.planOrderId) || ''
             };
 
             try {
@@ -4407,7 +4410,15 @@ const LIMIT_CACHE_TTL = 5000; // 缓存5秒
 // 从后端获取剩余对话次数（异步）
 async function fetchRemainingFromBackend(userId) {
     try {
-        var resp = await fetch('/api/chat/remaining?user_id=' + encodeURIComponent(userId));
+        var resp = await fetch('/api/chat/remaining', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                user_id: userId,
+                plan_token: (state.userData && state.userData.planToken) || '',
+                plan_order_id: (state.userData && state.userData.planOrderId) || ''
+            })
+        });
         if (resp.ok) {
             var data = await resp.json();
             return data;

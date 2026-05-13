@@ -170,30 +170,26 @@ function getClientIp(req) {
 
 // 根据IP从订单数据验证用户套餐（后端唯一数据源）
 function getVerifiedUserPlan(req, userId) {
-    const ip = getClientIp(req);
+    // 优先用 token 验证（前端激活后存储的 planToken + planOrderId）
+    const body = req.body || {};
+    const planToken = body.plan_token || '';
+    const planOrderId = body.plan_order_id || '';
     
-    // 查找已激活的订单
-    // 1. 优先通过 userId 匹配（面包多订单号或激活码关联的userId）
-    // 2. 其次通过 IP 匹配（同一IP下的付费用户）
-    let paidOrder = null;
-    
-    // 遍历所有订单找付费用户
-    for (const order of orders.values()) {
-        if (order.status === 'activated' && (order.plan === 'sprint' || order.plan === 'flagship')) {
-            // 检查是否关联了此userId
-            if (order.userId === userId) {
-                paidOrder = order;
-                break;
-            }
-            // 检查IP匹配
-            if (order.ip === ip && !paidOrder) {
-                paidOrder = order;
-            }
+    if (planOrderId && planToken) {
+        const order = orders.get(planOrderId);
+        if (order && order.status === 'activated' && order.token === planToken) {
+            return order.plan; // sprint 或 flagship
         }
     }
     
-    if (paidOrder) {
-        return paidOrder.plan;
+    // 降级：遍历所有订单，通过 userId 或 IP 匹配
+    const ip = getClientIp(req);
+    for (const order of orders.values()) {
+        if (order.status === 'activated' && (order.plan === 'sprint' || order.plan === 'flagship')) {
+            if (order.userId === userId || order.ip === ip) {
+                return order.plan;
+            }
+        }
     }
     
     return 'free';
@@ -739,16 +735,15 @@ async function handleApi(req, res, pathname) {
         }
         
         // 修复问题1：新增API - 获取剩余对话次数
-        // 前端调用此API同步剩余次数，不再依赖localStorage
-        if (pathname === '/api/chat/remaining' && req.method === 'GET') {
-            const url = new URL(req.url, `http://localhost:${PORT}`);
-            const userId = url.searchParams.get('user_id');
+        // 改为POST，前端带plan_token验证付费身份
+        if (pathname === '/api/chat/remaining' && req.method === 'POST') {
+            const userId = body.user_id;
             
             if (!userId) {
                 return sendJson(res, 400, { error: '缺少user_id' });
             }
             
-            // 从后端订单验证真实套餐（问题4修复）
+            // 从后端订单验证真实套餐（用token验证，不信任前端）
             const verifiedPlan = getVerifiedUserPlan(req, userId);
             const remaining = verifiedPlan === 'free' ? getRemainingChats(userId) : -1; // -1表示无限
             
