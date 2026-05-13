@@ -5529,6 +5529,7 @@
                 var fullText = '';
                 chatState.currentStreamText = '';
 
+                console.log('[CET4-V2.1] New SSE parser active');
                 console.log('[DEBUG] Response status:', resp.status, 'headers:', Object.fromEntries(resp.headers.entries()));
                 var reader = resp.body.getReader();
                 var decoder = new TextDecoder();
