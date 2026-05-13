@@ -2854,6 +2854,8 @@
             setAppHeight();
             window.addEventListener('resize', setAppHeight);
             loadUserData();
+            // 预获取限流信息（页面加载时）
+            setTimeout(preloadLimitInfo, 500);
             initGreeting();
             initCountdown();
             renderPersonalities();
@@ -3380,8 +3382,9 @@
             var text = input.value.trim();
             if (!text || chatState.isStreaming) return;
 
-            // Chat limit check
-            var limitResult = checkChatLimit();
+            // Chat limit check - 从后端获取（异步）
+            var userId = (state.userData && state.userData.uid) || 'user_' + Date.now();
+            var limitResult = await checkChatLimitAsync(userId);
             if (limitResult.limited) {
                 appendMessage('system', limitResult.message);
                 return;
@@ -4393,7 +4396,79 @@ function handleDailyTask() {
     setTimeout(function() { sendSuggestion(msg); }, 300);
 }
 
-// === Chat limit system (GPT-style) ===
+// === Chat limit system (后端为准，前端同步) ===
+// 修复问题1：前端不再自己计数，而是调用后端API获取剩余次数
+
+// 缓存后端返回的限流信息，避免每次发消息都请求
+var _cachedLimitInfo = null;
+var _cachedLimitTime = 0;
+const LIMIT_CACHE_TTL = 5000; // 缓存5秒
+
+// 从后端获取剩余对话次数（异步）
+async function fetchRemainingFromBackend(userId) {
+    try {
+        var resp = await fetch('/api/chat/remaining?user_id=' + encodeURIComponent(userId));
+        if (resp.ok) {
+            var data = await resp.json();
+            return data;
+        }
+    } catch (e) {
+        console.error('获取限流信息失败:', e);
+    }
+    return null;
+}
+
+// 检查聊天限流（现在会先尝试从后端获取）
+async function checkChatLimitAsync(userId) {
+    var now = Date.now();
+    
+    // 优先使用缓存
+    if (_cachedLimitInfo && (now - _cachedLimitTime) < LIMIT_CACHE_TTL) {
+        var plan = _cachedLimitInfo.plan || 'free';
+        if (plan !== 'free') {
+            return { limited: false };
+        }
+        var remaining = _cachedLimitInfo.remaining;
+        if (remaining <= 0) {
+            return { limited: true, message: '今日免费额度已用完（10轮/天），明天恢复。升级冲刺营即可无限对话+逐句批改～' };
+        }
+        return { limited: false, remaining: remaining };
+    }
+    
+    // 从后端获取最新数据
+    var backendData = await fetchRemainingFromBackend(userId);
+    
+    if (backendData) {
+        // 更新缓存
+        _cachedLimitInfo = backendData;
+        _cachedLimitTime = now;
+        
+        var verifiedPlan = backendData.plan || 'free';
+        if (verifiedPlan !== 'free') {
+            return { limited: false };
+        }
+        var remaining = backendData.remaining;
+        if (remaining <= 0) {
+            return { limited: true, message: '今日免费额度已用完（10轮/天），明天恢复。升级冲刺营即可无限对话+逐句批改～' };
+        }
+        return { limited: false, remaining: remaining };
+    }
+    
+    // 后端请求失败，使用本地降级（保留原有逻辑）
+    var user = state.userData || {};
+    var plan = user.plan || 'free';
+    if (plan !== 'free') {
+        return { limited: false };
+    }
+    var usage = getChatUsage();
+    var limit = 10;
+    if (usage.count >= limit) {
+        return { limited: true, message: '今日免费额度已用完（10轮/天），明天恢复。升级冲刺营即可无限对话+逐句批改～' };
+    }
+    return { limited: false, remaining: limit - usage.count };
+}
+
+// 同步版本（用于UI显示等不需要最新数据的场景）
 function checkChatLimit() {
     var user = state.userData || {};
     var plan = user.plan || 'free';
@@ -4403,17 +4478,25 @@ function checkChatLimit() {
         return { limited: false };
     }
     
-    // Free users: 5 rounds per day
+    // 如果有缓存，使用缓存
+    if (_cachedLimitInfo) {
+        var remaining = _cachedLimitInfo.remaining;
+        if (remaining <= 0) {
+            return { limited: true, message: '今日免费额度已用完（10轮/天），明天恢复。升级冲刺营即可无限对话+逐句批改～' };
+        }
+        return { limited: false, remaining: remaining };
+    }
+    
+    // 无缓存，使用本地计算
     var usage = getChatUsage();
     var limit = 10;
-    
     if (usage.count >= limit) {
         return { limited: true, message: '今日免费额度已用完（10轮/天），明天恢复。升级冲刺营即可无限对话+逐句批改～' };
     }
-    
     return { limited: false, remaining: limit - usage.count };
 }
 
+// 获取本地使用量（降级用）
 function getChatUsage() {
     try {
         var data = localStorage.getItem('cet_chat_usage');
@@ -4430,11 +4513,23 @@ function getChatUsage() {
     }
 }
 
+// 本地计数递增（降级用，不再是主要计数方式）
 function incrementChatUsage() {
     var usage = getChatUsage();
     usage.count++;
     usage.date = new Date().toISOString().split('T')[0];
     localStorage.setItem('cet_chat_usage', JSON.stringify(usage));
+}
+
+// 页面加载时预获取限流信息
+function preloadLimitInfo() {
+    var userId = (state.userData && state.userData.uid) || 'user_' + Date.now();
+    fetchRemainingFromBackend(userId).then(function(data) {
+        if (data) {
+            _cachedLimitInfo = data;
+            _cachedLimitTime = Date.now();
+        }
+    });
 }
 
 

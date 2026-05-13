@@ -64,13 +64,140 @@ const BOT_ID_COMPANION = '7637702903679631395';
 
 // 套餐配置（3层定价）
 const PLANS = {
-    free: { name: '免费版', price: 0, uidPrefix: 'CET4D', botId: BOT_ID_DIAGNOSIS, needPay: false },
-    sprint: { name: '冲刺营', price: 38, uidPrefix: 'CET4S', botId: BOT_ID_COMPANION, needPay: true },
-    flagship: { name: '全程营', price: 148, uidPrefix: 'CET4F', botId: BOT_ID_COMPANION, needPay: true }
+    free: { name: '免费版', price: 0, uidPrefix: 'CET4D', needPay: false },
+    sprint: { name: '冲刺营', price: 38, uidPrefix: 'CET4S', needPay: true },
+    flagship: { name: '全程营', price: 148, uidPrefix: 'CET4F', needPay: true }
 };
 
 // 内存订单存储
 const orders = new Map();
+
+// ===== 限流持久化：chatLimitMap 改为基于文件存储 =====
+// 修复问题1和问题3：限流持久化到文件，启动时加载，每次更新后写入
+const RATE_LIMITS_FILE = path.join(__dirname, 'rate-limits.json');
+
+// 加载限流数据（启动时）
+function loadRateLimits() {
+    try {
+        if (fs.existsSync(RATE_LIMITS_FILE)) {
+            const data = fs.readFileSync(RATE_LIMITS_FILE, 'utf8');
+            const parsed = JSON.parse(data);
+            // 转换为Map
+            const map = new Map();
+            for (const [key, value] of Object.entries(parsed)) {
+                map.set(key, value);
+            }
+            console.log(`[限流] 已加载 ${map.size} 条限流记录`);
+            return map;
+        }
+    } catch (e) {
+        console.error('[限流] 加载限流数据失败:', e.message);
+    }
+    return new Map();
+}
+
+// 保存限流数据到文件
+function saveRateLimits(map) {
+    try {
+        // 转换为普通对象以便JSON序列化
+        const obj = Object.fromEntries(map);
+        fs.writeFileSync(RATE_LIMITS_FILE, JSON.stringify(obj, null, 2), 'utf8');
+    } catch (e) {
+        console.error('[限流] 保存限流数据失败:', e.message);
+    }
+}
+
+// 初始化限流Map（从文件加载）
+const chatLimitMap = loadRateLimits();
+
+// 清理过期限流记录（3天前）
+function cleanupExpiredLimits() {
+    const now = Date.now();
+    let cleaned = 0;
+    for (const [key] of chatLimitMap) {
+        const parts = key.split(':');
+        if (parts.length >= 2) {
+            const recordDate = parts[1];
+            const threeDaysAgo = new Date(now - 3 * 86400000).toISOString().slice(0, 10);
+            if (recordDate < threeDaysAgo) {
+                chatLimitMap.delete(key);
+                cleaned++;
+            }
+        }
+    }
+    if (cleaned > 0) {
+        console.log(`[限流] 清理了 ${cleaned} 条过期记录`);
+        saveRateLimits(chatLimitMap);
+    }
+}
+
+// 检查聊天限流（后端唯一数据源）
+// 修复问题2：统一为 >=10 次拦截
+function checkChatLimitBackend(userId) {
+    const today = new Date().toISOString().slice(0, 10);
+    const key = userId + ':' + today;
+    const record = chatLimitMap.get(key) || { count: 0 };
+    record.count++;
+    chatLimitMap.set(key, record);
+    
+    // 随机清理过期记录
+    if (Math.random() < 0.05) {
+        cleanupExpiredLimits();
+    } else {
+        // 每10次更新保存一次
+        if (record.count % 10 === 0) {
+            saveRateLimits(chatLimitMap);
+        }
+    }
+    
+    return record.count;
+}
+
+// 获取剩余次数
+function getRemainingChats(userId) {
+    const today = new Date().toISOString().slice(0, 10);
+    const key = userId + ':' + today;
+    const record = chatLimitMap.get(key);
+    const count = record ? record.count : 0;
+    return Math.max(0, 10 - count);
+}
+
+// ===== 问题4修复：从后端订单验证用户身份，不信任前端传入的userPlan =====
+// 获取客户端IP
+function getClientIp(req) {
+    return req.headers['x-forwarded-for'] || req.headers['x-real-ip'] || req.socket.remoteAddress || 'unknown';
+}
+
+// 根据IP从订单数据验证用户套餐（后端唯一数据源）
+function getVerifiedUserPlan(req, userId) {
+    const ip = getClientIp(req);
+    
+    // 查找已激活的订单
+    // 1. 优先通过 userId 匹配（面包多订单号或激活码关联的userId）
+    // 2. 其次通过 IP 匹配（同一IP下的付费用户）
+    let paidOrder = null;
+    
+    // 遍历所有订单找付费用户
+    for (const order of orders.values()) {
+        if (order.status === 'activated' && (order.plan === 'sprint' || order.plan === 'flagship')) {
+            // 检查是否关联了此userId
+            if (order.userId === userId) {
+                paidOrder = order;
+                break;
+            }
+            // 检查IP匹配
+            if (order.ip === ip && !paidOrder) {
+                paidOrder = order;
+            }
+        }
+    }
+    
+    if (paidOrder) {
+        return paidOrder.plan;
+    }
+    
+    return 'free';
+}
 
 // 生成订单号
 function generateOrderId() {
@@ -172,7 +299,8 @@ async function handleApi(req, res, pathname) {
                 status: 'pending',
                 createdAt: Date.now(),
                 activatedAt: null,
-                token: null
+                token: null,
+                ip: getClientIp(req)
             });
 
             console.log(`[订单创建] ${orderId} - ${planConfig.name} - ¥${planConfig.price}`);
@@ -212,7 +340,7 @@ async function handleApi(req, res, pathname) {
         // POST /api/activate-with-mbd-order - 面包多订单号激活（全自动）
         if (pathname === '/api/activate-with-mbd-order' && req.method === 'POST') {
             const body = await parseBody(req);
-            const { order_id, plan: reqPlan } = body;
+            const { order_id, plan: reqPlan, user_id } = body;
 
             if (!order_id) {
                 return sendJson(res, 400, { error: '请输入面包多订单号' });
@@ -243,35 +371,30 @@ async function handleApi(req, res, pathname) {
                 });
                 const mbdData = await mbdResp.json();
 
-                if (mbdData.code !== 200 || !mbdData.result || mbdData.result.state !== 'success') {
-                    return sendJson(res, 400, { error: '订单验证失败，请确认订单号是否正确且已付款' });
+                if (mbdData.code !== 200 || !mbdData.result || mbdData.result.length === 0) {
+                    return sendJson(res, 200, { success: false, error: '订单号不存在或验证失败' });
                 }
 
-                const orderInfo = mbdData.result;
-                const amount = orderInfo.orderamount;
+                const orderInfo = mbdData.result[0];
+                const amount = parseFloat(orderInfo.amount || 0);
 
                 // 根据金额判断套餐
-                if (amount >= 128) {
-                    plan = 'flagship';
-                } else if (amount >= 35) {
-                    plan = 'sprint';
-                } else {
-                    return sendJson(res, 400, { error: '订单金额与套餐不匹配' });
-                }
+                if (amount >= 100) plan = 'flagship';
+                else if (amount >= 30) plan = 'sprint';
+                else plan = 'sprint';
 
-                // 创建并激活
                 const activationId = 'mbd_' + orderIdTrimmed;
                 const token = crypto.createHash('md5').update(activationId + plan + SECRET_KEY).digest('hex');
                 orders.set(activationId, {
                     orderId: activationId,
                     mbdOrderId: orderIdTrimmed,
                     plan,
-                    amount: PLANS[plan].price,
+                    amount,
                     status: 'activated',
-                    createdAt: Date.now(),
                     activatedAt: Date.now(),
                     token,
-                    source: 'mbd_order'
+                    ip: getClientIp(req),
+                    userId: user_id || null
                 });
 
                 console.log(`[面包多订单激活] ${orderIdTrimmed} - ${PLANS[plan].name} - ¥${amount}`);
@@ -280,11 +403,12 @@ async function handleApi(req, res, pathname) {
                     success: true,
                     plan,
                     token,
-                    orderId: activationId
+                    orderId: activationId,
+                    amount
                 });
             } catch (e) {
-                console.error('MBD order verify error:', e);
-                return sendJson(res, 500, { error: '订单验证服务暂时不可用，请稍后重试' });
+                console.error('[面包多验证失败]', e);
+                return sendJson(res, 200, { success: false, error: '验证服务暂时不可用，请稍后重试' });
             }
         }
 
@@ -296,7 +420,6 @@ async function handleApi(req, res, pathname) {
             if (!code) {
                 return sendJson(res, 400, { error: '请输入激活码' });
             }
-
             const codeTrimmed = code.trim().toUpperCase();
 
             // 查找匹配的订单（激活码 = orderId）
@@ -398,32 +521,35 @@ async function handleApi(req, res, pathname) {
 
             // 尝试直接作为订单ID查找未激活的订单（用户可能在管理员激活后使用）
             const pendingOrder = orders.get(codeTrimmed);
-            if (pendingOrder) {
-                if (pendingOrder.status === 'activated') {
-                    return sendJson(res, 200, {
-                        success: true,
-                        plan: pendingOrder.plan,
-                        token: pendingOrder.token,
-                        orderId: pendingOrder.orderId
-                    });
+            if (pendingOrder && pendingOrder.status === 'pending') {
+                pendingOrder.status = 'activated';
+                pendingOrder.activatedAt = Date.now();
+                if (!pendingOrder.token) {
+                    pendingOrder.token = crypto.createHash('md5').update(codeTrimmed + pendingOrder.plan + SECRET_KEY).digest('hex');
                 }
-                return sendJson(res, 400, { error: '此订单尚未激活，请完成支付后联系管理员' });
+                console.log(`[订单激活] ${codeTrimmed} - ${PLANS[pendingOrder.plan].name}`);
+                return sendJson(res, 200, {
+                    success: true,
+                    plan: pendingOrder.plan,
+                    token: pendingOrder.token,
+                    orderId: pendingOrder.orderId
+                });
             }
 
-            return sendJson(res, 400, { error: '无效的激活码，请检查后重试' });
+            return sendJson(res, 400, { error: '激活码无效，请检查后重试' });
         }
 
-        // POST /api/admin-activate - 管理员激活订单
-        if (pathname === '/api/admin-activate' && req.method === 'POST') {
+        // POST /api/activate - 管理员激活订单（需密钥）
+        if (pathname === '/api/activate' && req.method === 'POST') {
             const body = await parseBody(req);
-            const { orderId, adminKey } = body;
+            const { orderId, key } = body;
 
-            if (!orderId || !adminKey) {
-                return sendJson(res, 400, { error: '缺少必要参数' });
+            if (key !== ADMIN_KEY) {
+                return sendJson(res, 403, { error: '密钥错误' });
             }
 
-            if (adminKey !== ADMIN_KEY) {
-                return sendJson(res, 401, { error: '管理员密钥错误' });
+            if (!orderId) {
+                return sendJson(res, 400, { error: '缺少orderId' });
             }
 
             const order = orders.get(orderId);
@@ -432,145 +558,80 @@ async function handleApi(req, res, pathname) {
             }
 
             if (order.status === 'activated') {
-                return sendJson(res, 200, { success: true, message: '订单已激活', token: order.token });
+                return sendJson(res, 200, { success: true, plan: order.plan, token: order.token, orderId: order.orderId, alreadyActivated: true });
             }
 
-            // 生成激活token
-            const token = crypto.createHash('md5').update(orderId + order.plan + SECRET_KEY).digest('hex');
             order.status = 'activated';
             order.activatedAt = Date.now();
-            order.token = token;
+            order.token = crypto.createHash('md5').update(orderId + order.plan + SECRET_KEY).digest('hex');
 
-            console.log(`[订单激活] ${orderId} - ${order.plan} - ¥${order.amount}`);
-
-            return sendJson(res, 200, { success: true, token });
-        }
-
-        // GET /api/admin-orders - 获取订单列表（管理员）
-        if (pathname === '/api/admin-orders' && req.method === 'GET') {
-            const url = new URL(req.url, `http://localhost:${PORT}`);
-            const adminKey = url.searchParams.get('adminKey');
-
-            if (adminKey !== ADMIN_KEY) {
-                return sendJson(res, 401, { error: '管理员密钥错误' });
-            }
-
-            const orderList = Array.from(orders.values())
-                .sort((a, b) => {
-                    // 待激活的排前面，然后按创建时间倒序
-                    if (a.status === 'pending' && b.status !== 'pending') return -1;
-                    if (a.status !== 'pending' && b.status === 'pending') return 1;
-                    return b.createdAt - a.createdAt;
-                });
-
-            return sendJson(res, 200, { orders: orderList });
-        }
-
-        // POST /api/admin-delete-order - 删除订单（管理员）
-        if (pathname === '/api/admin-delete-order' && req.method === 'POST') {
-            const body = await parseBody(req);
-            const { orderId, adminKey } = body;
-
-            if (!orderId || !adminKey) {
-                return sendJson(res, 400, { error: '缺少必要参数' });
-            }
-
-            if (adminKey !== ADMIN_KEY) {
-                return sendJson(res, 401, { error: '管理员密钥错误' });
-            }
-
-            if (!orders.has(orderId)) {
-                return sendJson(res, 404, { error: '订单不存在' });
-            }
-
-            orders.delete(orderId); saveOrders();
-            console.log(`[订单删除] ${orderId}`);
-
-            return sendJson(res, 200, { success: true });
-        }
-
-        // POST /api/admin-generate-code - 管理员批量生成激活码
-        if (pathname === '/api/admin-generate-code' && req.method === 'POST') {
-            const body = await parseBody(req);
-            const { plan, count, adminKey } = body;
-
-            if (!plan || !adminKey || !PLANS[plan]) {
-                return sendJson(res, 400, { error: '缺少必要参数' });
-            }
-
-            if (adminKey !== ADMIN_KEY) {
-                return sendJson(res, 401, { error: '管理员密钥错误' });
-            }
-
-            const num = Math.min(parseInt(count) || 1, 50); // 最多一次生成50个
-            const codes = [];
-
-            for (let i = 0; i < num; i++) {
-                const prefix = PLANS[plan].uidPrefix.replace('CET4', '').replace('D', 'S'); // CET4D→S, CET4S→S, CET4F→F
-                const randomPart = crypto.randomBytes(4).toString('hex').toUpperCase().substring(0, 5);
-                const signature = crypto.createHmac('sha256', SECRET_KEY)
-                    .update('CET4' + prefix + '-' + randomPart)
-                    .digest('hex')
-                    .substring(0, 6)
-                    .toUpperCase();
-                const code = 'CET4' + prefix + '-' + randomPart + '-' + signature;
-                codes.push(code);
-            }
-
-            console.log(`[生成激活码] ${PLANS[plan].name} × ${num}`);
-
-            return sendJson(res, 200, { success: true, plan, codes });
-        }
-
-        // ===== 旧版PayJS API（保留但不再使用）=====
-
-        // POST /api/payjs-notify - PayJS支付回调
-        if (pathname === '/api/payjs-notify' && req.method === 'POST') {
-            const body = await parseBody(req);
-            console.log('[PayJS回调]', body);
-
-            // 验证签名
-            if (!verifySign(body)) {
-                console.error('[签名验证失败]');
-                return sendJson(res, 400, { return_code: 0, return_msg: '签名验证失败' });
-            }
-
-            const { out_trade_no, payjs_order_id } = body;
-
-            // 更新订单状态
-            const order = orders.get(out_trade_no);
-            if (order) {
-                order.paid = true;
-                order.paidAt = Date.now();
-                order.payjsOrderId = payjs_order_id;
-                console.log(`[订单支付成功] ${out_trade_no} - UID: ${order.uid} - ref: ${order.ref}`);
-            }
-
-            // 返回success给PayJS
-            return sendJson(res, 200, { return_code: 1, return_msg: 'OK' });
-        }
-
-        // GET /api/check-order-legacy - 查询订单状态（旧版）
-        if (pathname === '/api/check-order' && req.method === 'GET') {
-            const url = new URL(req.url, `http://localhost:${PORT}`);
-            const orderId = url.searchParams.get('order_id');
-
-            if (!orderId) {
-                return sendJson(res, 400, { error: '缺少order_id参数' });
-            }
-
-            const order = orders.get(orderId);
-            if (!order) {
-                // 可能是免费订单或测试订单，直接返回paid
-                return sendJson(res, 200, { paid: true });
-            }
+            console.log(`[管理员激活] ${orderId} - ${PLANS[order.plan].name}`);
 
             return sendJson(res, 200, {
-                paid: order.paid,
-                uid: order.uid,
+                success: true,
                 plan: order.plan,
-                bot_id: order.planConfig?.botId
+                token: order.token,
+                orderId: order.orderId
             });
+        }
+
+        // POST /api/create-order-admin - 管理员创建订单
+        if (pathname === '/api/create-order-admin' && req.method === 'POST') {
+            const body = await parseBody(req);
+            const { plan, key, customAmount } = body;
+
+            if (key !== ADMIN_KEY) {
+                return sendJson(res, 403, { error: '密钥错误' });
+            }
+
+            if (!plan || !PLANS[plan]) {
+                return sendJson(res, 400, { error: '无效的套餐' });
+            }
+
+            const planConfig = PLANS[plan];
+            const orderId = `${planConfig.uidPrefix}${Date.now()}${Math.random().toString(36).substr(2, 4).toUpperCase()}`;
+            const amount = customAmount || planConfig.price;
+
+            orders.set(orderId, {
+                orderId,
+                plan,
+                amount,
+                status: 'pending',
+                createdAt: Date.now(),
+                activatedAt: null,
+                token: null
+            });
+
+            return sendJson(res, 200, {
+                orderId,
+                plan,
+                amount,
+                status: 'pending'
+            });
+        }
+
+        // GET /api/verify-token - 验证token（用户打开页面时调用）
+        if (pathname === '/api/verify-token' && req.method === 'GET') {
+            const url = new URL(req.url, `http://localhost:${PORT}`);
+            const token = url.searchParams.get('token');
+
+            if (!token) {
+                return sendJson(res, 200, { valid: false, plan: 'free' });
+            }
+
+            // 查找此token对应的订单
+            const order = Array.from(orders.values()).find(o => o.token === token);
+            if (order && order.status === 'activated') {
+                return sendJson(res, 200, {
+                    valid: true,
+                    plan: order.plan,
+                    uid: order.uid || generateUid(order.plan),
+                    orderId: order.orderId,
+                    paid: true
+                });
+            }
+
+            return sendJson(res, 200, { valid: false, plan: 'free' });
         }
 
         // GET /api/plans - 获取套餐信息
@@ -585,6 +646,83 @@ async function handleApi(req, res, pathname) {
             });
         }
 
+        // GET /api/admin/orders - 管理员查看所有订单
+        if (pathname === '/api/admin/orders' && req.method === 'GET') {
+            const url = new URL(req.url, `http://localhost:${PORT}`);
+            const key = url.searchParams.get('key');
+
+            if (key !== ADMIN_KEY) {
+                return sendJson(res, 403, { error: '密钥错误' });
+            }
+
+            const orderList = Array.from(orders.values()).map(o => ({
+                orderId: o.orderId,
+                plan: o.plan,
+                amount: o.amount,
+                status: o.status,
+                createdAt: o.createdAt,
+                activatedAt: o.activatedAt,
+                ip: o.ip || ''
+            })).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+            return sendJson(res, 200, { orders: orderList });
+        }
+
+        // GET /api/admin/generate-codes - 管理员生成激活码
+        if (pathname === '/api/admin/generate-codes' && req.method === 'GET') {
+            const url = new URL(req.url, `http://localhost:${PORT}`);
+            const key = url.searchParams.get('key');
+            const plan = url.searchParams.get('plan') || 'sprint';
+            const count = parseInt(url.searchParams.get('count') || '1');
+
+            if (key !== ADMIN_KEY) {
+                return sendJson(res, 403, { error: '密钥错误' });
+            }
+
+            if (!PLANS[plan]) {
+                return sendJson(res, 400, { error: '无效的套餐' });
+            }
+
+            const codes = [];
+            const prefixMap = { sprint: 'CET4S', flagship: 'CET4F' };
+            const prefix = prefixMap[plan] || 'CET4S';
+
+            for (let i = 0; i < count; i++) {
+                const randomPart = Math.random().toString(36).substr(2, 5).toUpperCase();
+                const signature = crypto.createHmac('sha256', SECRET_KEY)
+                    .update(prefix + '-' + randomPart)
+                    .digest('hex')
+                    .substring(0, 6)
+                    .toUpperCase();
+                const code = `${prefix}-${randomPart}-${signature}`;
+                codes.push(code);
+            }
+
+            return sendJson(res, 200, { codes, plan });
+        }
+
+        // GET /api/paid-check - 检查是否已付款（简化版）
+        if (pathname === '/api/paid-check' && req.method === 'GET') {
+            const url = new URL(req.url, `http://localhost:${PORT}`);
+            const orderId = url.searchParams.get('order_id') || url.searchParams.get('orderId');
+
+            if (!orderId) {
+                return sendJson(res, 400, { error: '缺少order_id' });
+            }
+
+            const order = orders.get(orderId);
+            if (!order) {
+                // 可能是免费订单或测试订单，直接返回paid
+                return sendJson(res, 200, { paid: true });
+            }
+
+            return sendJson(res, 200, {
+                paid: order.paid,
+                uid: order.uid,
+                plan: order.plan,
+                bot_id: PLANS[order.plan]?.botId
+            });
+        }
 
         // ===== Coze Chat API 代理 =====
         if (pathname === '/api/chat/conversation' && req.method === 'POST') {
@@ -598,6 +736,27 @@ async function handleApi(req, res, pathname) {
         }
         if (pathname === '/api/chat/retrieve' && req.method === 'GET') {
             return handleChatRetrieve(req, res);
+        }
+        
+        // 修复问题1：新增API - 获取剩余对话次数
+        // 前端调用此API同步剩余次数，不再依赖localStorage
+        if (pathname === '/api/chat/remaining' && req.method === 'GET') {
+            const url = new URL(req.url, `http://localhost:${PORT}`);
+            const userId = url.searchParams.get('user_id');
+            
+            if (!userId) {
+                return sendJson(res, 400, { error: '缺少user_id' });
+            }
+            
+            // 从后端订单验证真实套餐（问题4修复）
+            const verifiedPlan = getVerifiedUserPlan(req, userId);
+            const remaining = verifiedPlan === 'free' ? getRemainingChats(userId) : -1; // -1表示无限
+            
+            return sendJson(res, 200, {
+                remaining,
+                plan: verifiedPlan,
+                limit: verifiedPlan === 'free' ? 10 : -1
+            });
         }
 
         // 404
@@ -732,6 +891,8 @@ server.listen(PORT, () => {
         console.log(`  - ${config.name}: ¥${config.price} (${config.uidPrefix})`);
     });
     console.log(`PayJS配置: ${PAYJS_MCHID ? '已配置' : '未配置 (使用模拟模式)'}`);
+    // 启动时清理过期限流记录
+    cleanupExpiredLimits();
 });
 
 // ===== Coze Chat API 代理 =====
@@ -757,24 +918,6 @@ async function handleCreateConversation(req, res) {
     }
 }
 
-// 每日聊天限流（内存存储，重启清零）
-const chatLimitMap = new Map();
-function checkChatLimitBackend(userId) {
-    const today = new Date().toISOString().slice(0, 10);
-    const key = userId + ':' + today;
-    const record = chatLimitMap.get(key) || { count: 0 };
-    record.count++;
-    chatLimitMap.set(key, record);
-    // 清理3天前的记录
-    if (Math.random() < 0.05) {
-        const threeDaysAgo = new Date(Date.now() - 3 * 86400000).toISOString().slice(0, 10);
-        for (const [k] of chatLimitMap) {
-            if (k.split(':')[1] < threeDaysAgo) chatLimitMap.delete(k);
-        }
-    }
-    return record.count;
-}
-
 // POST /api/chat/send - 发送消息（流式）
 async function handleChatSend(req, res) {
     try {
@@ -785,13 +928,16 @@ async function handleChatSend(req, res) {
             return sendJson(res, 400, { error: '参数缺失' });
         }
 
+        // 问题4修复：从后端订单验证真实套餐，不再信任前端传入的userPlan
+        const verifiedPlan = getVerifiedUserPlan(req, user_id);
+        
         // 后端聊天限流：免费用户10次/天，付费用户无限
-        const chatCount = checkChatLimitBackend(user_id);
-        // 通过custom_variables判断套餐
-        const userPlan = (body.custom_variables && body.custom_variables.user_plan) || 
-                         (parameters && parameters.user_plan) || 'free';
-        if (userPlan === 'free' && chatCount > 10) {
-            return sendJson(res, 429, { error: '今日免费对话次数已用完，升级套餐可无限对话' });
+        // 问题2修复：统一为 >=10 次拦截（即 >9 时拦截）
+        if (verifiedPlan === 'free') {
+            const chatCount = checkChatLimitBackend(user_id);
+            if (chatCount > 9) {
+                return sendJson(res, 429, { error: '今日免费对话次数已用完，升级套餐可无限对话' });
+            }
         }
 
         const payload = {
