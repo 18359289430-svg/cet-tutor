@@ -5544,7 +5544,7 @@
                         console.log('[Stream] First chunk received in', Date.now() - streamStartTime, 'ms');
                     }
                     var decodedChunk = decoder.decode(result.value, { stream: true });
-                    console.log('[DEBUG] Chunk received:', decodedChunk.substring(0, 200));
+                    console.log('[DEBUG] Chunk length:', decodedChunk.length, 'first 500:', decodedChunk.substring(0, 500));
                     buffer += decodedChunk;
 
                     // Parse SSE events
@@ -5562,6 +5562,7 @@
 
                         try {
                             var evt = JSON.parse(dataStr);
+                            console.log('[DEBUG] SSE event type:', evt.type, 'data.type:', evt.data && evt.data.type);
                             // Coze stream format: evt.type === 'conversation.message.delta' for text chunks
                             if (evt.type === 'conversation.message.delta' && evt.data && evt.data.content && evt.data.type === 'answer') {
                                 fullText += evt.data.content;
