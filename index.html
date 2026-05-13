@@ -5529,8 +5529,6 @@
                 var fullText = '';
                 chatState.currentStreamText = '';
 
-                console.log('[CET4-V2.1] New SSE parser active');
-                console.log('[DEBUG] Response status:', resp.status, 'headers:', Object.fromEntries(resp.headers.entries()));
                 var reader = resp.body.getReader();
                 var decoder = new TextDecoder();
                 var buffer = '';
@@ -5545,7 +5543,6 @@
                         console.log('[Stream] First chunk received in', Date.now() - streamStartTime, 'ms');
                     }
                     var decodedChunk = decoder.decode(result.value, { stream: true });
-                    console.log('[DEBUG] Chunk length:', decodedChunk.length, 'first 500:', decodedChunk.substring(0, 500));
                     buffer += decodedChunk;
 
                     // Parse SSE events
@@ -5563,7 +5560,6 @@
 
                         try {
                             var evt = JSON.parse(dataStr);
-                            console.log('[DEBUG] SSE event type:', evt.type, 'data.type:', evt.data && evt.data.type);
                             // Coze stream format: evt.type === 'conversation.message.delta' for text chunks
                             if (evt.type === 'answer' && evt.content) {
                                 fullText += evt.content;
@@ -5600,7 +5596,6 @@
                 }
 
                 // Stream done - finalize
-                console.log('[DEBUG] Stream done. fullText length:', fullText.length, 'content:', fullText.substring(0, 100));
                 if (fullText) {
                     // Update final text with time
                     if (bubbleEl && timeEl) {
