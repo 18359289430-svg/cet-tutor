@@ -618,7 +618,7 @@ function shouldCompress(req, contentLength) {
 function sendHtml(res, htmlContent, req) {
     const contentLength = Buffer.byteLength(htmlContent, 'utf-8');
     res.setHeader('X-Content-Type-Options', 'nosniff');
-    res.setHeader('Cache-Control', 'public, max-age=300'); // HTML短缓存5分钟
+    res.setHeader('Cache-Control', 'public, max-age=600'); // HTML短缓存5分钟
     
     if (shouldCompress(req, contentLength)) {
         res.setHeader('Content-Type', 'text/html; charset=utf-8');
@@ -669,7 +669,7 @@ const server = http.createServer((req, res) => {
     if (pathname === '/admin-activate-cet4') {
         const adminHtml = fs.readFileSync(path.join(__dirname, 'admin.html'), 'utf-8');
         const adminContentLength = Buffer.byteLength(adminHtml, 'utf-8');
-        res.setHeader('Cache-Control', 'public, max-age=300');
+        res.setHeader('Cache-Control', 'public, max-age=600');
         if (shouldCompress(req, adminContentLength)) {
             res.setHeader('Content-Type', 'text/html; charset=utf-8');
             res.setHeader('Content-Encoding', 'gzip');
