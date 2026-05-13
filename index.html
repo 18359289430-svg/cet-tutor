@@ -4551,12 +4551,7 @@
             selectedPersonality: null
         }
         
-        // 页面加载时恢复对话列表状态
-        function initPageState() {
-            // 默认显示对话列表
-            showChatList();
-        }
-        setTimeout(initPageState, 100);;
+        // 对话列表状态在用户进入diagnosis tab时初始化
 
         document.addEventListener('DOMContentLoaded', function() {
             // Fix mobile 100vh issue - set real viewport height
@@ -5510,11 +5505,7 @@
             }
         }
 
-        // 页面加载时恢复对话列表状态
-        function restoreChatState() {
-            // 默认显示对话列表
-            showChatList();
-        }
+        // 对话列表在用户进入diagnosis tab时由openChat/showChatList初始化
 
         // ===== Custom Chat UI Logic =====
         var chatState = {
