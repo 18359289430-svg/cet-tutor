@@ -169,9 +169,9 @@ function getClientIp(req) {
 }
 
 // 根据IP从订单数据验证用户套餐（后端唯一数据源）
-function getVerifiedUserPlan(req, userId) {
+function getVerifiedUserPlan(req, userId, requestBody) {
     // 优先用 token 验证（前端激活后存储的 planToken + planOrderId）
-    const body = req.body || {};
+    const body = requestBody || {};
     const planToken = body.plan_token || '';
     const planOrderId = body.plan_order_id || '';
     
@@ -737,6 +737,7 @@ async function handleApi(req, res, pathname) {
         // 修复问题1：新增API - 获取剩余对话次数
         // 改为POST，前端带plan_token验证付费身份
         if (pathname === '/api/chat/remaining' && req.method === 'POST') {
+            const body = await parseBody(req);
             const userId = body.user_id;
             
             if (!userId) {
@@ -744,7 +745,7 @@ async function handleApi(req, res, pathname) {
             }
             
             // 从后端订单验证真实套餐（用token验证，不信任前端）
-            const verifiedPlan = getVerifiedUserPlan(req, userId);
+            const verifiedPlan = getVerifiedUserPlan(req, userId, body);
             const remaining = verifiedPlan === 'free' ? getRemainingChats(userId) : -1; // -1表示无限
             
             return sendJson(res, 200, {
@@ -924,7 +925,7 @@ async function handleChatSend(req, res) {
         }
 
         // 问题4修复：从后端订单验证真实套餐，不再信任前端传入的userPlan
-        const verifiedPlan = getVerifiedUserPlan(req, user_id);
+        const verifiedPlan = getVerifiedUserPlan(req, user_id, body);
         
         // 后端聊天限流：免费用户10次/天，付费用户无限
         // 问题2修复：统一为 >=10 次拦截（即 >9 时拦截）
