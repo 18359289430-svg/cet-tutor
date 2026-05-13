@@ -2612,6 +2612,313 @@
             cursor: pointer;
         }
 
+        /* ====== 作文批改界面 ====== */
+        .essay-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1100;
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+        }
+        .essay-overlay.show { display: flex; }
+        .essay-sheet {
+            background: white;
+            border-radius: 24px 24px 0 0;
+            width: 100%;
+            max-width: 430px;
+            max-height: 92vh;
+            overflow-y: auto;
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .essay-overlay.show .essay-sheet { transform: translateY(0); }
+        .essay-sheet-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #F0F0F0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .essay-sheet-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a1a2e;
+        }
+        .essay-close-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #F1F5F9;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #64748B;
+        }
+        .essay-close-btn:active { background: #E2E8F0; }
+        .essay-close-btn svg { width: 18px; height: 18px; }
+        .essay-sheet-body { padding: 20px; }
+        
+        /* 题目选择区 */
+        .essay-topic-section { margin-bottom: 16px; }
+        .essay-topic-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 10px;
+        }
+        .essay-topic-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        .essay-topic-btn {
+            padding: 12px;
+            border-radius: 12px;
+            border: 1.5px solid #E2E8F0;
+            background: white;
+            font-size: 13px;
+            color: #475569;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
+        }
+        .essay-topic-btn:active { transform: scale(0.98); }
+        .essay-topic-btn.selected {
+            border-color: #6C5CE7;
+            background: #F8F7FF;
+            color: #6C5CE7;
+            font-weight: 600;
+        }
+        
+        /* 作文输入区 */
+        .essay-input-section { margin-bottom: 16px; }
+        .essay-textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 16px;
+            border: 1.5px solid #E2E8F0;
+            border-radius: 16px;
+            font-size: 14px;
+            line-height: 1.7;
+            resize: vertical;
+            font-family: inherit;
+            color: #1a1a2e;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .essay-textarea:focus { border-color: #6C5CE7; }
+        .essay-textarea::placeholder { color: #94a3b8; }
+        .essay-word-count {
+            text-align: right;
+            font-size: 12px;
+            color: #94a3b8;
+            margin-top: 8px;
+        }
+        
+        /* 提交按钮 */
+        .essay-submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: #6C5CE7;
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .essay-submit-btn:active { transform: scale(0.98); background: #5849C4; }
+        .essay-submit-btn:disabled { background: #A29BFE; cursor: not-allowed; }
+        
+        /* 加载状态 */
+        .essay-loading {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        .essay-loading-spinner {
+            width: 48px;
+            height: 48px;
+            border: 3px solid #F0F0F0;
+            border-top-color: #6C5CE7;
+            border-radius: 50%;
+            margin: 0 auto 16px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .essay-loading-text { font-size: 15px; color: #64748B; }
+        
+        /* 批改结果区 */
+        .essay-result-section { padding: 0 0 32px; }
+        .essay-result-header {
+            text-align: center;
+            padding: 24px 20px;
+            background: linear-gradient(135deg, #6C5CE7 0%, #A29BFE 100%);
+            border-radius: 20px 20px 0 0;
+            color: white;
+        }
+        .essay-score-ring {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 12px;
+            position: relative;
+        }
+        .essay-score-ring svg {
+            transform: rotate(-90deg);
+        }
+        .essay-score-ring circle {
+            fill: none;
+            stroke-width: 8;
+        }
+        .essay-score-ring .bg { stroke: rgba(255,255,255,0.3); }
+        .essay-score-ring .progress { stroke: white; stroke-linecap: round; transition: stroke-dashoffset 1s ease; }
+        .essay-score-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 28px;
+            font-weight: 800;
+        }
+        .essay-result-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .essay-result-sub {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+        .essay-result-body { padding: 20px; }
+        
+        /* 逐句批改卡片 */
+        .essay-sentence-card {
+            background: white;
+            border: 1px solid #F0F0F0;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        .essay-sentence-original {
+            font-size: 14px;
+            color: #E17055;
+            line-height: 1.7;
+            margin-bottom: 10px;
+            padding-left: 12px;
+            border-left: 3px solid #E17055;
+        }
+        .essay-sentence-revised {
+            font-size: 14px;
+            color: #00B894;
+            line-height: 1.7;
+            margin-bottom: 10px;
+            padding-left: 12px;
+            border-left: 3px solid #00B894;
+        }
+        .essay-sentence-reason {
+            font-size: 13px;
+            color: #64748B;
+            background: #F8F9FA;
+            border-radius: 8px;
+            padding: 10px 12px;
+        }
+        
+        /* 改写范文 */
+        .essay-rewrite-section {
+            background: #F8F7FF;
+            border-radius: 16px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+        .essay-rewrite-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #6C5CE7;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .essay-rewrite-title svg { width: 16px; height: 16px; }
+        .essay-rewrite-text {
+            font-size: 14px;
+            color: #1a1a2e;
+            line-height: 1.8;
+            white-space: pre-wrap;
+        }
+        
+        /* 核心建议 */
+        .essay-advice-section {
+            margin-top: 16px;
+        }
+        .essay-advice-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .essay-advice-title svg { stroke: #6C5CE7; width: 18px; height: 18px; }
+        .essay-advice-list { list-style: none; padding: 0; margin: 0; }
+        .essay-advice-item {
+            font-size: 14px;
+            color: #475569;
+            padding: 10px 0;
+            border-bottom: 1px solid #F0F0F0;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        .essay-advice-item:last-child { border-bottom: none; }
+        .essay-advice-num {
+            width: 20px;
+            height: 20px;
+            background: #6C5CE7;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        
+        /* 结果页底部按钮 */
+        .essay-result-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .essay-result-actions button {
+            flex: 1;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+        .essay-result-actions .btn-retry {
+            background: #F1F5F9;
+            color: #475569;
+        }
+        .essay-result-actions .btn-save {
+            background: #6C5CE7;
+            color: white;
+        }
+        .essay-result-actions button:active { transform: scale(0.98); }
+
     </style>
 </head>
 <body>
@@ -2640,7 +2947,7 @@
                     </div>
                         <div class="home-hero-top">
                             <div class="home-greeting" id="greeting-text">早上好</div>
-                            <div class="home-streak-pill" id="home-streak" onclick="handleDailyTask()">
+                            <div class="home-streak-pill" id="home-streak" onclick="openQuiz()">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c.5 4-2 7-4 9.5C6 14 5.5 16 6 18c.7 3 3.5 4 6 4s5.3-1 6-4c.5-2 0-4-2-6.5C14 9 11.5 6 12 2z"/></svg>
                                 <span id="streak-num">0</span>天
                             </div>
@@ -2652,7 +2959,7 @@
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
                                 <span id="home-cta-text">开始AI诊断</span>
                             </button>
-                            <button class="home-cta-secondary" onclick="handleDailyTask()">
+                            <button class="home-cta-secondary" onclick="openQuiz()">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
                                 一练
                             </button>
@@ -2716,7 +3023,7 @@
                                 <div class="ai-cap-sub">针对性冲刺方案</div>
                             </div>
                         </div>
-                        <div class="ai-cap-item" onclick="openChat('companion');setTimeout(()=>sendSuggestion('帮我批改作文'),300)">
+                        <div class="ai-cap-item" onclick="openEssayOverlay()">
                             <div class="ai-cap-icon orange">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                             </div>
@@ -2725,13 +3032,13 @@
                                 <div class="ai-cap-sub">逐句精准优化</div>
                             </div>
                         </div>
-                        <div class="ai-cap-item" onclick="openChat('companion');setTimeout(()=>sendSuggestion('今天练什么'),300)">
+                        <div class="ai-cap-item" onclick="openQuiz()">
                             <div class="ai-cap-icon pink">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                             </div>
                             <div>
-                                <div class="ai-cap-text">每日任务推送</div>
-                                <div class="ai-cap-sub">科学安排练习</div>
+                                <div class="ai-cap-text">每日一练</div>
+                                <div class="ai-cap-sub">精选选择题练习</div>
                             </div>
                         </div>
                     </div>
@@ -2847,7 +3154,7 @@
                         <svg class="chat-suggest-arrow" viewBox="0 0 24 24" fill="none" stroke="#C0C0C8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
                     </div>
 
-                    <div class="study-plan-card" onclick="openChat('companion');setTimeout(()=>sendSuggestion('帮我批改作文'),300)">
+                    <div class="study-plan-card" onclick="openEssayOverlay()">
                         <div class="study-plan-left">
                             <div class="study-plan-icon pink">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
@@ -3460,7 +3767,7 @@
             
             // 陪练模式：显示通用快捷建议
             var chipsHtml = '<div class="custom-chip-pill" onclick="sendSuggestion(this.textContent || this.innerText)">今天练什么</div>' +
-                '<div class="custom-chip-pill" onclick="sendSuggestion(this.textContent || this.innerText)">帮我批改作文</div>' +
+                '<div class="custom-chip-pill" onclick="openEssayOverlay()">帮我批改作文 ✍️</div>' +
                 '<div class="custom-chip-pill" onclick="sendSuggestion(this.textContent || this.innerText)">制定冲刺计划</div>';
             
             // Flagship专属按钮
@@ -4003,6 +4310,11 @@
                     if (planMatch) parsePlanResult(planMatch[1]);
                     var taskMatch = fullText.match(/\[TASK:(.+?)\]/);
                     if (taskMatch) parseTaskDone(taskMatch[1]);
+                    // 检查作文批改结果
+                    if (typeof essayState !== 'undefined' && essayState.pendingResponse) {
+                        essayState.pendingResponse = false;
+                        checkAndParseEssayResponse(fullText);
+                    }
                     onBotReply();
                 } else {
                     // Fallback: stream produced nothing, try polling for the message
@@ -4044,6 +4356,11 @@
                         if (planMatch2) parsePlanResult(planMatch2[1]);
                         var taskMatch2 = fullText.match(/\[TASK:(.+?)\]/);
                         if (taskMatch2) parseTaskDone(taskMatch2[1]);
+                        // 检查作文批改结果（fallback分支）
+                        if (typeof essayState !== 'undefined' && essayState.pendingResponse) {
+                            essayState.pendingResponse = false;
+                            checkAndParseEssayResponse(fullText);
+                        }
                         onBotReply();
                     } else {
                         removeTypingIndicator();
@@ -4831,6 +5148,438 @@ function handleDailyTask() {
     setTimeout(function() { sendSuggestion(msg); }, 300);
 }
 
+// ====== 每日一练 Quiz System ======
+var quizState = {
+    isActive: false,
+    currentQuestion: null,
+    currentIndex: 0,
+    totalQuestions: 5,
+    correctCount: 0,
+    wrongCount: 0,
+    typeStats: { '词汇': 0, '语法': 0, '阅读': 0, '听力': 0 },
+    weakTypes: [],
+    startTime: null,
+    answeredTypes: { '词汇': 0, '语法': 0, '阅读': 0, '听力': 0 },
+    wrongTypes: { '词汇': 0, '语法': 0, '阅读': 0, '听力': 0 }
+};
+
+// 解析[QUIZ:xxx]格式的题目
+function parseQuizQuestion(quizStr) {
+    try {
+        var parts = quizStr.split('|');
+        var q = {};
+        parts.forEach(function(p) {
+            var kv = p.split('=');
+            if (kv.length === 2) {
+                q[kv[0].trim()] = kv[1].trim();
+            }
+        });
+        return q;
+    } catch(e) {
+        console.error('parseQuizQuestion error', e);
+        return null;
+    }
+}
+
+// 打开每日一练
+function openQuiz() {
+    quizState.isActive = true;
+    quizState.currentIndex = 0;
+    quizState.correctCount = 0;
+    quizState.wrongCount = 0;
+    quizState.typeStats = { '词汇': 0, '语法': 0, '阅读': 0, '听力': 0 };
+    quizState.weakTypes = [];
+    quizState.answeredTypes = { '词汇': 0, '语法': 0, '阅读': 0, '听力': 0 };
+    quizState.wrongTypes = { '词汇': 0, '语法': 0, '阅读': 0, '听力': 0 };
+    quizState.startTime = Date.now();
+    
+    var overlay = document.getElementById('quiz-overlay');
+    var body = document.getElementById('quiz-body');
+    var title = document.getElementById('quiz-title');
+    var subtitle = document.getElementById('quiz-subtitle');
+    var progress = document.getElementById('quiz-progress-fill');
+    var nextBtn = document.getElementById('quiz-next-btn');
+    
+    title.textContent = '每日一练';
+    subtitle.textContent = '正在出题...';
+    progress.style.width = '0%';
+    nextBtn.classList.remove('show', 'finish');
+    
+    // 显示loading状态
+    body.innerHTML = '<div class="quiz-loading show"><div class="quiz-loading-spinner"></div><div class="quiz-loading-text">正在生成题目...</div></div>';
+    
+    overlay.classList.add('show');
+    
+    // 请求第一题
+    requestQuizQuestion();
+}
+
+// 请求题目
+async function requestQuizQuestion() {
+    var user = state.userData || {};
+    var plan = user.plan || 'free';
+    var types = ['词汇', '语法', '阅读', '听力'];
+    var randomType = types[Math.floor(Math.random() * types.length)];
+    
+    // 确保每种题型都有机会被抽到
+    var unansweredTypes = types.filter(function(t) { return quizState.answeredTypes[t] < 2; });
+    if (unansweredTypes.length > 0) {
+        randomType = unansweredTypes[Math.floor(Math.random() * unansweredTypes.length)];
+    }
+    
+    var prompt = '请出一道四级' + randomType + '选择题。请严格按照以下格式返回（不要有任何其他内容）：\n[QUIZ:type=' + randomType + '|question=题目内容|optionA=选项A|optionB=选项B|optionC=选项C|optionD=选项D|answer=A|explanation=详细解析]';
+    
+    // 切换到陪练Bot
+    var botMap = { 'diagnosis': '7636289658620215331', 'companion': '7637702903679631395' };
+    var currentBot = botMap[chatState.botId];
+    if (currentBot !== 'companion') {
+        // 保存当前会话
+        if (chatState.conversationId && chatState.botId === botMap['companion']) {
+            localStorage.setItem('cet_companion_conv', chatState.conversationId);
+        }
+        // 切换到陪练
+        chatState.botId = botMap['companion'];
+        chatState.conversationId = null;
+        chatState.chatId = null;
+    }
+    
+    // 确保有会话
+    if (!chatState.conversationId) {
+        try {
+            var createResp = await fetch('/api/chat/conversation', { method: 'POST' });
+            var createData = await createResp.json();
+            if (createData.data && createData.data.id) {
+                chatState.conversationId = createData.data.id;
+                localStorage.setItem('cet_companion_conv', chatState.conversationId);
+            }
+        } catch(e) {
+            console.error('创建会话失败', e);
+        }
+    }
+    
+    // 发送请求
+    try {
+        var resp = await fetch('/api/chat/stream', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                conversation_id: chatState.conversationId,
+                bot_id: chatState.botId,
+                user_id: (state.userData && state.userData.uid) || 'user_' + Date.now(),
+                query: prompt,
+                chat_history: []
+            })
+        });
+        
+        // 读取流式响应
+        var reader = resp.body.getReader();
+        var decoder = new TextDecoder();
+        var fullText = '';
+        
+        while (true) {
+            var result = await reader.read();
+            if (result.done) break;
+            
+            var chunk = decoder.decode(result.value, { stream: true });
+            var lines = chunk.split('\n');
+            
+            for (var i = 0; i < lines.length; i++) {
+                var line = lines[i].trim();
+                if (!line || line.startsWith(':')) continue;
+                if (line.startsWith('event:')) continue;
+                if (!line.startsWith('data:')) continue;
+                
+                var dataStr = line.substring(5).trim();
+                if (dataStr === '[DONE]') continue;
+                
+                try {
+                    var evt = JSON.parse(dataStr);
+                    if (evt.type === 'conversation.message.delta' && evt.data && evt.data.content && evt.data.type === 'answer') {
+                        fullText += evt.data.content;
+                    }
+                    if (evt.type === 'conversation.chat.created' || evt.type === 'conversation.chat.in_progress') {
+                        if (evt.data && evt.data.conversation_id) {
+                            chatState.conversationId = evt.data.conversation_id;
+                        }
+                    }
+                } catch(e) {}
+            }
+        }
+        
+        // 解析题目
+        var quizMatch = fullText.match(/\[QUIZ:(.+?)\]/);
+        if (quizMatch) {
+            var question = parseQuizQuestion(quizMatch[1]);
+            if (question) {
+                quizState.currentQuestion = question;
+                quizState.answeredTypes[question.type] = (quizState.answeredTypes[question.type] || 0) + 1;
+                renderQuizQuestion(question);
+                return;
+            }
+        }
+        
+        // 如果没解析到题目，尝试直接渲染原始文本
+        if (fullText) {
+            var cleanText = fullText.replace(/\[QUIZ:(.+?)\]/g, '').trim();
+            if (cleanText) {
+                showQuizError('题目生成失败，请重试');
+                return;
+            }
+        }
+        
+        showQuizError('获取题目失败，请重试');
+        
+    } catch(e) {
+        console.error('请求题目失败', e);
+        showQuizError('网络错误，请重试');
+    }
+}
+
+// 渲染题目
+function renderQuizQuestion(question) {
+    var body = document.getElementById('quiz-body');
+    var subtitle = document.getElementById('quiz-subtitle');
+    var progress = document.getElementById('quiz-progress-fill');
+    var nextBtn = document.getElementById('quiz-next-btn');
+    
+    var typeLabels = { '词汇': '💬 词汇', '语法': '📝 语法', '阅读': '📖 阅读', '听力': '🎧 听力' };
+    subtitle.textContent = '第 ' + (quizState.currentIndex + 1) + ' / ' + quizState.totalQuestions + ' 题';
+    progress.style.width = ((quizState.currentIndex / quizState.totalQuestions) * 100) + '%';
+    nextBtn.classList.remove('show', 'finish');
+    
+    var html = '<div class="quiz-type-badge">' + typeLabels[question.type] + '选择题</div>';
+    html += '<div class="quiz-question">' + question.question + '</div>';
+    html += '<div class="quiz-options">';
+    
+    var options = ['A', 'B', 'C', 'D'];
+    var optionKeys = ['optionA', 'optionB', 'optionC', 'optionD'];
+    
+    options.forEach(function(opt, idx) {
+        html += '<div class="quiz-option" onclick="selectQuizOption(this, \'' + opt + '\')" data-option="' + opt + '">';
+        html += '<div class="quiz-option-letter">' + opt + '</div>';
+        html += '<div class="quiz-option-text">' + question[optionKeys[idx]] + '</div>';
+        html += '<div class="quiz-option-icon">';
+        if (opt === question.answer) {
+            html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>';
+        } else {
+            html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+        }
+        html += '</div></div>';
+    });
+    
+    html += '</div>';
+    html += '<div class="quiz-feedback" id="quiz-feedback">';
+    html += '<div class="quiz-feedback-title" id="quiz-feedback-title"></div>';
+    html += '<div class="quiz-explanation" id="quiz-explanation"></div>';
+    html += '</div>';
+    
+    body.innerHTML = html;
+}
+
+// 选择答案
+function selectQuizOption(el, option) {
+    if (el.classList.contains('disabled')) return;
+    
+    var question = quizState.currentQuestion;
+    var isCorrect = option === question.answer;
+    
+    // 禁用所有选项
+    var options = document.querySelectorAll('.quiz-option');
+    options.forEach(function(opt) {
+        opt.classList.add('disabled');
+    });
+    
+    // 标记选择
+    el.classList.add(isCorrect ? 'correct' : 'wrong');
+    
+    // 显示正确答案
+    if (!isCorrect) {
+        options.forEach(function(opt) {
+            if (opt.dataset.option === question.answer) {
+                opt.classList.add('correct');
+            }
+        });
+    }
+    
+    // 更新统计
+    if (isCorrect) {
+        quizState.correctCount++;
+    } else {
+        quizState.wrongCount++;
+        quizState.wrongTypes[question.type] = (quizState.wrongTypes[question.type] || 0) + 1;
+    }
+    
+    // 显示反馈
+    var feedback = document.getElementById('quiz-feedback');
+    var feedbackTitle = document.getElementById('quiz-feedback-title');
+    var explanation = document.getElementById('quiz-explanation');
+    
+    feedback.classList.add('show', isCorrect ? 'correct' : 'wrong');
+    feedbackTitle.innerHTML = isCorrect 
+        ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> 回答正确！'
+        : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> 回答错误';
+    explanation.textContent = question.explanation;
+    
+    // 显示下一题按钮
+    var nextBtn = document.getElementById('quiz-next-btn');
+    if (quizState.currentIndex >= quizState.totalQuestions - 1) {
+        nextBtn.textContent = '查看结果';
+        nextBtn.classList.add('show', 'finish');
+    } else {
+        nextBtn.textContent = '下一题';
+        nextBtn.classList.add('show');
+    }
+}
+
+// 下一题
+function quizNextQuestion() {
+    quizState.currentIndex++;
+    
+    if (quizState.currentIndex >= quizState.totalQuestions) {
+        // 显示统计页
+        showQuizStats();
+    } else {
+        // 请求下一题
+        var body = document.getElementById('quiz-body');
+        var subtitle = document.getElementById('quiz-subtitle');
+        var nextBtn = document.getElementById('quiz-next-btn');
+        
+        subtitle.textContent = '正在加载...';
+        nextBtn.classList.remove('show', 'finish');
+        
+        body.innerHTML = '<div class="quiz-loading show"><div class="quiz-loading-spinner"></div><div class="quiz-loading-text">正在生成下一题...</div></div>';
+        
+        requestQuizQuestion();
+    }
+}
+
+// 显示统计
+function showQuizStats() {
+    var body = document.getElementById('quiz-body');
+    var subtitle = document.getElementById('quiz-subtitle');
+    var title = document.getElementById('quiz-title');
+    var progress = document.getElementById('quiz-progress-fill');
+    var nextBtn = document.getElementById('quiz-next-btn');
+    
+    title.textContent = '练习完成';
+    subtitle.textContent = '';
+    progress.style.width = '100%';
+    nextBtn.classList.remove('show', 'finish');
+    
+    var rate = Math.round((quizState.correctCount / quizState.totalQuestions) * 100);
+    var duration = Math.round((Date.now() - quizState.startTime) / 1000);
+    var minutes = Math.floor(duration / 60);
+    var seconds = duration % 60;
+    var timeStr = minutes > 0 ? minutes + '分' + seconds + '秒' : seconds + '秒';
+    
+    // 找出薄弱项
+    var weakTypes = [];
+    for (var type in quizState.wrongTypes) {
+        if (quizState.wrongTypes[type] > 0) {
+            weakTypes.push(type);
+        }
+    }
+    
+    var weakHtml = '';
+    if (weakTypes.length > 0) {
+        weakHtml = '<div class="quiz-stats-weak"><div class="quiz-stats-weak-title">💪 薄弱项</div><div class="quiz-stats-weak-text">' + weakTypes.join('、') + '需要加强练习</div></div>';
+    }
+    
+    var statsTitles = {
+        100: '太棒了！',
+        80: '很不错！',
+        60: '继续加油！',
+        40: '还需努力',
+        0: '多加练习'
+    };
+    
+    var titleText = '完成了！';
+    for (var t in statsTitles) {
+        if (rate >= parseInt(t)) {
+            titleText = statsTitles[t];
+            break;
+        }
+    }
+    
+    var html = '<div class="quiz-stats show">';
+    html += '<div class="quiz-stats-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>';
+    html += '<div class="quiz-stats-title">' + titleText + '</div>';
+    html += '<div class="quiz-stats-rate">' + rate + '<span>%</span></div>';
+    html += '<div class="quiz-stats-grid">';
+    html += '<div class="quiz-stats-item"><div class="quiz-stats-item-value">' + quizState.correctCount + '</div><div class="quiz-stats-item-label">正确</div></div>';
+    html += '<div class="quiz-stats-item"><div class="quiz-stats-item-value">' + quizState.wrongCount + '</div><div class="quiz-stats-item-label">错误</div></div>';
+    html += '<div class="quiz-stats-item"><div class="quiz-stats-item-value">' + timeStr + '</div><div class="quiz-stats-item-label">用时</div></div>';
+    html += '</div>';
+    html += weakHtml;
+    html += '<button class="quiz-stats-btn primary" onclick="restartQuiz()">再练一组</button>';
+    html += '<button class="quiz-stats-btn secondary" onclick="closeQuiz()">返回</button>';
+    html += '</div>';
+    
+    body.innerHTML = html;
+    
+    // 更新打卡
+    var daily = getDailyTaskInfo();
+    if (!daily.completed.includes('quiz')) {
+        daily.completed.push('quiz');
+        saveDailyTaskData(daily);
+        updateDailyTask();
+        updateHomeStatus();
+    }
+}
+
+// 重新开始
+function restartQuiz() {
+    quizState.currentIndex = 0;
+    quizState.correctCount = 0;
+    quizState.wrongCount = 0;
+    quizState.answeredTypes = { '词汇': 0, '语法': 0, '阅读': 0, '听力': 0 };
+    quizState.wrongTypes = { '词汇': 0, '语法': 0, '阅读': 0, '听力': 0 };
+    quizState.startTime = Date.now();
+    
+    var body = document.getElementById('quiz-body');
+    var subtitle = document.getElementById('quiz-subtitle');
+    var progress = document.getElementById('quiz-progress-fill');
+    
+    subtitle.textContent = '正在出题...';
+    progress.style.width = '0%';
+    
+    body.innerHTML = '<div class="quiz-loading show"><div class="quiz-loading-spinner"></div><div class="quiz-loading-text">正在生成题目...</div></div>';
+    
+    requestQuizQuestion();
+}
+
+// 关闭Quiz
+function closeQuiz() {
+    var overlay = document.getElementById('quiz-overlay');
+    overlay.classList.remove('show');
+    quizState.isActive = false;
+}
+
+// 显示错误
+function showQuizError(msg) {
+    var body = document.getElementById('quiz-body');
+    var subtitle = document.getElementById('quiz-subtitle');
+    subtitle.textContent = '';
+    
+    body.innerHTML = '<div class="quiz-stats show"><div class="quiz-stats-title" style="color:#E17055">' + msg + '</div><button class="quiz-stats-btn primary" onclick="restartQuiz()">重试</button><button class="quiz-stats-btn secondary" onclick="closeQuiz()">返回</button></div>';
+}
+
+// 处理Bot返回的QUIZ标签
+function handleBotQuizResponse(fullText) {
+    var quizMatch = fullText.match(/\[QUIZ:(.+?)\]/);
+    if (quizMatch) {
+        var question = parseQuizQuestion(quizMatch[1]);
+        if (question) {
+            quizState.isActive = true;
+            quizState.currentQuestion = question;
+            quizState.answeredTypes[question.type] = (quizState.answeredTypes[question.type] || 0) + 1;
+            renderQuizQuestion(question);
+            return true;
+        }
+    }
+    return false;
+}
+
 // === Chat limit system (后端为准，前端同步) ===
 // 修复问题1：前端不再自己计数，而是调用后端API获取剩余次数
 
@@ -5516,6 +6265,353 @@ function drawReportShareImage() {
             </div>
             <div class="report-share-hint">长按保存图片到相册</div>
             <button class="report-share-close" onclick="closeReportShare()">关闭</button>
+        </div>
+    </div>
+
+    <!-- 每日一练 Quiz Overlay -->
+    <div class="quiz-overlay" id="quiz-overlay">
+        <div class="quiz-header">
+            <button class="quiz-close-btn" onclick="closeQuiz()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            </button>
+            <div class="quiz-header-center">
+                <div class="quiz-title" id="quiz-title">每日一练</div>
+                <div class="quiz-subtitle" id="quiz-subtitle">正在出题...</div>
+            </div>
+            <div style="width:36px"></div>
+        </div>
+        <div class="quiz-progress-bar">
+            <div class="quiz-progress-fill" id="quiz-progress-fill" style="width:0%"></div>
+        </div>
+        <div class="quiz-body" id="quiz-body">
+            <!-- Quiz content loaded dynamically -->
+        </div>
+        <div class="quiz-footer">
+            <button class="quiz-next-btn" id="quiz-next-btn" onclick="quizNextQuestion()">下一题</button>
+        </div>
+    </div>
+
+    <script>
+    // ===== 作文批改系统 =====
+    var essayState = {
+        selectedTopic: '',
+        isSubmitting: false,
+        lastResult: null
+    };
+
+    function openEssayOverlay() {
+        essayState.selectedTopic = '';
+        essayState.isSubmitting = false;
+        var textarea = document.getElementById('essay-textarea');
+        if (textarea) textarea.value = '';
+        var wordNum = document.getElementById('essay-word-num');
+        if (wordNum) wordNum.textContent = '0';
+        var topicBtns = document.querySelectorAll('.essay-topic-btn');
+        topicBtns.forEach(function(btn) { btn.classList.remove('selected'); });
+        var inputBody = document.getElementById('essay-input-body');
+        var resultSection = document.getElementById('essay-result-section');
+        if (inputBody) inputBody.style.display = '';
+        if (resultSection) resultSection.style.display = 'none';
+        document.getElementById('essay-overlay').classList.add('show');
+    }
+
+    function closeEssayOverlay() {
+        document.getElementById('essay-overlay').classList.remove('show');
+    }
+
+    function selectEssayTopic(btn, topic) {
+        var topicBtns = document.querySelectorAll('.essay-topic-btn');
+        topicBtns.forEach(function(b) { b.classList.remove('selected'); });
+        if (essayState.selectedTopic === topic) {
+            essayState.selectedTopic = '';
+        } else {
+            btn.classList.add('selected');
+            essayState.selectedTopic = topic;
+        }
+    }
+
+    function updateEssayWordCount() {
+        var textarea = document.getElementById('essay-textarea');
+        var wordNum = document.getElementById('essay-word-num');
+        if (textarea && wordNum) {
+            var text = textarea.value.trim();
+            var words = text ? text.split(/\s+/).length : 0;
+            wordNum.textContent = words;
+        }
+    }
+
+    async function submitEssay() {
+        var textarea = document.getElementById('essay-textarea');
+        var essayText = textarea.value.trim();
+        
+        if (!essayText || essayText.length < 20) {
+            showToast('请输入至少20个词的作文内容');
+            return;
+        }
+        
+        if (essayState.isSubmitting) return;
+        essayState.isSubmitting = true;
+        
+        var inputBody = document.getElementById('essay-input-body');
+        var resultSection = document.getElementById('essay-result-section');
+        if (inputBody) inputBody.style.display = 'none';
+        if (resultSection) {
+            resultSection.style.display = '';
+            resultSection.innerHTML = '<div class="essay-loading"><div class="essay-loading-spinner"></div><div class="essay-loading-text">AI正在批改中，请稍候...</div></div>';
+        }
+        
+        var userId = (state.userData && state.userData.uid) || 'user_' + Date.now();
+        var limitResult = await checkChatLimitAsync(userId);
+        if (limitResult.limited) {
+            showToast(limitResult.message);
+            closeEssayOverlay();
+            essayState.isSubmitting = false;
+            return;
+        }
+        
+        var topicPrefix = essayState.selectedTopic ? '【题目类型】' + essayState.selectedTopic + '\n' : '';
+        var message = topicPrefix + '【我的作文】\n' + essayText + '\n\n请按以下格式批改：\n\n【评分】X/15分\n【字数】XX词\n\n【逐句批改】\n原文：xxx\n问题：xxx\n改写：xxx\n\n【核心建议】3条最重要建议\n\n【改写范文】完整改写版本';
+        
+        try {
+            switchTab('diagnosis');
+            await new Promise(function(resolve) { setTimeout(resolve, 300); });
+            
+            if (chatState.botId !== '7637702903679631395') {
+                openChat('companion');
+                await new Promise(function(resolve) { setTimeout(resolve, 200); });
+            }
+            
+            var input = document.getElementById('chat-input');
+            if (input) {
+                input.value = message;
+                essayState.pendingResponse = true;
+                incrementChatUsage();
+                await sendMessage();
+            }
+        } catch (e) {
+            console.error('Essay submit error:', e);
+            showToast('提交失败，请重试');
+            closeEssayOverlay();
+            essayState.isSubmitting = false;
+        }
+    }
+
+    function parseEssayResultFromText(text) {
+        var data = {
+            score: 0,
+            wordCount: 0,
+            sentences: [],
+            advice: [],
+            rewritten: ''
+        };
+        
+        var scoreMatch = text.match(/【评分】(\d+)/);
+        if (scoreMatch) data.score = parseInt(scoreMatch[1]);
+        
+        var wordMatch = text.match(/【字数】(\d+)/);
+        if (wordMatch) data.wordCount = parseInt(wordMatch[1]);
+        
+        var sentenceBlocks = text.split(/原文：/);
+        if (sentenceBlocks.length > 1) {
+            for (var i = 1; i < sentenceBlocks.length; i++) {
+                var block = sentenceBlocks[i];
+                var sentence = { original: '', revised: '', reason: '' };
+                var lines = block.split('\n');
+                var content = '';
+                for (var j = 0; j < lines.length; j++) {
+                    var line = lines[j].trim();
+                    if (line.startsWith('问题：')) {
+                        sentence.original = content.trim();
+                        sentence.reason = line.replace('问题：', '');
+                        content = '';
+                    } else if (line.startsWith('改写：')) {
+                        if (!sentence.original) sentence.original = content.trim();
+                        sentence.revised = line.replace('改写：', '');
+                        content = '';
+                    } else if (line.match(/^【/)) {
+                        break;
+                    } else {
+                        content += ' ' + line;
+                    }
+                }
+                if (sentence.original || sentence.revised || sentence.reason) {
+                    data.sentences.push(sentence);
+                }
+            }
+        }
+        
+        var adviceMatch = text.match(/【核心建议】([\s\S]*?)(?=【改写范文】|$)/);
+        if (adviceMatch) {
+            var adviceText = adviceMatch[1];
+            var adviceLines = adviceText.split(/^\d+[.、]/m);
+            adviceLines.forEach(function(line) {
+                line = line.trim().replace(/^[.、]\s*/, '');
+                if (line && line.length > 5) {
+                    data.advice.push(line);
+                }
+            });
+        }
+        
+        var rewriteMatch = text.match(/【改写范文】([\s\S]*?)$/);
+        if (rewriteMatch) {
+            data.rewritten = rewriteMatch[1].trim();
+        }
+        
+        return data;
+    }
+
+    function renderEssayResult(data) {
+        var resultSection = document.getElementById('essay-result-section');
+        if (!resultSection) return;
+        
+        var score = parseInt(data.score) || 0;
+        var maxScore = 15;
+        var circumference = 2 * Math.PI * 42;
+        var offset = circumference - (score / maxScore) * circumference;
+        
+        var title = score >= 13 ? '优秀' : score >= 10 ? '良好' : score >= 7 ? '及格' : '需改进';
+        var subText = score >= 13 ? '词汇丰富，结构清晰' : score >= 10 ? '内容充实，逻辑较好' : score >= 7 ? '基本达标，还需努力' : '建议重点提升';
+        
+        var html = '<div class="essay-result-header">' +
+            '<div class="essay-score-ring">' +
+            '<svg width="100" height="100" viewBox="0 0 100 100">' +
+            '<circle class="bg" cx="50" cy="50" r="42"/>' +
+            '<circle class="progress" cx="50" cy="50" r="42" stroke-dasharray="' + circumference + '" stroke-dashoffset="' + offset + '"/>' +
+            '</svg>' +
+            '<div class="essay-score-text">' + score + '</div>' +
+            '</div>' +
+            '<div class="essay-result-title">' + title + '水平</div>' +
+            '<div class="essay-result-sub">' + subText + '</div>' +
+            '</div>';
+        
+        html += '<div class="essay-result-body">';
+        
+        if (data.wordCount) {
+            html += '<div style="background:#F8F9FA;border-radius:12px;padding:14px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;">' +
+                '<span style="font-size:14px;color:#475569;">作文字数</span>' +
+                '<span style="font-size:18px;font-weight:700;color:#6C5CE7;">' + data.wordCount + '词</span>' +
+                '</div>';
+        }
+        
+        if (data.sentences && data.sentences.length > 0) {
+            html += '<div style="font-size:15px;font-weight:600;color:#1a1a2e;margin-bottom:12px;">逐句批改</div>';
+            data.sentences.forEach(function(s) {
+                html += '<div class="essay-sentence-card">';
+                if (s.original) {
+                    html += '<div class="essay-sentence-original">' + escapeHtml(s.original) + '</div>';
+                }
+                if (s.revised) {
+                    html += '<div class="essay-sentence-revised">' + escapeHtml(s.revised) + '</div>';
+                }
+                if (s.reason) {
+                    html += '<div class="essay-sentence-reason">' + escapeHtml(s.reason) + '</div>';
+                }
+                html += '</div>';
+            });
+        }
+        
+        if (data.advice && data.advice.length > 0) {
+            html += '<div class="essay-advice-section">' +
+                '<div class="essay-advice-title">' +
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>' +
+                '核心建议' +
+                '</div>' +
+                '<ul class="essay-advice-list">';
+            data.advice.forEach(function(a, i) {
+                html += '<li class="essay-advice-item">' +
+                    '<span class="essay-advice-num">' + (i + 1) + '</span>' +
+                    '<span>' + escapeHtml(a) + '</span>' +
+                    '</li>';
+            });
+            html += '</ul></div>';
+        }
+        
+        if (data.rewritten) {
+            html += '<div class="essay-rewrite-section">' +
+                '<div class="essay-rewrite-title">' +
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>' +
+                '改写范文' +
+                '</div>' +
+                '<div class="essay-rewrite-text">' + escapeHtml(data.rewritten) + '</div>' +
+                '</div>';
+        }
+        
+        html += '<div class="essay-result-actions">' +
+            '<button class="btn-retry" onclick="retryEssay()">再来一篇</button>' +
+            '<button class="btn-save" onclick="saveEssayResult()">保存结果</button>' +
+            '</div>';
+        
+        html += '</div>';
+        resultSection.innerHTML = html;
+        resultSection.style.display = '';
+    }
+
+    function checkAndParseEssayResponse(fullText) {
+        if (fullText.includes('【评分】') || fullText.includes('逐句批改')) {
+            var data = parseEssayResultFromText(fullText);
+            if (data.score > 0 || data.sentences.length > 0) {
+                essayState.lastResult = data;
+                renderEssayResult(data);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function retryEssay() {
+        var textarea = document.getElementById('essay-textarea');
+        var resultSection = document.getElementById('essay-result-section');
+        var inputBody = document.getElementById('essay-input-body');
+        if (textarea) textarea.value = '';
+        var wordNum = document.getElementById('essay-word-num');
+        if (wordNum) wordNum.textContent = '0';
+        if (inputBody) inputBody.style.display = '';
+        if (resultSection) resultSection.style.display = 'none';
+        essayState.isSubmitting = false;
+    }
+
+    function saveEssayResult() {
+        if (!essayState.lastResult) {
+            showToast('暂无批改结果');
+            return;
+        }
+        showToast('结果已保存');
+    }
+    </script>
+
+    <!-- 作文批改界面 -->
+    <div class="essay-overlay" id="essay-overlay">
+        <div class="essay-sheet">
+            <div class="essay-sheet-header">
+                <div class="essay-sheet-title">作文批改</div>
+                <button class="essay-close-btn" onclick="closeEssayOverlay()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <div class="essay-sheet-body" id="essay-input-body">
+                <div class="essay-topic-section">
+                    <div class="essay-topic-label">选择题目（可选）</div>
+                    <div class="essay-topic-grid">
+                        <div class="essay-topic-btn" onclick="selectEssayTopic(this, '活动邀请信')">📝 活动邀请信</div>
+                        <div class="essay-topic-btn" onclick="selectEssayTopic(this, '感谢信')">💌 感谢信</div>
+                        <div class="essay-topic-btn" onclick="selectEssayTopic(this, '投诉信')">📋 投诉信</div>
+                        <div class="essay-topic-btn" onclick="selectEssayTopic(this, '建议信')">💡 建议信</div>
+                        <div class="essay-topic-btn" onclick="selectEssayTopic(this, '道歉信')">🤝 道歉信</div>
+                        <div class="essay-topic-btn" onclick="selectEssayTopic(this, '自我介绍')">👤 自我介绍</div>
+                    </div>
+                </div>
+                <div class="essay-input-section">
+                    <div class="essay-topic-label">粘贴你的作文</div>
+                    <textarea class="essay-textarea" id="essay-textarea" placeholder="请在此粘贴或输入你的英语作文..." oninput="updateEssayWordCount()"></textarea>
+                    <div class="essay-word-count"><span id="essay-word-num">0</span> 词（四级要求120-180词）</div>
+                </div>
+                <button class="essay-submit-btn" id="essay-submit-btn" onclick="submitEssay()">提交批改</button>
+            </div>
+            <div class="essay-result-section" id="essay-result-section" style="display:none">
+                <!-- 动态填充批改结果 -->
+            </div>
         </div>
     </div>
 </body>
