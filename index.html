@@ -1829,253 +1829,6 @@
         }
         .quiz-loading-text { font-size: 14px; color: #666; }
 
-        /* ====== 错题本样式 ====== */
-        .wrong-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: #F8F9FA;
-            z-index: 2000;
-            display: none;
-            flex-direction: column;
-            overflow: hidden;
-        }
-        .wrong-overlay.show { display: flex; }
-        .wrong-header {
-            display: flex;
-            align-items: center;
-            padding: 16px 20px;
-            padding-top: calc(16px + var(--safe-top));
-            background: white;
-            border-bottom: 1px solid #F0F0F5;
-            flex-shrink: 0;
-        }
-        .wrong-back-btn {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: #F5F5F5;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            border: none;
-            flex-shrink: 0;
-        }
-        .wrong-back-btn svg { width: 18px; height: 18px; stroke: #666; }
-        .wrong-header-center { flex: 1; text-align: center; }
-        .wrong-header-title { font-size: 17px; font-weight: 700; color: #1a1a2e; }
-        .wrong-header-sub { font-size: 12px; color: #94a3b8; margin-top: 2px; }
-        .wrong-action-btn {
-            padding: 8px 16px;
-            background: #6C5CE7;
-            color: white;
-            border: none;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        .wrong-action-btn.secondary { background: #F5F5F5; color: #666; }
-        
-        .wrong-stats-bar {
-            display: flex;
-            gap: 12px;
-            padding: 16px 20px;
-            background: white;
-            border-bottom: 1px solid #F0F0F5;
-        }
-        .wrong-stat-item {
-            flex: 1;
-            text-align: center;
-            padding: 12px;
-            background: #F8F9FA;
-            border-radius: 12px;
-        }
-        .wrong-stat-num { font-size: 24px; font-weight: 700; color: #1a1a2e; }
-        .wrong-stat-num.danger { color: #E17055; }
-        .wrong-stat-num.success { color: #00B894; }
-        .wrong-stat-label { font-size: 11px; color: #94a3b8; margin-top: 4px; }
-        
-        .wrong-filter-bar {
-            display: flex;
-            gap: 8px;
-            padding: 12px 20px;
-            overflow-x: auto;
-            scrollbar-width: none;
-            background: white;
-        }
-        .wrong-filter-bar::-webkit-scrollbar { display: none; }
-        .wrong-filter-btn {
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 500;
-            white-space: nowrap;
-            cursor: pointer;
-            border: 1px solid #E5E7EB;
-            background: white;
-            color: #666;
-            flex-shrink: 0;
-        }
-        .wrong-filter-btn.active { background: #6C5CE7; color: white; border-color: #6C5CE7; }
-        
-        .wrong-list {
-            flex: 1;
-            overflow-y: auto;
-            padding: 16px 20px;
-            padding-bottom: calc(100px + var(--safe-bottom));
-        }
-        .wrong-item {
-            background: white;
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 12px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .wrong-item:active { transform: scale(0.98); }
-        .wrong-item-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        .wrong-item-type {
-            padding: 4px 10px;
-            background: #F0F0F5;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 600;
-            color: #6C5CE7;
-        }
-        .wrong-item-date { font-size: 11px; color: #94a3b8; }
-        .wrong-item-mastered {
-            padding: 4px 10px;
-            background: #E8F8F0;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 600;
-            color: #00B894;
-        }
-        .wrong-item-question {
-            font-size: 14px;
-            color: #1a1a2e;
-            line-height: 1.6;
-            margin-bottom: 12px;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-        .wrong-item-answers {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        .wrong-answer-tag {
-            font-size: 12px;
-            padding: 4px 10px;
-            border-radius: 6px;
-        }
-        .wrong-answer-tag.yours {
-            background: #FFF5F3;
-            color: #E17055;
-        }
-        .wrong-answer-tag.correct {
-            background: #E8F8F0;
-            color: #00B894;
-        }
-        
-        .wrong-item-expanded {
-            display: none;
-            margin-top: 16px;
-            padding-top: 16px;
-            border-top: 1px solid #F0F0F5;
-        }
-        .wrong-item.expanded .wrong-item-expanded { display: block; }
-        .wrong-exp-title {
-            font-size: 13px;
-            font-weight: 600;
-            color: #1a1a2e;
-            margin-bottom: 8px;
-        }
-        .wrong-exp-text {
-            font-size: 13px;
-            color: #475569;
-            line-height: 1.7;
-        }
-        .wrong-item-actions {
-            display: flex;
-            gap: 8px;
-            margin-top: 16px;
-        }
-        .wrong-item-actions button {
-            flex: 1;
-            padding: 10px;
-            border-radius: 10px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            border: none;
-        }
-        .wrong-btn-review { background: #6C5CE7; color: white; }
-        .wrong-btn-mastered { background: #E8F8F0; color: #00B894; }
-        .wrong-btn-delete { background: #FFF5F3; color: #E17055; }
-        
-        .wrong-empty {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 60px 20px;
-            text-align: center;
-        }
-        .wrong-empty-icon { font-size: 60px; margin-bottom: 16px; }
-        .wrong-empty-text { font-size: 16px; color: #94a3b8; }
-        
-        .wrong-review-mode {
-            background: white;
-            padding: 16px 20px;
-            border-radius: 20px 20px 0 0;
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
-        }
-        .wrong-review-title { font-size: 16px; font-weight: 700; color: #1a1a2e; margin-bottom: 8px; }
-        .wrong-review-desc { font-size: 13px; color: #666; margin-bottom: 16px; }
-        .wrong-review-btn {
-            width: 100%;
-            padding: 14px;
-            background: #6C5CE7;
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        .wrong-review-btn:disabled { background: #D1D5DB; }
-        
-        /* 错题小红点 */
-        .wrong-badge {
-            position: absolute;
-            top: -4px;
-            right: -4px;
-            min-width: 18px;
-            height: 18px;
-            background: #E17055;
-            color: white;
-            font-size: 10px;
-            font-weight: 700;
-            border-radius: 9px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0 5px;
-        }
-
         /* Coze聊天样式覆盖 */
 
 
@@ -2503,6 +2256,343 @@
         .ai-credibility-text strong { color: #1E293B; font-weight: 700; }
 
     
+
+        /* ===== 对话列表样式 ===== */
+        .chat-list-view {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+            background: #FFFFFF;
+        }
+        .chat-list-view.active {
+            display: flex;
+        }
+        .chat-list-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            background: #FFFFFF;
+            border-bottom: 1px solid #F0F0F5;
+            flex-shrink: 0;
+        }
+        .chat-list-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a1a2e;
+            letter-spacing: -0.3px;
+        }
+        .chat-list-new-btn {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 14px;
+            background: linear-gradient(135deg, #6C5CE7, #8B7CF7);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .chat-list-new-btn:active {
+            transform: scale(0.96);
+            opacity: 0.9;
+        }
+        .chat-list-new-btn svg {
+            width: 14px;
+            height: 14px;
+        }
+        .chat-list-body {
+            flex: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding: 12px 16px;
+        }
+        .chat-list-empty {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px;
+            text-align: center;
+        }
+        .chat-list-empty-icon {
+            width: 64px;
+            height: 64px;
+            background: #F5F5FA;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+        .chat-list-empty-icon svg {
+            width: 28px;
+            height: 28px;
+            stroke: #94A3B8;
+            stroke-width: 1.5;
+        }
+        .chat-list-empty-text {
+            font-size: 15px;
+            color: #94A3B8;
+            font-weight: 500;
+        }
+        .chat-list-empty-sub {
+            font-size: 13px;
+            color: #CBD5E1;
+            margin-top: 4px;
+        }
+        .chat-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 14px 16px;
+            background: #FFFFFF;
+            border: 1px solid #F0F0F5;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.15s;
+            position: relative;
+        }
+        .chat-card:active {
+            transform: scale(0.98);
+            background: #FAFAFA;
+        }
+        .chat-card.active {
+            border-left: 3px solid #6C5CE7;
+            background: #FAFAFA;
+        }
+        .chat-card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .chat-card-icon.diagnosis {
+            background: #F0EEFF;
+        }
+        .chat-card-icon.diagnosis svg {
+            stroke: #6C5CE7;
+        }
+        .chat-card-icon.companion {
+            background: #E8F8F0;
+        }
+        .chat-card-icon.companion svg {
+            stroke: #00B894;
+        }
+        .chat-card-icon svg {
+            width: 20px;
+            height: 20px;
+            stroke-width: 1.8;
+            fill: none;
+        }
+        .chat-card-content {
+            flex: 1;
+            min-width: 0;
+        }
+        .chat-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+        .chat-card-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a1a2e;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            flex: 1;
+        }
+        .chat-card-tag {
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+            margin-left: 8px;
+            flex-shrink: 0;
+        }
+        .chat-card-tag.diagnosis {
+            background: rgba(108,92,231,0.1);
+            color: #6C5CE7;
+        }
+        .chat-card-tag.companion {
+            background: rgba(0,184,148,0.1);
+            color: #00B894;
+        }
+        .chat-card-preview {
+            font-size: 13px;
+            color: #94A3B8;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 4px;
+        }
+        .chat-card-time {
+            font-size: 11px;
+            color: #CBD5E1;
+        }
+        .chat-card-delete {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 24px;
+            height: 24px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            opacity: 0;
+            transition: opacity 0.15s;
+        }
+        .chat-card:hover .chat-card-delete,
+        .chat-card:active .chat-card-delete {
+            opacity: 1;
+        }
+        .chat-card-delete:active {
+            background: #FEE2E2;
+        }
+        .chat-card-delete svg {
+            width: 14px;
+            height: 14px;
+            stroke: #94A3B8;
+            stroke-width: 2;
+        }
+        .chat-card-delete:hover svg {
+            stroke: #E17055;
+        }
+        /* 新建对话选项 */
+        .new-chat-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.4);
+            z-index: 1000;
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+        }
+        .new-chat-modal.show {
+            display: flex;
+        }
+        .new-chat-sheet {
+            background: white;
+            border-radius: 20px 20px 0 0;
+            width: 100%;
+            max-width: 430px;
+            padding: 20px 20px calc(20px + env(safe-area-inset-bottom, 20px));
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+        .new-chat-modal.show .new-chat-sheet {
+            transform: translateY(0);
+        }
+        .new-chat-sheet-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: #1a1a2e;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .new-chat-option {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px;
+            background: #FAFAFA;
+            border-radius: 14px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.15s;
+            border: 2px solid transparent;
+        }
+        .new-chat-option:active {
+            transform: scale(0.98);
+            background: #F0F0F5;
+        }
+        .new-chat-option.selected {
+            border-color: #6C5CE7;
+            background: #F0EEFF;
+        }
+        .new-chat-option-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .new-chat-option-icon.diagnosis {
+            background: #F0EEFF;
+        }
+        .new-chat-option-icon.diagnosis svg {
+            stroke: #6C5CE7;
+        }
+        .new-chat-option-icon.companion {
+            background: #E8F8F0;
+        }
+        .new-chat-option-icon.companion svg {
+            stroke: #00B894;
+        }
+        .new-chat-option-icon.disabled {
+            background: #F0F0F5;
+        }
+        .new-chat-option-icon.disabled svg {
+            stroke: #CBD5E1;
+        }
+        .new-chat-option-icon svg {
+            width: 22px;
+            height: 22px;
+            stroke-width: 1.8;
+            fill: none;
+        }
+        .new-chat-option-text {
+            flex: 1;
+        }
+        .new-chat-option-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin-bottom: 2px;
+        }
+        .new-chat-option-desc {
+            font-size: 12px;
+            color: #94A3B8;
+        }
+        .new-chat-option.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .new-chat-cancel {
+            width: 100%;
+            padding: 14px;
+            background: #F5F5F5;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #64748b;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.15s;
+        }
+        .new-chat-cancel:active {
+            background: #E5E5EA;
+        }
+
 /* ===== Custom Chat UI ===== */
 .custom-chat-page { display:flex; flex-direction:column; height:100%; background:#FAFAFA; overflow:hidden; }
         .tab-page:has(.custom-chat-page) > *:last-child { padding-bottom: 0; }
@@ -3438,386 +3528,409 @@
         }
         .essay-result-actions button:active { transform: scale(0.98); }
 
-    
-        /* ===== 学习进度仪表盘 ===== */
-        .progress-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.5);
-            z-index: 1000;
-            display: none;
-            align-items: flex-end;
-            justify-content: center;
-        }
-        .progress-overlay.show {
-            display: flex;
-        }
-        .progress-sheet {
-            width: 100%;
-            max-width: 430px;
-            max-height: 90vh;
+        /* ===== 进度仪表盘 ===== */
+        .dashboard-page {
+            padding: 0;
             background: #F8F9FA;
-            border-radius: 24px 24px 0 0;
+        }
+        .dashboard-hero {
+            background: linear-gradient(135deg, #6C5CE7 0%, #A29BFE 100%);
+            padding: 24px 20px 32px;
+            border-radius: 0 0 24px 24px;
+            position: relative;
             overflow: hidden;
-            animation: slideUp 0.3s ease;
         }
-        @keyframes slideUp {
-            from { transform: translateY(100%); }
-            to { transform: translateY(0); }
-        }
-        .progress-sheet-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 16px 20px;
-            background: white;
-            border-bottom: 1px solid #F0F0F5;
-        }
-        .progress-sheet-title {
-            font-size: 17px;
-            font-weight: 700;
-            color: #1a1a2e;
-        }
-        .progress-close-btn {
-            width: 32px;
-            height: 32px;
+        .dashboard-hero::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -30px;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
             border-radius: 50%;
-            background: #F5F5F7;
-            border: none;
-            display: flex;
+        }
+        .dashboard-hero-title {
+            color: white;
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .dashboard-hero-sub {
+            color: rgba(255,255,255,0.8);
+            font-size: 13px;
+        }
+        .dashboard-hero-countdown {
+            display: inline-flex;
             align-items: center;
-            justify-content: center;
-            cursor: pointer;
+            gap: 6px;
+            background: rgba(255,255,255,0.2);
+            padding: 6px 12px;
+            border-radius: 20px;
+            color: white;
+            font-size: 12px;
+            margin-top: 12px;
         }
-        .progress-close-btn svg {
-            width: 18px;
-            height: 18px;
-            stroke: #666;
-        }
-        .progress-sheet-body {
-            padding: 16px;
-            max-height: calc(90vh - 60px);
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
+        .dashboard-hero-countdown-dot {
+            width: 6px;
+            height: 6px;
+            background: #FF6B6B;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
         }
         
-        /* 顶部概览卡片 */
-        .progress-overview-grid {
+        /* 学习概览卡片 */
+        .dashboard-overview {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 12px;
-            margin-bottom: 16px;
+            padding: 16px 16px 0;
+            margin-top: -16px;
+            position: relative;
+            z-index: 1;
         }
-        .progress-overview-card {
+        .dashboard-overview-card {
             background: white;
             border-radius: 16px;
             padding: 16px;
-            text-align: center;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
         }
-        .progress-overview-value {
+        .dashboard-overview-card.streak {
+            background: linear-gradient(135deg, #FF6B35 0%, #FF9F43 100%);
+            color: white;
+        }
+        .dashboard-overview-card.streak .overview-num { color: white; }
+        .dashboard-overview-card.streak .overview-label { color: rgba(255,255,255,0.85); }
+        .overview-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        .overview-num {
             font-size: 28px;
-            font-weight: 800;
-            color: #6C5CE7;
-            line-height: 1.2;
+            font-weight: 700;
+            color: #1a1a2e;
+            line-height: 1;
         }
-        .progress-overview-value.orange { color: #F39C12; }
-        .progress-overview-value.green { color: #00B894; }
-        .progress-overview-label {
+        .overview-label {
             font-size: 12px;
             color: #94a3b8;
             margin-top: 4px;
         }
         
-        /* 卡片通用样式 */
-        .progress-card {
+        /* 雷达图区域 */
+        .dashboard-radar-section {
+            margin: 20px 16px;
             background: white;
             border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 12px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
         }
-        .progress-card-title {
-            font-size: 15px;
-            font-weight: 700;
-            color: #1a1a2e;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .progress-card-title svg {
-            width: 18px;
-            height: 18px;
-            stroke: #6C5CE7;
-        }
-        
-        /* 雷达图区域 */
-        .progress-radar-wrap {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .progress-radar-canvas {
-            width: 200px;
-            height: 200px;
-        }
-        .progress-radar-hint {
-            text-align: center;
-            padding: 32px 0;
-            color: #94a3b8;
-            font-size: 14px;
-        }
-        .progress-radar-tip {
-            font-size: 12px;
-            color: #F39C12;
-            margin-top: 8px;
-            text-align: center;
-        }
-        
-        /* 45天计划进度条 */
-        /* 动态备考计划 */
-        .plan-today-card {
-            display: flex; align-items: center; gap: 12px;
-            background: #F8F7FF; border-radius: 12px; padding: 14px 16px; margin: 12px 0;
-            border: 1px solid #EDE9FE;
-        }
-        .plan-today-badge {
-            font-size: 11px; font-weight: 700; color: #fff;
-            padding: 2px 8px; border-radius: 6px; white-space: nowrap;
-        }
-        .plan-today-icon { font-size: 24px; }
-        .plan-today-info { flex: 1; }
-        .plan-today-title { font-size: 14px; font-weight: 600; color: #1a1a2e; }
-        .plan-today-desc { font-size: 12px; color: #64748B; margin-top: 2px; }
-        .plan-calendar {
-            display: flex; flex-direction: column; gap: 6px; margin: 12px 0;
-            max-height: 240px; overflow-y: auto;
-        }
-        .plan-cal-item {
-            display: flex; align-items: center; gap: 8px;
-            padding: 8px 12px; border-radius: 8px; background: #FAFAFA;
-            font-size: 13px; transition: background 0.15s;
-        }
-        .plan-cal-item.today { background: #F0EEFF; font-weight: 600; }
-        .plan-cal-item.done { opacity: 0.6; }
-        .plan-cal-item:hover { background: #F0F0F5; }
-        .plan-cal-item.today:hover { background: #E8E4FF; }
-        .plan-cal-day { font-size: 11px; color: #94A3B8; width: 36px; flex-shrink: 0; }
-        .plan-cal-info { display: flex; align-items: center; gap: 6px; flex: 1; }
-        .plan-cal-icon { font-size: 14px; }
-        .plan-cal-title { color: #334155; }
-        .plan-cal-check { color: #00B894; font-weight: 700; font-size: 14px; }
-        .plan-phase-legend {
-            display: flex; gap: 16px; justify-content: center;
-            font-size: 11px; color: #94A3B8; padding-top: 8px;
-        }
-        .plan-phase-dot {
-            display: inline-block; width: 8px; height: 8px;
-            border-radius: 50%; margin-right: 4px; vertical-align: middle;
-        }
-
-        .progress-plan-header {
+        .dashboard-radar-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 8px;
+            margin-bottom: 16px;
         }
-        .progress-plan-label {
-            font-size: 14px;
+        .dashboard-radar-title {
+            font-size: 15px;
             font-weight: 600;
             color: #1a1a2e;
         }
-        .progress-plan-value {
-            font-size: 14px;
-            font-weight: 700;
+        .dashboard-radar-tip {
+            font-size: 12px;
+            color: #E17055;
+        }
+        .dashboard-radar-canvas-wrap {
+            display: flex;
+            justify-content: center;
+        }
+        #dashboard-radar-canvas {
+            max-width: 260px;
+        }
+        .dashboard-radar-empty {
+            text-align: center;
+            padding: 40px 20px;
+            color: #94a3b8;
+        }
+        .dashboard-radar-empty-icon {
+            font-size: 40px;
+            margin-bottom: 12px;
+        }
+        .dashboard-radar-empty-text {
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        
+        /* 45天计划进度 */
+        .dashboard-plan-section {
+            margin: 0 16px 16px;
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .dashboard-plan-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .dashboard-plan-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a1a2e;
+        }
+        .dashboard-plan-day {
+            font-size: 13px;
             color: #6C5CE7;
+            font-weight: 600;
         }
-        .progress-plan-bar {
-            height: 10px;
-            background: #F0EEFF;
-            border-radius: 5px;
+        .dashboard-plan-progress {
+            height: 8px;
+            background: #F1F5F9;
+            border-radius: 4px;
             overflow: hidden;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
-        .progress-plan-fill {
+        .dashboard-plan-progress-fill {
             height: 100%;
             background: linear-gradient(90deg, #6C5CE7, #A29BFE);
-            border-radius: 5px;
-            transition: width 0.5s ease;
+            border-radius: 4px;
+            transition: width 0.6s ease;
         }
-        .progress-plan-footer {
+        .dashboard-plan-footer {
             display: flex;
             justify-content: space-between;
             font-size: 12px;
             color: #94a3b8;
         }
-        .progress-exam-countdown {
-            font-size: 13px;
-            color: #64748b;
-            text-align: center;
-            margin-top: 12px;
-        }
-        .progress-exam-countdown strong {
+        .dashboard-plan-end {
             color: #E17055;
         }
-        .progress-no-data {
-            text-align: center;
-            padding: 20px;
-            color: #94a3b8;
-            font-size: 13px;
-        }
         
-        /* 热力图 */
-        .progress-heatmap {
-            display: flex;
-            justify-content: space-between;
+        /* 近7天热力图 */
+        .dashboard-heatmap-section {
+            margin: 0 16px 16px;
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .dashboard-heatmap-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin-bottom: 16px;
+        }
+        .dashboard-heatmap-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
             gap: 6px;
         }
-        .progress-heatmap-day {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-        }
-        .progress-heatmap-label {
-            font-size: 11px;
-            color: #94a3b8;
-        }
-        .progress-heatmap-box {
-            width: 100%;
+        .dashboard-heatmap-cell {
             aspect-ratio: 1;
             border-radius: 6px;
-            background: #F0F0F5;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-            color: #666;
+            background: #F1F5F9;
+            position: relative;
             cursor: pointer;
             transition: transform 0.15s;
-            position: relative;
         }
-        .progress-heatmap-box:hover {
+        .dashboard-heatmap-cell:hover {
             transform: scale(1.1);
         }
-        .progress-heatmap-box.level-0 { background: #F0F0F5; }
-        .progress-heatmap-box.level-1 { background: #E8E4FF; color: #6C5CE7; }
-        .progress-heatmap-box.level-2 { background: #C4B5FD; color: white; }
-        .progress-heatmap-box.level-3 { background: #6C5CE7; color: white; }
-        .progress-heatmap-tooltip {
+        .dashboard-heatmap-cell.level-1 { background: rgba(108,92,231,0.2); }
+        .dashboard-heatmap-cell.level-2 { background: rgba(108,92,231,0.4); }
+        .dashboard-heatmap-cell.level-3 { background: rgba(108,92,231,0.6); }
+        .dashboard-heatmap-cell.level-4 { background: #6C5CE7; }
+        .dashboard-heatmap-tooltip {
             position: absolute;
-            bottom: 100%;
+            bottom: calc(100% + 8px);
             left: 50%;
             transform: translateX(-50%);
             background: #1a1a2e;
             color: white;
-            padding: 4px 8px;
-            border-radius: 4px;
+            padding: 6px 10px;
+            border-radius: 6px;
             font-size: 11px;
             white-space: nowrap;
-            display: none;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.15s;
             z-index: 10;
         }
-        .progress-heatmap-box:hover .progress-heatmap-tooltip {
-            display: block;
+        .dashboard-heatmap-cell:hover .dashboard-heatmap-tooltip {
+            opacity: 1;
+            visibility: visible;
         }
-        .progress-heatmap-legend {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-            margin-top: 12px;
+        .dashboard-heatmap-labels {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+            margin-top: 8px;
+        }
+        .dashboard-heatmap-label {
+            text-align: center;
             font-size: 11px;
             color: #94a3b8;
         }
-        .progress-heatmap-legend-item {
-            width: 12px;
-            height: 12px;
-            border-radius: 3px;
-        }
         
         /* 薄弱项卡片 */
-        .progress-weak-item {
+        .dashboard-weak-section {
+            margin: 0 16px 16px;
+        }
+        .dashboard-section-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 12px;
-            background: #F8F9FA;
+            gap: 6px;
+        }
+        .dashboard-weak-card {
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .dashboard-weak-card:active {
+            transform: scale(0.98);
+        }
+        .dashboard-weak-icon {
+            width: 44px;
+            height: 44px;
             border-radius: 12px;
-            margin-bottom: 8px;
-        }
-        .progress-weak-left {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .progress-weak-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            background: #FFF5F3;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
+            font-size: 20px;
+            flex-shrink: 0;
         }
-        .progress-weak-info {}
-        .progress-weak-name {
+        .dashboard-weak-info {
+            flex: 1;
+        }
+        .dashboard-weak-name {
             font-size: 14px;
             font-weight: 600;
             color: #1a1a2e;
         }
-        .progress-weak-score {
+        .dashboard-weak-score {
             font-size: 12px;
-            color: #E17055;
+            color: #94a3b8;
+            margin-top: 2px;
         }
-        .progress-weak-btn {
-            padding: 6px 12px;
-            background: linear-gradient(135deg, #6C5CE7, #8B7CF7);
-            color: white;
-            border: none;
-            border-radius: 16px;
+        .dashboard-weak-action {
             font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
+            color: #6C5CE7;
+            margin-top: 4px;
+        }
+        .dashboard-weak-arrow {
+            color: #C0C8D4;
         }
         
         /* 预估分数 */
-        .progress-estimate {
+        .dashboard-score-section {
+            margin: 0 16px 20px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #2D3561 100%);
+            border-radius: 16px;
+            padding: 20px;
+            color: white;
+        }
+        .dashboard-score-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .dashboard-score-title {
+            font-size: 15px;
+            font-weight: 600;
+        }
+        .dashboard-score-target {
+            font-size: 12px;
+            color: rgba(255,255,255,0.6);
+        }
+        .dashboard-score-main {
             text-align: center;
-            padding: 8px 0;
+            margin-bottom: 16px;
         }
-        .progress-estimate-main {
-            font-size: 36px;
-            font-weight: 800;
-            color: #6C5CE7;
+        .dashboard-score-num {
+            font-size: 56px;
+            font-weight: 700;
+            line-height: 1;
         }
-        .progress-estimate-main span {
-            font-size: 20px;
+        .dashboard-score-unit {
+            font-size: 16px;
+            opacity: 0.7;
+            margin-left: 4px;
         }
-        .progress-estimate-sub {
+        .dashboard-score-bar {
+            height: 6px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .dashboard-score-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #6C5CE7, #A29BFE);
+            border-radius: 3px;
+        }
+        .dashboard-score-footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 12px;
+            font-size: 12px;
+            color: rgba(255,255,255,0.6);
+        }
+        .dashboard-score-diff {
+            color: #00B894;
+        }
+        
+        /* 空状态引导 */
+        .dashboard-empty {
+            text-align: center;
+            padding: 60px 40px;
+        }
+        .dashboard-empty-icon {
+            font-size: 60px;
+            margin-bottom: 16px;
+        }
+        .dashboard-empty-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin-bottom: 8px;
+        }
+        .dashboard-empty-desc {
             font-size: 13px;
             color: #94a3b8;
-            margin-top: 4px;
+            line-height: 1.6;
         }
-        .progress-estimate-target {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 4px 10px;
-            background: #E8F8F0;
+        .dashboard-empty-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 24px;
+            background: #6C5CE7;
+            color: white;
             border-radius: 12px;
-            font-size: 12px;
-            color: #00B894;
-            margin-top: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
         }
 
-</style>
+    </style>
 </head>
 <body>
     <div class="app">
@@ -3894,22 +4007,7 @@
                     </div>
                 </div>
 
-                <!-- 错题本入口 -->
-                <div class="wrong-entry-card" id="wrong-entry-card" onclick="openWrongBook()" style="margin: 16px 20px; background: white; border-radius: 16px; padding: 16px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 3px rgba(0,0,0,0.04); cursor: pointer;">
-                    <div style="display: flex; align-items: center; gap: 12px;">
-                        <div style="width: 44px; height: 44px; background: linear-gradient(135deg, #FFF5F3 0%, #FFE8E4 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="#E17055" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-                        </div>
-                        <div>
-                            <div style="font-size: 15px; font-weight: 600; color: #1a1a2e;">错题本</div>
-                            <div style="font-size: 12px; color: #94a3b8; margin-top: 2px;" id="wrong-entry-desc">查看并复习错题</div>
-                        </div>
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                        <div class="wrong-badge" id="wrong-badge" style="display: none;">0</div>
-                        <svg viewBox="0 0 24 24" fill="none" stroke="#C0C0C8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px;"><polyline points="9 18 15 12 9 6"/></svg>
-                    </div>
-                </div>
+
 
                 <!-- AI能力声明（流利说风格） -->
                 <div class="ai-capability-section">
@@ -3969,7 +4067,7 @@
                         <div class="home-data-label">次练习</div>
                     </div>
                     <div class="home-data-divider"></div>
-                    <div class="home-data-item" onclick="openProgressOverlay()">
+                    <div class="home-data-item" onclick="switchTab('study')">
                         <div class="home-data-cta">查看详情 →</div>
                     </div>
                 </div>
@@ -4082,12 +4180,61 @@
                 </div>
             </div>
 
+            <!-- 进度仪表盘页 -->
+            <div class="tab-page" id="tab-progress">
+                <div class="dashboard-page" id="dashboard-content">
+                    <!-- 内容由JS动态渲染 -->
+                </div>
+            </div>
+
             <!-- 诊断页 -->
             <div class="tab-page" id="tab-diagnosis">
-                <div class="custom-chat-page" id="chat-page">
+                <div             <!-- 对话列表 -->
+            <div class="chat-list-view" id="chat-list-view">
+                <div class="chat-list-header">
+                    <div class="chat-list-title">我的对话</div>
+                    <button class="chat-list-new-btn" onclick="showNewChatModal()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                        </svg>
+                        新建对话
+                    </button>
+                </div>
+                <div class="chat-list-body" id="chat-list-body">
+                    <!-- 对话卡片由JS渲染 -->
+                </div>
+            </div>
+
+            <!-- 新建对话弹窗 -->
+            <div class="new-chat-modal" id="new-chat-modal">
+                <div class="new-chat-sheet">
+                    <div class="new-chat-sheet-title">选择对话类型</div>
+                    <div class="new-chat-option" onclick="createNewChat('diagnosis')">
+                        <div class="new-chat-option-icon diagnosis">
+                            <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                        </div>
+                        <div class="new-chat-option-text">
+                            <div class="new-chat-option-title">开始诊断</div>
+                            <div class="new-chat-option-desc">AI分析你的四级薄弱点</div>
+                        </div>
+                    </div>
+                    <div class="new-chat-option" id="companion-option" onclick="createNewChat('companion')">
+                        <div class="new-chat-option-icon companion">
+                            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        </div>
+                        <div class="new-chat-option-text">
+                            <div class="new-chat-option-title">AI陪练</div>
+                            <div class="new-chat-option-desc">针对薄弱点强化训练</div>
+                        </div>
+                    </div>
+                    <button class="new-chat-cancel" onclick="hideNewChatModal()">取消</button>
+                </div>
+            </div>
+
+class="custom-chat-page" id="chat-page">
                     <!-- Header -->
                     <div class="custom-chat-header">
-                        <button class="custom-chat-back" onclick="switchTab('home')">
+                        <button class="custom-chat-back" onclick="handleChatBack()">
                             <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
                         </button>
                         <div class="custom-chat-header-center">
@@ -4322,13 +4469,17 @@
 
         <!-- 底部Tab -->
         <div class="tab-bar">
-            <div class="tab-item active" data-tab="home" onclick="switchTab('home')">
+            <div class="tab-item active" data-tab="home" onclick="handleChatBack()">
                 <div class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
                 <span class="tab-label">首页</span>
             </div>
             <div class="tab-item" data-tab="study" onclick="switchTab('study')">
                 <div class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 6v6l4 2"/></svg></div>
                 <span class="tab-label">学习</span>
+            </div>
+            <div class="tab-item" data-tab="progress" onclick="switchTab('progress')">
+                <div class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg></div>
+                <span class="tab-label">进度</span>
             </div>
             <div class="tab-item" data-tab="diagnosis" onclick="switchTab('diagnosis')">
                 <div class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
@@ -4398,7 +4549,14 @@
             chatRounds: 0,
             resultObserver: null,
             selectedPersonality: null
-        };
+        }
+        
+        // 页面加载时恢复对话列表状态
+        function initPageState() {
+            // 默认显示对话列表
+            showChatList();
+        }
+        setTimeout(initPageState, 100);;
 
         document.addEventListener('DOMContentLoaded', function() {
             // Fix mobile 100vh issue - set real viewport height
@@ -4428,18 +4586,6 @@
                 var data = localStorage.getItem('cet_user');
                 if (data) state.userData = JSON.parse(data);
             } catch(e) {}
-        }
-
-        function restoreLastState() {
-            var lastTab = localStorage.getItem('cet_current_tab');
-            var lastChatMode = localStorage.getItem('cet_last_chat_mode');
-            // 只有在diagnosis tab且之前有过聊天才恢复
-            if (lastTab === 'diagnosis' && lastChatMode) {
-                var savedConvId = localStorage.getItem(lastChatMode === 'companion' ? 'cet_companion_conv' : 'cet_diagnosis_conv');
-                if (savedConvId) {
-                    openChat(lastChatMode);
-                }
-            }
         }
 
         function checkClaimUrl() {
@@ -4511,7 +4657,6 @@
 
         function switchTab(tab) {
             state.currentTab = tab;
-            localStorage.setItem('cet_current_tab', tab);
             document.querySelectorAll('.tab-page').forEach(function(page) {
                 page.classList.toggle('active', page.id === 'tab-' + tab);
             });
@@ -4524,6 +4669,443 @@
             if (tab === 'plans') {
                 renderBenefits();
             }
+            if (tab === 'progress') {
+                renderDashboard();
+            }
+        }
+
+        // ===== 进度仪表盘函数 =====
+        function renderDashboard() {
+            var container = document.getElementById('dashboard-content');
+            if (!container) return;
+            
+            var userData = state.userData || {};
+            var streak = getStreakData();
+            var practiceHistory = getPracticeHistory();
+            var abilityScores = getAbilityScores();
+            var userProfile = getUserProfile();
+            
+            // 计算今日练习题数
+            var today = getTodayStr();
+            var todayCount = 0;
+            if (practiceHistory && practiceHistory.length) {
+                practiceHistory.forEach(function(item) {
+                    if (item.date === today) todayCount += (item.count || 1);
+                });
+            }
+            
+            // 计算累计练习和正确率
+            var totalPractice = 0;
+            var totalCorrect = 0;
+            if (practiceHistory && practiceHistory.length) {
+                practiceHistory.forEach(function(item) {
+                    totalPractice += (item.count || 1);
+                    totalCorrect += (item.correct || 0);
+                });
+            }
+            var accuracy = totalPractice > 0 ? Math.round((totalCorrect / totalPractice) * 100) : 0;
+            
+            // 计算距考试天数
+            var examDate = new Date('2026-06-13');
+            var now = new Date();
+            var daysToExam = Math.max(0, Math.ceil((examDate - now) / (1000 * 60 * 60 * 24)));
+            
+            // 计算45天计划进度
+            var planDays = 45;
+            var startDate = userProfile.startDate || getTodayStr();
+            var daysSinceStart = getDaysDiff(startDate, today);
+            var planProgress = Math.min(100, Math.round((daysSinceStart / planDays) * 100));
+            var currentDay = Math.min(planDays, daysSinceStart + 1);
+            
+            // 获取五维分数
+            var dims = abilityScores && abilityScores.dims ? abilityScores.dims : {};
+            var hasDimData = Object.keys(dims).length > 0;
+            
+            // 计算预估分数
+            var estimatedScore = 0;
+            if (hasDimData) {
+                var weights = {
+                    '细节定位': 0.25,
+                    '推理判断': 0.25,
+                    '同义替换': 0.2,
+                    '主旨归纳': 0.15,
+                    '态度判断': 0.15
+                };
+                var weightedSum = 0;
+                var weightSum = 0;
+                Object.keys(weights).forEach(function(key) {
+                    if (dims[key]) {
+                        weightedSum += dims[key] * weights[key];
+                        weightSum += weights[key];
+                    }
+                });
+                if (weightSum > 0) {
+                    estimatedScore = Math.round((weightedSum / weightSum) * 7.1);
+                    estimatedScore = Math.max(425, Math.min(710, estimatedScore));
+                }
+            }
+            
+            // 生成热力图数据
+            var heatmapData = getHeatmapData();
+            
+            // 找到薄弱项
+            var weakDims = [];
+            if (hasDimData) {
+                var sortedDims = Object.keys(dims).sort(function(a, b) {
+                    return (dims[a] || 100) - (dims[b] || 100);
+                });
+                weakDims = sortedDims.slice(0, 2);
+            }
+            
+            var html = '';
+            
+            // Hero区域
+            html += '<div class="dashboard-hero">';
+            html += '<div class="dashboard-hero-title">学习进度</div>';
+            html += '<div class="dashboard-hero-sub">让你的进步看得见</div>';
+            html += '<div class="dashboard-hero-countdown">';
+            html += '<span class="dashboard-hero-countdown-dot"></span>';
+            html += '距离四级考试还有 ' + daysToExam + ' 天</div>';
+            html += '</div>';
+            
+            // 概览卡片
+            html += '<div class="dashboard-overview">';
+            html += '<div class="dashboard-overview-card streak">';
+            html += '<div class="overview-icon" style="background:rgba(255,255,255,0.2)">🔥</div>';
+            html += '<div class="overview-num">' + streak.count + '</div>';
+            html += '<div class="overview-label">连续学习天数</div>';
+            html += '</div>';
+            html += '<div class="dashboard-overview-card">';
+            html += '<div class="overview-icon" style="background:#F0F0FF">📝</div>';
+            html += '<div class="overview-num">' + todayCount + '</div>';
+            html += '<div class="overview-label">今日练习题数</div>';
+            html += '</div>';
+            html += '<div class="dashboard-overview-card">';
+            html += '<div class="overview-icon" style="background:#FFF5F0">📚</div>';
+            html += '<div class="overview-num">' + totalPractice + '</div>';
+            html += '<div class="overview-label">累计练习题数</div>';
+            html += '</div>';
+            html += '<div class="dashboard-overview-card">';
+            html += '<div class="overview-icon" style="background:#F0FFF5">✅</div>';
+            html += '<div class="overview-num">' + accuracy + '%</div>';
+            html += '<div class="overview-label">总正确率</div>';
+            html += '</div>';
+            html += '</div>';
+            
+            // 雷达图区域
+            html += '<div class="dashboard-radar-section">';
+            html += '<div class="dashboard-radar-header">';
+            html += '<div class="dashboard-radar-title">📊 五维能力分析</div>';
+            if (weakDims.length > 0) {
+                html += '<div class="dashboard-radar-tip">💡 最弱项: ' + weakDims[0] + '</div>';
+            }
+            html += '</div>';
+            if (hasDimData) {
+                html += '<div class="dashboard-radar-canvas-wrap">';
+                html += '<canvas id="dashboard-radar-canvas" width="260" height="260"></canvas>';
+                html += '</div>';
+            } else {
+                html += '<div class="dashboard-radar-empty">';
+                html += '<div class="dashboard-radar-empty-icon">🔍</div>';
+                html += '<div class="dashboard-radar-empty-text">完成首次诊断后解锁<br>AI将分析你的五维能力</div>';
+                html += '</div>';
+            }
+            html += '</div>';
+            
+            // 45天计划进度
+            html += '<div class="dashboard-plan-section">';
+            html += '<div class="dashboard-plan-header">';
+            html += '<div class="dashboard-plan-title">📅 45天冲刺计划</div>';
+            html += '<div class="dashboard-plan-day">第 ' + currentDay + ' 天 / 45天</div>';
+            html += '</div>';
+            html += '<div class="dashboard-plan-progress">';
+            html += '<div class="dashboard-plan-progress-fill" style="width:' + planProgress + '%"></div>';
+            html += '</div>';
+            html += '<div class="dashboard-plan-footer">';
+            html += '<span>开始于 ' + formatDate(startDate) + '</span>';
+            html += '<span class="dashboard-plan-end">距考试 ' + daysToExam + ' 天</span>';
+            html += '</div>';
+            html += '</div>';
+            
+            // 近7天热力图
+            html += '<div class="dashboard-heatmap-section">';
+            html += '<div class="dashboard-heatmap-title">📈 近7天练习热力图</div>';
+            html += '<div class="dashboard-heatmap-grid">';
+            var dayLabels = ['一', '二', '三', '四', '五', '六', '日'];
+            for (var i = 0; i < 7; i++) {
+                var dayData = heatmapData[i] || { count: 0, label: '' };
+                var level = dayData.count === 0 ? '' : (dayData.count <= 3 ? 'level-1' : (dayData.count <= 7 ? 'level-2' : (dayData.count <= 12 ? 'level-3' : 'level-4')));
+                html += '<div class="dashboard-heatmap-cell ' + level + '">';
+                html += '<div class="dashboard-heatmap-tooltip">' + dayData.label + '<br>' + dayData.count + ' 题</div>';
+                html += '</div>';
+            }
+            html += '</div>';
+            html += '<div class="dashboard-heatmap-labels">';
+            for (var j = 0; j < 7; j++) {
+                html += '<div class="dashboard-heatmap-label">' + dayLabels[j] + '</div>';
+            }
+            html += '</div>';
+            html += '</div>';
+            
+            // 薄弱项卡片
+            if (weakDims.length > 0) {
+                html += '<div class="dashboard-weak-section">';
+                html += '<div class="dashboard-section-title">⚠️ 薄弱项专项提升</div>';
+                weakDims.forEach(function(dim) {
+                    var config = DIM_CONFIGS[dim] || {};
+                    var score = dims[dim] || 0;
+                    var actionText = getWeakActionText(dim, score);
+                    html += '<div class="dashboard-weak-card" onclick="openQuiz()">';
+                    html += '<div class="dashboard-weak-icon" style="background:' + (config.color || '#6C5CE7') + '20">';
+                    html += config.icon || '📚';
+                    html += '</div>';
+                    html += '<div class="dashboard-weak-info">';
+                    html += '<div class="dashboard-weak-name">' + dim + '</div>';
+                    html += '<div class="dashboard-weak-score">当前分数: ' + score + '分</div>';
+                    html += '<div class="dashboard-weak-action">' + actionText + '</div>';
+                    html += '</div>';
+                    html += '<div class="dashboard-weak-arrow">→</div>';
+                    html += '</div>';
+                });
+                html += '</div>';
+            }
+            
+            // 预估分数
+            if (hasDimData) {
+                var targetScore = 500; // 默认目标
+                var diff = targetScore - estimatedScore;
+                var scorePercent = Math.round(((estimatedScore - 425) / (710 - 425)) * 100);
+                html += '<div class="dashboard-score-section">';
+                html += '<div class="dashboard-score-header">';
+                html += '<div class="dashboard-score-title">🎯 预估分数</div>';
+                html += '<div class="dashboard-score-target">目标: ' + targetScore + ' 分</div>';
+                html += '</div>';
+                html += '<div class="dashboard-score-main">';
+                html += '<span class="dashboard-score-num">' + estimatedScore + '</span>';
+                html += '<span class="dashboard-score-unit">分</span>';
+                html += '</div>';
+                html += '<div class="dashboard-score-bar">';
+                html += '<div class="dashboard-score-bar-fill" style="width:' + Math.min(100, scorePercent) + '%"></div>';
+                html += '</div>';
+                html += '<div class="dashboard-score-footer">';
+                html += '<span>及格线 425分</span>';
+                if (diff > 0) {
+                    html += '<span class="dashboard-score-diff">还差 ' + diff + ' 分</span>';
+                } else {
+                    html += '<span style="color:#00B894">🎉 已超过目标!</span>';
+                }
+                html += '</div>';
+                html += '</div>';
+            }
+            
+            container.innerHTML = html;
+            
+            // 绘制雷达图
+            if (hasDimData) {
+                setTimeout(function() {
+                    drawDashboardRadar(dims);
+                }, 100);
+            }
+        }
+        
+        function drawDashboardRadar(data) {
+            var canvas = document.getElementById('dashboard-radar-canvas');
+            if (!canvas) return;
+            
+            var ctx = canvas.getContext('2d');
+            var dpr = window.devicePixelRatio || 1;
+            var size = 240;
+            
+            canvas.width = size * dpr;
+            canvas.height = size * dpr;
+            canvas.style.width = size + 'px';
+            canvas.style.height = size + 'px';
+            ctx.scale(dpr, dpr);
+            
+            var centerX = size / 2;
+            var centerY = size / 2;
+            var maxRadius = 85;
+            
+            var dims = Object.keys(DIM_CONFIGS);
+            var n = dims.length;
+            var angleStep = (Math.PI * 2) / n;
+            
+            // 背景网格
+            ctx.strokeStyle = '#F1F5F9';
+            ctx.lineWidth = 1;
+            for (var r = 1; r <= 5; r++) {
+                ctx.beginPath();
+                for (var i = 0; i <= n; i++) {
+                    var angle = i * angleStep - Math.PI / 2;
+                    var x = centerX + Math.cos(angle) * (r * maxRadius / 5);
+                    var y = centerY + Math.sin(angle) * (r * maxRadius / 5);
+                    if (i === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.closePath();
+                ctx.stroke();
+            }
+            
+            // 径向线
+            for (var i = 0; i < n; i++) {
+                var angle = i * angleStep - Math.PI / 2;
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.lineTo(centerX + Math.cos(angle) * maxRadius, centerY + Math.sin(angle) * maxRadius);
+                ctx.stroke();
+            }
+            
+            // 数据区域
+            var gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, maxRadius);
+            gradient.addColorStop(0, 'rgba(108,92,231,0.3)');
+            gradient.addColorStop(1, 'rgba(108,92,231,0.1)');
+            
+            ctx.beginPath();
+            for (var i = 0; i <= n; i++) {
+                var idx = i % n;
+                var dimName = dims[idx];
+                var score = data[dimName] || 0;
+                var r = (score / 100) * maxRadius;
+                var angle = i * angleStep - Math.PI / 2;
+                var x = centerX + Math.cos(angle) * r;
+                var y = centerY + Math.sin(angle) * r;
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.closePath();
+            ctx.fillStyle = gradient;
+            ctx.fill();
+            ctx.strokeStyle = '#6C5CE7';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            
+            // 数据点
+            for (var i = 0; i < n; i++) {
+                var dimName = dims[i];
+                var score = data[dimName] || 0;
+                var r = (score / 100) * maxRadius;
+                var angle = i * angleStep - Math.PI / 2;
+                var x = centerX + Math.cos(angle) * r;
+                var y = centerY + Math.sin(angle) * r;
+                
+                ctx.beginPath();
+                ctx.arc(x, y, 4, 0, Math.PI * 2);
+                ctx.fillStyle = '#6C5CE7';
+                ctx.fill();
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            }
+            
+            // 标签
+            ctx.fillStyle = '#475569';
+            ctx.font = '12px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            
+            for (var i = 0; i < n; i++) {
+                var dimName = dims[i];
+                var config = DIM_CONFIGS[dimName] || {};
+                var angle = i * angleStep - Math.PI / 2;
+                var labelR = maxRadius + 22;
+                var x = centerX + Math.cos(angle) * labelR;
+                var y = centerY + Math.sin(angle) * labelR;
+                
+                var score = data[dimName] || 0;
+                
+                ctx.fillStyle = '#64748B';
+                ctx.fillText(dimName, x, y);
+                ctx.fillStyle = '#475569';
+                ctx.font = 'bold 14px -apple-system, BlinkMacSystemFont, sans-serif';
+                ctx.fillText(score + '', x, y + 16);
+                ctx.font = '12px -apple-system, BlinkMacSystemFont, sans-serif';
+            }
+        }
+        
+        function getPracticeHistory() {
+            try {
+                var data = localStorage.getItem('cet4_practice_history');
+                if (data) return JSON.parse(data);
+                // 兼容旧数据
+                var oldData = localStorage.getItem('cet_practice_history');
+                if (oldData) return JSON.parse(oldData);
+            } catch(e) {}
+            return [];
+        }
+        
+        function getAbilityScores() {
+            try {
+                var data = localStorage.getItem('cet4_ability_scores');
+                if (data) return JSON.parse(data);
+                // 兼容旧数据: 从cet_user中读取诊断数据
+                var userData = JSON.parse(localStorage.getItem('cet_user') || '{}');
+                if (userData && userData.diagnosis) {
+                    return { dims: userData.diagnosis };
+                }
+            } catch(e) {}
+            return null;
+        }
+        
+        function getUserProfile() {
+            try {
+                var data = localStorage.getItem('cet4_user_profile');
+                if (data) return JSON.parse(data);
+                // 兼容旧数据
+                var userData = JSON.parse(localStorage.getItem('cet_user') || '{}');
+                if (userData && userData.startDate) {
+                    return { startDate: userData.startDate };
+                }
+            } catch(e) {}
+            return {};
+        }
+        
+        function getHeatmapData() {
+            var result = [];
+            var today = new Date();
+            var practiceHistory = getPracticeHistory();
+            
+            for (var i = 6; i >= 0; i--) {
+                var d = new Date(today);
+                d.setDate(d.getDate() - i);
+                var dateStr = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+                var dayNames = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+                var label = dayNames[d.getDay()];
+                
+                var count = 0;
+                practiceHistory.forEach(function(item) {
+                    if (item.date === dateStr) {
+                        count += (item.count || 1);
+                    }
+                });
+                
+                result.push({ date: dateStr, count: count, label: label });
+            }
+            return result;
+        }
+        
+        function getDaysDiff(startDate, endDate) {
+            var start = new Date(startDate);
+            var end = new Date(endDate);
+            return Math.floor((end - start) / (1000 * 60 * 60 * 24));
+        }
+        
+        function formatDate(dateStr) {
+            var parts = dateStr.split('-');
+            if (parts.length === 3) {
+                return parseInt(parts[1]) + '月' + parseInt(parts[2]) + '日';
+            }
+            return dateStr;
+        }
+        
+        function getWeakActionText(dim, score) {
+            var actions = {
+                '细节定位': '做5道细节定位题强化训练',
+                '推理判断': '练习推理判断专项突破',
+                '同义替换': '积累同义替换词汇短语',
+                '主旨归纳': '练习段落主旨概括技巧',
+                '态度判断': '分析作者态度词练习'
+            };
+            return actions[dim] || '针对性练习提升';
         }
 
         function renderPersonalities() {
@@ -4592,6 +5174,336 @@
             openChat('chat');
         }
 
+        // ===== 对话列表管理 =====
+        var currentConversationId = null; // 当前活跃对话ID
+        var chatListView = null; // 是否显示对话列表
+
+        // 获取对话列表
+        function getChatList() {
+            try {
+                var list = localStorage.getItem('cet_chat_list');
+                return list ? JSON.parse(list) : [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        // 保存对话列表
+        function saveChatList(list) {
+            localStorage.setItem('cet_chat_list', JSON.stringify(list));
+        }
+
+        // 格式化时间
+        function formatChatTime(timestamp) {
+            if (!timestamp) return '';
+            var now = Date.now();
+            var diff = now - timestamp;
+            var minutes = Math.floor(diff / 60000);
+            var hours = Math.floor(diff / 3600000);
+            var days = Math.floor(diff / 86400000);
+            
+            if (minutes < 1) return '刚刚';
+            if (minutes < 60) return minutes + '分钟前';
+            if (hours < 24) return hours + '小时前';
+            if (days === 1) return '昨天';
+            if (days < 7) return days + '天前';
+            
+            var d = new Date(timestamp);
+            var month = d.getMonth() + 1;
+            var day = d.getDate();
+            return month + '月' + day + '日';
+        }
+
+        // 截断文本
+        function truncateText(text, maxLen) {
+            if (!text) return '';
+            text = text.replace(/<[^>]+>/g, ''); // 去掉HTML标签
+            if (text.length <= maxLen) return text;
+            return text.substring(0, maxLen) + '...';
+        }
+
+        // 渲染对话列表
+        function renderChatList() {
+            var list = getChatList();
+            var container = document.getElementById('chat-list-body');
+            if (!container) return;
+
+            if (list.length === 0) {
+                container.innerHTML = '<div class="chat-list-empty">' +
+                    '<div class="chat-list-empty-icon">' +
+                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>' +
+                    '</div>' +
+                    '<div class="chat-list-empty-text">开始你的第一次对话吧</div>' +
+                    '<div class="chat-list-empty-sub">点击右上角"新建对话"开始</div>' +
+                    '</div>';
+                return;
+            }
+
+            var html = '';
+            for (var i = 0; i < list.length; i++) {
+                var item = list[i];
+                var isActive = currentConversationId === item.id;
+                var modeClass = item.mode || 'diagnosis';
+                var modeIcon = modeClass === 'diagnosis' 
+                    ? '<svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>'
+                    : '<svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>';
+                var modeTag = modeClass === 'diagnosis' ? '诊断' : '陪练';
+                var preview = truncateText(item.lastMsg, 30) || '暂无消息';
+                var timeStr = formatChatTime(item.lastMsgTime);
+                
+                html += '<div class="chat-card' + (isActive ? ' active' : '') + '" onclick="openConversation('' + item.id + '')">' +
+                    '<div class="chat-card-icon ' + modeClass + '">' + modeIcon + '</div>' +
+                    '<div class="chat-card-content">' +
+                    '<div class="chat-card-header">' +
+                    '<div class="chat-card-title">' + truncateText(item.title, 20) + '</div>' +
+                    '<div class="chat-card-tag ' + modeClass + '">' + modeTag + '</div>' +
+                    '</div>' +
+                    '<div class="chat-card-preview">' + preview + '</div>' +
+                    '<div class="chat-card-time">' + timeStr + '</div>' +
+                    '</div>' +
+                    '<button class="chat-card-delete" onclick="event.stopPropagation();deleteConversation('' + item.id + '')">' +
+                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>' +
+                    '</button>' +
+                    '</div>';
+            }
+            container.innerHTML = html;
+        }
+
+        // 显示新建对话弹窗
+        function showNewChatModal() {
+            var modal = document.getElementById('new-chat-modal');
+            var companionOpt = document.getElementById('companion-option');
+            var data = state.userData || {};
+            var hasDiagnosis = data.personality || (data.diagnosis && data.diagnosis.type);
+            
+            // 如果没有诊断过，禁用陪练选项
+            if (!hasDiagnosis) {
+                companionOpt.classList.add('disabled');
+                companionOpt.querySelector('.new-chat-option-icon').classList.add('disabled');
+            } else {
+                companionOpt.classList.remove('disabled');
+                companionOpt.querySelector('.new-chat-option-icon').classList.remove('disabled');
+            }
+            
+            modal.classList.add('show');
+        }
+
+        // 隐藏新建对话弹窗
+        function hideNewChatModal() {
+            var modal = document.getElementById('new-chat-modal');
+            modal.classList.remove('show');
+        }
+
+        // 创建新对话
+        function createNewChat(mode) {
+            mode = mode || 'diagnosis';
+            hideNewChatModal();
+            
+            // 重置聊天状态（新建对话）
+            var botMap = {
+                'diagnosis': '7636289658620215331',
+                'companion': '7637702903679631395'
+            };
+            
+            chatState.botId = botMap[mode];
+            chatState.conversationId = null; // 新对话，等待API返回ID
+            chatState.chatId = null;
+            chatState.chatRounds = 0;
+            chatState.messages = [];
+            chatState.chatHistory = [];
+            chatState.isStreaming = false;
+            chatState.currentStreamText = '';
+            chatState.currentMode = mode; // 保存当前模式
+            
+            // 清空消息显示
+            var container = document.getElementById('chat-messages');
+            container.innerHTML = '<div class="custom-chat-msg ai">' +
+                '<div class="custom-chat-avatar"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>' +
+                '<div class="custom-chat-bubble">' +
+                '<p>嗨！我是小过学长 👋</p>' +
+                '<p>基于<strong>海量</strong>真题数据分析你的薄弱点，随时问我任何备考问题</p>' +
+                '<div class="custom-chat-time">刚刚</div>' +
+                '</div></div>';
+            
+            // 更新标题
+            document.getElementById('chat-title').textContent = mode === 'diagnosis' ? '小过学长' : 'AI陪练';
+            
+            // 显示聊天界面，隐藏对话列表
+            document.getElementById('chat-list-view').classList.remove('active');
+            document.getElementById('chat-page').style.display = 'flex';
+            
+            // 隐藏/显示重新诊断按钮
+            var rediagBtn = document.getElementById('btn-rediag');
+            if (rediagBtn) {
+                var hasDiag = data.personality || (data.diagnosis && data.diagnosis.type);
+                rediagBtn.style.display = (mode === 'companion' && hasDiag) ? 'flex' : 'none';
+            }
+            
+            // 初始化快捷chips
+            initChatChips(mode);
+            
+            // 显示chips
+            var chips = document.getElementById('input-chips');
+            if (chips) chips.style.display = '';
+            
+            chatListView = false;
+            currentConversationId = null;
+        }
+
+        // 打开已有对话
+        function openConversation(convId) {
+            var list = getChatList();
+            var item = null;
+            for (var i = 0; i < list.length; i++) {
+                if (list[i].id === convId) {
+                    item = list[i];
+                    break;
+                }
+            }
+            if (!item) {
+                showToast('对话不存在');
+                return;
+            }
+            
+            var mode = item.mode || 'diagnosis';
+            var botMap = {
+                'diagnosis': '7636289658620215331',
+                'companion': '7637702903679631395'
+            };
+            
+            // 重置聊天状态
+            chatState.botId = botMap[mode];
+            chatState.conversationId = convId;
+            chatState.chatId = null;
+            chatState.chatRounds = 0;
+            chatState.messages = [];
+            chatState.chatHistory = [];
+            chatState.isStreaming = false;
+            chatState.currentStreamText = '';
+            chatState.currentMode = mode;
+            
+            // 更新标题
+            document.getElementById('chat-title').textContent = mode === 'diagnosis' ? '小过学长' : 'AI陪练';
+            
+            // 显示聊天界面，隐藏对话列表
+            document.getElementById('chat-list-view').classList.remove('active');
+            document.getElementById('chat-page').style.display = 'flex';
+            
+            // 隐藏/显示重新诊断按钮
+            var rediagBtn = document.getElementById('btn-rediag');
+            if (rediagBtn) {
+                var data = state.userData || {};
+                var hasDiag = data.personality || (data.diagnosis && data.diagnosis.type);
+                rediagBtn.style.display = (mode === 'companion' && hasDiag) ? 'flex' : 'none';
+            }
+            
+            // 隐藏chips（已有历史消息）
+            var chips = document.getElementById('input-chips');
+            if (chips) chips.style.display = 'none';
+            
+            chatListView = false;
+            currentConversationId = convId;
+            
+            // 加载历史消息
+            loadChatHistory(convId);
+        }
+
+        // 删除对话
+        function deleteConversation(convId) {
+            var list = getChatList();
+            var newList = [];
+            for (var i = 0; i < list.length; i++) {
+                if (list[i].id !== convId) {
+                    newList.push(list[i]);
+                }
+            }
+            saveChatList(newList);
+            
+            // 如果删除的是当前对话，切换到对话列表
+            if (currentConversationId === convId) {
+                currentConversationId = null;
+                showChatList();
+            }
+            
+            renderChatList();
+            showToast('对话已删除');
+        }
+
+        // 更新对话元数据
+        function updateConversationMeta(userMsg, botMsg) {
+            if (!chatState.conversationId) return;
+            
+            var list = getChatList();
+            var found = false;
+            
+            for (var i = 0; i < list.length; i++) {
+                if (list[i].id === chatState.conversationId) {
+                    found = true;
+                    // 更新最后一条消息
+                    list[i].lastMsg = botMsg || userMsg;
+                    list[i].lastMsgTime = Date.now();
+                    // 自动生成标题（只在第一轮对话时）
+                    if (chatState.chatRounds === 1 && userMsg) {
+                        list[i].title = truncateText(userMsg, 20);
+                    }
+                    // 移到列表头部
+                    var item = list.splice(i, 1)[0];
+                    list.unshift(item);
+                    break;
+                }
+            }
+            
+            if (!found && chatState.conversationId) {
+                // 新对话，添加到列表
+                var mode = chatState.currentMode || 'diagnosis';
+                var botMap = {
+                    'diagnosis': '7636289658620215331',
+                    'companion': '7637702903679631395'
+                };
+                var newItem = {
+                    id: chatState.conversationId,
+                    title: truncateText(userMsg, 20),
+                    mode: mode,
+                    botId: botMap[mode],
+                    lastMsg: userMsg,
+                    lastMsgTime: Date.now(),
+                    createdAt: Date.now()
+                };
+                list.unshift(newItem);
+            }
+            
+            saveChatList(list);
+            renderChatList();
+        }
+
+        // 显示对话列表
+        function showChatList() {
+            document.getElementById('chat-list-view').classList.add('active');
+            document.getElementById('chat-page').style.display = 'none';
+            chatListView = true;
+            currentConversationId = null;
+            renderChatList();
+        }
+
+        // 修改返回按钮逻辑
+        function handleChatBack() {
+            if (chatListView) {
+                // 已经在对话列表，返回首页
+                switchTab('home');
+            } else {
+                // 切换到对话列表
+                showChatList();
+            }
+        }
+
+        // 页面加载时恢复对话列表状态
+        function restoreChatState() {
+            // 默认显示对话列表
+            showChatList();
+        }
+
+        // ===== Custom Chat UI Logic =====
+
 // ===== Custom Chat UI Logic =====
         var chatState = {
             conversationId: null,
@@ -4601,7 +5513,9 @@
             messages: [],
             chatRounds: 0,
             currentStreamText: '',
-            chatHistory: []
+            chatHistory: [],
+            currentMode: 'diagnosis',
+            hasReplied: false
         };
 
         function openChat(mode) {
@@ -4614,69 +5528,55 @@
             if (mode === 'chat') {
                 mode = hasDiagnosis ? 'companion' : 'diagnosis';
             }
-            // 注意：mode='diagnosis' 时不自动跳转companion，让重新诊断按钮能正常工作
+            
+            // 复用createNewChat逻辑，但不切换tab
             var botMap = {
                 'diagnosis': '7636289658620215331',
                 'companion': '7637702903679631395'
             };
-            var newBotId = botMap[mode] || botMap['diagnosis'];
             
-            // 关键：切换Bot时必须重置conversationId，否则用旧Bot会话调新Bot会报错
-            if (chatState.botId !== newBotId) {
-                // 保存当前Bot的会话到localStorage
-                if (chatState.botId === botMap['companion'] && chatState.conversationId) {
-                    localStorage.setItem('cet_companion_conv', chatState.conversationId);
-                }
-                if (chatState.botId === botMap['diagnosis'] && chatState.conversationId) {
-                    localStorage.setItem('cet_diagnosis_conv', chatState.conversationId);
-                }
-                // 切换Bot，重置会话状态
-                chatState.botId = newBotId;
-                chatState.conversationId = null;
-                localStorage.setItem('cet_last_chat_mode', mode);
-                chatState.chatId = null;
-                chatState.chatRounds = 0;
-                chatState.messages = [];
-                chatState.chatHistory = [];
-                chatState.isStreaming = false;
-                chatState.currentStreamText = '';
-            }
+            chatState.botId = botMap[mode];
+            chatState.conversationId = null;
+            chatState.chatId = null;
+            chatState.chatRounds = 0;
+            chatState.messages = [];
+            chatState.chatHistory = [];
+            chatState.isStreaming = false;
+            chatState.currentStreamText = '';
+            chatState.currentMode = mode;
+            chatState.hasReplied = false;
             
+            // 清空消息显示
+            var container = document.getElementById('chat-messages');
+            container.innerHTML = '<div class="custom-chat-msg ai">' +
+                '<div class="custom-chat-avatar"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>' +
+                '<div class="custom-chat-bubble">' +
+                '<p>嗨！我是小过学长 👋</p>' +
+                '<p>基于<strong>海量</strong>真题数据分析你的薄弱点，随时问我任何备考问题</p>' +
+                '<div class="custom-chat-time">刚刚</div>' +
+                '</div></div>';
+            
+            // 更新标题
             document.getElementById('chat-title').textContent = mode === 'diagnosis' ? '小过学长' : 'AI陪练';
             
-            // 陪练模式：恢复之前的会话，或显示过渡提示
-            if (mode === 'companion') {
-                var savedConv = localStorage.getItem('cet_companion_conv');
-                if (savedConv && !chatState.conversationId) {
-                    chatState.conversationId = savedConv;
-                    loadChatHistory(savedConv);
-                } else if (!chatState.conversationId && hasDiagnosis) {
-                    // 第一次从诊断切过来，没有陪练历史，显示过渡提示
-                    var container = document.getElementById('chat-messages');
-                    container.innerHTML = '';
-                    var diagType = data.personality || (data.diagnosis && data.diagnosis.type) || '';
-                    appendMessage('system', '✅ 诊断完成！已为你切换到陪练模式');
-                    if (diagType) {
-                        appendMessage('system', '你是「' + diagType + '」，接下来的训练会针对你的薄弱点');
-                    }
-                }
-            }
-            // 诊断模式：恢复之前的诊断会话
-            if (mode === 'diagnosis') {
-                var savedDiagConv = localStorage.getItem('cet_diagnosis_conv');
-                if (savedDiagConv && !chatState.conversationId) {
-                    chatState.conversationId = savedDiagConv;
-                    loadChatHistory(savedDiagConv);
-                }
-            }
-            
+            // 隐藏/显示重新诊断按钮
             var rediagBtn = document.getElementById('btn-rediag');
-            if (rediagBtn) rediagBtn.style.display = (mode === 'companion' && hasDiagnosis) ? 'flex' : 'none';
+            if (rediagBtn) {
+                rediagBtn.style.display = (mode === 'companion' && hasDiagnosis) ? 'flex' : 'none';
+            }
             
-            // 初始化chips快捷建议
+            // 初始化快捷chips
             initChatChips(mode);
             
+            // 切换到诊断tab，显示聊天界面
+            document.getElementById('chat-list-view').classList.remove('active');
+            document.getElementById('chat-page').style.display = 'flex';
             switchTab('diagnosis');
+            
+            // 如果有初始消息，延迟发送
+            if (arguments[1]) {
+                setTimeout(function() { sendSuggestion(arguments[1]); }, 300);
+            }
         }
         
         function initChatChips(mode) {
@@ -4855,394 +5755,18 @@
                 data.chatCount = (data.chatCount || 0) + 1;
                 state.userData = data;
                 localStorage.setItem('cet_user', JSON.stringify(data));
+                
+                // 设置cet4_user_profile的startDate（如果还没有）
+                try {
+                    var profile = JSON.parse(localStorage.getItem('cet4_user_profile') || '{}');
+                    if (!profile.startDate) {
+                        profile.startDate = today;
+                        localStorage.setItem('cet4_user_profile', JSON.stringify(profile));
+                    }
+                } catch(e) {}
             }
             return true;
         }
-
-        // ===== CET4Data 统一数据管理模块 =====
-        var CET4Data = {
-            // 练习历史
-            getPracticeHistory: function() {
-                try {
-                    var data = localStorage.getItem('cet4_practice_history');
-                    return data ? JSON.parse(data) : [];
-                } catch(e) { return []; }
-            },
-            savePracticeRecord: function(record) {
-                var history = this.getPracticeHistory();
-                record.date = getTodayStr();
-                record.timestamp = Date.now();
-                history.push(record);
-                // 保留最近100条
-                if (history.length > 100) history = history.slice(-100);
-                localStorage.setItem('cet4_practice_history', JSON.stringify(history));
-            },
-            
-            // 错题本
-            getWrongAnswers: function() {
-                try {
-                    var data = localStorage.getItem('cet4_wrong_answers');
-                    return data ? JSON.parse(data) : [];
-                } catch(e) { return []; }
-            },
-            saveWrongAnswer: function(item) {
-                var wrongs = this.getWrongAnswers();
-                // 检查是否已存在
-                var existIdx = wrongs.findIndex(function(w) { return w.question === item.question; });
-                if (existIdx >= 0) {
-                    // 更新已有错题
-                    wrongs[existIdx].reviewCount = (wrongs[existIdx].reviewCount || 0) + 1;
-                    wrongs[existIdx].lastReviewDate = getTodayStr();
-                    wrongs[existIdx].lastUserAnswer = item.userAnswer;
-                    wrongs[existIdx].mastered = false;
-                    // 重新计算复习时间
-                    wrongs[existIdx].nextReviewDate = this.calcNextReviewDate(wrongs[existIdx].reviewCount);
-                } else {
-                    // 新增错题
-                    item.id = 'wa_' + Date.now();
-                    item.reviewCount = 0;
-                    item.nextReviewDate = this.calcNextReviewDate(0);
-                    item.mastered = false;
-                    item.createdDate = getTodayStr();
-                    wrongs.push(item);
-                }
-                localStorage.setItem('cet4_wrong_answers', JSON.stringify(wrongs));
-                this.updateHomeWrongBadge();
-            },
-            calcNextReviewDate: function(reviewCount) {
-                var days = [1, 3, 7, 14, 30][Math.min(reviewCount, 4)];
-                var d = new Date();
-                d.setDate(d.getDate() + days);
-                return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
-            },
-            getDueReviews: function() {
-                var today = getTodayStr();
-                return this.getWrongAnswers().filter(function(w) {
-                    return !w.mastered && w.nextReviewDate <= today;
-                });
-            },
-            getWrongStats: function() {
-                var wrongs = this.getWrongAnswers();
-                return {
-                    total: wrongs.length,
-                    mastered: wrongs.filter(function(w) { return w.mastered; }).length,
-                    due: this.getDueReviews().length
-                };
-            },
-            markReviewed: function(id, correct) {
-                var wrongs = this.getWrongAnswers();
-                var idx = wrongs.findIndex(function(w) { return w.id === id; });
-                if (idx >= 0) {
-                    if (correct) {
-                        wrongs[idx].reviewCount++;
-                        if (wrongs[idx].reviewCount >= 3) {
-                            wrongs[idx].mastered = true;
-                        } else {
-                            wrongs[idx].nextReviewDate = this.calcNextReviewDate(wrongs[idx].reviewCount);
-                        }
-                    } else {
-                        // 答错，从头开始间隔
-                        wrongs[idx].reviewCount = 0;
-                        wrongs[idx].nextReviewDate = this.calcNextReviewDate(0);
-                        wrongs[idx].mastered = false;
-                    }
-                    localStorage.setItem('cet4_wrong_answers', JSON.stringify(wrongs));
-                    this.updateHomeWrongBadge();
-                }
-            },
-            markMastered: function(id) {
-                var wrongs = this.getWrongAnswers();
-                var idx = wrongs.findIndex(function(w) { return w.id === id; });
-                if (idx >= 0) {
-                    wrongs[idx].mastered = true;
-                    localStorage.setItem('cet4_wrong_answers', JSON.stringify(wrongs));
-                    this.updateHomeWrongBadge();
-                }
-            },
-            deleteWrongAnswer: function(id) {
-                var wrongs = this.getWrongAnswers().filter(function(w) { return w.id !== id; });
-                localStorage.setItem('cet4_wrong_answers', JSON.stringify(wrongs));
-                this.updateHomeWrongBadge();
-            },
-            updateHomeWrongBadge: function() {
-                var stats = this.getWrongStats();
-                var badge = document.getElementById('wrong-badge');
-                if (badge) {
-                    if (stats.due > 0) {
-                        badge.textContent = stats.due;
-                        badge.style.display = '';
-                    } else {
-                        badge.style.display = 'none';
-                    }
-                }
-            },
-            
-            // 五维能力分数
-            getAbilityScores: function() {
-                try {
-                    var data = localStorage.getItem('cet4_ability_scores');
-                    if (data) return JSON.parse(data);
-                } catch(e) {}
-                return { '细节定位': 50, '推理判断': 50, '同义替换': 50, '主旨归纳': 50, '态度判断': 50 };
-            },
-            saveAbilityScores: function(scores) {
-                localStorage.setItem('cet4_ability_scores', JSON.stringify(scores));
-            },
-            updateAbilityScores: function(questionType, correct) {
-                var scores = this.getAbilityScores();
-                // 题目类型映射到五维
-                var typeMap = {
-                    '词汇': '同义替换',
-                    '语法': '细节定位',
-                    '阅读': '推理判断',
-                    '听力': '推理判断'
-                };
-                var dimension = typeMap[questionType] || '细节定位';
-                
-                // 计算分数变化
-                var current = scores[dimension] || 50;
-                var delta;
-                if (correct) {
-                    // 答对加3-5分，越接近100加越少
-                    delta = Math.max(1, Math.round(5 * (1 - (current - 50) / 100)));
-                } else {
-                    // 答错减2-3分，越接近0减越少
-                    delta = -Math.max(1, Math.round(3 * (1 - current / 100)));
-                }
-                
-                scores[dimension] = Math.max(0, Math.min(100, current + delta));
-                this.saveAbilityScores(scores);
-                return scores;
-            },
-            getWeakestDimension: function() {
-                var scores = this.getAbilityScores();
-                var minScore = 100;
-                var weakest = '细节定位';
-                for (var dim in scores) {
-                    if (scores[dim] < minScore) {
-                        minScore = scores[dim];
-                        weakest = dim;
-                    }
-                }
-                return weakest;
-            },
-            getDifficultyLevel: function(dimension) {
-                var scores = this.getAbilityScores();
-                var score = scores[dimension] || 50;
-                if (score < 40) return '基础';
-                if (score <= 70) return '中等';
-                return '进阶';
-            },
-            
-            // 用户配置
-            getUserProfile: function() {
-                try {
-                    var data = localStorage.getItem('cet4_user_profile');
-                    return data ? JSON.parse(data) : {};
-                } catch(e) { return {}; }
-            },
-            saveUserProfile: function(profile) {
-                localStorage.setItem('cet4_user_profile', JSON.stringify(profile));
-            },
-            
-            // 获取今日练习题数
-            getTodayPracticeCount: function() {
-                var history = this.getPracticeHistory();
-                var today = getTodayStr();
-                var todayRecords = history.filter(function(r) { return r.date === today; });
-                var count = 0;
-                todayRecords.forEach(function(r) {
-                    count += (r.correct || 0) + (r.wrong || 0);
-                });
-                return count;
-            },
-            
-            // 获取总练习题数
-            getTotalPracticeCount: function() {
-                var history = this.getPracticeHistory();
-                var total = 0;
-                history.forEach(function(r) {
-                    total += (r.correct || 0) + (r.wrong || 0);
-                });
-                return total;
-            },
-            
-            // 获取总正确率
-            getTotalAccuracy: function() {
-                var history = this.getPracticeHistory();
-                var totalCorrect = 0;
-                var totalQuestions = 0;
-                history.forEach(function(r) {
-                    totalCorrect += r.correct || 0;
-                    totalQuestions += (r.correct || 0) + (r.wrong || 0);
-                });
-                if (totalQuestions === 0) return 0;
-                return Math.round((totalCorrect / totalQuestions) * 100);
-            },
-            
-            // 获取近7天练习热力图数据
-            getHeatmapData: function() {
-                var history = this.getPracticeHistory();
-                var result = [];
-                var today = new Date();
-                for (var i = 6; i >= 0; i--) {
-                    var d = new Date(today);
-                    d.setDate(d.getDate() - i);
-                    var dateStr = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
-                    var dayRecords = history.filter(function(r) { return r.date === dateStr; });
-                    var count = 0;
-                    dayRecords.forEach(function(r) {
-                        count += (r.correct || 0) + (r.wrong || 0);
-                    });
-                    result.push({ date: dateStr, count: count });
-                }
-                return result;
-            },
-            
-            // 获取45天计划进度
-            getPlanProgress: function() {
-                var profile = this.getUserProfile();
-                if (!profile.startDate) return null;
-                var start = new Date(profile.startDate);
-                var now = new Date();
-                var daysPassed = Math.floor((now - start) / (1000 * 60 * 60 * 24));
-                var progress = Math.min(100, Math.round((daysPassed / 45) * 100));
-                return {
-                    daysPassed: daysPassed,
-                    progress: progress,
-                    startDate: profile.startDate
-                };
-            },
-
-            getDynamicPlan: function() {
-                var EXAM_DATE = new Date('2026-06-13');
-                var now = new Date(); now.setHours(0,0,0,0);
-                var profile = this.getUserProfile();
-                var startDate = profile.startDate ? new Date(profile.startDate) : now; startDate.setHours(0,0,0,0);
-                var scores = this.getAbilityScores();
-                
-                var daysRemaining = Math.max(1, Math.ceil((EXAM_DATE - now) / 864e5));
-                var daysPassed = Math.max(0, Math.floor((now - startDate) / 864e5));
-                var totalDays = Math.max(1, daysRemaining + daysPassed);
-                
-                var phase1End = Math.floor(totalDays * 0.33);
-                var phase2End = Math.floor(totalDays * 0.66);
-                
-                var dims = Object.keys(scores).map(function(k) { return { name: k, score: scores[k] }; });
-                dims.sort(function(a, b) { return a.score - b.score; });
-                var weakest = dims[0] ? dims[0].name : '推理判断';
-                var secondWeak = dims[1] ? dims[1].name : '同义替换';
-                
-                var dimCfg = {
-                    '细节定位': { icon: '🔍', type: 'reading', act: '练3道细节定位题' },
-                    '推理判断': { icon: '🧠', type: 'inference', act: '练3道推理判断题' },
-                    '同义替换': { icon: '🔄', type: 'words', act: '练10组同义替换' },
-                    '主旨归纳': { icon: '📋', type: 'mainidea', act: '练3道主旨归纳题' },
-                    '态度判断': { icon: '🎯', type: 'attitude', act: '练3道态度判断题' }
-                };
-                var wC = dimCfg[weakest] || dimCfg['推理判断'];
-                var sC = dimCfg[secondWeak] || dimCfg['同义替换'];
-                
-                var templates = {
-                    phase1: [
-                        { t: '词汇积累', d: '背30个核心词汇+做10组同义替换', i: '📚', y: 'words' },
-                        { t: weakest+'基础', d: wC.act+'，掌握基本方法', i: wC.icon, y: wC.type },
-                        { t: '语法梳理', d: '复习1个语法点+做5道语法题', i: '📐', y: 'grammar' },
-                        { t: secondWeak+'入门', d: sC.act+'，了解出题套路', i: sC.icon, y: sC.type },
-                        { t: '阅读基础', d: '做1篇阅读理解，精读+标注生词', i: '📖', y: 'reading' },
-                        { t: '听力入门', d: '听1段短文，做5道听力题', i: '🎧', y: 'listening' },
-                        { t: '综合练习', d: '做1套mini练习(各题型2道)', i: '✏️', y: 'mixed' }
-                    ],
-                    phase2: [
-                        { t: weakest+'强化', d: '集中练5道'+weakest+'题', i: wC.icon, y: wC.type },
-                        { t: '错题复习', d: '复习待复习错题，确保掌握', i: '🔁', y: 'review' },
-                        { t: secondWeak+'突破', d: '集中练5道'+secondWeak+'题', i: sC.icon, y: sC.type },
-                        { t: '作文训练', d: '写1篇作文+提交AI批改', i: '✍️', y: 'essay' },
-                        { t: '翻译训练', d: '做2段中译英+对照参考译文', i: '🌐', y: 'translation' },
-                        { t: '听力强化', d: '听2段材料+做10道题', i: '🎧', y: 'listening' },
-                        { t: '综合测试', d: '做1套模拟(各题型5道)', i: '📊', y: 'mixed' }
-                    ],
-                    phase3: [
-                        { t: '全真模拟', d: '限时做1套模拟题', i: '⏱️', y: 'mock' },
-                        { t: '错题冲刺', d: '重做所有未掌握错题', i: '🔥', y: 'review' },
-                        { t: weakest+'冲刺', d: '最后攻克弱项', i: '💪', y: wC.type },
-                        { t: '作文冲刺', d: '限时30分钟写1篇', i: '✍️', y: 'essay' },
-                        { t: '听力冲刺', d: '全真听力模拟', i: '🎧', y: 'listening' },
-                        { t: '查漏补缺', d: '根据错题本找盲点', i: '🔎', y: 'review' },
-                        { t: '考前放松', d: '轻松回顾笔记，早点休息', i: '😌', y: 'light' }
-                    ]
-                };
-                
-                var history = this.getPracticeHistory();
-                var calendar = [];
-                for (var d = 0; d < totalDays; d++) {
-                    var phase, pName, pColor;
-                    if (d < phase1End) { phase = 'phase1'; pName = '基础期'; pColor = '#6C5CE7'; }
-                    else if (d < phase2End) { phase = 'phase2'; pName = '强化期'; pColor = '#F39C12'; }
-                    else { phase = 'phase3'; pName = '冲刺期'; pColor = '#E74C3C'; }
-                    
-                    var tpl = templates[phase];
-                    var task = tpl[d % tpl.length];
-                    var tDate = new Date(startDate.getTime() + d * 864e5);
-                    var isToday = tDate.toDateString() === now.toDateString();
-                    var isPast = tDate < now && !isToday;
-                    var tStr = tDate.toISOString().slice(0,10);
-                    var completed = isPast || history.some(function(h) { return h.date === tStr; });
-                    
-                    var mm = String(tDate.getMonth()+1).padStart(2,'0');
-                    var dd = String(tDate.getDate()).padStart(2,'0');
-                    
-                    calendar.push({ day: d+1, date: mm+'/'+dd, phase: pName, phaseColor: pColor, title: task.t, desc: task.d, icon: task.i, type: task.y, isToday: isToday, isPast: isPast, completed: completed });
-                }
-                
-                var currentPhase = daysPassed < phase1End ? '基础期' : (daysPassed < phase2End ? '强化期' : '冲刺期');
-                var todayTask = calendar.find(function(c){ return c.isToday; }) || calendar[Math.min(daysPassed, calendar.length-1)];
-                
-                return { daysRemaining: daysRemaining, daysPassed: daysPassed, totalDays: totalDays, currentPhase: currentPhase, todayTask: todayTask, calendar: calendar, progress: Math.min(100, Math.round((daysPassed / totalDays) * 100)) };
-            },
-            
-            // 获取预估分数
-            getEstimatedScore: function() {
-                var scores = this.getAbilityScores();
-                // 检查是否有非默认值
-                var hasCustomScore = false;
-                for (var k in scores) {
-                    if (scores[k] !== 50) {
-                        hasCustomScore = true;
-                        break;
-                    }
-                }
-                if (!hasCustomScore) return null;
-                
-                var formula = scores['细节定位'] * 0.25 + 
-                              scores['推理判断'] * 0.25 + 
-                              scores['同义替换'] * 0.2 + 
-                              scores['主旨归纳'] * 0.15 + 
-                              scores['态度判断'] * 0.15;
-                var estimate = Math.round(formula * 7.1);
-                // 限制在425-710区间
-                estimate = Math.max(425, Math.min(710, estimate));
-                return estimate;
-            },
-            
-            // 获取最弱的两项
-            getWeakestTwoDimensions: function() {
-                var scores = this.getAbilityScores();
-                var arr = Object.keys(scores).map(function(k) {
-                    return { name: k, score: scores[k] };
-                }).sort(function(a, b) { return a.score - b.score; });
-                return arr.slice(0, 2);
-            },
-            
-            // 检查是否有能力数据（不是默认50分）
-            hasAbilityData: function() {
-                var scores = this.getAbilityScores();
-                for (var k in scores) {
-                    if (scores[k] !== 50) return true;
-                }
-                return false;
-            }
-        };
 
         function renderStreakCalendar() {
             var container = document.getElementById('streak-cal-days');
@@ -5293,18 +5817,6 @@
                 ctaText.textContent = hasDiag ? '继续AI陪练' : '开始AI诊断';
             }
             updateDailyTask();
-            // 更新错题本小红点
-            CET4Data.updateHomeWrongBadge();
-            // 更新错题本入口描述
-            var wrongDesc = document.getElementById('wrong-entry-desc');
-            if (wrongDesc) {
-                var stats = CET4Data.getWrongStats();
-                if (stats.total > 0) {
-                    wrongDesc.textContent = stats.due > 0 ? stats.due + '道待复习' : '共' + stats.total + '道错题';
-                } else {
-                    wrongDesc.textContent = '暂无错题';
-                }
-            }
         }
 
         function updateProfileStats() {
@@ -5404,6 +5916,37 @@
                     var createData = await createResp.json();
                     if (createData.data && createData.data.id) {
                         chatState.conversationId = createData.data.id;
+                        // 新会话创建后，添加到对话列表
+                        var mode = chatState.currentMode || 'diagnosis';
+                        var botMap = {
+                            'diagnosis': '7636289658620215331',
+                            'companion': '7637702903679631395'
+                        };
+                        var list = getChatList();
+                        // 检查是否已存在
+                        var exists = false;
+                        for (var i = 0; i < list.length; i++) {
+                            if (list[i].id === chatState.conversationId) {
+                                exists = true;
+                                break;
+                            }
+                        }
+                        if (!exists) {
+                            // 获取用户的第一条消息作为标题
+                            var firstMsg = text.substring(0, 20);
+                            var newItem = {
+                                id: chatState.conversationId,
+                                title: firstMsg,
+                                mode: mode,
+                                botId: botMap[mode],
+                                lastMsg: text,
+                                lastMsgTime: Date.now(),
+                                createdAt: Date.now()
+                            };
+                            list.unshift(newItem);
+                            saveChatList(list);
+                            renderChatList();
+                        }
                     } else {
                         appendMessage('ai', '连接失败: ' + (createData.msg || '请刷新重试'));
                         chatState.isStreaming = false;
@@ -5556,18 +6099,16 @@
                         firstChunkReceived = true;
                         console.log('[Stream] First chunk received in', Date.now() - streamStartTime, 'ms');
                     }
-                    var decodedChunk = decoder.decode(result.value, { stream: true });
-                    buffer += decodedChunk;
+                    buffer += decoder.decode(result.value, { stream: true });
 
                     // Parse SSE events
                     var lines = buffer.split('\n');
                     buffer = lines.pop() || ''; // keep incomplete line
 
-                    var currentEventType = '';
                     for (var i = 0; i < lines.length; i++) {
                         var line = lines[i].trim();
                         if (!line || line.startsWith(':')) continue; // skip empty/comments
-                        if (line.startsWith('event:')) { currentEventType = line.substring(6).trim(); continue; }
+                        if (line.startsWith('event:')) continue; // skip event type
                         if (!line.startsWith('data:')) continue;
 
                         var dataStr = line.substring(5).trim();
@@ -5575,9 +6116,9 @@
 
                         try {
                             var evt = JSON.parse(dataStr);
-                            // Only accumulate text from delta events, skip completed events (they repeat full text)
-                            if (evt.type === 'answer' && evt.content && currentEventType === 'conversation.message.delta') {
-                                fullText += evt.content;
+                            // Coze stream format: evt.type === 'conversation.message.delta' for text chunks
+                            if (evt.type === 'conversation.message.delta' && evt.data && evt.data.content && evt.data.type === 'answer') {
+                                fullText += evt.data.content;
                                 chatState.currentStreamText = fullText;
                                 if (bubbleEl) {
                                     // Remove time element temporarily during streaming
@@ -5589,11 +6130,11 @@
                             }
                             // Also capture conversation_id from conversation.chat.completed or message completed
                             if (evt.type === 'conversation.chat.created' || evt.type === 'conversation.chat.in_progress') {
-                                if (evt.conversation_id) {
-                                    chatState.conversationId = evt.conversation_id;
+                                if (evt.data && evt.data.conversation_id) {
+                                    chatState.conversationId = evt.data.conversation_id;
                                 }
-                                if (evt.id) {
-                                    chatState.chatId = evt.id;
+                                if (evt.data && evt.data.id) {
+                                    chatState.chatId = evt.data.id;
                                 }
                             }
                         } catch(e) {
@@ -5695,21 +6236,27 @@
                     }
                 }
             } catch (e) {
-                console.error('[Chat ERROR]', e.message, 'stack:', e.stack);
                 removeTypingIndicator();
-                appendMessage('ai', '出错了: ' + e.message);
+                appendMessage('ai', '网络异常，请重试');
             }
 
             chatState.isStreaming = false;
         }
 
         function onBotReply() {
+            // 标记已回复（用于对话元数据更新）
+            if (!chatState.hasReplied) {
+                chatState.hasReplied = true;
+                var lastBotMsg = chatState.currentStreamText || '';
+                updateConversationMeta('', lastBotMsg);
+            }
+            
             var streak = getStreakData();
             var today = getTodayStr();
             var todayChecked = streak.todayChecked && streak.lastDate === today;
             if (todayChecked) return;
 
-            var planTask = getPlanTodayTaskText();
+            var planTask = getPlanTodayTask();
             var userData = state.userData || {};
             var hasPlan = planTask && planTask.task && userData.plan && userData.plan !== 'free';
 
@@ -5828,6 +6375,11 @@
                     var container = document.getElementById('chat-messages');
                     container.innerHTML = '';
                     var msgs = resp.data.filter(function(m) { return m.type === 'answer' || m.type === 'question'; });
+                    
+                    // 隐藏chips，显示正常聊天
+                    var chips = document.getElementById('input-chips');
+                    if (chips && msgs.length > 0) chips.style.display = 'none';
+                    
                     msgs.forEach(function(m) {
                         var content = m.content || '';
                         // 去掉注入的系统前缀，只显示用户真实消息
@@ -6548,73 +7100,14 @@ async function requestQuizQuestion() {
     var types = ['词汇', '语法', '阅读', '听力'];
     var randomType = types[Math.floor(Math.random() * types.length)];
     
-    // 获取用户五维能力数据
-    var scores = CET4Data.getAbilityScores();
-    var weakestDim = CET4Data.getWeakestDimension();
-    
-    // 判断是否进入错题复习模式
-    if (quizState.reviewMode && quizState.reviewWrongs && quizState.reviewWrongs.length > 0) {
-        var currentWrong = quizState.reviewWrongs[quizState.currentIndex];
-        if (currentWrong) {
-            randomType = currentWrong.type || randomType;
-            var difficulty = CET4Data.getDifficultyLevel(randomType);
-            var prompt = '请出一道四级' + randomType + '[' + difficulty + '难度]选择题，用于错题复习。请严格按照以下格式返回（不要有任何其他内容）：\n[QUIZ:type=' + randomType + '|question=题目内容|optionA=选项A|optionB=选项B|optionC=选项C|optionD=选项D|answer=A|explanation=详细解析]';
-            await sendQuizRequest(prompt);
-            return;
-        }
+    // 确保每种题型都有机会被抽到
+    var unansweredTypes = types.filter(function(t) { return quizState.answeredTypes[t] < 2; });
+    if (unansweredTypes.length > 0) {
+        randomType = unansweredTypes[Math.floor(Math.random() * unansweredTypes.length)];
     }
     
-    // 判断是否进入单题错题复习
-    if (quizState.reviewWrongId) {
-        randomType = quizState.reviewWrongType || randomType;
-        var difficulty = CET4Data.getDifficultyLevel(randomType);
-        var prompt = '请出一道四级' + randomType + '[' + difficulty + '难度]选择题，用于错题复习。请严格按照以下格式返回（不要有任何其他内容）：\n[QUIZ:type=' + randomType + '|question=题目内容|optionA=选项A|optionB=选项B|optionC=选项C|optionD=选项D|answer=A|explanation=详细解析]';
-        await sendQuizRequest(prompt);
-        return;
-    }
+    var prompt = '请出一道四级' + randomType + '选择题。请严格按照以下格式返回（不要有任何其他内容）：\n[QUIZ:type=' + randomType + '|question=题目内容|optionA=选项A|optionB=选项B|optionC=选项C|optionD=选项D|answer=A|explanation=详细解析]';
     
-    // 检查是否有待复习错题，30%概率出同类题
-    var dueReviews = CET4Data.getDueReviews();
-    if (dueReviews.length > 0 && Math.random() < 0.3) {
-        var reviewWrong = dueReviews[Math.floor(Math.random() * dueReviews.length)];
-        randomType = reviewWrong.type || randomType;
-        var difficulty = CET4Data.getDifficultyLevel(randomType);
-        var prompt = '请出一道四级' + randomType + '[' + difficulty + '难度]选择题，用于错题复习巩固。请严格按照以下格式返回（不要有任何其他内容）：\n[QUIZ:type=' + randomType + '|question=题目内容|optionA=选项A|optionB=选项B|optionC=选项C|optionD=选项D|answer=A|explanation=详细解析]';
-        await sendQuizRequest(prompt);
-        return;
-    }
-    
-    // 自适应出题：优先薄弱项
-    var typeToDim = { '词汇': '同义替换', '语法': '细节定位', '阅读': '推理判断', '听力': '推理判断' };
-    var weakestTypes = types.filter(function(t) {
-        var dim = typeToDim[t] || '细节定位';
-        return scores[dim] < 60;
-    });
-    
-    // 70%概率出薄弱项题目
-    if (weakestTypes.length > 0 && Math.random() < 0.7) {
-        randomType = weakestTypes[Math.floor(Math.random() * weakestTypes.length)];
-    } else {
-        // 确保每种题型都有机会被抽到
-        var unansweredTypes = types.filter(function(t) { return quizState.answeredTypes[t] < 2; });
-        if (unansweredTypes.length > 0) {
-            randomType = unansweredTypes[Math.floor(Math.random() * unansweredTypes.length)];
-        }
-    }
-    
-    // 根据能力分数确定难度
-    var dim = typeToDim[randomType] || '细节定位';
-    var difficulty = CET4Data.getDifficultyLevel(dim);
-    
-    // 构建自适应prompt
-    var abilityInfo = '五维能力：细节定位' + scores['细节定位'] + '分/推理判断' + scores['推理判断'] + '分/同义替换' + scores['同义替换'] + '分/主旨归纳' + scores['主旨归纳'] + '分/态度判断' + scores['态度判断'] + '分';
-    var prompt = '请出一道四级' + randomType + '选择题。\n' + abilityInfo + '\n最弱项：' + weakestDim + '。请出一道' + difficulty + '难度的题目。请严格按照以下格式返回（不要有任何其他内容）：\n[QUIZ:type=' + randomType + '|question=题目内容|optionA=选项A|optionB=选项B|optionC=选项C|optionD=选项D|answer=A|explanation=详细解析]';
-    
-    await sendQuizRequest(prompt);
-}
-
-// 发送Quiz请求
-async function sendQuizRequest(prompt) {
     // 切换到陪练Bot
     var botMap = { 'diagnosis': '7636289658620215331', 'companion': '7637702903679631395' };
     var currentBot = botMap[chatState.botId];
@@ -6680,12 +7173,12 @@ async function sendQuizRequest(prompt) {
                 
                 try {
                     var evt = JSON.parse(dataStr);
-                    if (evt.type === 'answer' && evt.content && currentEventType === 'conversation.message.delta') {
-                        fullText += evt.content;
+                    if (evt.type === 'conversation.message.delta' && evt.data && evt.data.content && evt.data.type === 'answer') {
+                        fullText += evt.data.content;
                     }
                     if (evt.type === 'conversation.chat.created' || evt.type === 'conversation.chat.in_progress') {
-                        if (evt.conversation_id) {
-                            chatState.conversationId = evt.conversation_id;
+                        if (evt.data && evt.data.conversation_id) {
+                            chatState.conversationId = evt.data.conversation_id;
                         }
                     }
                 } catch(e) {}
@@ -6793,28 +7286,6 @@ function selectQuizOption(el, option) {
     } else {
         quizState.wrongCount++;
         quizState.wrongTypes[question.type] = (quizState.wrongTypes[question.type] || 0) + 1;
-        
-        // 保存错题
-        CET4Data.saveWrongAnswer({
-            question: question.question,
-            options: { A: question.optionA, B: question.optionB, C: question.optionC, D: question.optionD },
-            correctAnswer: question.answer,
-            userAnswer: option,
-            type: question.type,
-            explanation: question.explanation,
-            date: getTodayStr()
-        });
-    }
-    
-    // 更新五维能力分数
-    CET4Data.updateAbilityScores(question.type, isCorrect);
-    
-    // 如果是错题复习模式，更新错题复习状态
-    if (quizState.reviewMode && quizState.reviewWrongs && quizState.reviewWrongs.length > 0) {
-        var currentWrong = quizState.reviewWrongs[quizState.currentIndex];
-        if (currentWrong) {
-            CET4Data.markReviewed(currentWrong.id, isCorrect);
-        }
     }
     
     // 显示反馈
@@ -6869,10 +7340,7 @@ function showQuizStats() {
     var progress = document.getElementById('quiz-progress-fill');
     var nextBtn = document.getElementById('quiz-next-btn');
     
-    // 判断是否是错题复习模式
-    var isReviewMode = quizState.reviewMode || quizState.reviewWrongId;
-    
-    title.textContent = isReviewMode ? '复习完成' : '练习完成';
+    title.textContent = '练习完成';
     subtitle.textContent = '';
     progress.style.width = '100%';
     nextBtn.classList.remove('show', 'finish');
@@ -6922,53 +7390,20 @@ function showQuizStats() {
     html += '<div class="quiz-stats-item"><div class="quiz-stats-item-value">' + timeStr + '</div><div class="quiz-stats-item-label">用时</div></div>';
     html += '</div>';
     html += weakHtml;
-    
-    // 根据模式显示不同按钮
-    if (isReviewMode) {
-        html += '<button class="quiz-stats-btn primary" onclick="closeQuizAndShowWrongBook()">查看错题本</button>';
-        html += '<button class="quiz-stats-btn secondary" onclick="closeQuiz()">返回</button>';
-    } else {
-        html += '<button class="quiz-stats-btn primary" onclick="restartQuiz()">再练一组</button>';
-        html += '<button class="quiz-stats-btn secondary" onclick="closeQuiz()">返回</button>';
-    }
+    html += '<button class="quiz-stats-btn primary" onclick="restartQuiz()">再练一组</button>';
+    html += '<button class="quiz-stats-btn secondary" onclick="closeQuiz()">返回</button>';
     html += '</div>';
     
     body.innerHTML = html;
     
-    // 保存练习记录
-    CET4Data.savePracticeRecord({
-        type: isReviewMode ? 'review' : 'daily',
-        score: rate,
-        total: quizState.totalQuestions,
-        correct: quizState.correctCount,
-        wrong: quizState.wrongCount,
-        dimensions: quizState.wrongTypes
-    });
-    
-    // 更新打卡（每日一练或错题复习都算打卡）
+    // 更新打卡
     var daily = getDailyTaskInfo();
-    var taskKey = isReviewMode ? 'review' : 'quiz';
-    if (!daily.completed.includes(taskKey)) {
-        daily.completed.push(taskKey);
+    if (!daily.completed.includes('quiz')) {
+        daily.completed.push('quiz');
         saveDailyTaskData(daily);
         updateDailyTask();
         updateHomeStatus();
-        // 如果是复习模式，也触发打卡
-        if (isReviewMode) {
-            doCheckIn();
-        }
     }
-}
-
-// 关闭Quiz并显示错题本
-function closeQuizAndShowWrongBook() {
-    closeQuiz();
-    // 重置错题复习状态
-    quizState.reviewMode = false;
-    quizState.reviewWrongs = null;
-    quizState.reviewWrongId = null;
-    quizState.reviewWrongType = null;
-    setTimeout(function() { openWrongBook(); }, 300);
 }
 
 // 重新开始
@@ -7022,278 +7457,6 @@ function handleBotQuizResponse(fullText) {
         }
     }
     return false;
-}
-
-// ===== 错题本系统 =====
-var wrongBookState = {
-    currentFilter: 'all',
-    reviewMode: false,
-    reviewQuestions: []
-};
-
-// 打开错题本
-function openWrongBook() {
-    var overlay = document.getElementById('wrong-overlay');
-    var reviewMode = document.getElementById('wrong-review-mode');
-    
-    wrongBookState.currentFilter = 'all';
-    wrongBookState.reviewMode = false;
-    if (reviewMode) reviewMode.style.display = 'none';
-    
-    updateWrongStats();
-    renderWrongList('all');
-    updateWrongFilterBtns('all');
-    
-    overlay.classList.add('show');
-}
-
-// 关闭错题本
-function closeWrongBook() {
-    var overlay = document.getElementById('wrong-overlay');
-    overlay.classList.remove('show');
-    wrongBookState.reviewMode = false;
-}
-
-// 更新错题统计
-function updateWrongStats() {
-    var stats = CET4Data.getWrongStats();
-    var totalEl = document.getElementById('wrong-stat-total');
-    var dueEl = document.getElementById('wrong-stat-due');
-    var masteredEl = document.getElementById('wrong-stat-mastered');
-    
-    if (totalEl) totalEl.textContent = stats.total;
-    if (dueEl) dueEl.textContent = stats.due;
-    if (masteredEl) masteredEl.textContent = stats.mastered;
-    
-    var reviewBtn = document.getElementById('wrong-review-btn');
-    if (reviewBtn) {
-        if (stats.total > 0) {
-            reviewBtn.style.display = '';
-        } else {
-            reviewBtn.style.display = 'none';
-        }
-    }
-}
-
-// 更新筛选按钮状态
-function updateWrongFilterBtns(filter) {
-    var btns = document.querySelectorAll('.wrong-filter-btn');
-    btns.forEach(function(btn) {
-        if (btn.dataset.filter === filter) {
-            btn.classList.add('active');
-        } else {
-            btn.classList.remove('active');
-        }
-    });
-}
-
-// 筛选错题
-function filterWrongItems(filter) {
-    wrongBookState.currentFilter = filter;
-    renderWrongList(filter);
-    updateWrongFilterBtns(filter);
-}
-
-// 渲染错题列表
-function renderWrongList(filter) {
-    var list = document.getElementById('wrong-list');
-    if (!list) return;
-    
-    var today = getTodayStr();
-    var wrongs = CET4Data.getWrongAnswers();
-    
-    // 应用筛选
-    var filtered = wrongs.filter(function(w) {
-        if (filter === 'all') return true;
-        if (filter === 'due') return !w.mastered && w.nextReviewDate <= today;
-        if (filter === 'not_mastered') return !w.mastered;
-        if (filter === 'mastered') return w.mastered;
-        return true;
-    });
-    
-    if (filtered.length === 0) {
-        var emptyText = '暂无错题';
-        if (filter === 'due') emptyText = '没有待复习的错题';
-        if (filter === 'not_mastered') emptyText = '所有错题都已掌握';
-        if (filter === 'mastered') emptyText = '暂无已掌握的错题';
-        
-        list.innerHTML = '<div class="wrong-empty">' +
-            '<div class="wrong-empty-icon">📝</div>' +
-            '<div class="wrong-empty-text">' + emptyText + '</div>' +
-            '</div>';
-        return;
-    }
-    
-    var html = '';
-    filtered.forEach(function(w) {
-        var typeLabels = { '词汇': '💬 词汇', '语法': '📝 语法', '阅读': '📖 阅读', '听力': '🎧 听力' };
-        html += '<div class="wrong-item" onclick="toggleWrongItem(this)" data-id="' + w.id + '">';
-        html += '<div class="wrong-item-header">';
-        html += '<span class="wrong-item-type">' + (typeLabels[w.type] || w.type) + '</span>';
-        if (w.mastered) {
-            html += '<span class="wrong-item-mastered">✓ 已掌握</span>';
-        } else {
-            html += '<span class="wrong-item-date">复习' + w.reviewCount + '次</span>';
-        }
-        html += '</div>';
-        html += '<div class="wrong-item-question">' + escapeHtml(w.question) + '</div>';
-        html += '<div class="wrong-item-answers">';
-        html += '<span class="wrong-answer-tag yours">你的答案: ' + w.userAnswer + '</span>';
-        html += '<span class="wrong-answer-tag correct">正确答案: ' + w.correctAnswer + '</span>';
-        html += '</div>';
-        html += '<div class="wrong-item-expanded">';
-        html += '<div class="wrong-exp-title">📖 详细解析</div>';
-        html += '<div class="wrong-exp-text">' + escapeHtml(w.explanation || '暂无解析') + '</div>';
-        html += '<div class="wrong-item-actions">';
-        html += '<button class="wrong-btn-review" onclick="event.stopPropagation();reviewSingleWrong(\'' + w.id + '\')">复习这道</button>';
-        if (!w.mastered) {
-            html += '<button class="wrong-btn-mastered" onclick="event.stopPropagation();markThisMastered(\'' + w.id + '\')">标记掌握</button>';
-        }
-        html += '<button class="wrong-btn-delete" onclick="event.stopPropagation();deleteThisWrong(\'' + w.id + '\')">删除</button>';
-        html += '</div></div>';
-        html += '</div>';
-    });
-    
-    list.innerHTML = html;
-}
-
-// 展开/收起错题
-function toggleWrongItem(el) {
-    el.classList.toggle('expanded');
-}
-
-// 复习单道错题
-function reviewSingleWrong(id) {
-    closeWrongBook();
-    var wrongs = CET4Data.getWrongAnswers();
-    var wrong = wrongs.find(function(w) { return w.id === id; });
-    if (wrong) {
-        // 创建一个类似的题目让用户练习
-        quizState.isActive = true;
-        quizState.currentIndex = 0;
-        quizState.totalQuestions = 1;
-        quizState.correctCount = 0;
-        quizState.wrongCount = 0;
-        quizState.wrongTypes = {};
-        quizState.startTime = Date.now();
-        quizState.reviewWrongId = id;
-        quizState.reviewWrongType = wrong.type;
-        
-        var overlay = document.getElementById('quiz-overlay');
-        var body = document.getElementById('quiz-body');
-        var title = document.getElementById('quiz-title');
-        var subtitle = document.getElementById('quiz-subtitle');
-        var progress = document.getElementById('quiz-progress-fill');
-        var nextBtn = document.getElementById('quiz-next-btn');
-        
-        title.textContent = '错题复习';
-        subtitle.textContent = '正在出题...';
-        progress.style.width = '0%';
-        nextBtn.classList.remove('show', 'finish');
-        
-        body.innerHTML = '<div class="quiz-loading show"><div class="quiz-loading-spinner"></div><div class="quiz-loading-text">正在生成同类题目...</div></div>';
-        overlay.classList.add('show');
-        
-        requestQuizQuestion();
-    }
-}
-
-// 标记已掌握
-function markThisMastered(id) {
-    CET4Data.markMastered(id);
-    updateWrongStats();
-    renderWrongList(wrongBookState.currentFilter);
-    showToast('已标记为掌握');
-}
-
-// 删除错题
-function deleteThisWrong(id) {
-    CET4Data.deleteWrongAnswer(id);
-    updateWrongStats();
-    renderWrongList(wrongBookState.currentFilter);
-    showToast('已删除');
-}
-
-// 开始复习模式
-function startWrongReview() {
-    var reviewMode = document.getElementById('wrong-review-mode');
-    var reviewBtn = document.getElementById('wrong-review-btn');
-    var today = getTodayStr();
-    var dueWrongs = CET4Data.getWrongAnswers().filter(function(w) { return !w.mastered; });
-    
-    if (dueWrongs.length === 0) {
-        showToast('暂无需要复习的错题');
-        return;
-    }
-    
-    wrongBookState.reviewMode = true;
-    wrongBookState.reviewQuestions = dueWrongs;
-    
-    if (reviewMode) {
-        reviewMode.style.display = '';
-        var desc = document.getElementById('wrong-review-desc');
-        var startBtn = document.getElementById('wrong-review-start-btn');
-        if (desc) desc.textContent = '共' + dueWrongs.length + '道错题待复习';
-        if (startBtn) startBtn.textContent = '开始复习 (' + dueWrongs.length + '道)';
-    }
-    
-    if (reviewBtn) {
-        reviewBtn.textContent = '取消';
-        reviewBtn.onclick = cancelWrongReview;
-    }
-}
-
-// 取消复习模式
-function cancelWrongReview() {
-    var reviewMode = document.getElementById('wrong-review-mode');
-    var reviewBtn = document.getElementById('wrong-review-btn');
-    
-    wrongBookState.reviewMode = false;
-    wrongBookState.reviewQuestions = [];
-    
-    if (reviewMode) reviewMode.style.display = 'none';
-    if (reviewBtn) {
-        reviewBtn.textContent = '复习模式';
-        reviewBtn.onclick = startWrongReview;
-    }
-}
-
-// 开始错题复习Quiz
-function startWrongReviewQuiz() {
-    closeWrongBook();
-    var wrongs = wrongBookState.reviewQuestions;
-    if (wrongs.length === 0) {
-        showToast('没有待复习的错题');
-        return;
-    }
-    
-    // 打开quiz，使用错题类型出题
-    quizState.isActive = true;
-    quizState.currentIndex = 0;
-    quizState.totalQuestions = Math.min(wrongs.length, 5);
-    quizState.correctCount = 0;
-    quizState.wrongCount = 0;
-    quizState.wrongTypes = {};
-    quizState.startTime = Date.now();
-    quizState.reviewMode = true;
-    quizState.reviewWrongs = wrongs;
-    
-    var overlay = document.getElementById('quiz-overlay');
-    var body = document.getElementById('quiz-body');
-    var title = document.getElementById('quiz-title');
-    var subtitle = document.getElementById('quiz-subtitle');
-    var progress = document.getElementById('quiz-progress-fill');
-    var nextBtn = document.getElementById('quiz-next-btn');
-    
-    title.textContent = '错题复习';
-    subtitle.textContent = '正在出题...';
-    progress.style.width = '0%';
-    nextBtn.classList.remove('show', 'finish');
-    
-    body.innerHTML = '<div class="quiz-loading show"><div class="quiz-loading-spinner"></div><div class="quiz-loading-text">正在生成复习题目...</div></div>';
-    overlay.classList.add('show');
-    
-    requestQuizQuestion();
 }
 
 // === Chat limit system (后端为准，前端同步) ===
@@ -7584,13 +7747,19 @@ function showDiagnosisReport(text) {
         }
         localStorage.setItem('cet_user', JSON.stringify(state.userData));
         
-        // 诊断联动：写入CET4Data五维能力和开始日期
-        CET4Data.saveAbilityScores(reportData.dims);
-        var profile = CET4Data.getUserProfile();
-        if (!profile.startDate) {
-            profile.startDate = getTodayStr();
-            CET4Data.saveUserProfile(profile);
-        }
+        // 同时写入cet4_ability_scores（供仪表盘使用）
+        try {
+            localStorage.setItem('cet4_ability_scores', JSON.stringify({ dims: reportData.dims }));
+        } catch(e) {}
+        
+        // 写入cet4_user_profile的startDate（如果还没有）
+        try {
+            var profile = JSON.parse(localStorage.getItem('cet4_user_profile') || '{}');
+            if (!profile.startDate) {
+                profile.startDate = getTodayStr();
+                localStorage.setItem('cet4_user_profile', JSON.stringify(profile));
+            }
+        } catch(e) {}
     }
     
     renderReportPage();
@@ -7947,11 +8116,77 @@ function drawReportShareImage() {
     ctx.fillText('四级备考搭子 · AI智能诊断', 140, 385);
 }
 
+                <div class="share-card-hint">长按保存图片</div>
+            </div>
+            <div class="share-card-tip">分享给朋友测测 👇</div>
+            <div class="detail-coupon-tip">🎁 限时优惠：付款输入 <strong style="color:#6C5CE7">CET4VIP</strong> 享7折</div></div>
+            <button class="share-card-close" onclick="closeShareCard()">关闭</button>
+        </div>
+    </div>
 
+    <!-- 诊断报告页 -->
+    <div class="report-overlay" id="report-overlay" style="display:none">
+        <div class="report-header">
+            <button class="report-back" onclick="closeReportPage()">
+                <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="15 18 9 12 15 6"/>
+                </svg>
+            </button>
+            <div class="report-header-title">诊断报告</div>
+        </div>
+        <div class="report-content" id="report-content">
+            <!-- 动态内容由JS填充 -->
+        </div>
+        <div class="report-cta-section">
+            <button class="report-cta-btn" onclick="openReportPayModal()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                    <path d="M2 17l10 5 10-5"/>
+                    <path d="M2 12l10 5 10-5"/>
+                </svg>
+                <span id="report-cta-text">升级冲刺营，针对性提升</span>
+            </button>
+            <button class="report-secondary-btn" onclick="continuePractice()">继续AI陪练</button>
+        </div>
+    </div>
 
+    <!-- 报告分享弹窗 -->
+    <div class="report-share-modal" id="report-share-modal" style="display:none" onclick="if(event.target===this)closeReportShare()">
+        <div class="report-share-box">
+            <div class="report-share-canvas-wrap" id="report-share-canvas-wrap">
+                <canvas id="report-share-canvas" width="280" height="400"></canvas>
+            </div>
+            <div class="report-share-hint">长按保存图片到相册</div>
+            <button class="report-share-close" onclick="closeReportShare()">关闭</button>
+        </div>
+    </div>
 
+    <!-- 每日一练 Quiz Overlay -->
+    <div class="quiz-overlay" id="quiz-overlay">
+        <div class="quiz-header">
+            <button class="quiz-close-btn" onclick="closeQuiz()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            </button>
+            <div class="quiz-header-center">
+                <div class="quiz-title" id="quiz-title">每日一练</div>
+                <div class="quiz-subtitle" id="quiz-subtitle">正在出题...</div>
+            </div>
+            <div style="width:36px"></div>
+        </div>
+        <div class="quiz-progress-bar">
+            <div class="quiz-progress-fill" id="quiz-progress-fill" style="width:0%"></div>
+        </div>
+        <div class="quiz-body" id="quiz-body">
+            <!-- Quiz content loaded dynamically -->
+        </div>
+        <div class="quiz-footer">
+            <button class="quiz-next-btn" id="quiz-next-btn" onclick="quizNextQuestion()">下一题</button>
+        </div>
+    </div>
 
-    
+    <script>
     // ===== 作文批改系统 =====
     var essayState = {
         selectedTopic: '',
@@ -8237,508 +8472,8 @@ function drawReportShareImage() {
         }
         showToast('结果已保存');
     }
-    
-    // ===== 学习进度仪表盘 =====
-    function openProgressOverlay() {
-        var overlay = document.getElementById('progress-overlay');
-        if (overlay) {
-            renderProgressDashboard();
-            overlay.classList.add('show');
-            document.body.style.overflow = 'hidden';
-        }
-    }
-    
-    function closeProgressOverlay() {
-        var overlay = document.getElementById('progress-overlay');
-        if (overlay) {
-            overlay.classList.remove('show');
-            document.body.style.overflow = '';
-        }
-    }
-    
-    // 点击遮罩关闭
-    document.addEventListener('click', function(e) {
-        var overlay = document.getElementById('progress-overlay');
-        if (overlay && overlay.classList.contains('show')) {
-            if (e.target === overlay) {
-                closeProgressOverlay();
-            }
-        }
-    });
-    
-    function renderProgressDashboard() {
-        var body = document.getElementById('progress-sheet-body');
-        if (!body) return;
-        
-        var streak = getStreakData();
-        var todayCount = CET4Data.getTodayPracticeCount();
-        var totalCount = CET4Data.getTotalPracticeCount();
-        var accuracy = CET4Data.getTotalAccuracy();
-        var hasAbilityData = CET4Data.hasAbilityData();
-        var planProgress = CET4Data.getPlanProgress();
-        var heatmapData = CET4Data.getHeatmapData();
-        var weakestTwo = CET4Data.getWeakestTwoDimensions();
-        var estimate = CET4Data.getEstimatedScore();
-        
-        // 考试倒计时
-        var examDate = new Date('2026-06-13');
-        var now = new Date();
-        var daysToExam = Math.ceil((examDate - now) / (1000 * 60 * 60 * 24));
-        
-        var html = '';
-        
-        // 1. 顶部概览卡片
-        html += '<div class="progress-overview-grid">';
-        html += '<div class="progress-overview-card">';
-        html += '<div class="progress-overview-value">' + streak.count + '</div>';
-        html += '<div class="progress-overview-label">连续学习天数</div>';
-        html += '</div>';
-        html += '<div class="progress-overview-card">';
-        html += '<div class="progress-overview-value orange">' + todayCount + '</div>';
-        html += '<div class="progress-overview-label">今日练习题数</div>';
-        html += '</div>';
-        html += '<div class="progress-overview-card">';
-        html += '<div class="progress-overview-value green">' + totalCount + '</div>';
-        html += '<div class="progress-overview-label">累计练习题数</div>';
-        html += '</div>';
-        html += '<div class="progress-overview-card">';
-        html += '<div class="progress-overview-value">' + (accuracy > 0 ? accuracy + '%' : '—') + '</div>';
-        html += '<div class="progress-overview-label">总正确率</div>';
-        html += '</div>';
-        html += '</div>';
-        
-        // 2. 五维能力雷达图
-        html += '<div class="progress-card">';
-        html += '<div class="progress-card-title">';
-        html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
-        html += '五维能力雷达图';
-        html += '</div>';
-        
-        if (hasAbilityData) {
-            html += '<div class="progress-radar-wrap">';
-            html += '<canvas id="progress-radar-canvas" class="progress-radar-canvas"></canvas>';
-            html += '</div>';
-            // 最弱项提示
-            var weakest = weakestTwo[0] || { name: '细节定位', score: 50 };
-            html += '<div class="progress-radar-tip">💡 最薄弱项：' + weakest.name + '（' + weakest.score + '分），建议加强练习</div>';
-        } else {
-            html += '<div class="progress-radar-hint">完成首次诊断后解锁<br><span style="font-size:12px;margin-top:8px;display:inline-block">去和AI教练聊聊，完成诊断测试</span></div>';
-        }
-        html += '</div>';
-        
-        // 3. 动态备考计划
-        var dynPlan = CET4Data.getDynamicPlan();
-        html += '<div class="progress-card">';
-        html += '<div class="progress-card-title">';
-        html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>';
-        html += '备考计划 · ' + dynPlan.currentPhase;
-        html += '</div>';
-        
-        // 阶段进度条
-        html += '<div class="progress-plan-header">';
-        html += '<span class="progress-plan-label">距考试 ' + dynPlan.daysRemaining + ' 天</span>';
-        html += '<span class="progress-plan-value">第' + (dynPlan.daysPassed + 1) + '天/' + dynPlan.totalDays + '天</span>';
-        html += '</div>';
-        html += '<div class="progress-plan-bar">';
-        html += '<div class="progress-plan-fill" style="width:' + dynPlan.progress + '%"></div>';
-        html += '</div>';
-        
-        // 今日任务卡
-        if (dynPlan.todayTask) {
-            var tt = dynPlan.todayTask;
-            html += '<div class="plan-today-card">';
-            html += '<div class="plan-today-badge" style="background:' + tt.phaseColor + '">今日</div>';
-            html += '<div class="plan-today-icon">' + tt.icon + '</div>';
-            html += '<div class="plan-today-info">';
-            html += '<div class="plan-today-title">' + tt.title + '</div>';
-            html += '<div class="plan-today-desc">' + tt.desc + '</div>';
-            html += '</div>';
-            html += '</div>';
-        }
-        
-        // 计划日历（显示前后各3天+今天）
-        html += '<div class="plan-calendar">';
-        var calStart = Math.max(0, dynPlan.daysPassed - 3);
-        var calEnd = Math.min(dynPlan.calendar.length - 1, dynPlan.daysPassed + 3);
-        for (var ci = calStart; ci <= calEnd; ci++) {
-            var c = dynPlan.calendar[ci];
-            var cls = 'plan-cal-item';
-            if (c.isToday) cls += ' today';
-            else if (c.completed) cls += ' done';
-            html += '<div class="' + cls + '" style="border-left:3px solid ' + c.phaseColor + '">';
-            html += '<div class="plan-cal-day">' + c.date + '</div>';
-            html += '<div class="plan-cal-info">';
-            html += '<span class="plan-cal-icon">' + c.icon + '</span>';
-            html += '<span class="plan-cal-title">' + c.title + '</span>';
-            html += '</div>';
-            if (c.completed && !c.isToday) html += '<div class="plan-cal-check">✓</div>';
-            html += '</div>';
-        }
-        html += '</div>';
-        
-        // 阶段图例
-        html += '<div class="plan-phase-legend">';
-        html += '<span class="plan-phase-dot" style="background:#6C5CE7"></span>基础期';
-        html += '<span class="plan-phase-dot" style="background:#F39C12"></span>强化期';
-        html += '<span class="plan-phase-dot" style="background:#E74C3C"></span>冲刺期';
-        html += '</div>';
-        
-        html += '</div>';
-        
-        // 4. 近7天练习热力图
-        html += '<div class="progress-card">';
-        html += '<div class="progress-card-title">';
-        html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>';
-        html += '近7天练习热力图';
-        html += '</div>';
-        html += '<div class="progress-heatmap">';
-        var dayLabels = ['日','一','二','三','四','五','六'];
-        heatmapData.forEach(function(d, i) {
-            var date = new Date(d.date);
-            var dayLabel = dayLabels[date.getDay()];
-            var level = 0;
-            if (d.count >= 11) level = 3;
-            else if (d.count >= 6) level = 2;
-            else if (d.count >= 1) level = 1;
-            html += '<div class="progress-heatmap-day">';
-            html += '<div class="progress-heatmap-label">' + dayLabel + '</div>';
-            html += '<div class="progress-heatmap-box level-' + level + '">';
-            html += d.count;
-            html += '<div class="progress-heatmap-tooltip">' + d.date + '<br>' + d.count + '道题</div>';
-            html += '</div>';
-            html += '</div>';
-        });
-        html += '</div>';
-        html += '<div class="progress-heatmap-legend">';
-        html += '<span>少</span>';
-        html += '<div class="progress-heatmap-legend-item" style="background:#F0F0F5"></div>';
-        html += '<div class="progress-heatmap-legend-item" style="background:#E8E4FF"></div>';
-        html += '<div class="progress-heatmap-legend-item" style="background:#C4B5FD"></div>';
-        html += '<div class="progress-heatmap-legend-item" style="background:#6C5CE7"></div>';
-        html += '<span>多</span>';
-        html += '</div>';
-        html += '</div>';
-        
-        // 5. 薄弱项专项卡片（如果有数据）
-        if (hasAbilityData && weakestTwo.length > 0) {
-            html += '<div class="progress-card">';
-            html += '<div class="progress-card-title">';
-            html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
-            html += '薄弱项专项训练';
-            html += '</div>';
-            
-            weakestTwo.forEach(function(dim) {
-                var icon = '🔍';
-                var action = '开始练习';
-                if (dim.name === '推理判断') { icon = '🧠'; }
-                else if (dim.name === '同义替换') { icon = '✨'; }
-                else if (dim.name === '主旨归纳') { icon = '📋'; }
-                else if (dim.name === '态度判断') { icon = '🎯'; }
-                
-                html += '<div class="progress-weak-item">';
-                html += '<div class="progress-weak-left">';
-                html += '<div class="progress-weak-icon">' + icon + '</div>';
-                html += '<div class="progress-weak-info">';
-                html += '<div class="progress-weak-name">' + dim.name + '</div>';
-                html += '<div class="progress-weak-score">当前 ' + dim.score + ' 分</div>';
-                html += '</div>';
-                html += '</div>';
-                html += '<button class="progress-weak-btn" data-dim="' + dim.name + '" onclick="startWeakPractice(this.dataset.dim)">' + action + '</button>';
-                html += '</div>';
-            });
-            html += '</div>';
-        }
-        
-        // 6. 预估分数（如果有数据）
-        if (estimate !== null) {
-            html += '<div class="progress-card">';
-            html += '<div class="progress-card-title">';
-            html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';
-            html += '预估分数';
-            html += '</div>';
-            html += '<div class="progress-estimate">';
-            html += '<div class="progress-estimate-main">' + estimate + '<span>分</span></div>';
-            html += '<div class="progress-estimate-sub">基于五维能力综合评估</div>';
-            html += '<div class="progress-estimate-target">🎯 目标：425分（及格线）</div>';
-            html += '</div>';
-            html += '</div>';
-        }
-        
-        body.innerHTML = html;
-        
-        // 绘制雷达图
-        if (hasAbilityData) {
-            setTimeout(function() {
-                drawProgressRadar();
-            }, 100);
-        }
-    }
-    
-    // 绘制仪表盘雷达图
-    function drawProgressRadar() {
-        var canvas = document.getElementById('progress-radar-canvas');
-        if (!canvas) return;
-        
-        var ctx = canvas.getContext('2d');
-        var dpr = window.devicePixelRatio || 1;
-        var size = 200;
-        
-        canvas.width = size * dpr;
-        canvas.height = size * dpr;
-        canvas.style.width = size + 'px';
-        canvas.style.height = size + 'px';
-        ctx.scale(dpr, dpr);
-        
-        var centerX = size / 2;
-        var centerY = size / 2;
-        var maxRadius = 75;
-        
-        var scores = CET4Data.getAbilityScores();
-        var dims = ['细节定位', '推理判断', '同义替换', '主旨归纳', '态度判断'];
-        var n = dims.length;
-        var angleStep = (Math.PI * 2) / n;
-        
-        // 背景网格
-        ctx.strokeStyle = '#F1F5F9';
-        ctx.lineWidth = 1;
-        for (var r = 1; r <= 5; r++) {
-            ctx.beginPath();
-            for (var i = 0; i <= n; i++) {
-                var angle = i * angleStep - Math.PI / 2;
-                var x = centerX + Math.cos(angle) * (r * maxRadius / 5);
-                var y = centerY + Math.sin(angle) * (r * maxRadius / 5);
-                if (i === 0) ctx.moveTo(x, y);
-                else ctx.lineTo(x, y);
-            }
-            ctx.closePath();
-            ctx.stroke();
-        }
-        
-        // 径向线
-        for (var i = 0; i < n; i++) {
-            var angle = i * angleStep - Math.PI / 2;
-            ctx.beginPath();
-            ctx.moveTo(centerX, centerY);
-            ctx.lineTo(centerX + Math.cos(angle) * maxRadius, centerY + Math.sin(angle) * maxRadius);
-            ctx.stroke();
-        }
-        
-        // 数据区域
-        var gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, maxRadius);
-        gradient.addColorStop(0, 'rgba(108,92,231,0.3)');
-        gradient.addColorStop(1, 'rgba(108,92,231,0.1)');
-        
-        ctx.beginPath();
-        for (var i = 0; i <= n; i++) {
-            var idx = i % n;
-            var dimName = dims[idx];
-            var score = scores[dimName] || 0;
-            var r = (score / 100) * maxRadius;
-            var angle = i * angleStep - Math.PI / 2;
-            var x = centerX + Math.cos(angle) * r;
-            var y = centerY + Math.sin(angle) * r;
-            if (i === 0) ctx.moveTo(x, y);
-            else ctx.lineTo(x, y);
-        }
-        ctx.closePath();
-        ctx.fillStyle = gradient;
-        ctx.fill();
-        ctx.strokeStyle = '#6C5CE7';
-        ctx.lineWidth = 2;
-        ctx.stroke();
-        
-        // 数据点
-        for (var i = 0; i < n; i++) {
-            var dimName = dims[i];
-            var score = scores[dimName] || 0;
-            var r = (score / 100) * maxRadius;
-            var angle = i * angleStep - Math.PI / 2;
-            var x = centerX + Math.cos(angle) * r;
-            var y = centerY + Math.sin(angle) * r;
-            
-            ctx.beginPath();
-            ctx.arc(x, y, 4, 0, Math.PI * 2);
-            ctx.fillStyle = '#6C5CE7';
-            ctx.fill();
-            ctx.strokeStyle = '#fff';
-            ctx.lineWidth = 2;
-            ctx.stroke();
-        }
-        
-        // 标签
-        ctx.fillStyle = '#475569';
-        ctx.font = '11px -apple-system, BlinkMacSystemFont, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        
-        for (var i = 0; i < n; i++) {
-            var dimName = dims[i];
-            var label = dimName;
-            var angle = i * angleStep - Math.PI / 2;
-            var labelR = maxRadius + 18;
-            var x = centerX + Math.cos(angle) * labelR;
-            var y = centerY + Math.sin(angle) * labelR;
-            
-            var score = scores[dimName] || 0;
-            
-            // 绘制标签
-            ctx.fillStyle = '#64748B';
-            ctx.fillText(label, x, y - 6);
-            ctx.fillStyle = '#6C5CE7';
-            ctx.font = 'bold 11px -apple-system, BlinkMacSystemFont, sans-serif';
-            ctx.fillText(score + '分', x, y + 8);
-            ctx.font = '11px -apple-system, BlinkMacSystemFont, sans-serif';
-        }
-    }
-    
-    // 开始薄弱项练习
-    function startWeakPractice(dimension) {
-        closeProgressOverlay();
-        // 跳转到练习模式
-        var typeMap = {
-            '细节定位': 'reading',
-            '推理判断': 'inference',
-            '同义替换': 'words',
-            '主旨归纳': 'mainidea',
-            '态度判断': 'attitude'
-        };
-        var practiceType = typeMap[dimension] || 'reading';
-        
-        // 打开每日一练
-        openQuiz();
-        
-        // 可以在这里添加针对特定维度的练习逻辑
-        showToast('开始' + dimension + '专项练习');
-    }
+    </script>
 
-
-</script>
-
-                <div class="share-card-hint">长按保存图片</div>
-            </div>
-            <div class="share-card-tip">分享给朋友测测 👇</div>
-            <div class="detail-coupon-tip">🎁 限时优惠：付款输入 <strong style="color:#6C5CE7">CET4VIP</strong> 享7折</div></div>
-            <button class="share-card-close" onclick="closeShareCard()">关闭</button>
-        </div>
-    </div>
-    <!-- 诊断报告页 -->
-    <div class="report-overlay" id="report-overlay" style="display:none">
-        <div class="report-header">
-            <button class="report-back" onclick="closeReportPage()">
-                <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="15 18 9 12 15 6"/>
-                </svg>
-            </button>
-            <div class="report-header-title">诊断报告</div>
-        </div>
-        <div class="report-content" id="report-content">
-            <!-- 动态内容由JS填充 -->
-        </div>
-        <div class="report-cta-section">
-            <button class="report-cta-btn" onclick="openReportPayModal()">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-                    <path d="M2 17l10 5 10-5"/>
-                    <path d="M2 12l10 5 10-5"/>
-                </svg>
-                <span id="report-cta-text">升级冲刺营，针对性提升</span>
-            </button>
-            <button class="report-secondary-btn" onclick="continuePractice()">继续AI陪练</button>
-        </div>
-    </div>
-    <!-- 报告分享弹窗 -->
-    <div class="report-share-modal" id="report-share-modal" style="display:none" onclick="if(event.target===this)closeReportShare()">
-        <div class="report-share-box">
-            <div class="report-share-canvas-wrap" id="report-share-canvas-wrap">
-                <canvas id="report-share-canvas" width="280" height="400"></canvas>
-            </div>
-            <div class="report-share-hint">长按保存图片到相册</div>
-            <button class="report-share-close" onclick="closeReportShare()">关闭</button>
-        </div>
-    </div>
-    <!-- 每日一练 Quiz Overlay -->
-    <div class="quiz-overlay" id="quiz-overlay">
-        <div class="quiz-header">
-            <button class="quiz-close-btn" onclick="closeQuiz()">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-                </svg>
-            </button>
-            <div class="quiz-header-center">
-                <div class="quiz-title" id="quiz-title">每日一练</div>
-                <div class="quiz-subtitle" id="quiz-subtitle">正在出题...</div>
-            </div>
-            <div style="width:36px"></div>
-        </div>
-        <div class="quiz-progress-bar">
-            <div class="quiz-progress-fill" id="quiz-progress-fill" style="width:0%"></div>
-        </div>
-        <div class="quiz-body" id="quiz-body">
-            <!-- Quiz content loaded dynamically -->
-        </div>
-        <div class="quiz-footer">
-            <button class="quiz-next-btn" id="quiz-next-btn" onclick="quizNextQuestion()">下一题</button>
-        </div>
-    </div>
-    <!-- 错题本 Overlay -->
-    <div class="wrong-overlay" id="wrong-overlay">
-        <div class="wrong-header">
-            <button class="wrong-back-btn" onclick="closeWrongBook()">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="15 18 9 12 15 6"/>
-                </svg>
-            </button>
-            <div class="wrong-header-center">
-                <div class="wrong-header-title">错题本</div>
-                <div class="wrong-header-sub" id="wrong-header-sub">记录学习中的薄弱点</div>
-            </div>
-            <button class="wrong-action-btn secondary" id="wrong-review-btn" onclick="startWrongReview()">复习模式</button>
-        </div>
-        <div class="wrong-stats-bar" id="wrong-stats-bar">
-            <div class="wrong-stat-item">
-                <div class="wrong-stat-num" id="wrong-stat-total">0</div>
-                <div class="wrong-stat-label">总错题</div>
-            </div>
-            <div class="wrong-stat-item">
-                <div class="wrong-stat-num danger" id="wrong-stat-due">0</div>
-                <div class="wrong-stat-label">待复习</div>
-            </div>
-            <div class="wrong-stat-item">
-                <div class="wrong-stat-num success" id="wrong-stat-mastered">0</div>
-                <div class="wrong-stat-label">已掌握</div>
-            </div>
-        </div>
-        <div class="wrong-filter-bar" id="wrong-filter-bar">
-            <button class="wrong-filter-btn active" data-filter="all" onclick="filterWrongItems('all')">全部</button>
-            <button class="wrong-filter-btn" data-filter="due" onclick="filterWrongItems('due')">待复习</button>
-            <button class="wrong-filter-btn" data-filter="not_mastered" onclick="filterWrongItems('not_mastered')">未掌握</button>
-            <button class="wrong-filter-btn" data-filter="mastered" onclick="filterWrongItems('mastered')">已掌握</button>
-        </div>
-        <div class="wrong-list" id="wrong-list">
-            <!-- Wrong items loaded dynamically -->
-        </div>
-        <div class="wrong-review-mode" id="wrong-review-mode" style="display:none">
-            <div class="wrong-review-title">📝 复习模式</div>
-            <div class="wrong-review-desc" id="wrong-review-desc">将针对你的错题重新出题练习</div>
-            <button class="wrong-review-btn" id="wrong-review-start-btn" onclick="startWrongReviewQuiz()">开始复习</button>
-        </div>
-    </div>
-
-    <!-- 学习进度仪表盘 -->
-    <div class="progress-overlay" id="progress-overlay">
-        <div class="progress-sheet">
-            <div class="progress-sheet-header">
-                <div class="progress-sheet-title">📊 学习进度</div>
-                <button class="progress-close-btn" onclick="closeProgressOverlay()">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                </button>
-            </div>
-            <div class="progress-sheet-body" id="progress-sheet-body">
-                <!-- 动态内容 -->
-            </div>
-        </div>
-    </div>
-    
     <!-- 作文批改界面 -->
     <div class="essay-overlay" id="essay-overlay">
         <div class="essay-sheet">
