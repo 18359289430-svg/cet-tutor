@@ -5529,6 +5529,7 @@
                 var fullText = '';
                 chatState.currentStreamText = '';
 
+                console.log('[DEBUG] Response status:', resp.status, 'headers:', Object.fromEntries(resp.headers.entries()));
                 var reader = resp.body.getReader();
                 var decoder = new TextDecoder();
                 var buffer = '';
@@ -5542,7 +5543,9 @@
                         firstChunkReceived = true;
                         console.log('[Stream] First chunk received in', Date.now() - streamStartTime, 'ms');
                     }
-                    buffer += decoder.decode(result.value, { stream: true });
+                    var decodedChunk = decoder.decode(result.value, { stream: true });
+                    console.log('[DEBUG] Chunk received:', decodedChunk.substring(0, 200));
+                    buffer += decodedChunk;
 
                     // Parse SSE events
                     var lines = buffer.split('\n');
@@ -5595,6 +5598,7 @@
                 }
 
                 // Stream done - finalize
+                console.log('[DEBUG] Stream done. fullText length:', fullText.length, 'content:', fullText.substring(0, 100));
                 if (fullText) {
                     // Update final text with time
                     if (bubbleEl && timeEl) {
