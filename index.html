@@ -6603,7 +6603,7 @@ function selectPlan(plan) {
     if (target) target.classList.add('selected');
     var ctaBtn = document.getElementById('plan-cta-btn');
     if (ctaBtn) {
-        var prices = { free: '当前方案', sprint: '¥38 开始冲刺', flagship: '¥148 全程陪伴' };
+        var prices = { free: '当前方案', sprint: '¥44.5 开始冲刺', flagship: '¥149.5 全程陪伴' };
         ctaBtn.textContent = prices[plan] || '选择方案';
     }
 }
@@ -6625,8 +6625,8 @@ function openPayment(plan) {
     };
     // 面包多商品链接（创建后替换）
     var mbdLinks = {
-        sprint: 'https://mbd.pub/o/bread/YZaTk5ttbQ==',
-        flagship: 'https://mbd.pub/o/bread/YZaTk5tsbA=='
+        sprint: 'https://mbd.pub/o/bread/YZaTk5tsbA==',
+        flagship: 'https://mbd.pub/o/bread/YZaTk5ttbQ=='
     };
 
     var existing = document.getElementById('pay-modal');
@@ -6654,7 +6654,7 @@ function openPayment(plan) {
             '<div class="pay-panel active" id="pay-panel-online">' +
                 '<a class="pay-mbd-link" href="' + (mbdLinks[plan] || '#') + '" target="_blank">购买' + (planNames[plan] || '') + '</a>' +
                 '<div class="pay-mbd-tip">购买后复制面包多订单号，粘贴到下方即可自动开通</div>' +
-                '<div class="pay-coupon-tip">💡 付款时输入优惠码 <strong style="color:#6C5CE7">CET4VIP</strong> 享7折</div>' +
+                '<div class="pay-coupon-tip">💡 付款时输入优惠码 <strong style="color:#6C5CE7">' + (plan === 'sprint' ? 'NGUPFC' : 'WPBWPS') + '</strong> 享5折</div>' +
                 '<div class="pay-input-row" style="margin-top:14px">' +
                     '<input type="text" id="mbd-order-input" placeholder="粘贴面包多订单号" autocomplete="off" spellcheck="false">' +
                     '<button id="mbd-activate-btn" onclick="activateWithMbdOrder(\'' + plan + '\')">验证激活</button>' +
@@ -8132,7 +8132,7 @@ function drawReportShareImage() {
                 <div class="share-card-hint">长按保存图片</div>
             </div>
             <div class="share-card-tip">分享给朋友测测 👇</div>
-            <div class="detail-coupon-tip">🎁 限时优惠：付款输入 <strong style="color:#6C5CE7">CET4VIP</strong> 享7折</div></div>
+            <div class="detail-coupon-tip">🎁 限时5折：付款输入优惠码 <strong style="color:#6C5CE7">NGUPFC</strong>（冲刺营）/ <strong style="color:#6C5CE7">WPBWPS</strong>（全程营）</div></div>
             <button class="share-card-close" onclick="closeShareCard()">关闭</button>
         </div>
     </div>
