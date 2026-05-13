@@ -5549,10 +5549,11 @@
                     var lines = buffer.split('\n');
                     buffer = lines.pop() || ''; // keep incomplete line
 
+                    var currentEventType = '';
                     for (var i = 0; i < lines.length; i++) {
                         var line = lines[i].trim();
                         if (!line || line.startsWith(':')) continue; // skip empty/comments
-                        if (line.startsWith('event:')) continue; // skip event type
+                        if (line.startsWith('event:')) { currentEventType = line.substring(6).trim(); continue; }
                         if (!line.startsWith('data:')) continue;
 
                         var dataStr = line.substring(5).trim();
@@ -5560,8 +5561,8 @@
 
                         try {
                             var evt = JSON.parse(dataStr);
-                            // Coze stream format: evt.type === 'conversation.message.delta' for text chunks
-                            if (evt.type === 'answer' && evt.content) {
+                            // Only accumulate text from delta events, skip completed events (they repeat full text)
+                            if (evt.type === 'answer' && evt.content && currentEventType === 'conversation.message.delta') {
                                 fullText += evt.content;
                                 chatState.currentStreamText = fullText;
                                 if (bubbleEl) {
@@ -6664,7 +6665,7 @@ async function sendQuizRequest(prompt) {
                 
                 try {
                     var evt = JSON.parse(dataStr);
-                    if (evt.type === 'answer' && evt.content) {
+                    if (evt.type === 'answer' && evt.content && currentEventType === 'conversation.message.delta') {
                         fullText += evt.content;
                     }
                     if (evt.type === 'conversation.chat.created' || evt.type === 'conversation.chat.in_progress') {
