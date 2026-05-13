@@ -18,26 +18,6 @@ try {
 
 const PORT = process.env.PORT || 8080;
 
-// 拼团数据持久化
-function loadGroups() {
-    try {
-        const path = require('path');
-        const gPath = path.join(__dirname, 'groups.json');
-        if (require('fs').existsSync(gPath)) {
-            const data = require('fs').readFileSync(gPath, 'utf8');
-            return JSON.parse(data).groups || [];
-        }
-    } catch(e) {}
-    return [];
-}
-
-function saveGroups(groups) {
-    try {
-        const path = require('path');
-        const gPath = path.join(__dirname, 'groups.json');
-        require('fs').writeFileSync(gPath, JSON.stringify({groups: groups}, null, 2));
-    } catch(e) { console.error('saveGroups error', e); }
-}
 
 
 
@@ -158,100 +138,6 @@ async function handleApi(req, res, pathname) {
     try {
         // ===== 手动收款模式 API =====
 
-        // POST /api/validate-coupon - 验证优惠码
-        if (pathname === '/api/validate-coupon' && req.method === 'POST') {
-            const body = await parseBody(req);
-            const { code } = body;
-            if (!code) return sendJson(res, 400, { error: '缺少优惠码' });
-            
-            // 加载优惠码文件
-            let coupons = [];
-            try {
-                const couponPath = path.join(__dirname, 'coupons.json');
-                if (fs.existsSync(couponPath)) {
-                    coupons = JSON.parse(fs.readFileSync(couponPath, 'utf8')).coupons || [];
-                }
-            } catch(e) {}
-            
-            const coupon = coupons.find(c => c.code.toUpperCase() === code.toUpperCase());
-            if (!coupon) return sendJson(res, 200, { valid: false, error: '优惠码不存在' });
-            if (coupon.used) return sendJson(res, 200, { valid: false, error: '优惠码已使用' });
-            
-            return sendJson(res, 200, { valid: true, discount: 10, code: coupon.code });
-        }
-
-        // POST /api/create-group - 创建拼团
-        if (pathname === '/api/create-group' && req.method === 'POST') {
-            const body = await parseBody(req);
-            const { groupId, plan, creator } = body;
-            if (!groupId || !plan) return sendJson(res, 400, { error: '参数缺失' });
-            
-            const groups = loadGroups();
-            const newGroup = {
-                id: groupId,
-                plan: plan,
-                creator: creator || 'unknown',
-                members: [],
-                status: 'open',
-                createdAt: Date.now(),
-                expiresAt: Date.now() + 24 * 60 * 60 * 1000 // 24小时
-            };
-            groups.push(newGroup);
-            saveGroups(groups);
-            
-            return sendJson(res, 200, { success: true, group: newGroup });
-        }
-
-        // GET /api/group - 获取拼团信息
-        if (pathname === '/api/group' && req.method === 'GET') {
-            const url = new URL(req.url, `http://localhost:${PORT}`);
-            const groupId = url.searchParams.get('id');
-            if (!groupId) return sendJson(res, 400, { error: '缺少groupId' });
-            
-            const groups = loadGroups();
-            const group = groups.find(g => g.id === groupId);
-            if (!group) return sendJson(res, 200, { error: '拼团不存在' });
-            
-            return sendJson(res, 200, {
-                id: group.id,
-                plan: group.plan,
-                members: group.members.length,
-                needed: 3 - group.members.length,
-                status: group.status,
-                expired: Date.now() > group.expiresAt
-            });
-        }
-
-        // POST /api/join-group - 加入拼团
-        if (pathname === '/api/join-group' && req.method === 'POST') {
-            const body = await parseBody(req);
-            const { groupId, userId } = body;
-            if (!groupId) return sendJson(res, 400, { error: '缺少groupId' });
-            
-            const groups = loadGroups();
-            const group = groups.find(g => g.id === groupId);
-            if (!group) return sendJson(res, 200, { error: '拼团不存在' });
-            if (group.status === 'filled') return sendJson(res, 200, { error: '拼团已满' });
-            if (Date.now() > group.expiresAt) {
-                group.status = 'expired';
-                saveGroups(groups);
-                return sendJson(res, 200, { error: '拼团已过期' });
-            }
-            
-            if (!group.members.includes(userId)) {
-                group.members.push(userId);
-                if (group.members.length >= 3) {
-                    group.status = 'filled';
-                }
-            }
-            saveGroups(groups);
-            
-            return sendJson(res, 200, {
-                success: true,
-                members: group.members.length,
-                filled: group.status === 'filled'
-            });
-        }
 
         // POST /api/create-order - 创建订单（手动收款模式）
         if (pathname === '/api/create-order' && req.method === 'POST') {

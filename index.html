@@ -2276,14 +2276,9 @@
         .btn-share-card { background: #F0EEFF !important; color: var(--primary) !important; }
 
         /* 优惠码输入 */
-        #coupon-input { flex: 1; }
-        .coupon-success { color: #00B894 !important; }
-        .coupon-error { color: #E17055 !important; }
 
-        /* 拼团提示 */
-        .group-banner { background: linear-gradient(135deg, #F0EEFF, #E8E4FF); border-radius: 12px; padding: 12px; margin: 16px; text-align: center; }
-        .group-banner strong { color: var(--primary); }
-</style>
+        .pay-coupon-tip, .detail-coupon-tip { font-size: 13px; color: #6C5CE7; background: #f8f7ff; border: 1px dashed #6C5CE7; border-radius: 8px; padding: 8px 12px; margin: 8px 0; text-align: center; }
+    </style>
 </head>
 <body>
     <div class="app">
@@ -2636,7 +2631,6 @@
                             <li>✓ 针对短板的每日一练</li>
                         </ul>
                         <button class="coze-card-btn primary" onclick="event.stopPropagation();openPayment('sprint')">立即购买</button>
-                        <button class="coze-card-btn outline" style="margin-top:8px;font-size:12px" onclick="event.stopPropagation();createGroup('sprint')">👥 3人拼团 ¥28/人</button>
                     </div>
                     <div class="coze-card" data-plan="flagship" onclick="selectPlan('flagship')">
                         <div class="coze-card-top">
@@ -2653,7 +2647,6 @@
                             <li>✓ 六级衔接指导</li>
                         </ul>
                         <button class="coze-card-btn primary" onclick="event.stopPropagation();openPayment('flagship')">立即购买</button>
-                        <button class="coze-card-btn outline" style="margin-top:8px;font-size:12px" onclick="event.stopPropagation();createGroup('flagship')">👥 3人拼团 ¥118/人</button>
                     </div>
                 </div>
                 <div class="coze-benefits" id="coze-benefits">
@@ -4014,11 +4007,7 @@ function openPayment(plan) {
             '<div class="pay-panel active" id="pay-panel-online">' +
                 '<a class="pay-mbd-link" href="' + (mbdLinks[plan] || '#') + '" target="_blank">购买' + (planNames[plan] || '') + '</a>' +
                 '<div class="pay-mbd-tip">购买后复制面包多订单号，粘贴到下方即可自动开通</div>' +
-                '<div class="pay-input-row" style="margin-top:8px">' +
-                    '<input type="text" id="coupon-input" placeholder="优惠码（如有）" autocomplete="off" spellcheck="false">' +
-                    '<button id="coupon-apply-btn" onclick="applyCoupon()" style="font-size:12px;padding:10px 12px">使用</button>' +
-                '</div>' +
-                '<div id="coupon-msg" style="font-size:12px;margin-top:4px;color:#6C5CE7;display:none"></div>' +
+                '<div class="pay-coupon-tip">💡 付款时输入优惠码 <strong style="color:#6C5CE7">CET4VIP</strong> 享7折</div>' +
                 '<div class="pay-input-row" style="margin-top:14px">' +
                     '<input type="text" id="mbd-order-input" placeholder="粘贴面包多订单号" autocomplete="off" spellcheck="false">' +
                     '<button id="mbd-activate-btn" onclick="activateWithMbdOrder(\'' + plan + '\')">验证激活</button>' +
@@ -4458,101 +4447,10 @@ function incrementChatUsage() {
         function closeShareCard() {
             document.getElementById('share-card-modal').style.display = 'none';
         }
-
-        // 优惠码
-        var appliedCoupon = null;
-        function applyCoupon() {
-            var code = document.getElementById('coupon-input').value.trim().toUpperCase();
-            if (!code) return;
-            var msgEl = document.getElementById('coupon-msg');
-            msgEl.style.display = 'block';
-            msgEl.textContent = '验证中...';
-            msgEl.className = '';
-            // 调用API验证优惠码
-            fetch('/api/validate-coupon', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({code: code})
-            }).then(function(r){ return r.json(); })
-            .then(function(data) {
-                if (data.valid) {
-                    appliedCoupon = data;
-                    msgEl.textContent = '✓ 优惠码有效，立减¥10';
-                    msgEl.className = 'coupon-success';
-                    // 更新价格显示
-                    var priceEl = document.querySelector('.pay-sheet-price');
-                    if (priceEl) {
-                        var originalPrice = parseInt(priceEl.textContent.replace(/[^0-9]/g, ''));
-                        priceEl.innerHTML = '<small>¥</small><s style="font-size:14px;color:#999;margin-right:4px">' + originalPrice + '</s>' + (originalPrice - 10);
-                    }
-                } else {
-                    msgEl.textContent = '✗ ' + (data.error || '优惠码无效');
-                    msgEl.className = 'coupon-error';
-                    appliedCoupon = null;
-                }
-            }).catch(function() {
-                msgEl.textContent = '✗ 验证失败，请重试';
-                msgEl.className = 'coupon-error';
-            });
-        }
-
-        // 拼团功能
-        function createGroup(plan) {
-            // 生成拼团ID
-            var groupId = 'GP' + Date.now().toString(36) + Math.random().toString(36).substr(2, 4).toUpperCase();
-            var shareUrl = location.origin + location.pathname + '?group=' + groupId + '&plan=' + plan;
-            // 复制链接
-            if (navigator.clipboard) {
-                navigator.clipboard.writeText(shareUrl).then(function() {
-                    showToast('拼团链接已复制，快去分享给朋友吧！');
-                });
-            } else {
-                prompt('复制拼团链接:', shareUrl);
-            }
-            // 调用API创建拼团
-            fetch('/api/create-group', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({groupId: groupId, plan: plan, creator: getUserId()})
-            });
-        }
-        
-        // 页面加载时检测拼团参数
-        function checkGroupParam() {
-            var params = new URLSearchParams(location.search);
-            var groupId = params.get('group');
-            var plan = params.get('plan');
-            if (groupId && plan) {
-                // 显示拼团提示
-                var banner = document.createElement('div');
-                banner.className = 'group-banner';
-                banner.innerHTML = '<strong>👥 朋友邀请拼团</strong><br><small>冲刺营¥28/人 · 全程营¥118/人</small><br><button class="coze-card-btn primary" style="margin-top:10px;font-size:13px" onclick="joinGroup('' + groupId + '', '' + plan + '')">立即参团</button>';
-                var cards = document.getElementById('coze-cards');
-                if (cards) cards.parentNode.insertBefore(banner, cards);
-            }
-        }
-        
-        function joinGroup(groupId, plan) {
-            openPayment(plan);
-        }
-        
-        function getUserId() {
-            var userData = JSON.parse(localStorage.getItem('cet_user') || '{}');
-            return userData.uid || 'guest';
-        }
-        
-        // 页面加载时检查
-        document.addEventListener('DOMContentLoaded', checkGroupParam);
-</script>
-
-    <!-- 人格卡分享弹窗 -->
-    <div class="modal-overlay" id="share-card-modal">
-        <div class="share-card-box">
-            <div class="share-card-img-wrap">
-                <img id="share-card-img" src="" />
                 <div class="share-card-hint">长按保存图片</div>
             </div>
             <div class="share-card-tip">分享给朋友测测 👇</div>
+            <div class="detail-coupon-tip">🎁 限时优惠：付款输入 <strong style="color:#6C5CE7">CET4VIP</strong> 享7折</div></div>
             <button class="share-card-close" onclick="closeShareCard()">关闭</button>
         </div>
     </div>
