@@ -7930,6 +7930,127 @@ function drawReportShareImage() {
     ctx.fillText('四级备考搭子 · AI智能诊断', 140, 385);
 }
 
+                <div class="share-card-hint">长按保存图片</div>
+            </div>
+            <div class="share-card-tip">分享给朋友测测 👇</div>
+            <div class="detail-coupon-tip">🎁 限时优惠：付款输入 <strong style="color:#6C5CE7">CET4VIP</strong> 享7折</div></div>
+            <button class="share-card-close" onclick="closeShareCard()">关闭</button>
+        </div>
+    </div>
+
+    <!-- 诊断报告页 -->
+    <div class="report-overlay" id="report-overlay" style="display:none">
+        <div class="report-header">
+            <button class="report-back" onclick="closeReportPage()">
+                <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="15 18 9 12 15 6"/>
+                </svg>
+            </button>
+            <div class="report-header-title">诊断报告</div>
+        </div>
+        <div class="report-content" id="report-content">
+            <!-- 动态内容由JS填充 -->
+        </div>
+        <div class="report-cta-section">
+            <button class="report-cta-btn" onclick="openReportPayModal()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                    <path d="M2 17l10 5 10-5"/>
+                    <path d="M2 12l10 5 10-5"/>
+                </svg>
+                <span id="report-cta-text">升级冲刺营，针对性提升</span>
+            </button>
+            <button class="report-secondary-btn" onclick="continuePractice()">继续AI陪练</button>
+        </div>
+    </div>
+
+    <!-- 报告分享弹窗 -->
+    <div class="report-share-modal" id="report-share-modal" style="display:none" onclick="if(event.target===this)closeReportShare()">
+        <div class="report-share-box">
+            <div class="report-share-canvas-wrap" id="report-share-canvas-wrap">
+                <canvas id="report-share-canvas" width="280" height="400"></canvas>
+            </div>
+            <div class="report-share-hint">长按保存图片到相册</div>
+            <button class="report-share-close" onclick="closeReportShare()">关闭</button>
+        </div>
+    </div>
+
+    <!-- 每日一练 Quiz Overlay -->
+    <div class="quiz-overlay" id="quiz-overlay">
+        <div class="quiz-header">
+            <button class="quiz-close-btn" onclick="closeQuiz()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            </button>
+            <div class="quiz-header-center">
+                <div class="quiz-title" id="quiz-title">每日一练</div>
+                <div class="quiz-subtitle" id="quiz-subtitle">正在出题...</div>
+            </div>
+            <div style="width:36px"></div>
+        </div>
+        <div class="quiz-progress-bar">
+            <div class="quiz-progress-fill" id="quiz-progress-fill" style="width:0%"></div>
+        </div>
+        <div class="quiz-body" id="quiz-body">
+            <!-- Quiz content loaded dynamically -->
+        </div>
+        <div class="quiz-footer">
+            <button class="quiz-next-btn" id="quiz-next-btn" onclick="quizNextQuestion()">下一题</button>
+        </div>
+    </div>
+
+    <!-- 错题本 Overlay -->
+    <div class="wrong-overlay" id="wrong-overlay">
+        <div class="wrong-header">
+            <button class="wrong-back-btn" onclick="closeWrongBook()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="15 18 9 12 15 6"/>
+                </svg>
+            </button>
+            <div class="wrong-header-center">
+                <div class="wrong-header-title">错题本</div>
+                <div class="wrong-header-sub" id="wrong-header-sub">记录学习中的薄弱点</div>
+            </div>
+            <button class="wrong-action-btn secondary" id="wrong-review-btn" onclick="startWrongReview()">复习模式</button>
+        </div>
+        <div class="wrong-stats-bar" id="wrong-stats-bar">
+            <div class="wrong-stat-item">
+                <div class="wrong-stat-num" id="wrong-stat-total">0</div>
+                <div class="wrong-stat-label">总错题</div>
+            </div>
+            <div class="wrong-stat-item">
+                <div class="wrong-stat-num danger" id="wrong-stat-due">0</div>
+                <div class="wrong-stat-label">待复习</div>
+            </div>
+            <div class="wrong-stat-item">
+                <div class="wrong-stat-num success" id="wrong-stat-mastered">0</div>
+                <div class="wrong-stat-label">已掌握</div>
+            </div>
+        </div>
+        <div class="wrong-filter-bar" id="wrong-filter-bar">
+            <button class="wrong-filter-btn active" data-filter="all" onclick="filterWrongItems('all')">全部</button>
+            <button class="wrong-filter-btn" data-filter="due" onclick="filterWrongItems('due')">待复习</button>
+            <button class="wrong-filter-btn" data-filter="not_mastered" onclick="filterWrongItems('not_mastered')">未掌握</button>
+            <button class="wrong-filter-btn" data-filter="mastered" onclick="filterWrongItems('mastered')">已掌握</button>
+        </div>
+        <div class="wrong-list" id="wrong-list">
+            <!-- Wrong items loaded dynamically -->
+        </div>
+        <div class="wrong-review-mode" id="wrong-review-mode" style="display:none">
+            <div class="wrong-review-title">📝 复习模式</div>
+            <div class="wrong-review-desc" id="wrong-review-desc">将针对你的错题重新出题练习</div>
+            <button class="wrong-review-btn" id="wrong-review-start-btn" onclick="startWrongReviewQuiz()">开始复习</button>
+        </div>
+    </div>
+    
+    <script>
+    // ===== 作文批改系统 =====
+    var essayState = {
+        selectedTopic: '',
+        isSubmitting: false,
+        lastResult: null
+    };
 
     function openEssayOverlay() {
         essayState.selectedTopic = '';
@@ -8415,7 +8536,7 @@ function drawReportShareImage() {
                 html += '<div class="progress-weak-score">当前 ' + dim.score + ' 分</div>';
                 html += '</div>';
                 html += '</div>';
-                html += '<button class="progress-weak-btn" data-dim="' + dim.name + '"  onclick="startWeakPractice(this.dataset.dim)">' + action + '</button>';
+                html += '<button class="progress-weak-btn" onclick="startWeakPractice('' + dim.name + '')">' + action + '</button>';
                 html += '</div>';
             });
             html += '</div>';
@@ -8584,129 +8705,6 @@ function drawReportShareImage() {
     }
 
 </script>
-
-                <div class="share-card-hint">长按保存图片</div>
-            </div>
-            <div class="share-card-tip">分享给朋友测测 👇</div>
-            <div class="detail-coupon-tip">🎁 限时优惠：付款输入 <strong style="color:#6C5CE7">CET4VIP</strong> 享7折</div></div>
-            <button class="share-card-close" onclick="closeShareCard()">关闭</button>
-        </div>
-    </div>
-
-    <!-- 诊断报告页 -->
-    <div class="report-overlay" id="report-overlay" style="display:none">
-        <div class="report-header">
-            <button class="report-back" onclick="closeReportPage()">
-                <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="15 18 9 12 15 6"/>
-                </svg>
-            </button>
-            <div class="report-header-title">诊断报告</div>
-        </div>
-        <div class="report-content" id="report-content">
-            <!-- 动态内容由JS填充 -->
-        </div>
-        <div class="report-cta-section">
-            <button class="report-cta-btn" onclick="openReportPayModal()">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-                    <path d="M2 17l10 5 10-5"/>
-                    <path d="M2 12l10 5 10-5"/>
-                </svg>
-                <span id="report-cta-text">升级冲刺营，针对性提升</span>
-            </button>
-            <button class="report-secondary-btn" onclick="continuePractice()">继续AI陪练</button>
-        </div>
-    </div>
-
-    <!-- 报告分享弹窗 -->
-    <div class="report-share-modal" id="report-share-modal" style="display:none" onclick="if(event.target===this)closeReportShare()">
-        <div class="report-share-box">
-            <div class="report-share-canvas-wrap" id="report-share-canvas-wrap">
-                <canvas id="report-share-canvas" width="280" height="400"></canvas>
-            </div>
-            <div class="report-share-hint">长按保存图片到相册</div>
-            <button class="report-share-close" onclick="closeReportShare()">关闭</button>
-        </div>
-    </div>
-
-    <!-- 每日一练 Quiz Overlay -->
-    <div class="quiz-overlay" id="quiz-overlay">
-        <div class="quiz-header">
-            <button class="quiz-close-btn" onclick="closeQuiz()">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-                </svg>
-            </button>
-            <div class="quiz-header-center">
-                <div class="quiz-title" id="quiz-title">每日一练</div>
-                <div class="quiz-subtitle" id="quiz-subtitle">正在出题...</div>
-            </div>
-            <div style="width:36px"></div>
-        </div>
-        <div class="quiz-progress-bar">
-            <div class="quiz-progress-fill" id="quiz-progress-fill" style="width:0%"></div>
-        </div>
-        <div class="quiz-body" id="quiz-body">
-            <!-- Quiz content loaded dynamically -->
-        </div>
-        <div class="quiz-footer">
-            <button class="quiz-next-btn" id="quiz-next-btn" onclick="quizNextQuestion()">下一题</button>
-        </div>
-    </div>
-
-    <!-- 错题本 Overlay -->
-    <div class="wrong-overlay" id="wrong-overlay">
-        <div class="wrong-header">
-            <button class="wrong-back-btn" onclick="closeWrongBook()">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="15 18 9 12 15 6"/>
-                </svg>
-            </button>
-            <div class="wrong-header-center">
-                <div class="wrong-header-title">错题本</div>
-                <div class="wrong-header-sub" id="wrong-header-sub">记录学习中的薄弱点</div>
-            </div>
-            <button class="wrong-action-btn secondary" id="wrong-review-btn" onclick="startWrongReview()">复习模式</button>
-        </div>
-        <div class="wrong-stats-bar" id="wrong-stats-bar">
-            <div class="wrong-stat-item">
-                <div class="wrong-stat-num" id="wrong-stat-total">0</div>
-                <div class="wrong-stat-label">总错题</div>
-            </div>
-            <div class="wrong-stat-item">
-                <div class="wrong-stat-num danger" id="wrong-stat-due">0</div>
-                <div class="wrong-stat-label">待复习</div>
-            </div>
-            <div class="wrong-stat-item">
-                <div class="wrong-stat-num success" id="wrong-stat-mastered">0</div>
-                <div class="wrong-stat-label">已掌握</div>
-            </div>
-        </div>
-        <div class="wrong-filter-bar" id="wrong-filter-bar">
-            <button class="wrong-filter-btn active" data-filter="all" onclick="filterWrongItems('all')">全部</button>
-            <button class="wrong-filter-btn" data-filter="due" onclick="filterWrongItems('due')">待复习</button>
-            <button class="wrong-filter-btn" data-filter="not_mastered" onclick="filterWrongItems('not_mastered')">未掌握</button>
-            <button class="wrong-filter-btn" data-filter="mastered" onclick="filterWrongItems('mastered')">已掌握</button>
-        </div>
-        <div class="wrong-list" id="wrong-list">
-            <!-- Wrong items loaded dynamically -->
-        </div>
-        <div class="wrong-review-mode" id="wrong-review-mode" style="display:none">
-            <div class="wrong-review-title">📝 复习模式</div>
-            <div class="wrong-review-desc" id="wrong-review-desc">将针对你的错题重新出题练习</div>
-            <button class="wrong-review-btn" id="wrong-review-start-btn" onclick="startWrongReviewQuiz()">开始复习</button>
-        </div>
-    </div>
-    
-    <script>
-    // ===== 作文批改系统 =====
-    var essayState = {
-        selectedTopic: '',
-        isSubmitting: false,
-        lastResult: null
-    };
-
 
     <!-- 学习进度仪表盘 -->
     <div class="progress-overlay" id="progress-overlay">
