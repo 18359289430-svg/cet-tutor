@@ -5681,8 +5681,9 @@
                     }
                 }
             } catch (e) {
+                console.error('[Chat ERROR]', e.message, 'stack:', e.stack);
                 removeTypingIndicator();
-                appendMessage('ai', '网络异常，请重试');
+                appendMessage('ai', '出错了: ' + e.message);
             }
 
             chatState.isStreaming = false;
