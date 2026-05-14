@@ -316,6 +316,12 @@ async function handleApi(req, res, pathname) {
     }
 
     try {
+        // ===== 健康检查 =====
+        if (pathname === '/api/health') {
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            return res.end(JSON.stringify({ status: 'ok', uptime: Math.floor(process.uptime()), timestamp: Date.now() }));
+        }
+
         // ===== 手动收款模式 API =====
 
 
