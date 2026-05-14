@@ -891,44 +891,6 @@ async function handleApi(req, res, pathname) {
 const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY || '';
 const DEEPSEEK_API_BASE = 'https://api.deepseek.com/v1';
 
-// GET /api/deepseek/quiz-topics - 获取写作题列表
-if (pathname === '/api/deepseek/quiz-topics' && req.method === 'GET') {
-    // 写作题类型列表
-    const writingTopics = [
-        { id: 1, title: '议论文：科技发展对生活的影响', category: '议论文' },
-        { id: 2, title: '议论文：环境保护的重要性', category: '议论文' },
-        { id: 3, title: '议论文：终身学习', category: '议论文' },
-        { id: 4, title: '议论文：网络语言的利与弊', category: '议论文' },
-        { id: 5, title: '议论文：健康生活方式', category: '议论文' },
-        { id: 6, title: '议论文：大学生就业压力', category: '议论文' },
-        { id: 7, title: '议论文：传统文化传承', category: '议论文' },
-        { id: 8, title: '议论文：团队合作的重要性', category: '议论文' },
-        { id: 9, title: '议论文：诚信的重要性', category: '议论文' },
-        { id: 10, title: '议论文：志愿服务精神', category: '议论文' },
-        { id: 11, title: '说明文：如何保护个人信息', category: '说明文' },
-        { id: 12, title: '说明文：节能减排的方法', category: '说明文' },
-        { id: 13, title: '说明文：时间管理技巧', category: '说明文' },
-        { id: 14, title: '应用文：申请信', category: '应用文' },
-        { id: 15, title: '应用文：感谢信', category: '应用文' },
-        { id: 16, title: '应用文：道歉信', category: '应用文' },
-        { id: 17, title: '应用文：建议信', category: '应用文' },
-        { id: 18, title: '应用文：投诉信', category: '应用文' },
-        { id: 19, title: '图表作文：消费趋势分析', category: '图表作文' },
-        { id: 20, title: '图表作文：就业率变化', category: '图表作文' },
-        { id: 21, title: '图表作文：教育投入统计', category: '图表作文' },
-        { id: 22, title: '图表作文：交通出行方式', category: '图表作文' },
-        { id: 23, title: '图表作文：手机使用调查', category: '图表作文' },
-        { id: 24, title: '图表作文：旅游目的地偏好', category: '图表作文' },
-        { id: 25, title: '图表作文：饮食习惯变化', category: '图表作文' },
-        { id: 26, title: '图表作文：学习方式统计', category: '图表作文' },
-        { id: 27, title: '图表作文：娱乐活动选择', category: '图表作文' },
-        { id: 28, title: '图表作文：社交媒体使用', category: '图表作文' },
-        { id: 29, title: '图表作文：环境污染数据', category: '图表作文' },
-        { id: 30, title: '图表作文：水资源使用', category: '图表作文' }
-    ];
-    return sendJson(res, 200, { topics: writingTopics });
-}
-
 // 主服务器
 const html = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf-8');
 
@@ -1194,48 +1156,6 @@ async function handleDeepseekChat(req, res) {
     }
 }
 
-// 作文题目列表
-const ESSAY_TOPICS = [
-    { id: 'essay_001', title: '活动邀请信', desc: '邀请朋友参加校园活动', difficulty: '中等' },
-    { id: 'essay_002', title: '感谢信', desc: '感谢老师/朋友的帮助', difficulty: '中等' },
-    { id: 'essay_003', title: '投诉信', desc: '投诉商品或服务质量问题', difficulty: '较难' },
-    { id: 'essay_004', title: '建议信', desc: '就某事提出建议和改进意见', difficulty: '中等' },
-    { id: 'essay_005', title: '道歉信', desc: '因某种原因无法赴约而道歉', difficulty: '较易' },
-    { id: 'essay_006', title: '自我介绍', desc: '向他人介绍自己的背景和兴趣', difficulty: '较易' },
-    { id: 'essay_007', title: '求职信', desc: '申请实习或工作岗位', difficulty: '较难' },
-    { id: 'essay_008', title: '通知', desc: '发布活动或会议通知', difficulty: '中等' }
-];
-
-// GET /api/deepseek/quiz-topics - 获取写作题目列表
-async function handleQuizTopics(req, res) {
-    try {
-        // 从quiz_questions.json筛选写作相关题目
-        const quizFile = path.join(__dirname, 'data', 'quiz_questions.json');
-        let topics = [];
-        if (fs.existsSync(quizFile)) {
-            const quizData = JSON.parse(fs.readFileSync(quizFile, 'utf8'));
-            topics = quizData.filter(function(q) {
-                var type = q.type || '';
-                return type.includes('写作') || type.includes('作文');
-            }).map(function(q) {
-                return {
-                    id: q.id,
-                    title: q.type || '写作题',
-                    desc: (q.question || '').substring(0, 50),
-                    difficulty: q.difficulty || '中等'
-                };
-            });
-        }
-        // 合并硬编码的作文题目
-        const allTopics = ESSAY_TOPICS.concat(topics.slice(0, 10));
-        sendJson(res, 200, { code: 0, data: allTopics });
-    } catch(e) {
-        console.error('[Quiz Topics Error]', e.message);
-        sendJson(res, 500, { error: '获取题目失败' });
-    }
-}
-
-// POST /api/deepseek/essay-grade - 作文批改（结构化JSON）
 async function handleDeepseekEssayGrade(req, res) {
     try {
         const body = await parseBody(req);
