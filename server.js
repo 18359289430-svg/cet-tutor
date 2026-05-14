@@ -1225,7 +1225,6 @@ function searchQuiz(keyword, type, limit) {
 // GET /api/quiz/search - 搜索真题
 // ?keyword=xxx&type=xxx&limit=5
 // ===== DeepSeek API 直连（陪练模式） =====
-const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY || '';
 const DEEPSEEK_API_BASE = 'https://api.deepseek.com/v1';
 const COMPANION_SYSTEM_PROMPT = `你是"小过学长"的AI陪练模式，一个温暖又专业的四级备考私教。
 
