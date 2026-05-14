@@ -26,6 +26,17 @@
             } catch(e) {}
         }
 
+        // ===== fetch超时处理 =====
+        function fetchWithTimeout(url, options, timeout) {
+            timeout = timeout || 15000;
+            return Promise.race([
+                fetch(url, options),
+                new Promise(function(_, reject) {
+                    setTimeout(function() { reject(new Error('请求超时，请重试')); }, timeout);
+                })
+            ]);
+        }
+
 
         var state = {
             currentTab: 'home',
@@ -2090,7 +2101,7 @@ function initApp() {
             // Create conversation if needed
             if (!chatState.conversationId) {
                 try {
-                    var createResp = await fetch('/api/chat/conversation', { method: 'POST' });
+                    var createResp = await fetchWithTimeout('/api/chat/conversation', { method: 'POST' });
                     var createData = await createResp.json();
                     if (createData.data && createData.data.id) {
                         chatState.conversationId = createData.data.id;
@@ -2295,7 +2306,7 @@ function initApp() {
                     };
                 }
 
-                var resp = await fetch(fetchUrl, {
+                var resp = await fetchWithTimeout(fetchUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(fetchPayload)
@@ -2466,7 +2477,7 @@ function initApp() {
                     console.log('[Stream] fullText is empty, falling back to message polling...');
                     if (chatState.chatId && chatState.conversationId) {
                         try {
-                            var pollResp = await fetch('/api/chat/messages?chat_id=' + chatState.chatId + '&conversation_id=' + chatState.conversationId);
+                            var pollResp = await fetchWithTimeout('/api/chat/messages?chat_id=' + chatState.chatId + '&conversation_id=' + chatState.conversationId);
                             if (pollResp.ok) {
                                 var pollData = await pollResp.json();
                                 if (pollData.data && pollData.data.length > 0) {
@@ -3421,7 +3432,7 @@ async function requestQuizQuestion() {
     // 确保有会话
     if (!chatState.conversationId) {
         try {
-            var createResp = await fetch('/api/chat/conversation', { method: 'POST' });
+            var createResp = await fetchWithTimeout('/api/chat/conversation', { method: 'POST' });
             var createData = await createResp.json();
             if (createData.data && createData.data.id) {
                 chatState.conversationId = createData.data.id;
@@ -3434,7 +3445,7 @@ async function requestQuizQuestion() {
     
     // 发送请求
     try {
-        var resp = await fetch('/api/chat/send', {
+        var resp = await fetchWithTimeout('/api/chat/send', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -3777,7 +3788,7 @@ const LIMIT_CACHE_TTL = 5000; // 缓存5秒
 // 从后端获取剩余对话次数（异步）
 async function fetchRemainingFromBackend(userId) {
     try {
-        var resp = await fetch('/api/chat/remaining', {
+        var resp = await fetchWithTimeout('/api/chat/remaining', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -4172,7 +4183,7 @@ async function startNewDiagnosis() {
     
     try {
         // 调用API获取题目
-        var resp = await fetch('/api/diagnosis/questions');
+        var resp = await fetchWithTimeout('/api/diagnosis/questions');
         var result = await resp.json();
         
         // 解析新版JSON格式（包含passages数组）
@@ -4447,7 +4458,7 @@ async function generateDiagReport() {
             }
         });
         
-        var resp = await fetch('/api/diagnosis/report', {
+        var resp = await fetchWithTimeout('/api/diagnosis/report', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
