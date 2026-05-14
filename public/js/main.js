@@ -2952,7 +2952,8 @@ function closeModal(id) {
 
 function openPayment(plan) {
     var planNames = { sprint: '冲刺营', flagship: '全程营' };
-    var planPrices = { sprint: 38, flagship: 148 };
+    var planPrices = { sprint: 89, flagship: 299 };
+    var planSalePrices = { sprint: 44.5, flagship: 149.5 }; // 5折后
     var planFeatures = {
         sprint: ['AI对话 无限','45天个性化学习计划','作文批改 每日1次（逐句改写）','翻译批改 每日1次（参考译文）','针对短板的每日一练'],
         flagship: ['AI对话 无限','45天个性化学习计划','作文/翻译批改 无限（逐句改写+精讲）','针对短板的每日一练','深度精讲（为什么错+怎么避坑）','六级衔接指导']
@@ -2979,25 +2980,22 @@ function openPayment(plan) {
             '<div class="pay-sheet-handle"></div>' +
             '<button class="pay-close" onclick="closePayModal()"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2"><line x1="1" y1="1" x2="13" y2="13"/><line x1="13" y1="1" x2="1" y2="13"/></svg></button>' +
             '<div class="pay-sheet-title">' + (planNames[plan] || plan) + '</div>' +
-            '<div class="pay-sheet-price"><small>¥</small>' + (planPrices[plan] || '') + '</div>' +
+            '<div class="pay-sheet-price"><small>¥</small>' + (planSalePrices[plan] || '') + '<span style="font-size:14px;color:#94A3B8;text-decoration:line-through;margin-left:8px;font-weight:400">¥' + (planPrices[plan] || '') + '</span></div>' +
             '<ul class="pay-feature-list">' + featureHtml + '</ul>' +
             '<div class="pay-tabs">' +
                 '<div class="pay-tab active" onclick="switchPayTab(\'online\')">在线购买</div>' +
                 '<div class="pay-tab" onclick="switchPayTab(\'code\')">激活码</div>' +
             '</div>' +
             '<div class="pay-panel active" id="pay-panel-online">' +
-                '<a class="pay-mbd-link" href="' + (mbdLinks[plan] || '#') + '" target="_blank">购买' + (planNames[plan] || '') + '</a>' +
-                '<div class="pay-mbd-tip">购买后复制面包多订单号，粘贴到下方即可自动开通</div>' +
+                '<a class="pay-mbd-link" href="' + (mbdLinks[plan] || '#') + '" target="_blank" onclick="setTimeout(function(){document.getElementById(\'mbd-activate-section\').style.display=\'block\';},500)">去面包多购买 ¥' + (planPrices[plan] || '') + '</a>' +
                 '<div class="pay-coupon-tip">💡 付款时输入优惠码 <strong style="color:#6C5CE7">' + (plan === 'sprint' ? 'NGUPFC' : 'WPBWPS') + '</strong> 享5折</div>' +
-                '<div class="pay-input-row" style="margin-top:14px">' +
-                    '<input type="text" id="mbd-order-input" placeholder="粘贴面包多订单号" autocomplete="off" spellcheck="false">' +
-                    '<button id="mbd-activate-btn" onclick="activateWithMbdOrder(\'' + plan + '\')">验证激活</button>' +
-                '</div>' +
-                '<div id="mbd-activate-msg" style="font-size:12px;margin-top:8px;min-height:18px"></div>' +
-                '<div style="margin-top:16px;padding-top:16px;border-top:1px solid #F1F5F9">' +
-                    '<div style="font-size:12px;color:#94a3b8;text-align:center;margin-bottom:8px">或微信扫码转账后联系客服获取激活码</div>' +
-                    '<div class="pay-qr-box"><img src="/wechat-qr.jpg" alt="微信收款码"></div>' +
-                    '<div class="pay-qr-tip">转账备注：' + (planNames[plan] || '') + '</div>' +
+                '<div id="mbd-activate-section" style="margin-top:16px;padding-top:16px;border-top:1px solid #F1F5F9">' +
+                    '<div style="font-size:13px;color:#64748B;margin-bottom:8px">购买完成后，粘贴面包多订单号即可自动开通</div>' +
+                    '<div class="pay-input-row">' +
+                        '<input type="text" id="mbd-order-input" placeholder="粘贴面包多订单号" autocomplete="off" spellcheck="false">' +
+                        '<button id="mbd-activate-btn" onclick="activateWithMbdOrder(\'' + plan + '\')">验证激活</button>' +
+                    '</div>' +
+                    '<div id="mbd-activate-msg" style="font-size:12px;margin-top:8px;min-height:18px"></div>' +
                 '</div>' +
             '</div>' +
             '<div class="pay-panel" id="pay-panel-code">' +
