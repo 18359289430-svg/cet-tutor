@@ -47,6 +47,9 @@ function initApp() {
 
             // 领取链接自动激活：/claim?sprint&code=CET4S-XXXXX-YYYY
             checkClaimUrl();
+            
+            // 初始化输入框placeholder（免费额度提示）
+            updateChatInputPlaceholder();
         }
 
         function loadUserData() {
@@ -1488,6 +1491,8 @@ function initApp() {
             document.getElementById('chat-page').style.display = 'flex';
             switchTab('diagnosis');
             
+            // 更新输入框placeholder（免费额度提示）
+            updateChatInputPlaceholder();
             // 如果有初始消息，延迟发送
             if (arguments[1]) {
                 setTimeout(function() { sendSuggestion(arguments[1]); }, 300);
@@ -1871,13 +1876,23 @@ function initApp() {
             var text = input.value.trim();
             if (!text || chatState.isStreaming) return;
 
-            // Chat limit check - 从后端获取（异步）
+            // GPT风格免费限额检查（本地检查，优先于后端检查）
+            var plan = (state.userData && state.userData.plan) || 'free';
+            if (plan === 'free' && isFreeLimitReached()) {
+                appendLimitSystemCard();
+                return;
+            }
+
+            // Chat limit check - 从后端获取（异步）- 付费用户使用
             var userId = (state.userData && state.userData.uid) || 'user_' + Date.now();
             var limitResult = await checkChatLimitAsync(userId);
             if (limitResult.limited) {
                 appendMessage('system', limitResult.message);
                 return;
             }
+
+            // 标记是否发送后将达到免费限额（用于AI回复后追加轻提示）
+            var willUseLastFree = plan === 'free' && isLastFreeMessage();
 
             appendMessage('user', text);
             input.value = '';
@@ -1887,7 +1902,13 @@ function initApp() {
             if (chips) chips.style.display = 'none';
             chatState.isStreaming = true;
             chatState.chatRounds++;
-            incrementChatUsage();
+            
+            // 付费用户使用原有计数，免费用户使用新的本地计数
+            if (plan === 'free') {
+                incrementDailyChatUsed();
+            } else {
+                incrementChatUsage();
+            }
 
             // Create conversation if needed
             if (!chatState.conversationId) {
@@ -2163,6 +2184,10 @@ function initApp() {
                     updateChatListMeta(fullText);
                     savePracticeRecord();
                     checkStreakOnChat();
+                    // 最后一条免费消息时追加轻提示
+                    if (willUseLastFree && aiDiv) {
+                        appendLimitHintToMessage(aiDiv);
+                    }
                     chatState.isStreaming = false;
                     return;
                 }
@@ -2313,6 +2338,11 @@ function initApp() {
             } catch (e) {
                 removeTypingIndicator();
                 appendMessage('ai', '网络异常，请重试');
+            }
+            
+            // 最后一条免费消息时追加轻提示
+            if (willUseLastFree && typeof aiDiv !== 'undefined' && aiDiv) {
+                appendLimitHintToMessage(aiDiv);
             }
 
             chatState.isStreaming = false;
@@ -4864,4 +4894,119 @@ function drawReportShareImage() {
     ctx.font = '11px -apple-system, BlinkMacSystemFont, sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText('四级备考搭子 · AI智能诊断', 140, 385);
+}
+
+// ===== 免费AI对话限额逻辑 (GPT风格) =====
+// 每日免费额度：3条AI对话消息
+var CET4_DAILY_FREE_LIMIT = 3;
+var CET4_CHAT_COUNT_KEY_PREFIX = 'cet4_chat_count_';
+
+// 获取今天的日期字符串 YYYYMMDD
+function getTodayDateStr() {
+    var d = new Date();
+    return d.getFullYear() + '' + 
+        String(d.getMonth() + 1).padStart(2, '0') + '' + 
+        String(d.getDate()).padStart(2, '0');
+}
+
+// 获取当天已用免费次数
+function getDailyChatUsed() {
+    try {
+        var key = CET4_CHAT_COUNT_KEY_PREFIX + getTodayDateStr();
+        var used = localStorage.getItem(key);
+        return used ? parseInt(used, 10) : 0;
+    } catch(e) {
+        return 0;
+    }
+}
+
+// 获取当天剩余免费次数
+function getDailyChatRemaining() {
+    return Math.max(0, CET4_DAILY_FREE_LIMIT - getDailyChatUsed());
+}
+
+// 检查是否已用完免费额度（仅本地检查，不涉及付费用户）
+function isFreeLimitReached() {
+    // 付费用户不受限制
+    var plan = (state.userData && state.userData.plan) || 'free';
+    if (plan !== 'free') return false;
+    
+    return getDailyChatUsed() >= CET4_DAILY_FREE_LIMIT;
+}
+
+// 增加免费额度使用次数
+function incrementDailyChatUsed() {
+    try {
+        var key = CET4_CHAT_COUNT_KEY_PREFIX + getTodayDateStr();
+        var used = getDailyChatUsed();
+        localStorage.setItem(key, String(used + 1));
+    } catch(e) {
+        console.error('incrementDailyChatUsed error:', e);
+    }
+}
+
+// 检查是否是最后一条免费消息（发送后会达到限额）
+function isLastFreeMessage() {
+    var plan = (state.userData && state.userData.plan) || 'free';
+    if (plan !== 'free') return false;
+    
+    var used = getDailyChatUsed();
+    return used === CET4_DAILY_FREE_LIMIT - 1; // 当前是第 0,1,2 条，用完3条后是最后一条
+}
+
+// 追加轻提示到AI消息末尾（最后一条免费消息时）
+function appendLimitHintToMessage(aiDiv) {
+    if (!aiDiv) return;
+    var bubbleEl = aiDiv.querySelector('.custom-chat-bubble');
+    if (!bubbleEl) return;
+    
+    var hintHtml = '<div class="limit-hint-inline">这是你今天的最后1次免费对话啦，明天再来或升级冲刺营解锁无限对话</div>';
+    bubbleEl.insertAdjacentHTML('beforeend', hintHtml);
+    
+    // 同时更新输入框placeholder
+    updateChatInputPlaceholder();
+}
+
+// 渲染限额系统消息卡片
+function appendLimitSystemCard() {
+    var container = document.getElementById('chat-messages');
+    if (!container) return;
+    
+    var used = getDailyChatUsed();
+    var msgDiv = document.createElement('div');
+    msgDiv.className = 'custom-chat-msg limit-card';
+    msgDiv.innerHTML = '<div class="limit-card-inner">' +
+        '<div class="limit-card-icon">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' +
+                '<circle cx="12" cy="12" r="10"/>' +
+                '<path d="M12 6v6l4 2"/>' +
+            '</svg>' +
+        '</div>' +
+        '<div class="limit-card-text">' +
+            '<div class="limit-card-title">今日免费额度已用完</div>' +
+            '<div class="limit-card-desc">（' + used + '/' + CET4_DAILY_FREE_LIMIT + '）</div>' +
+        '</div>' +
+        '<a class="limit-card-btn" href="#" onclick="event.preventDefault();closeLimitCard(this);openPayment(\'sprint\')">升级冲刺营</a>' +
+    '</div>';
+    
+    container.appendChild(msgDiv);
+    scrollChatToBottom();
+}
+
+// 关闭限额卡片（隐藏而非删除，保留位置）
+function closeLimitCard(btn) {
+    var card = btn.closest('.limit-card');
+    if (card) card.style.display = 'none';
+}
+
+// 更新输入框placeholder
+function updateChatInputPlaceholder() {
+    var input = document.getElementById('chat-input');
+    if (!input) return;
+    
+    if (isFreeLimitReached()) {
+        input.placeholder = '今日免费额度已用完';
+    } else {
+        input.placeholder = '输入消息...';
+    }
 }

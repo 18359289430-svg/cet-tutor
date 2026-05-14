@@ -904,3 +904,80 @@
     white-space:nowrap; transition:all 0.15s;
 }
 .custom-chat-chip:active { background:#6C5CE7; color:#fff; border-color:#6C5CE7; transform:scale(0.96); }
+
+/* ===== GPT风格免费限额卡片 ===== */
+/* 限额系统消息卡片 */
+.custom-chat-msg.limit-card {
+    justify-content: center;
+    margin: 16px 0;
+}
+.limit-card-inner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #F8F9FA;
+    border-radius: 16px;
+    padding: 12px 16px;
+    max-width: 85%;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.limit-card-icon {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    background: #EEF2FF;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.limit-card-icon svg {
+    width: 14px;
+    height: 14px;
+    stroke: #6C5CE7;
+}
+.limit-card-text {
+    flex: 1;
+    min-width: 0;
+}
+.limit-card-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: #1E293B;
+}
+.limit-card-desc {
+    font-size: 11px;
+    color: #94A3B8;
+    margin-top: 2px;
+}
+.limit-card-btn {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    background: linear-gradient(135deg, #6C5CE7, #8B7CF7);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 500;
+    border-radius: 16px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+.limit-card-btn:hover {
+    opacity: 0.9;
+    transform: scale(1.02);
+}
+.limit-card-btn:active {
+    transform: scale(0.98);
+}
+
+/* AI消息末尾的轻提示文字 */
+.limit-hint-inline {
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px dashed #E5E5EA;
+    font-size: 12px;
+    color: #94A3B8;
+    line-height: 1.5;
+}
