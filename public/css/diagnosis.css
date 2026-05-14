@@ -629,3 +629,49 @@
         }
         .diag-generate-btn:active { transform: scale(0.98); opacity: 0.9; }
 
+
+/* 动态CTA洞察区域 */
+.report-cta-insight {
+    background: linear-gradient(135deg, #F8F7FF 0%, #F0EEFF 100%);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+    border: 1px solid rgba(108,92,231,0.12);
+}
+.report-insight-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    background: #6C5CE7;
+    color: white;
+    margin-bottom: 8px;
+}
+.report-insight-main {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1a1a2e;
+    line-height: 1.5;
+}
+.report-insight-main strong {
+    color: #E17055;
+}
+.report-insight-sub {
+    font-size: 13px;
+    color: #64748B;
+    margin-top: 4px;
+    line-height: 1.4;
+}
+.report-cta-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.report-cta-actions .report-secondary-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 0 !important;
+}

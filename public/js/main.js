@@ -4322,6 +4322,25 @@ function continuePractice() {
     }, 350);
 }
 
+// 免费弱项训练 - 跳转到AI陪练并发送弱项练习指令
+function startWeakDimPractice() {
+    var weakName = '';
+    if (reportData && reportData.weakDims && reportData.weakDims.length > 0) {
+        weakName = reportData.weakDims[0].name || '';
+    }
+    closeReportPage();
+    switchTab('diagnosis');
+    setTimeout(function() {
+        openChat('companion');
+        setTimeout(function() {
+            var msg = weakName ? 
+                '我' + weakName + '比较薄弱，给我出几道' + weakName + '的真题练练' : 
+                '给我出几道阅读理解真题练练';
+            sendSuggestion(msg);
+        }, 500);
+    }, 350);
+}
+
 // ===== 学习计划系统 =====
 var planState = {
     data: null,
@@ -4497,9 +4516,9 @@ function renderReportPage() {
     var weakAdviceHtml = '';
     var adviceMap = {
         '细节定位': { label: '细节定位专项', advice: '建议每天练习3道细节题，学会用关键词回原文定位。重点关注时间、数字、绝对词等信号词。' },
-        '推理判断': { label: '推理判断专项', advice: '需要加强推理能力训练，学会从原文信息推导隐含含义。避免主观臆断，一切答案从原文出发。' },
-        '同义替换': { label: '同义替换专项', advice: '高频同义替换词需要刻意记忆。注意识别选项和原文的改写方式，尤其是词性变换和近义词。' },
-        '主旨归纳': { label: '主旨归纳专项', advice: '练习抓取文章主旨和段落大意。先看首尾句和转折词，关注高频出现的名词和主题词。' },
+        '推理判断': { label: '推理判断专项', advice: '练习从原文信息推导隐含含义，重点关注转折词和因果词。一切答案从原文出发，避免主观推测。' },
+        '同义替换': { label: '同义替换专项', advice: '留意选项和原文的改写方式，重点关注词性变换和近义替换。积累高频同义替换词组有助于解题。' },
+        '主旨归纳': { label: '主旨归纳专项', advice: '先看首尾句和转折词，关注高频出现的名词和主题词。文章主旨通常在首段末句或末段首句。' },
         '态度判断': { label: '态度判断专项', advice: '积累常见的态度词（如skeptical、optimistic等），注意作者是否直接表态还是引用他人观点。' }
     };
     d.weakDims.forEach(function(weak) {
@@ -4515,9 +4534,9 @@ function renderReportPage() {
     // 生成备考建议
     var tipsHtml = '';
     var tips = [
-        { icon: '📅', text: '每天投入30分钟针对性训练，重点突破薄弱维度' },
-        { icon: '📝', text: '建立错题本，记录每道错题的考点和错误原因' },
-        { icon: '🎯', text: '定期复盘，用本工具重新诊断，验证提升效果' }
+        { icon: '', text: '每天投入30分钟针对性训练，重点巩固薄弱维度' },
+        { icon: '', text: '做完题及时复盘错题，记录考点和错误原因' },
+        { icon: '', text: '定期重新诊断，追踪各维度能力变化' }
     ];
     tips.forEach(function(tip) {
         tipsHtml += 
@@ -4561,6 +4580,37 @@ function renderReportPage() {
             '<button style="padding:10px 20px;background:#F8F9FA;border:1px solid #E2E8F0;border-radius:8px;font-size:13px;color:#64748B;cursor:pointer" onclick="showReportShare()">📱 分享报告</button>' +
         '</div>';
     
+    // 动态CTA：根据弱项生成针对性引导文案
+    try {
+        var ctaInsight = document.getElementById('report-cta-insight');
+        var ctaText = document.getElementById('report-cta-text');
+        if (ctaInsight && d.weakDims && d.weakDims.length > 0) {
+            var weakest = d.weakDims[0];
+            var weakName = weakest.name || weakest;
+            var weakScore = weakest.score || 0;
+            // 合规话术：陈述事实+提供路径，不承诺效果
+            if (weakScore < 40) {
+                ctaInsight.innerHTML = 
+                    '<div class="report-insight-badge">发现薄弱项</div>' +
+                    '<div class="report-insight-main">你的' + weakName + '仅 <strong>' + weakScore + '分</strong>，低于及格线</div>' +
+                    '<div class="report-insight-sub">专项训练已为你准备好，按弱项出真题讲解</div>';
+                ctaText.textContent = '解锁专项训练计划';
+            } else if (weakScore < 60) {
+                ctaInsight.innerHTML = 
+                    '<div class="report-insight-badge">待提升</div>' +
+                    '<div class="report-insight-main">你的' + weakName + ' <strong>' + weakScore + '分</strong>，有提升空间</div>' +
+                    '<div class="report-insight-sub">针对性练习可以帮助你巩固这个维度</div>';
+                ctaText.textContent = '解锁针对性训练';
+            } else {
+                ctaInsight.innerHTML = 
+                    '<div class="report-insight-badge">基础扎实</div>' +
+                    '<div class="report-insight-main">五维能力较均衡，可进阶突破</div>' +
+                    '<div class="report-insight-sub">冲刺营提供高频真题和AI深度讲解</div>';
+                ctaText.textContent = '解锁冲刺营';
+            }
+        }
+    } catch(e) { console.log('CTA render error:', e); }
+
     // 绘制雷达图
     setTimeout(function() {
         drawReportRadar();
