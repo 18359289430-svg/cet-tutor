@@ -23,9 +23,9 @@ const PORT = process.env.PORT || 8080;
 
 // 管理员密钥
 let ADMIN_KEY = process.env.ADMIN_KEY;
-if (!ADMIN_KEY) { console.warn('WARNING: ADMIN_KEY not set, using insecure default'); ADMIN_KEY = 'c4t_1aa6Nuh8qebPSgoVqQEQ'; }
+if (!ADMIN_KEY) { console.error('FATAL: ADMIN_KEY not set. Set it in .env.local'); process.exit(1); }
 let SECRET_KEY = process.env.SECRET_KEY;
-if (!SECRET_KEY) { console.warn('WARNING: SECRET_KEY not set, using insecure default'); SECRET_KEY = 's4t_XpXkq69UuvV2btndLnRmvqru'; }
+if (!SECRET_KEY) { console.error('FATAL: SECRET_KEY not set. Set it in .env.local'); process.exit(1); }
 
 // API 限流：每个IP每分钟最多60次请求
 const rateLimitMap = new Map();
@@ -1222,7 +1222,7 @@ function searchQuiz(keyword, type, limit) {
 // GET /api/quiz/search - 搜索真题
 // ?keyword=xxx&type=xxx&limit=5
 // ===== DeepSeek API 直连（陪练模式） =====
-const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY || 'sk-a3c6886fb5184c38ad9c4b37448816cb';
+const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY || '';
 const DEEPSEEK_API_BASE = 'https://api.deepseek.com/v1';
 const COMPANION_SYSTEM_PROMPT = `你是"小过学长"的AI陪练模式，一个温暖又专业的四级备考私教。
 
