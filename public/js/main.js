@@ -2748,9 +2748,20 @@ function initApp() {
                     }
                     // 滚动到底部
                     container.scrollTop = container.scrollHeight;
+                } else {
+                    // API返回但code不为0或data为空，显示提示
+                    var container2 = document.getElementById('chat-messages');
+                    if (container2 && container2.innerHTML.trim() === '') {
+                        container2.innerHTML = '<div style="text-align:center;padding:40px 20px;color:#94A3B8;font-size:14px;">暂无历史消息</div>';
+                    }
                 }
             }).catch(function(e) {
                 console.log('加载历史消息失败:', e);
+                // 加载失败时显示提示，而不是空白
+                var container = document.getElementById('chat-messages');
+                if (container && container.innerHTML.trim() === '') {
+                    container.innerHTML = '<div style="text-align:center;padding:40px 20px;color:#94A3B8;font-size:14px;">消息加载失败，请重新开始对话</div>';
+                }
             });
         }
 
