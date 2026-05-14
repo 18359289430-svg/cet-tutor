@@ -1071,13 +1071,13 @@ function buildRagContext(userMessage, personality, weakDims, dimScores, wrongSum
     var keywords = userMessage.match(/[\u4e00-\u9fa5a-zA-Z]{2,}/g);
     if (keywords) keyword = keywords.slice(0, 3).join(' ');
     
-    var results = searchQuiz(keyword, searchType, 3);
+    var results = searchQuiz(keyword, searchType, 2);
     if (results.length > 0) {
         context += '\n\n[真题参考-请基于这些出题或讲解]\n';
         results.forEach(function(q, i) {
             context += (i+1) + '. (' + q.type + ') ' + q.question + '\n';
             context += '   A.' + q.optionA + ' B.' + q.optionB + ' C.' + q.optionC + ' D.' + q.optionD + '\n';
-            context += '   答案:' + q.answer + ' 解析:' + (q.explanation || '').substring(0,100) + '\n';
+            context += '   答案:' + q.answer + ' 解析:' + (q.explanation || '').substring(0,50) + '\n';
         });
     }
     
@@ -1129,16 +1129,15 @@ async function handleDeepseekChat(req, res) {
         const userPersonality = body.personality || '';
         const weakDims = body.weak_dims || [];
         const ragCtx = buildRagContext(lastMsg.content || '', userPersonality, weakDims, body.dim_scores, body.wrong_summary, body.study_days || 0);
-        if (ragCtx && lastMsg.content) {
-            lastMsg.content += ragCtx;
-        }
+        // RAG上下文注入system消息，避免历史消息重复携带
+        const systemContent = COMPANION_SYSTEM_PROMPT + (ragCtx || '');
         
         const payload = {
             model: 'deepseek-v4-flash',
-            messages: [{ role: 'system', content: COMPANION_SYSTEM_PROMPT }, ...messages.slice(-20)],
+            messages: [{ role: 'system', content: systemContent }, ...messages.slice(-10)],
             stream: stream !== false,
             temperature: 0.7,
-            max_tokens: 500
+            max_tokens: 300
         };
 
         if (payload.stream) {
