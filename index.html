@@ -5091,6 +5091,11 @@
                         <span class="wrong-book-badge" id="wrong-book-badge"></span>
                         <span class="menu-arrow-new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
                     </div>
+                    <div class="menu-item-new" onclick="showLearningPlan()">
+                        <div class="menu-icon-new purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+                        <span class="menu-text-new">学习计划</span>
+                        <span class="menu-arrow-new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+                    </div>
                 </div>
 
                 <div class="menu-group-label">账户</div>
@@ -8671,6 +8676,146 @@ function continuePractice() {
     }, 350);
 }
 
+// ===== 学习计划系统 =====
+var planState = {
+    data: null,
+    dims: null
+};
+
+function generateLearningPlan() {
+    var dims = reportData ? reportData.dims : null;
+    if (!dims) {
+        showToast('请先完成诊断测试');
+        return;
+    }
+    
+    planState.dims = dims;
+    showPlanOverlay();
+    
+    // 调用API生成计划
+    var systemPrompt = '你是四级备考规划专家。用户已完成能力诊断，五维分数如下：' + 
+        JSON.stringify(dims) + '。请根据这些分数生成4周学习计划，返回JSON格式：{"weeks":[{"week":1,"focus":"本周重点","tasks":["任务1","任务2"]},{"week":2,"focus":"本周重点","tasks":["任务1","任务2"]},{"week":3,"focus":"本周重点","tasks":["任务1","任务2"]},{"week":4,"focus":"本周重点","tasks":["任务1","任务2"]}]} 只返回JSON。';
+    
+    fetch('/api/deepseek/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            messages: [
+                { role: 'system', content: systemPrompt },
+                { role: 'user', content: '请根据我的诊断报告生成4周学习计划' }
+            ],
+            stream: false
+        })
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(resp){
+        if (resp.code === 0 && resp.data && resp.data.content) {
+            try {
+                var jsonMatch = resp.data.content.match(/\{[\s\S]*\}/);
+                if (jsonMatch) {
+                    planState.data = JSON.parse(jsonMatch[0]);
+                } else {
+                    planState.data = { weeks: generateDefaultPlan(dims) };
+                }
+            } catch(e) {
+                planState.data = { weeks: generateDefaultPlan(dims) };
+            }
+        } else {
+            planState.data = { weeks: generateDefaultPlan(dims) };
+        }
+        saveLearningPlan(planState.data);
+        renderPlanContent();
+    })
+    .catch(function(){
+        planState.data = { weeks: generateDefaultPlan(dims) };
+        saveLearningPlan(planState.data);
+        renderPlanContent();
+    });
+}
+
+function generateDefaultPlan(dims) {
+    var tasks = [];
+    var weekTasks = [
+        { focus: '听力强化', tasks: ['完成2篇听力练习', '背诵30个高频词汇', '练习1套真题'] },
+        { focus: '阅读提升', tasks: ['完成3篇阅读练习', '整理高频同义替换', '分析长难句结构'] },
+        { focus: '写译突破', tasks: ['背诵5个写作模板', '练习1篇作文', '整理翻译高频词组'] },
+        { focus: '综合冲刺', tasks: ['完成1套全真模拟', '复习错题本', '查漏补缺'] }
+    ];
+    return weekTasks;
+}
+
+function saveLearningPlan(plan) {
+    try {
+        var profile = JSON.parse(localStorage.getItem('cet4_user_profile') || '{}');
+        profile.learning_plan = plan;
+        profile.plan_updated = getTodayStr();
+        localStorage.setItem('cet4_user_profile', JSON.stringify(profile));
+    } catch(e) {}
+}
+
+function getLearningPlan() {
+    try {
+        var profile = JSON.parse(localStorage.getItem('cet4_user_profile') || '{}');
+        return profile.learning_plan || null;
+    } catch(e) { return null; }
+}
+
+function showPlanOverlay() {
+    var overlay = document.getElementById('plan-overlay');
+    if (!overlay) {
+        var div = document.createElement('div');
+        div.id = 'plan-overlay';
+        div.className = 'plan-overlay';
+        div.innerHTML = '<div class="plan-header">' +
+            '<button class="plan-back" onclick="closePlanOverlay()">' +
+                '<svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>' +
+            '</button>' +
+            '<div class="plan-title">4周学习计划</div>' +
+        '</div>' +
+        '<div class="plan-body" id="plan-body">' +
+            '<div class="plan-loading" id="plan-loading">' +
+                '<div class="plan-loading-spinner"></div>' +
+                '<div class="plan-loading-text">AI正在生成学习计划...</div>' +
+            '</div>' +
+        '</div>';
+        document.body.appendChild(div);
+    }
+    document.getElementById('plan-loading').style.display = '';
+    document.getElementById('plan-body').innerHTML = '<div class="plan-loading" id="plan-loading"><div class="plan-loading-spinner"></div><div class="plan-loading-text">AI正在生成学习计划...</div></div>';
+    document.getElementById('plan-overlay').style.display = 'flex';
+}
+
+function closePlanOverlay() {
+    var overlay = document.getElementById('plan-overlay');
+    if (overlay) overlay.style.display = 'none';
+}
+
+function renderPlanContent() {
+    var body = document.getElementById('plan-body');
+    if (!body || !planState.data || !planState.data.weeks) return;
+    
+    var html = '';
+    planState.data.weeks.forEach(function(week) {
+        html += '<div class="plan-week-card">' +
+            '<div class="plan-week-header">' +
+                '<div class="plan-week-title">第' + week.week + '周</div>' +
+                '<div class="plan-week-badge">Week ' + week.week + '</div>' +
+            '</div>';
+        if (week.focus) {
+            html += '<div class="plan-focus">重点：' + week.focus + '</div>';
+        }
+        html += '<ul class="plan-tasks">';
+        if (week.tasks && week.tasks.length) {
+            week.tasks.forEach(function(task) {
+                html += '<li class="plan-task"><span class="plan-task-dot"></span>' + task + '</li>';
+            });
+        }
+        html += '</ul></div>';
+    });
+    
+    body.innerHTML = html;
+}
+
 // 打开报告支付弹窗
 function openReportPayModal() {
     openPayment('sprint');
@@ -9012,7 +9157,7 @@ function drawReportShareImage() {
         <div class="report-content" id="report-content">
             <!-- 动态内容由JS填充 -->
         </div>
-        <div class="report-cta-section">
+        <div class="report-cta-section" id="report-cta-section">
             <button class="report-cta-btn" onclick="openReportPayModal()">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M12 2L2 7l10 5 10-5-10-5z"/>
@@ -9021,10 +9166,8 @@ function drawReportShareImage() {
                 </svg>
                 <span id="report-cta-text">升级冲刺营，针对性提升</span>
             </button>
-            <div style="display:flex;gap:10px;margin-top:10px;">
-                <button class="report-secondary-btn" onclick="openPlan()" style="flex:1;background:#F0EEFF;color:#6C5CE7;border:none;">生成学习计划</button>
-                <button class="report-secondary-btn" onclick="continuePractice()" style="flex:1;">继续AI陪练</button>
-            </div>
+            <button class="report-secondary-btn" onclick="generateLearningPlan()">生成4周学习计划</button>
+            <button class="report-secondary-btn" style="margin-top:10px" onclick="continuePractice()">继续AI陪练</button>
         </div>
     </div>
 
