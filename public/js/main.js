@@ -9,6 +9,24 @@
                 { type:'资料囤积狂', color:'#4A7C8C', emoji:'📦', img:'imgs/tunji.webp', honor:'四级资料收藏家', comment:'收藏=学会，囤满=稳过', scores:{"细节定位":85,"推理判断":70,"同义替换":80,"主旨归纳":75,"态度判断":60} }
             ];
 
+        // ===== localStorage 安全读取辅助函数 =====
+        function safeGetItem(key, defaultValue) {
+            try {
+                var data = localStorage.getItem(key);
+                if (data === null) return defaultValue;
+                return JSON.parse(data);
+            } catch(e) {
+                return defaultValue;
+            }
+        }
+
+        function safeSetItem(key, value) {
+            try {
+                localStorage.setItem(key, JSON.stringify(value));
+            } catch(e) {}
+        }
+
+
         var state = {
             currentTab: 'home',
             userData: null,
@@ -793,7 +811,7 @@ function initApp() {
                 if (data) return JSON.parse(data);
                 
                 // 兼容旧数据：从cet_user中读取诊断数据作为最近一次报告
-                var userData = JSON.parse(localStorage.getItem('cet_user') || '{}');
+                var userData = safeGetItem('cet_user', {});
                 if (userData && userData.diagnosis && userData.diagnosis.type) {
                     // 估算一个诊断日期
                     var diagDate = userData.diagnosedAt ? new Date(userData.diagnosedAt) : new Date();
@@ -983,7 +1001,7 @@ function initApp() {
                 var data = localStorage.getItem('cet4_ability_scores');
                 if (data) return JSON.parse(data);
                 // 兼容旧数据: 从cet_user中读取诊断数据
-                var userData = JSON.parse(localStorage.getItem('cet_user') || '{}');
+                var userData = safeGetItem('cet_user', {});
                 if (userData && userData.diagnosis) {
                     return { dims: userData.diagnosis };
                 }
@@ -996,7 +1014,7 @@ function initApp() {
                 var data = localStorage.getItem('cet4_user_profile');
                 if (data) return JSON.parse(data);
                 // 兼容旧数据
-                var userData = JSON.parse(localStorage.getItem('cet_user') || '{}');
+                var userData = safeGetItem('cet_user', {});
                 if (userData && userData.startDate) {
                     return { startDate: userData.startDate };
                 }
@@ -1838,7 +1856,7 @@ function initApp() {
                 
                 // 设置cet4_user_profile的startDate（如果还没有）
                 try {
-                    var profile = JSON.parse(localStorage.getItem('cet4_user_profile') || '{}');
+                    var profile = safeGetItem('cet4_user_profile', {});
                     if (!profile.startDate) {
                         profile.startDate = today;
                         localStorage.setItem('cet4_user_profile', JSON.stringify(profile));
@@ -2197,7 +2215,7 @@ function initApp() {
                     
                     // 练习天数
                     var streak = 0;
-                    try { var sd = JSON.parse(localStorage.getItem('cet_streak') || '{}'); streak = sd.current || 0; } catch(e){}
+                    try { var sd = safeGetItem('cet_streak', {current: 0}); streak = sd.current || 0; } catch(e){}
                     
                     fetchPayload = {
                         user_id: userId,
@@ -3033,7 +3051,7 @@ function parseTaskDone(taskStr) {
             localStorage.setItem('cet_user', JSON.stringify(state.userData));
         }
         // Trigger check-in
-        var streak = JSON.parse(localStorage.getItem('cet_streak') || '{"count":0,"lastDate":""}');
+        var streak = safeGetItem('cet_streak', {count:0,lastDate:""});
         var today = new Date().toISOString().split('T')[0];
         if (streak.lastDate !== today) {
             streak.count = (streak.count || 0) + 1;
@@ -4027,7 +4045,7 @@ function showDiagnosisReport(text) {
         
         // 写入cet4_user_profile的startDate（如果还没有）
         try {
-            var profile = JSON.parse(localStorage.getItem('cet4_user_profile') || '{}');
+            var profile = safeGetItem('cet4_user_profile', {});
             if (!profile.startDate) {
                 profile.startDate = getTodayStr();
                 localStorage.setItem('cet4_user_profile', JSON.stringify(profile));
@@ -4599,7 +4617,7 @@ function generateDefaultPlan(dims) {
 
 function saveLearningPlan(plan) {
     try {
-        var profile = JSON.parse(localStorage.getItem('cet4_user_profile') || '{}');
+        var profile = safeGetItem('cet4_user_profile', {});
         profile.learning_plan = plan;
         profile.plan_updated = getTodayStr();
         localStorage.setItem('cet4_user_profile', JSON.stringify(profile));
@@ -4608,7 +4626,7 @@ function saveLearningPlan(plan) {
 
 function getLearningPlan() {
     try {
-        var profile = JSON.parse(localStorage.getItem('cet4_user_profile') || '{}');
+        var profile = safeGetItem('cet4_user_profile', {});
         return profile.learning_plan || null;
     } catch(e) { return null; }
 }
