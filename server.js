@@ -75,7 +75,6 @@ const PLANS = {
 };
 
 // 内存订单存储
-const orders = new Map();
 
 // ===== 限流持久化：chatLimitMap 改为基于文件存储 =====
 // 修复问题1和问题3：限流持久化到文件，启动时加载，每次更新后写入
@@ -135,6 +134,42 @@ function cleanupExpiredLimits() {
         saveRateLimits(chatLimitMap);
     }
 }
+
+
+// ===== 订单持久化：orders Map 改为基于文件存储 =====
+const ORDERS_FILE = path.join(__dirname, 'orders.json');
+
+// 加载订单数据（启动时）
+function loadOrders() {
+    try {
+        if (fs.existsSync(ORDERS_FILE)) {
+            const data = fs.readFileSync(ORDERS_FILE, 'utf8');
+            const parsed = JSON.parse(data);
+            const map = new Map();
+            for (const [key, value] of Object.entries(parsed)) {
+                map.set(key, value);
+            }
+            console.log(`[订单] 已加载 ${map.size} 条订单记录`);
+            return map;
+        }
+    } catch (e) {
+        console.error('[订单] 加载订单数据失败:', e.message);
+    }
+    return new Map();
+}
+
+// 保存订单数据到文件
+function saveOrders() {
+    try {
+        const obj = Object.fromEntries(orders);
+        fs.writeFileSync(ORDERS_FILE, JSON.stringify(obj, null, 2), 'utf8');
+    } catch (e) {
+        console.error('[订单] 保存订单数据失败:', e.message);
+    }
+}
+
+// 初始化订单Map（从文件加载）
+const orders = loadOrders();
 
 // 检查聊天限流（后端唯一数据源）
 // 修复问题2：统一为 >=10 次拦截
@@ -306,6 +341,7 @@ async function handleApi(req, res, pathname) {
             });
 
             console.log(`[订单创建] ${orderId} - ${planConfig.name} - ¥${planConfig.price}`);
+            saveOrders();
 
             return sendJson(res, 200, {
                 orderId,
@@ -399,6 +435,7 @@ async function handleApi(req, res, pathname) {
                     userId: user_id || null
                 });
 
+                saveOrders();
                 console.log(`[面包多订单激活] ${orderIdTrimmed} - ${PLANS[plan].name} - ¥${amount}`);
 
                 return sendJson(res, 200, {
@@ -511,6 +548,7 @@ async function handleApi(req, res, pathname) {
                     source: 'activation_code'
                 });
 
+                saveOrders();
                 console.log(`[激活码激活] ${orderId} - ${PLANS[plan].name}`);
 
                 return sendJson(res, 200, {
@@ -611,6 +649,7 @@ async function handleApi(req, res, pathname) {
                 status: 'pending'
             });
         }
+            saveOrders();
 
         // GET /api/verify-token - 验证token（用户打开页面时调用）
         if (pathname === '/api/verify-token' && req.method === 'GET') {
