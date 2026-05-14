@@ -9607,10 +9607,10 @@ function selectOption(btn, selectedValue) {
 function showSelfEval() {
     diagState.phase = 'selfeval';
     
-    var progress = Math.round((diagState.currentQIndex / 15) * 100);
+    var progress = 100;
     document.getElementById('diag-progress-fill').style.width = progress + '%';
     document.getElementById('diag-progress-text').textContent = '自评问卷';
-    document.getElementById('diag-correct-count').textContent = '正确: ' + diagState.correctCount;
+    document.getElementById('diag-self-eval-hint').style.display = 'inline';
     
     var html = 
         '<div class="diag-eval-section">' +
