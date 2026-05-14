@@ -22,8 +22,10 @@ const PORT = process.env.PORT || 8080;
 
 
 // 管理员密钥
-const ADMIN_KEY = process.env.ADMIN_KEY || 'c4t_1aa6Nuh8qebPSgoVqQEQ';  // 生产环境请通过环境变量覆盖
-const SECRET_KEY = process.env.SECRET_KEY || 's4t_XpXkq69UuvV2btndLnRmvqru';  // 生产环境请通过环境变量覆盖
+const ADMIN_KEY = process.env.ADMIN_KEY;
+if (!ADMIN_KEY) { console.error('FATAL: ADMIN_KEY env var required'); process.exit(1); }
+const SECRET_KEY = process.env.SECRET_KEY;
+if (!SECRET_KEY) { console.error('FATAL: SECRET_KEY env var required'); process.exit(1); }
 
 // API 限流：每个IP每分钟最多60次请求
 const rateLimitMap = new Map();
@@ -432,8 +434,8 @@ async function handleApi(req, res, pathname) {
             }
 
             // 检查是否是预生成的激活码（带签名验证）
-            // 激活码格式: CET4S-XXXXX-YYYY（前缀-随机码-6位签名）
-            // 签名 = HMAC-SHA256(前缀-随机码, SECRET_KEY) 的前6位
+            // 激活码格式: CET4S-XXXXX-YYYY（前缀-随机码-16位签名）
+            // 签名 = HMAC-SHA256(前缀-随机码, SECRET_KEY) 的前16位
             // 也兼容无签名格式 CET4S-XXXXX（用于管理员手动创建的订单）
             const planMatch = codeTrimmed.match(/^(CET4T|CET4S|CET4F|CET4R|CET4P)-([A-Z0-9]+)(?:-([A-Z0-9]{6}))?$/);
             if (planMatch) {
@@ -451,7 +453,7 @@ async function handleApi(req, res, pathname) {
                     const expectedSig = crypto.createHmac('sha256', SECRET_KEY)
                         .update(prefix + '-' + randomPart)
                         .digest('hex')
-                        .substring(0, 6)
+                        .substring(0, 16)
                         .toUpperCase();
                     if (signature !== expectedSig) {
                         return sendJson(res, 400, { error: '激活码无效，请检查后重试' });
@@ -688,7 +690,7 @@ async function handleApi(req, res, pathname) {
                 const signature = crypto.createHmac('sha256', SECRET_KEY)
                     .update(prefix + '-' + randomPart)
                     .digest('hex')
-                    .substring(0, 6)
+                    .substring(0, 16)
                     .toUpperCase();
                 const code = `${prefix}-${randomPart}-${signature}`;
                 codes.push(code);
@@ -893,7 +895,8 @@ server.listen(PORT, () => {
 
 // ===== Coze Chat API 代理 =====
 const COZE_API_BASE = 'https://api.coze.cn';
-const COZE_PAT = process.env.COZE_PAT || 'pat_hAOthvv429aDEqWspP4lITuL3DAU7VZJiGlVrnmA1zuoZ4IWW2kmxYzXUbGvZTYb';  // 生产环境请通过环境变量覆盖
+const COZE_PAT = process.env.COZE_PAT;
+if (!COZE_PAT) { console.error('FATAL: COZE_PAT env var required'); process.exit(1); }
 
 // POST /api/chat/conversation - 创建对话
 async function handleCreateConversation(req, res) {
