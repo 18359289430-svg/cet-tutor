@@ -345,7 +345,7 @@
 .custom-chat-messages {
     flex: 1; 
     overflow-y: auto; 
-    padding: 28px 20px 220px; 
+    padding: 28px 20px 20px; 
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none; 
     -ms-overflow-style: none; 
@@ -1616,7 +1616,7 @@
         font-size: 18px;
     }
     .custom-chat-messages {
-        padding: 20px 16px 220px;
+        padding: 20px 16px 16px;
     }
     .custom-chat-bubble {
         max-width: 85%;
@@ -1635,19 +1635,8 @@
         grid-template-columns: repeat(3, 1fr);
     }
 }
-/* ===== 参考DeepSeek：输入区不遮挡内容 ===== */
-
-/* 消息区底部留足空间：快捷按钮+输入框+间距 */
-.custom-chat-messages {
-    padding-bottom: 220px !important;
-}
-
-/* 移动端适配 */
-@media (max-width: 480px) {
-    .custom-chat-messages {
-        padding-bottom: 220px !important;
-    }
-}
+/* ===== 消息区底部留白由JS动态计算 ===== */
+/* updateChatPadding()会根据输入区+tab-bar实际高度设置padding-bottom */
 
 /* 输入区 - 参考DeepSeek：更紧凑精致 */
 .custom-chat-input-area {

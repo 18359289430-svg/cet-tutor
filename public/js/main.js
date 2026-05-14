@@ -98,6 +98,7 @@ function initApp() {
             
             // 初始化输入框placeholder（免费额度提示）
             updateChatInputPlaceholder();
+            setTimeout(initChatPadding, 200);
         }
 
         function loadUserData() {
@@ -1606,6 +1607,7 @@ function initApp() {
             
             // 更新输入框placeholder（免费额度提示）
             updateChatInputPlaceholder();
+            setTimeout(initChatPadding, 200);
             // 如果有初始消息，延迟发送
             if (arguments[1]) {
                 setTimeout(function() { sendSuggestion(arguments[1]); }, 300);
@@ -1767,6 +1769,7 @@ function initApp() {
 
             container.appendChild(msgDiv);
             scrollChatToBottom();
+            updateChatPadding();
             return msgDiv;
         }
 
@@ -1779,6 +1782,7 @@ function initApp() {
                 '<div class="custom-chat-bubble"><div class="typing-indicator"><span></span><span></span><span></span></div></div>';
             container.appendChild(msgDiv);
             scrollChatToBottom();
+            updateChatPadding();
         }
 
         function removeTypingIndicator() {
@@ -1790,6 +1794,30 @@ function initApp() {
             var container = document.getElementById('chat-messages');
             setTimeout(function() { container.scrollTop = container.scrollHeight; }, 100);
         }
+        function updateChatPadding() {
+            var container = document.getElementById('chat-messages');
+            var inputArea = document.getElementById('chat-input-area');
+            var tabBar = document.querySelector('.tab-bar');
+            if (!container || !inputArea) return;
+            var inputHeight = inputArea.offsetHeight || 0;
+            var tabHeight = tabBar ? tabBar.offsetHeight : 60;
+            var paddingBottom = inputHeight + tabHeight + 16;
+            container.style.paddingBottom = paddingBottom + 'px';
+        }
+
+        // Update padding on load and resize
+        var chatPaddingObserver = null;
+        function initChatPadding() {
+            updateChatPadding();
+            window.addEventListener('resize', updateChatPadding);
+            // Observe input area height changes (quick tags show/hide)
+            var inputArea = document.getElementById('chat-input-area');
+            if (inputArea && window.ResizeObserver) {
+                chatPaddingObserver = new ResizeObserver(updateChatPadding);
+                chatPaddingObserver.observe(inputArea);
+            }
+        }
+
 
         function formatBotText(text) {
             // Parse markdown-like formatting
@@ -2340,6 +2368,7 @@ function initApp() {
                                     if (timeEl) bubbleEl.appendChild(timeEl);
                                 }
                                 scrollChatToBottom();
+            updateChatPadding();
                             }
                             // Also capture conversation_id from conversation.chat.completed or message completed
                             if (evt.type === 'conversation.chat.created' || evt.type === 'conversation.chat.in_progress') {
@@ -5086,6 +5115,7 @@ function appendLimitHintToMessage(aiDiv) {
     
     // 同时更新输入框placeholder
     updateChatInputPlaceholder();
+            setTimeout(initChatPadding, 200);
 }
 
 // 渲染限额系统消息卡片
@@ -5112,6 +5142,7 @@ function appendLimitSystemCard() {
     
     container.appendChild(msgDiv);
     scrollChatToBottom();
+            updateChatPadding();
 }
 
 // 关闭限额卡片（隐藏而非删除，保留位置）
