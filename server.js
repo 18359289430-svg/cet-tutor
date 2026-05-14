@@ -766,6 +766,96 @@ async function handleApi(req, res, pathname) {
     }
 }
 
+// ===== DeepSeek API 代理 =====
+const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY || '';
+const DEEPSEEK_API_BASE = 'https://api.deepseek.com/v1';
+
+// POST /api/deepseek/chat - DeepSeek对话API（用于作文批改、学习计划生成等）
+if (pathname === '/api/deepseek/chat' && req.method === 'POST') {
+    const body = await parseBody(req);
+    const { messages, system, temperature, max_tokens } = body;
+
+    if (!DEEPSEEK_API_KEY) {
+        return sendJson(res, 500, { error: 'DeepSeek API未配置' });
+    }
+
+    try {
+        // 构建完整的消息列表
+        const fullMessages = [];
+        if (system) {
+            fullMessages.push({ role: 'system', content: system });
+        }
+        if (messages && Array.isArray(messages)) {
+            fullMessages.push(...messages);
+        }
+
+        const requestBody = {
+            model: 'deepseek-chat',
+            messages: fullMessages,
+            temperature: temperature || 0.7,
+            max_tokens: max_tokens || 2000
+        };
+
+        const resp = await fetch(DEEPSEEK_API_BASE + '/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + DEEPSEEK_API_KEY,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        const data = await resp.json();
+        
+        if (data.error) {
+            return sendJson(res, 400, { error: data.error.message || 'DeepSeek API错误' });
+        }
+
+        return sendJson(res, 200, data);
+    } catch (e) {
+        console.error('[DeepSeek API错误]', e);
+        return sendJson(res, 500, { error: '调用DeepSeek失败' });
+    }
+}
+
+// GET /api/deepseek/quiz-topics - 获取写作题列表
+if (pathname === '/api/deepseek/quiz-topics' && req.method === 'GET') {
+    // 写作题类型列表
+    const writingTopics = [
+        { id: 1, title: '议论文：科技发展对生活的影响', category: '议论文' },
+        { id: 2, title: '议论文：环境保护的重要性', category: '议论文' },
+        { id: 3, title: '议论文：终身学习', category: '议论文' },
+        { id: 4, title: '议论文：网络语言的利与弊', category: '议论文' },
+        { id: 5, title: '议论文：健康生活方式', category: '议论文' },
+        { id: 6, title: '议论文：大学生就业压力', category: '议论文' },
+        { id: 7, title: '议论文：传统文化传承', category: '议论文' },
+        { id: 8, title: '议论文：团队合作的重要性', category: '议论文' },
+        { id: 9, title: '议论文：诚信的重要性', category: '议论文' },
+        { id: 10, title: '议论文：志愿服务精神', category: '议论文' },
+        { id: 11, title: '说明文：如何保护个人信息', category: '说明文' },
+        { id: 12, title: '说明文：节能减排的方法', category: '说明文' },
+        { id: 13, title: '说明文：时间管理技巧', category: '说明文' },
+        { id: 14, title: '应用文：申请信', category: '应用文' },
+        { id: 15, title: '应用文：感谢信', category: '应用文' },
+        { id: 16, title: '应用文：道歉信', category: '应用文' },
+        { id: 17, title: '应用文：建议信', category: '应用文' },
+        { id: 18, title: '应用文：投诉信', category: '应用文' },
+        { id: 19, title: '图表作文：消费趋势分析', category: '图表作文' },
+        { id: 20, title: '图表作文：就业率变化', category: '图表作文' },
+        { id: 21, title: '图表作文：教育投入统计', category: '图表作文' },
+        { id: 22, title: '图表作文：交通出行方式', category: '图表作文' },
+        { id: 23, title: '图表作文：手机使用调查', category: '图表作文' },
+        { id: 24, title: '图表作文：旅游目的地偏好', category: '图表作文' },
+        { id: 25, title: '图表作文：饮食习惯变化', category: '图表作文' },
+        { id: 26, title: '图表作文：学习方式统计', category: '图表作文' },
+        { id: 27, title: '图表作文：娱乐活动选择', category: '图表作文' },
+        { id: 28, title: '图表作文：社交媒体使用', category: '图表作文' },
+        { id: 29, title: '图表作文：环境污染数据', category: '图表作文' },
+        { id: 30, title: '图表作文：水资源使用', category: '图表作文' }
+    ];
+    return sendJson(res, 200, { topics: writingTopics });
+}
+
 // 主服务器
 const html = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf-8');
 
