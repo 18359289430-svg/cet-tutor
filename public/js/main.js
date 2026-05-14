@@ -1479,7 +1479,7 @@ function initApp() {
         }
 
         // 打开已有对话
-        function openConversation(convId) {
+        function openConversation(convId) { console.log("[DEBUG] openConversation called, convId:", convId);
             var list = getChatList();
             var item = null;
             for (var i = 0; i < list.length; i++) {
