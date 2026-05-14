@@ -1101,6 +1101,98 @@ async function handleDeepseekChat(req, res) {
     }
 }
 
+// 作文题目列表
+const ESSAY_TOPICS = [
+    { id: 'essay_001', title: '活动邀请信', desc: '邀请朋友参加校园活动', difficulty: '中等' },
+    { id: 'essay_002', title: '感谢信', desc: '感谢老师/朋友的帮助', difficulty: '中等' },
+    { id: 'essay_003', title: '投诉信', desc: '投诉商品或服务质量问题', difficulty: '较难' },
+    { id: 'essay_004', title: '建议信', desc: '就某事提出建议和改进意见', difficulty: '中等' },
+    { id: 'essay_005', title: '道歉信', desc: '因某种原因无法赴约而道歉', difficulty: '较易' },
+    { id: 'essay_006', title: '自我介绍', desc: '向他人介绍自己的背景和兴趣', difficulty: '较易' },
+    { id: 'essay_007', title: '求职信', desc: '申请实习或工作岗位', difficulty: '较难' },
+    { id: 'essay_008', title: '通知', desc: '发布活动或会议通知', difficulty: '中等' }
+];
+
+// GET /api/deepseek/quiz-topics - 获取写作题目列表
+async function handleQuizTopics(req, res) {
+    try {
+        // 从quiz_questions.json筛选写作相关题目
+        const quizFile = path.join(__dirname, 'data', 'quiz_questions.json');
+        let topics = [];
+        if (fs.existsSync(quizFile)) {
+            const quizData = JSON.parse(fs.readFileSync(quizFile, 'utf8'));
+            topics = quizData.filter(function(q) {
+                var type = q.type || '';
+                return type.includes('写作') || type.includes('作文');
+            }).map(function(q) {
+                return {
+                    id: q.id,
+                    title: q.type || '写作题',
+                    desc: (q.question || '').substring(0, 50),
+                    difficulty: q.difficulty || '中等'
+                };
+            });
+        }
+        // 合并硬编码的作文题目
+        const allTopics = ESSAY_TOPICS.concat(topics.slice(0, 10));
+        sendJson(res, 200, { code: 0, data: allTopics });
+    } catch(e) {
+        console.error('[Quiz Topics Error]', e.message);
+        sendJson(res, 500, { error: '获取题目失败' });
+    }
+}
+
+// POST /api/deepseek/essay-grade - 作文批改（结构化JSON）
+async function handleDeepseekEssayGrade(req, res) {
+    try {
+        const body = await parseBody(req);
+        const { essay_text, topic } = body;
+        
+        if (!essay_text || essay_text.length < 20) {
+            return sendJson(res, 400, { error: '作文内容太少' });
+        }
+        
+        var topicPrefix = topic ? '【题目类型】' + topic + '\n' : '';
+        var systemPrompt = '你是四级作文批改专家。请对以下作文进行批改，返回JSON格式：{"total_score": 数字(15分制), "content_score": 数字(5分制), "organization_score": 数字(5分制), "language_score": 数字(5分制), "sentences": [{"original": "原句", "issue": "问题说明", "suggestion": "修改建议"}], "overall_comment": "总评"} 只返回JSON，不要其他文字。';
+        
+        const payload = {
+            model: 'deepseek-v4-flash',
+            messages: [
+                { role: 'system', content: systemPrompt },
+                { role: 'user', content: topicPrefix + '【我的作文】\n' + essay_text }
+            ],
+            temperature: 0.3,
+            max_tokens: 1000
+        };
+        
+        const resp = await fetch(DEEPSEEK_API_BASE + '/chat/completions', {
+            method: 'POST',
+            headers: { 'Authorization': 'Bearer ' + DEEPSEEK_API_KEY, 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        
+        const data = await resp.json();
+        const reply = data.choices && data.choices[0] && data.choices[0].message ? data.choices[0].message.content : '';
+        
+        // 尝试解析JSON
+        try {
+            // 提取JSON部分
+            var jsonMatch = reply.match(/\{[\s\S]*\}/);
+            if (jsonMatch) {
+                var result = JSON.parse(jsonMatch[0]);
+                sendJson(res, 200, { code: 0, data: result });
+            } else {
+                sendJson(res, 200, { code: 0, data: { raw: reply, parse_error: true } });
+            }
+        } catch(e) {
+            sendJson(res, 200, { code: 0, data: { raw: reply, parse_error: true } });
+        }
+    } catch(e) {
+        console.error('[Essay Grade Error]', e.message);
+        sendJson(res, 500, { error: '批改服务暂时不可用' });
+    }
+}
+
     // 静态文件
     if (pathname === '/' || pathname === '/index.html') {
         sendHtml(res, html, req);

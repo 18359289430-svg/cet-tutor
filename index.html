@@ -9251,12 +9251,15 @@ function drawReportShareImage() {
     // ===== 作文批改系统 =====
     var essayState = {
         selectedTopic: '',
+        selectedTopicId: '',
         isSubmitting: false,
-        lastResult: null
+        lastResult: null,
+        topics: []
     };
 
     function openEssayOverlay() {
         essayState.selectedTopic = '';
+        essayState.selectedTopicId = '';
         essayState.isSubmitting = false;
         var textarea = document.getElementById('essay-textarea');
         if (textarea) textarea.value = '';
@@ -9269,20 +9272,53 @@ function drawReportShareImage() {
         if (inputBody) inputBody.style.display = '';
         if (resultSection) resultSection.style.display = 'none';
         document.getElementById('essay-overlay').classList.add('show');
+        // 加载作文题目
+        loadEssayTopics();
+    }
+
+    function loadEssayTopics() {
+        var grid = document.getElementById('essay-topic-grid');
+        if (!grid) return;
+        grid.innerHTML = '<div style="text-align:center;padding:20px;color:#94A3B8">加载中...</div>';
+        fetch('/api/deepseek/quiz-topics')
+            .then(function(r){ return r.json(); })
+            .then(function(resp){
+                if (resp.code === 0 && resp.data) {
+                    essayState.topics = resp.data;
+                    renderEssayTopics();
+                } else {
+                    grid.innerHTML = '<div style="text-align:center;padding:20px;color:#94A3B8">暂无题目</div>';
+                }
+            })
+            .catch(function(){
+                grid.innerHTML = '<div style="text-align:center;padding:20px;color:#94A3B8">加载失败，请重试</div>';
+            });
+    }
+
+    function renderEssayTopics() {
+        var grid = document.getElementById('essay-topic-grid');
+        if (!grid || !essayState.topics.length) return;
+        var html = '';
+        essayState.topics.forEach(function(topic) {
+            html += '<div class="essay-topic-btn" onclick="selectEssayTopic(this, \'' + topic.title.replace(/'/g, "\\'") + '\', \'' + topic.id + '\')">' + topic.title + '</div>';
+        });
+        grid.innerHTML = html;
     }
 
     function closeEssayOverlay() {
         document.getElementById('essay-overlay').classList.remove('show');
     }
 
-    function selectEssayTopic(btn, topic) {
+    function selectEssayTopic(btn, topic, topicId) {
         var topicBtns = document.querySelectorAll('.essay-topic-btn');
         topicBtns.forEach(function(b) { b.classList.remove('selected'); });
         if (essayState.selectedTopic === topic) {
             essayState.selectedTopic = '';
+            essayState.selectedTopicId = '';
         } else {
             btn.classList.add('selected');
             essayState.selectedTopic = topic;
+            essayState.selectedTopicId = topicId || '';
         }
     }
 
@@ -9402,31 +9438,134 @@ function drawReportShareImage() {
             return;
         }
         
-        var topicPrefix = essayState.selectedTopic ? '【题目类型】' + essayState.selectedTopic + '\n' : '';
-        var message = topicPrefix + '【我的作文】\n' + essayText + '\n\n请按以下格式批改：\n\n【评分】X/15分\n【字数】XX词\n\n【逐句批改】\n原文：xxx\n问题：xxx\n改写：xxx\n\n【核心建议】3条最重要建议\n\n【改写范文】完整改写版本';
-        
         try {
-            switchTab('diagnosis');
-            await new Promise(function(resolve) { setTimeout(resolve, 300); });
+            // 调用结构化批改API
+            var resp = await fetch('/api/deepseek/essay-grade', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    essay_text: essayText,
+                    topic: essayState.selectedTopic
+                })
+            });
             
-            if (chatState.botId !== '7637702903679631395') {
-                openChat('companion');
-                await new Promise(function(resolve) { setTimeout(resolve, 200); });
-            }
+            var result = await resp.json();
+            incrementChatUsage();
             
-            var input = document.getElementById('chat-input');
-            if (input) {
-                input.value = message;
-                essayState.pendingResponse = true;
-                incrementChatUsage();
-                await sendMessage();
+            if (result.code === 0 && result.data) {
+                if (result.data.parse_error) {
+                    // JSON解析失败，显示原始文本
+                    showEssayResultRaw(result.data.raw);
+                } else {
+                    // 结构化结果显示
+                    showEssayResultStructured(result.data);
+                }
+            } else {
+                showToast(result.error || '批改失败，请重试');
+                closeEssayOverlay();
             }
         } catch (e) {
             console.error('Essay submit error:', e);
             showToast('提交失败，请重试');
             closeEssayOverlay();
-            essayState.isSubmitting = false;
         }
+        
+        essayState.isSubmitting = false;
+    }
+
+    function showEssayResultStructured(data) {
+        var resultSection = document.getElementById('essay-result-section');
+        if (!resultSection) return;
+        
+        var totalScore = data.total_score || 0;
+        var contentScore = data.content_score || 0;
+        var orgScore = data.organization_score || 0;
+        var langScore = data.language_score || 0;
+        
+        var scoreLevel = totalScore >= 12 ? '优秀' : totalScore >= 9 ? '良好' : totalScore >= 6 ? '及格' : '需提升';
+        
+        var html = '<div class="essay-result-section">' +
+            '<div class="essay-result-header">' +
+                '<div class="essay-score-ring">' +
+                    '<svg viewBox="0 0 100 100">' +
+                        '<circle class="bg" cx="50" cy="50" r="42"/>' +
+                        '<circle class="progress" cx="50" cy="50" r="42" stroke-dasharray="264" stroke-dashoffset="' + (264 - 264 * totalScore / 15) + '"/>' +
+                    '</svg>' +
+                    '<div class="essay-score-text">' + totalScore + '</div>' +
+                '</div>' +
+                '<div class="essay-result-title">' + scoreLevel + '水平</div>' +
+                '<div class="essay-result-sub">总分 ' + totalScore + '/15 · 内容' + contentScore + ' · 结构' + orgScore + ' · 语言' + langScore + '</div>' +
+            '</div>' +
+            '<div class="essay-result-body">';
+        
+        // 三维度进度条
+        html += '<div style="margin-bottom:20px">' +
+            '<div style="font-size:14px;font-weight:600;color:#1a1a2e;margin-bottom:12px">分项评分</div>' +
+            '<div style="margin-bottom:8px">' +
+                '<div style="display:flex;justify-content:space-between;font-size:12px;color:#64748B;margin-bottom:4px">' +
+                    '<span>内容得分</span><span>' + contentScore + '/5</span>' +
+                '</div>' +
+                '<div style="height:6px;background:#F1F5F9;border-radius:3px;overflow:hidden">' +
+                    '<div style="height:100%;width:' + (contentScore * 20) + '%;background:#6C5CE7;border-radius:3px"></div>' +
+                '</div>' +
+            '</div>' +
+            '<div style="margin-bottom:8px">' +
+                '<div style="display:flex;justify-content:space-between;font-size:12px;color:#64748B;margin-bottom:4px">' +
+                    '<span>结构得分</span><span>' + orgScore + '/5</span>' +
+                '</div>' +
+                '<div style="height:6px;background:#F1F5F9;border-radius:3px;overflow:hidden">' +
+                    '<div style="height:100%;width:' + (orgScore * 20) + '%;background:#00B894;border-radius:3px"></div>' +
+                '</div>' +
+            '</div>' +
+            '<div style="margin-bottom:8px">' +
+                '<div style="display:flex;justify-content:space-between;font-size:12px;color:#64748B;margin-bottom:4px">' +
+                    '<span>语言得分</span><span>' + langScore + '/5</span>' +
+                '</div>' +
+                '<div style="height:6px;background:#F1F5F9;border-radius:3px;overflow:hidden">' +
+                    '<div style="height:100%;width:' + (langScore * 20) + '%;background:#F39C12;border-radius:3px"></div>' +
+                '</div>' +
+            '</div>' +
+        '</div>';
+        
+        // 逐句批改
+        if (data.sentences && data.sentences.length > 0) {
+            html += '<div style="font-size:14px;font-weight:600;color:#1a1a2e;margin-bottom:12px">逐句批改</div>';
+            data.sentences.forEach(function(s) {
+                html += '<div class="essay-sentence-card">' +
+                    '<div class="essay-sentence-original">' + (s.original || '') + '</div>' +
+                    '<div class="essay-sentence-reason">' + (s.issue || '') + '</div>' +
+                    '<div class="essay-sentence-revised">' + (s.suggestion || '') + '</div>' +
+                '</div>';
+            });
+        }
+        
+        // 总评
+        if (data.overall_comment) {
+            html += '<div class="essay-advice-section">' +
+                '<div class="essay-advice-title">' +
+                    '<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>' +
+                    '总评' +
+                '</div>' +
+                '<div style="font-size:14px;color:#475569;line-height:1.7">' + data.overall_comment + '</div>' +
+            '</div>';
+        }
+        
+        html += '</div></div>';
+        resultSection.innerHTML = html;
+    }
+
+    function showEssayResultRaw(rawText) {
+        var resultSection = document.getElementById('essay-result-section');
+        if (!resultSection) return;
+        resultSection.innerHTML = '<div class="essay-result-section">' +
+            '<div class="essay-result-header" style="background:linear-gradient(135deg,#6C5CE7,#A29BFE)">' +
+                '<div style="font-size:18px;font-weight:700;margin-bottom:4px">批改结果</div>' +
+                '<div style="font-size:13px;opacity:0.9">详细批改如下</div>' +
+            '</div>' +
+            '<div class="essay-result-body">' +
+                '<div style="font-size:14px;color:#1a1a2e;line-height:1.8;white-space:pre-wrap;background:#F8F9FA;padding:16px;border-radius:12px">' + rawText + '</div>' +
+            '</div>' +
+        '</div>';
     }
 
     function parseEssayResultFromText(text) {
@@ -10000,13 +10139,13 @@ function drawReportShareImage() {
             <div class="essay-sheet-body" id="essay-input-body">
                 <div class="essay-topic-section">
                     <div class="essay-topic-label">选择题目（可选）</div>
-                    <div class="essay-topic-grid">
-                        <div class="essay-topic-btn" onclick="selectEssayTopic(this, '活动邀请信')">📝 活动邀请信</div>
-                        <div class="essay-topic-btn" onclick="selectEssayTopic(this, '感谢信')">💌 感谢信</div>
-                        <div class="essay-topic-btn" onclick="selectEssayTopic(this, '投诉信')">📋 投诉信</div>
-                        <div class="essay-topic-btn" onclick="selectEssayTopic(this, '建议信')">💡 建议信</div>
-                        <div class="essay-topic-btn" onclick="selectEssayTopic(this, '道歉信')">🤝 道歉信</div>
-                        <div class="essay-topic-btn" onclick="selectEssayTopic(this, '自我介绍')">👤 自我介绍</div>
+                    <div class="essay-topic-grid" id="essay-topic-grid">
+                        <div class="essay-topic-btn" onclick="selectEssayTopic(this, '活动邀请信', 'essay_001')">📝 活动邀请信</div>
+                        <div class="essay-topic-btn" onclick="selectEssayTopic(this, '感谢信', 'essay_002')">💌 感谢信</div>
+                        <div class="essay-topic-btn" onclick="selectEssayTopic(this, '投诉信', 'essay_003')">📋 投诉信</div>
+                        <div class="essay-topic-btn" onclick="selectEssayTopic(this, '建议信', 'essay_004')">💡 建议信</div>
+                        <div class="essay-topic-btn" onclick="selectEssayTopic(this, '道歉信', 'essay_005')">🤝 道歉信</div>
+                        <div class="essay-topic-btn" onclick="selectEssayTopic(this, '自我介绍', 'essay_006')">👤 自我介绍</div>
                     </div>
                 </div>
                 <div class="essay-input-section">
