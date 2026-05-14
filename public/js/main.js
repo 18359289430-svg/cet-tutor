@@ -1337,7 +1337,7 @@ function initApp() {
                 '<p>📝 批改你的作文</p>' +
                 '<p style="margin-top:8px;color:#6C5CE7;font-weight:600">直接说就行！</p>' +
                 '<div class="custom-chat-time">刚刚</div>' +
-                '</div></div>' +
+                '</div></div>';
             
             // 更新标题
             document.getElementById('chat-title').textContent = mode === 'diagnosis' ? '小过学长' : 'AI陪练';
@@ -1563,7 +1563,7 @@ function initApp() {
                 '<p>📝 批改你的作文</p>' +
                 '<p style="margin-top:8px;color:#6C5CE7;font-weight:600">直接说就行！</p>' +
                 '<div class="custom-chat-time">刚刚</div>' +
-                '</div></div>' +
+                '</div></div>';
             
             // 更新标题
             document.getElementById('chat-title').textContent = mode === 'diagnosis' ? '小过学长' : 'AI陪练';
@@ -5108,4 +5108,6 @@ function updateChatInputPlaceholder() {
     } else {
         input.placeholder = '输入消息...';
     }
+}
+
 }
