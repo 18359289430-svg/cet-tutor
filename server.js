@@ -975,7 +975,7 @@ async function handleDeepseekChat(req, res) {
         }
         
         const payload = {
-            model: 'deepseek-chat',
+            model: 'deepseek-v4-flash',
             messages: [{ role: 'system', content: COMPANION_SYSTEM_PROMPT }, ...messages.slice(-20)],
             stream: stream !== false,
             temperature: 0.7,
