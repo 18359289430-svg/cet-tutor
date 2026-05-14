@@ -834,6 +834,35 @@ const server = http.createServer((req, res) => {
     }
 
 
+
+// ===== 真题RAG检索引擎 =====
+let quizQuestions = [];
+try {
+    const quizPath = path.join(__dirname, 'data', 'quiz_questions.json');
+    if (fs.existsSync(quizPath)) {
+        quizQuestions = JSON.parse(fs.readFileSync(quizPath, 'utf-8'));
+        console.log(`[RAG] 已加载 ${quizQuestions.length} 道真题`);
+    }
+} catch(e) { console.error('[RAG] 加载题库失败:', e.message); }
+
+function searchQuiz(keyword, type, limit) {
+    limit = limit || 5;
+    var pool = quizQuestions;
+    if (type) pool = pool.filter(q => q.type === type);
+    if (keyword && keyword.length > 0) {
+        var kw = keyword.toLowerCase();
+        pool = pool.filter(q => 
+            (q.question || '').toLowerCase().includes(kw) ||
+            (q.explanation || '').toLowerCase().includes(kw) ||
+            (q.optionA || '').toLowerCase().includes(kw) ||
+            (q.ability || '').toLowerCase().includes(kw)
+        );
+    }
+    return pool.slice(0, limit);
+}
+
+// GET /api/quiz/search - 搜索真题
+// ?keyword=xxx&type=xxx&limit=5
 // ===== DeepSeek API 直连（陪练模式） =====
 const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY || 'sk-a3c6886fb5184c38ad9c4b37448816cb';
 const DEEPSEEK_API_BASE = 'https://api.deepseek.com/v1';
@@ -846,14 +875,58 @@ const COMPANION_SYSTEM_PROMPT = `你是"小过学长"的AI陪练模式，一个�
 4. 用中文回复，题目可以用英文
 5. 鼓励为主，但不说废话
 6. 如果用户问非四级问题，温和引导回备考话题
+7. 如果系统给你提供了真题参考，优先基于真题出题和讲解
 
-出题格式：
-- 听力薄弱：出听力技巧题或原文理解题
-- 阅读薄弱：出同义替换/主旨归纳练习
-- 词汇薄弱：出高频词辨析
-- 写译薄弱：出翻译或句型练习
+出题格式（出题时严格按此格式）：
+【题目】题干内容
+A. 选项A
+B. 选项B
+C. 选项C
+D. 选项D
+请回答A/B/C/D
+
+解析格式（用户回答后）：
+✅正确/❌错误，正确答案是X。
+解析：简短说明
 
 记住：你是陪练不是老师，像学长一样聊天，别太严肃。`;
+
+function buildRagContext(userMessage, personality, weakDims) {
+    var context = '';
+    // 根据薄弱维度搜题
+    var searchType = '';
+    if (weakDims && weakDims.length > 0) {
+        var dimTypeMap = {
+            '细节定位': '阅读理解-仔细阅读',
+            '推理判断': '阅读理解-仔细阅读',
+            '同义替换': '阅读理解-仔细阅读',
+            '主旨归纳': '阅读理解-仔细阅读',
+            '态度判断': '听力理解-篇章'
+        };
+        searchType = dimTypeMap[weakDims[0]] || '';
+    }
+    // 按关键词搜
+    var keyword = '';
+    var keywords = userMessage.match(/[\u4e00-\u9fa5a-zA-Z]{2,}/g);
+    if (keywords) keyword = keywords.slice(0, 3).join(' ');
+    
+    var results = searchQuiz(keyword, searchType, 3);
+    if (results.length > 0) {
+        context += '\n\n[真题参考-请基于这些出题或讲解]\n';
+        results.forEach(function(q, i) {
+            context += (i+1) + '. (' + q.type + ') ' + q.question + '\n';
+            context += '   A.' + q.optionA + ' B.' + q.optionB + ' C.' + q.optionC + ' D.' + q.optionD + '\n';
+            context += '   答案:' + q.answer + ' 解析:' + (q.explanation || '').substring(0,100) + '\n';
+        });
+    }
+    if (personality) {
+        context += '\n[用户备考人格: ' + personality + ']';
+    }
+    if (weakDims && weakDims.length > 0) {
+        context += '\n[薄弱维度: ' + weakDims.join(', ') + '，重点练这些]';
+    }
+    return context;
+}
 
 // POST /api/deepseek/chat - DeepSeek陪练对话
 async function handleDeepseekChat(req, res) {
@@ -874,6 +947,15 @@ async function handleDeepseekChat(req, res) {
             }
         }
 
+        // 注入RAG上下文
+        const lastMsg = messages[messages.length - 1];
+        const userPersonality = body.personality || '';
+        const weakDims = body.weak_dims || [];
+        const ragCtx = buildRagContext(lastMsg.content || '', userPersonality, weakDims);
+        if (ragCtx && lastMsg.content) {
+            lastMsg.content += ragCtx;
+        }
+        
         const payload = {
             model: 'deepseek-chat',
             messages: [{ role: 'system', content: COMPANION_SYSTEM_PROMPT }, ...messages.slice(-20)],

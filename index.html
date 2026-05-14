@@ -6397,11 +6397,19 @@
                 var fetchPayload = payload;
                 
                 if (isCompanion) {
-                    // DeepSeek用OpenAI格式，非流式（后续可改流式）
+                    // DeepSeek用OpenAI格式，带RAG上下文
+                    var ud = state.userData || {};
+                    var personality = ud.personality || (ud.diagnosis && ud.diagnosis.type) || '';
+                    var weakDims = [];
+                    if (ud.diagnosis && ud.diagnosis.dims) {
+                        for (var k in ud.diagnosis.dims) { if (ud.diagnosis.dims[k] < 60) weakDims.push(k); }
+                    }
                     fetchPayload = {
                         user_id: userId,
                         messages: chatState.chatHistory.concat([{ role: 'user', content: contextPrefix + text }]),
                         stream: false,
+                        personality: personality,
+                        weak_dims: weakDims,
                         plan_token: (state.userData && state.userData.planToken) || '',
                         plan_order_id: (state.userData && state.userData.planOrderId) || ''
                     };
