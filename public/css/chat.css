@@ -1635,3 +1635,55 @@
         grid-template-columns: repeat(3, 1fr);
     }
 }
+/* ===== 参考DeepSeek：输入区不遮挡内容 ===== */
+
+/* 消息区底部留足空间：快捷按钮+输入框+间距 */
+.custom-chat-messages {
+    padding-bottom: 180px !important;
+}
+
+/* 移动端适配 */
+@media (max-width: 480px) {
+    .custom-chat-messages {
+        padding-bottom: 160px !important;
+    }
+}
+
+/* 输入区 - 参考DeepSeek：更紧凑精致 */
+.custom-chat-input-area {
+    padding: 8px 16px 12px;
+    background: rgba(255, 255, 255, 0.97);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: none;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.04);
+}
+
+/* 快捷按钮更紧凑 */
+.quick-mode-tags {
+    gap: 8px;
+    margin-bottom: 8px;
+}
+.quick-tag-pill {
+    padding: 8px 14px;
+    font-size: 12px;
+    border-radius: 18px;
+}
+
+/* 输入框行更紧凑 */
+.custom-chat-input-row {
+    border-radius: 24px;
+    padding: 4px 4px 4px 16px;
+}
+.custom-chat-input {
+    padding: 8px 0;
+    font-size: 14px;
+    min-height: 20px;
+}
+
+/* 发送按钮 */
+.custom-chat-send {
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 50% !important;
+}
