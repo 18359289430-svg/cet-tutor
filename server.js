@@ -757,6 +757,127 @@ async function handleApi(req, res, pathname) {
             });
         }
 
+        // POST /api/deepseek/chat - DeepSeek对话API（用于作文批改、学习计划生成等）
+        if (pathname === '/api/deepseek/chat' && req.method === 'POST') {
+            const body = await parseBody(req);
+            const { messages, system, temperature, max_tokens } = body;
+
+            if (!DEEPSEEK_API_KEY) {
+                return sendJson(res, 500, { error: 'DeepSeek API未配置' });
+            }
+
+            try {
+                // 构建完整的消息列表
+                const fullMessages = [];
+                if (system) {
+                    fullMessages.push({ role: 'system', content: system });
+                }
+                if (messages && Array.isArray(messages)) {
+                    fullMessages.push(...messages);
+                }
+
+                const requestBody = {
+                    model: 'deepseek-chat',
+                    messages: fullMessages,
+                    temperature: temperature || 0.7,
+                    max_tokens: max_tokens || 2000
+                };
+
+                const resp = await fetch(DEEPSEEK_API_BASE + '/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + DEEPSEEK_API_KEY,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+
+                const data = await resp.json();
+                
+                if (data.error) {
+                    return sendJson(res, 400, { error: data.error.message || 'DeepSeek API错误' });
+                }
+
+                return sendJson(res, 200, data);
+            } catch (e) {
+                console.error('[DeepSeek API错误]', e);
+                return sendJson(res, 500, { error: '调用DeepSeek失败' });
+            }
+        }
+
+        // GET /api/deepseek/quiz-topics - 获取写作题目列表
+        if (pathname === '/api/deepseek/quiz-topics' && req.method === 'GET') {
+            // 从quiz_questions.json筛选写作相关题目
+            const quizFile = path.join(__dirname, 'data', 'quiz_questions.json');
+            let topics = [...ESSAY_TOPICS]; // 使用预定义的题目
+            if (fs.existsSync(quizFile)) {
+                try {
+                    const quizData = JSON.parse(fs.readFileSync(quizFile, 'utf8'));
+                    const quizTopics = quizData.filter(function(q) {
+                        var type = q.type || '';
+                        return type.includes('写作') || type.includes('作文');
+                    }).map(function(q) {
+                        return {
+                            id: q.id,
+                            title: q.type || '写作题',
+                            desc: (q.question || '').substring(0, 50),
+                            difficulty: q.difficulty || '中等'
+                        };
+                    });
+                    topics = topics.concat(quizTopics.slice(0, 10));
+                } catch(e) {}
+            }
+            return sendJson(res, 200, { code: 0, data: topics });
+        }
+
+        // POST /api/deepseek/essay-grade - 作文批改
+        if (pathname === '/api/deepseek/essay-grade' && req.method === 'POST') {
+            const body = await parseBody(req);
+            const { essay_text, topic } = body;
+            
+            if (!essay_text || essay_text.length < 20) {
+                return sendJson(res, 400, { error: '作文内容太少' });
+            }
+            
+            var topicPrefix = topic ? '【题目类型】' + topic + '\n' : '';
+            var systemPrompt = '你是四级作文批改专家。请对以下作文进行批改，返回JSON格式：{"total_score": 数字(15分制), "content_score": 数字(5分制), "organization_score": 数字(5分制), "language_score": 数字(5分制), "sentences": [{"original": "原句", "issue": "问题说明", "suggestion": "修改建议"}], "overall_comment": "总评"} 只返回JSON，不要其他文字。';
+            
+            try {
+                const resp = await fetch(DEEPSEEK_API_BASE + '/chat/completions', {
+                    method: 'POST',
+                    headers: { 'Authorization': 'Bearer ' + DEEPSEEK_API_KEY, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        model: 'deepseek-chat',
+                        messages: [
+                            { role: 'system', content: systemPrompt },
+                            { role: 'user', content: topicPrefix + '【我的作文】\n' + essay_text }
+                        ],
+                        temperature: 0.3,
+                        max_tokens: 1000
+                    })
+                });
+                
+                const data = await resp.json();
+                const reply = data.choices && data.choices[0] && data.choices[0].message ? data.choices[0].message.content : '';
+                
+                // 尝试解析JSON
+                try {
+                    var jsonMatch = reply.match(/\{[\s\S]*\}/);
+                    if (jsonMatch) {
+                        var result = JSON.parse(jsonMatch[0]);
+                        return sendJson(res, 200, { code: 0, data: result });
+                    } else {
+                        return sendJson(res, 200, { code: 0, data: { raw: reply, parse_error: true } });
+                    }
+                } catch(e) {
+                    return sendJson(res, 200, { code: 0, data: { raw: reply, parse_error: true } });
+                }
+            } catch(e) {
+                console.error('[Essay Grade Error]', e.message);
+                return sendJson(res, 500, { error: '批改服务暂时不可用' });
+            }
+        }
+
         // 404
         sendJson(res, 404, { error: 'API不存在' });
 
@@ -769,54 +890,6 @@ async function handleApi(req, res, pathname) {
 // ===== DeepSeek API 代理 =====
 const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY || '';
 const DEEPSEEK_API_BASE = 'https://api.deepseek.com/v1';
-
-// POST /api/deepseek/chat - DeepSeek对话API（用于作文批改、学习计划生成等）
-if (pathname === '/api/deepseek/chat' && req.method === 'POST') {
-    const body = await parseBody(req);
-    const { messages, system, temperature, max_tokens } = body;
-
-    if (!DEEPSEEK_API_KEY) {
-        return sendJson(res, 500, { error: 'DeepSeek API未配置' });
-    }
-
-    try {
-        // 构建完整的消息列表
-        const fullMessages = [];
-        if (system) {
-            fullMessages.push({ role: 'system', content: system });
-        }
-        if (messages && Array.isArray(messages)) {
-            fullMessages.push(...messages);
-        }
-
-        const requestBody = {
-            model: 'deepseek-chat',
-            messages: fullMessages,
-            temperature: temperature || 0.7,
-            max_tokens: max_tokens || 2000
-        };
-
-        const resp = await fetch(DEEPSEEK_API_BASE + '/chat/completions', {
-            method: 'POST',
-            headers: {
-                'Authorization': 'Bearer ' + DEEPSEEK_API_KEY,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(requestBody)
-        });
-
-        const data = await resp.json();
-        
-        if (data.error) {
-            return sendJson(res, 400, { error: data.error.message || 'DeepSeek API错误' });
-        }
-
-        return sendJson(res, 200, data);
-    } catch (e) {
-        console.error('[DeepSeek API错误]', e);
-        return sendJson(res, 500, { error: '调用DeepSeek失败' });
-    }
-}
 
 // GET /api/deepseek/quiz-topics - 获取写作题列表
 if (pathname === '/api/deepseek/quiz-topics' && req.method === 'GET') {
