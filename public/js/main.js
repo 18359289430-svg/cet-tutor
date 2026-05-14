@@ -1338,10 +1338,6 @@ function initApp() {
                 '<p style="margin-top:8px;color:#6C5CE7;font-weight:600">直接说就行！</p>' +
                 '<div class="custom-chat-time">刚刚</div>' +
                 '</div></div>' +
-                '<div style="display:flex;gap:8px;margin:12px 0 0 38px;">' +
-                '<button class="custom-chat-chip" onclick="handleQuickAction(\'diagnosis\')" style="background:linear-gradient(135deg,#6C5CE7,#8B7CF7);color:#fff;border:none;">📋 开始诊断</button>' +
-                '<button class="custom-chat-chip" onclick="handleQuickAction(\'companion\')" style="background:#F0EEFF;color:#6C5CE7;border:none;">💬 继续陪练</button>' +
-                '</div>';
             
             // 更新标题
             document.getElementById('chat-title').textContent = mode === 'diagnosis' ? '小过学长' : 'AI陪练';
@@ -1538,10 +1534,6 @@ function initApp() {
             // mode='diagnosis' 表示明确要诊断，不自动跳转（重新诊断用）
             // mode='companion' 表示明确要陪练
             if (mode === 'chat') {
-                mode = hasDiagnosis ? 'companion' : 'diagnosis';
-            }
-            
-            // 复用createNewChat逻辑，但不切换tab
             var botMap = {
                 'diagnosis': '7636289658620215331',
                 'companion': '7637702903679631395'
@@ -1572,10 +1564,6 @@ function initApp() {
                 '<p style="margin-top:8px;color:#6C5CE7;font-weight:600">直接说就行！</p>' +
                 '<div class="custom-chat-time">刚刚</div>' +
                 '</div></div>' +
-                '<div style="display:flex;gap:8px;margin:12px 0 0 38px;">' +
-                '<button class="custom-chat-chip" onclick="handleQuickAction(\'diagnosis\')" style="background:linear-gradient(135deg,#6C5CE7,#8B7CF7);color:#fff;border:none;">📋 开始诊断</button>' +
-                '<button class="custom-chat-chip" onclick="handleQuickAction(\'companion\')" style="background:#F0EEFF;color:#6C5CE7;border:none;">💬 继续陪练</button>' +
-                '</div>';
             
             // 更新标题
             document.getElementById('chat-title').textContent = mode === 'diagnosis' ? '小过学长' : 'AI陪练';
