@@ -2709,13 +2709,16 @@ function initApp() {
 
         
         function loadChatHistory(conversationId) {
+            console.log('[loadChatHistory] loading for convId:', conversationId);
             fetch('/api/chat/messages?conversation_id=' + conversationId, {
                 headers: { 'Content-Type': 'application/json' }
             }).then(function(r) { return r.json(); }).then(function(resp) {
+                console.log('[loadChatHistory] API response:', JSON.stringify(resp).substring(0, 500));
                 if (resp.code === 0 && resp.data) {
                     var container = document.getElementById('chat-messages');
                     container.innerHTML = '';
                     var msgs = resp.data.filter(function(m) { return m.type === 'answer' || m.type === 'question'; });
+                    console.log('[loadChatHistory] filtered msgs count:', msgs.length);
                     
                     // 隐藏chips，显示正常聊天
                     var chips = document.getElementById('input-chips');
