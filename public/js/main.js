@@ -303,6 +303,10 @@ function initApp() {
             
             var html = '';
             
+            // 添加渐变光晕背景
+            html += '<div class="dashboard-glow"></div>';
+            html += '<div class="dashboard-glow-2"></div>'; 
+            
             // ===== Hero区域 - 优雅简洁 =====
             html += '<div class="dashboard-hero">';
             html += '<div class="dashboard-hero-title">学习进度</div>';
@@ -316,13 +320,13 @@ function initApp() {
             // ===== 概览卡片 - 2大+2小布局 =====
             html += '<div class="dashboard-overview">';
             // 大卡片1: 连续学习天数
-            html += '<div class="dashboard-overview-card large streak-card">';
+            html += '<div class="dashboard-overview-card large streak-card shimmer-card">';
             html += '<div class="overview-icon" style="background:rgba(255,255,255,0.2)">' + icons.flame + '</div>';
             html += '<div class="overview-num">' + streak.count + '</div>';
             html += '<div class="overview-label">连续学习天数</div>';
             html += '</div>';
             // 大卡片2: 预估分数
-            html += '<div class="dashboard-overview-card large score-card">';
+            html += '<div class="dashboard-overview-card large score-card shimmer-card">';
             html += '<div class="overview-icon" style="background:rgba(255,255,255,0.2)">' + icons.target + '</div>';
             html += '<div class="overview-num">' + (hasDimData ? estimatedScore : '--') + '</div>';
             html += '<div class="overview-label">预估分数</div>';
@@ -342,7 +346,7 @@ function initApp() {
             html += '</div>';
             
             // ===== 五维能力雷达图区域 =====
-            html += '<div class="dashboard-radar-section">';
+            html += '<div class="dashboard-radar-section glass-card">';
             html += '<div class="dashboard-radar-header">';
             html += '<div class="dashboard-radar-title">' + icons.chart + '五维能力分析</div>';
             if (weakDims.length > 0) {
@@ -374,7 +378,7 @@ function initApp() {
             html += '</div>';
             
             // ===== 45天计划进度 - 环形进度条 =====
-            html += '<div class="dashboard-plan-section">';
+            html += '<div class="dashboard-plan-section glass-card">';
             html += '<div class="dashboard-plan-header">';
             html += '<div class="dashboard-plan-title">' + icons.calendar + '45天冲刺计划</div>';
             html += '<div class="dashboard-plan-day">第 ' + currentDay + ' 天 / 45天</div>';
@@ -402,7 +406,7 @@ function initApp() {
             html += '</div>';
             
             // ===== 近7天热力图 =====
-            html += '<div class="dashboard-heatmap-section">';
+            html += '<div class="dashboard-heatmap-section glass-card">';
             html += '<div class="dashboard-heatmap-title">' + icons.trending + '近7天练习热力图</div>';
             html += '<div class="dashboard-heatmap-grid">';
             var dayLabels = ['一', '二', '三', '四', '五', '六', '日'];
@@ -474,7 +478,7 @@ function initApp() {
             }
             
             // ===== 学习记录统计 =====
-            html += '<div class="dashboard-stats-section">';
+            html += '<div class="dashboard-stats-section glass-card">';
             html += '<div class="dashboard-stats-title">' + icons.stats + '学习数据统计</div>';
             html += '<div class="dashboard-stats-grid">';
             html += '<div class="dashboard-stat-item">';
@@ -497,7 +501,7 @@ function initApp() {
             html += '</div>';
             
             // ===== 正确率趋势图 =====
-            html += '<div class="dashboard-trend-section">';
+            html += '<div class="dashboard-trend-section glass-card">';
             html += '<div class="dashboard-trend-header">';
             html += '<div class="dashboard-trend-title">' + icons.trending + '正确率趋势</div>';
             html += '<div class="dashboard-trend-period"><button class="active">近7天</button></div>';
@@ -514,7 +518,7 @@ function initApp() {
             var reportHistory = getDiagnosisReports();
             if (reportHistory && reportHistory.length > 0) {
                 reportHistory.forEach(function(report) {
-                    html += '<div class="dashboard-report-card">';
+                    html += '<div class="dashboard-report-card glass-card">';
                     html += '<div class="dashboard-report-header">';
                     html += '<div class="dashboard-report-date">' + report.date + '</div>';
                     html += '<div class="dashboard-report-score">' + report.score + '分</div>';
@@ -550,6 +554,18 @@ function initApp() {
             
             container.innerHTML = html;
             
+            // 启动CountUp数字动画
+            setTimeout(function() {
+                animateCountUp();
+            }, 300);
+            
+            // 启动环形进度条动画
+            setTimeout(function() {
+                animateRingProgress();
+            }, 500);
+            
+            
+            
             // 绘制雷达图
             if (hasDimData) {
                 setTimeout(function() {
@@ -568,7 +584,61 @@ function initApp() {
             }
         }
 
+
+        // ===== CountUp数字滚动动画 =====
+        function animateCountUp() {
+            var elements = document.querySelectorAll('.dashboard-overview-card.large .overview-num, .dashboard-overview-card.small .overview-num, .dashboard-stat-num, .dashboard-score-num');
+            elements.forEach(function(el) {
+                var text = el.textContent;
+                var num = parseInt(text.replace(/[^0-9]/g, ''));
+                var suffix = text.replace(/[0-9]/g, '');
+                
+                if (isNaN(num) || num === 0) return;
+                
+                var duration = 800;
+                var startTime = performance.now();
+                
+                function update(currentTime) {
+                    var elapsed = currentTime - startTime;
+                    var progress = Math.min(elapsed / duration, 1);
+                    // ease-out cubic
+                    var easeOut = 1 - Math.pow(1 - progress, 3);
+                    var current = Math.round(num * easeOut);
+                    el.textContent = current + suffix;
+                    
+                    if (progress < 1) {
+                        requestAnimationFrame(update);
+                    }
+                }
+                
+                // 初始为0
+                el.textContent = '0' + suffix;
+                requestAnimationFrame(update);
+            });
+        }
         
+        // ===== 环形进度条动画 =====
+        function animateRingProgress() {
+            var progress = document.querySelector('.dashboard-plan-circle-progress');
+            if (!progress) return;
+            
+            var dashOffset = progress.getAttribute('stroke-dashoffset');
+            if (!dashOffset) return;
+            
+            var targetOffset = parseFloat(dashOffset);
+            var circumference = 263.89; // 2 * PI * 42
+            
+            // 重置为0
+            progress.style.strokeDashoffset = circumference;
+            
+            // 触发重排
+            progress.offsetHeight;
+            
+            // 动画到目标值
+            progress.style.transition = 'stroke-dashoffset 1.2s cubic-bezier(0.4, 0, 0.2, 1)';
+            progress.style.strokeDashoffset = targetOffset;
+        }
+
         function drawDashboardRadar(data) {
             var canvas = document.getElementById('dashboard-radar-canvas');
             if (!canvas) return;

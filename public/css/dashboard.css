@@ -1,4 +1,4 @@
-/* ===== 进度仪表盘 - Apple/Linear风格重设计 ===== */
+/* ===== 进度仪表盘 - 高级感 + 动效版 ===== */
 :root {
     --primary: #6C5CE7;
     --primary-light: #A29BFE;
@@ -15,19 +15,106 @@
     --bg-page: #F8F9FA;
 }
 
+/* ===== 页面背景与光晕 ===== */
 .dashboard-page {
     padding: 0;
     background: var(--bg-page);
     min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
 }
 
-/* ===== Hero区域 - 优雅简洁 ===== */
-.dashboard-hero {
-    background: var(--card-bg);
-    padding: 24px 20px 28px;
-    border-radius: 0 0 24px 24px;
+/* 渐变光晕背景 */
+.dashboard-glow {
+    position: fixed;
+    top: -200px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 800px;
+    height: 600px;
+    background: radial-gradient(ellipse at center, 
+        rgba(108, 92, 231, 0.15) 0%,
+        rgba(162, 155, 254, 0.1) 30%,
+        rgba(108, 92, 231, 0.05) 50%,
+        transparent 70%
+    );
+    pointer-events: none;
+    z-index: 0;
+    animation: breathe 8s ease-in-out infinite;
+}
+
+/* 第二层辅助光晕 */
+.dashboard-glow-2 {
+    position: fixed;
+    top: 100px;
+    right: -150px;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(ellipse at center,
+        rgba(0, 184, 148, 0.08) 0%,
+        transparent 70%
+    );
+    pointer-events: none;
+    z-index: 0;
+    animation: breathe2 10s ease-in-out infinite reverse;
+}
+
+/* ===== 毛玻璃卡片 ===== */
+.glass-card {
+    background: rgba(255, 255, 255, 0.72) !important;
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.6) !important;
+    box-shadow: 
+        0 4px 16px rgba(108, 92, 231, 0.08),
+        0 1px 3px rgba(0, 0, 0, 0.04) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.glass-card:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 
+        0 12px 32px rgba(108, 92, 231, 0.15),
+        0 4px 8px rgba(0, 0, 0, 0.06) !important;
+    border-color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* Shimmer光泽动效 - 用于大卡片 */
+.shimmer-card {
     position: relative;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    overflow: hidden;
+}
+
+.shimmer-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.4) 50%,
+        transparent 100%
+    );
+    transform: skewX(-20deg);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.shimmer-card:hover::before {
+    animation: shimmer 2.5s ease-in-out;
+}
+
+/* ===== Hero区域 ===== */
+.dashboard-hero {
+    background: transparent;
+    padding: 24px 20px 28px;
+    position: relative;
+    z-index: 1;
 }
 .dashboard-hero-title {
     color: var(--text-primary);
@@ -35,11 +122,14 @@
     font-weight: 700;
     letter-spacing: -0.5px;
     margin-bottom: 4px;
+    animation: fadeInUp 0.5s ease forwards;
 }
 .dashboard-hero-sub {
     color: var(--text-muted);
     font-size: 14px;
     margin-bottom: 16px;
+    animation: fadeInUp 0.5s ease 0.1s forwards;
+    opacity: 0;
 }
 .dashboard-hero-divider {
     width: 40px;
@@ -47,6 +137,8 @@
     background: var(--primary);
     border-radius: 2px;
     margin: 16px 0;
+    animation: fadeInUp 0.5s ease 0.2s forwards;
+    opacity: 0;
 }
 .dashboard-hero-countdown {
     display: inline-flex;
@@ -58,47 +150,62 @@
     color: var(--primary);
     font-size: 13px;
     font-weight: 600;
+    animation: fadeInUp 0.5s ease 0.3s forwards;
+    opacity: 0;
 }
 .dashboard-hero-countdown-dot {
     width: 6px;
     height: 6px;
     background: var(--primary);
     border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
 }
 
-/* ===== 概览卡片 - 2大+2小布局 ===== */
+/* ===== 概览卡片 ===== */
 .dashboard-overview {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
     padding: 16px 16px 0;
-    margin-top: -12px;
     position: relative;
     z-index: 1;
 }
 .dashboard-overview-card {
-    background: var(--card-bg);
     border-radius: var(--card-radius);
     padding: 20px;
-    box-shadow: var(--card-shadow);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+                box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: fadeInUp 0.5s ease forwards;
+    opacity: 0;
 }
+
+.dashboard-overview-card:nth-child(1) { animation-delay: 0.1s; }
+.dashboard-overview-card:nth-child(2) { animation-delay: 0.2s; }
+.dashboard-overview-card:nth-child(3) { animation-delay: 0.3s; }
+.dashboard-overview-card:nth-child(4) { animation-delay: 0.4s; }
+
 .dashboard-overview-card:active {
     transform: scale(0.98);
 }
-/* 大卡片样式 */
+
+/* 大卡片样式 - 带渐变背景 */
 .dashboard-overview-card.large {
     grid-column: span 1;
     padding: 24px 20px;
 }
+
 .dashboard-overview-card.large.streak-card {
     background: linear-gradient(135deg, #FF6B35 0%, #FF9F43 100%);
     color: white;
+    box-shadow: 0 4px 20px rgba(255, 107, 53, 0.3);
 }
+
 .dashboard-overview-card.large.score-card {
-    background: var(--primary-gradient);
+    background: linear-gradient(135deg, #6C5CE7 0%, #A29BFE 100%);
     color: white;
+    box-shadow: 0 4px 20px rgba(108, 92, 231, 0.3);
 }
+
 /* 概览卡片图标 */
 .overview-icon {
     width: 32px;
@@ -113,6 +220,7 @@
     width: 18px;
     height: 18px;
 }
+
 /* 大卡片数字 */
 .dashboard-overview-card.large .overview-num {
     font-size: 40px;
@@ -129,7 +237,17 @@
 .dashboard-overview-card.large.score-card .overview-label {
     color: rgba(255,255,255,0.85);
 }
-/* 小卡片样式 */
+
+/* 小卡片样式 - 毛玻璃 */
+.dashboard-overview-card.small {
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    position: relative;
+    overflow: hidden;
+}
+
 .dashboard-overview-card.small .overview-num {
     font-size: 28px;
     font-weight: 700;
@@ -145,11 +263,8 @@
     color: var(--text-muted);
     margin-top: 6px;
 }
+
 /* 下划线强调 */
-.dashboard-overview-card.small {
-    position: relative;
-    overflow: hidden;
-}
 .dashboard-overview-card.small::after {
     content: '';
     position: absolute;
@@ -166,13 +281,19 @@
     background: linear-gradient(90deg, #6C5CE7, rgba(108,92,231,0.3));
 }
 
+/* 小卡片hover微交互 */
+.dashboard-overview-card.small:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 32px rgba(108, 92, 231, 0.12);
+}
+
 /* ===== 五维能力雷达图区域 ===== */
 .dashboard-radar-section {
     margin: 20px 16px;
-    background: var(--card-bg);
     border-radius: var(--card-radius);
     padding: 20px;
-    box-shadow: var(--card-shadow);
+    animation: fadeInUp 0.5s ease 0.5s forwards;
+    opacity: 0;
 }
 .dashboard-radar-header {
     display: flex;
@@ -211,6 +332,7 @@
 #dashboard-radar-canvas {
     max-width: 260px;
 }
+
 /* 雷达图维度标签 */
 .dashboard-radar-dims {
     display: flex;
@@ -258,10 +380,10 @@
 /* ===== 45天计划进度 - 环形进度条 ===== */
 .dashboard-plan-section {
     margin: 0 16px 16px;
-    background: var(--card-bg);
     border-radius: var(--card-radius);
     padding: 20px;
-    box-shadow: var(--card-shadow);
+    animation: fadeInUp 0.5s ease 0.6s forwards;
+    opacity: 0;
 }
 .dashboard-plan-header {
     display: flex;
@@ -287,6 +409,7 @@
     color: var(--primary);
     font-weight: 600;
 }
+
 /* 环形进度条 */
 .dashboard-plan-circle-wrap {
     display: flex;
@@ -313,7 +436,8 @@
     stroke: url(#planGradient);
     stroke-width: 8;
     stroke-linecap: round;
-    transition: stroke-dashoffset 0.6s ease;
+    animation: ringProgress 1.2s ease-out forwards;
+    stroke-dashoffset: 263.89; /* 从0开始 */
 }
 .dashboard-plan-circle-text {
     position: absolute;
@@ -344,13 +468,13 @@
     color: var(--primary);
 }
 
-/* ===== 近7天热力图 - 圆润美化 ===== */
+/* ===== 近7天热力图 ===== */
 .dashboard-heatmap-section {
     margin: 0 16px 16px;
-    background: var(--card-bg);
     border-radius: var(--card-radius);
     padding: 20px;
-    box-shadow: var(--card-shadow);
+    animation: fadeInUp 0.5s ease 0.7s forwards;
+    opacity: 0;
 }
 .dashboard-heatmap-title {
     font-size: 15px;
@@ -373,15 +497,27 @@
 }
 .dashboard-heatmap-cell {
     aspect-ratio: 1;
-    border-radius: 8px;
-    background: #F8FAFC;
+    border-radius: 10px;
+    background: #F1F5F9;
     border: 1.5px dashed #E2E8F0;
     position: relative;
     cursor: pointer;
     transition: all 0.2s ease;
+    opacity: 0;
+    animation: fadeInScale 0.4s ease forwards;
 }
+
+/* 热力图格子延迟入场动画 */
+.dashboard-heatmap-cell:nth-child(1) { animation-delay: 0.05s; }
+.dashboard-heatmap-cell:nth-child(2) { animation-delay: 0.1s; }
+.dashboard-heatmap-cell:nth-child(3) { animation-delay: 0.15s; }
+.dashboard-heatmap-cell:nth-child(4) { animation-delay: 0.2s; }
+.dashboard-heatmap-cell:nth-child(5) { animation-delay: 0.25s; }
+.dashboard-heatmap-cell:nth-child(6) { animation-delay: 0.3s; }
+.dashboard-heatmap-cell:nth-child(7) { animation-delay: 0.35s; }
+
 .dashboard-heatmap-cell:hover {
-    transform: scale(1.08);
+    transform: scale(1.1);
     border-color: var(--primary-light);
 }
 .dashboard-heatmap-cell.level-1 {
@@ -433,9 +569,11 @@
     color: var(--text-muted);
 }
 
-/* ===== 薄弱项卡片 - 左侧彩色竖条 ===== */
+/* ===== 薄弱项卡片 ===== */
 .dashboard-weak-section {
     margin: 0 16px 16px;
+    animation: fadeInUp 0.5s ease 0.8s forwards;
+    opacity: 0;
 }
 .dashboard-section-title {
     font-size: 15px;
@@ -452,22 +590,33 @@
     color: var(--warning);
 }
 .dashboard-weak-card {
-    background: var(--card-bg);
     border-radius: var(--card-radius);
     padding: 16px;
     margin-bottom: 12px;
-    box-shadow: var(--card-shadow);
     display: flex;
     align-items: center;
     gap: 14px;
     cursor: pointer;
-    transition: transform 0.15s, box-shadow 0.15s;
     position: relative;
     overflow: hidden;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: fadeInUp 0.5s ease forwards;
+    opacity: 0;
 }
+
+.dashboard-weak-card:nth-child(2) { animation-delay: 0.1s; }
+.dashboard-weak-card:nth-child(3) { animation-delay: 0.2s; }
+
+.dashboard-weak-card:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 0 12px 32px rgba(225, 112, 85, 0.15) !important;
+}
+
 .dashboard-weak-card:active {
     transform: scale(0.98);
 }
+
 /* 左侧彩色竖条 */
 .dashboard-weak-card::before {
     content: '';
@@ -505,6 +654,7 @@
     color: var(--text-muted);
     margin-top: 2px;
 }
+
 /* 薄弱项进度条 */
 .dashboard-weak-bar {
     height: 4px;
@@ -517,6 +667,7 @@
     height: 100%;
     background: linear-gradient(90deg, #E17055, #FF9F43);
     border-radius: 2px;
+    transition: width 1s ease-out;
 }
 .dashboard-weak-action {
     font-size: 12px;
@@ -526,13 +677,18 @@
 .dashboard-weak-arrow {
     color: #C0C8D4;
     flex-shrink: 0;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+.dashboard-weak-card:hover .dashboard-weak-arrow {
+    transform: translateX(4px);
+    color: var(--primary);
 }
 .dashboard-weak-arrow svg {
     width: 16px;
     height: 16px;
 }
 
-/* ===== 预估分数卡 - 深色高亮 ===== */
+/* ===== 预估分数卡 - 深色带光晕脉冲 ===== */
 .dashboard-score-section {
     margin: 0 16px 20px;
     background: linear-gradient(135deg, #1a1a2e 0%, #2D3561 100%);
@@ -541,7 +697,11 @@
     color: white;
     position: relative;
     overflow: hidden;
+    animation: fadeInUp 0.5s ease 0.9s forwards;
+    opacity: 0;
 }
+
+/* 深色卡片光晕脉冲 */
 .dashboard-score-section::before {
     content: '';
     position: absolute;
@@ -549,14 +709,30 @@
     right: -50px;
     width: 150px;
     height: 150px;
-    background: radial-gradient(circle, rgba(108,92,231,0.3) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(108,92,231,0.4) 0%, transparent 70%);
     border-radius: 50%;
+    animation: glowPulse 3s ease-in-out infinite;
 }
+
+.dashboard-score-section::after {
+    content: '';
+    position: absolute;
+    bottom: -80px;
+    left: -30px;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(162,155,254,0.2) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: glowPulse 4s ease-in-out infinite reverse;
+}
+
 .dashboard-score-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 16px;
+    position: relative;
+    z-index: 1;
 }
 .dashboard-score-title {
     font-size: 15px;
@@ -577,6 +753,8 @@
 .dashboard-score-main {
     text-align: center;
     margin-bottom: 16px;
+    position: relative;
+    z-index: 1;
 }
 .dashboard-score-num {
     font-size: 56px;
@@ -594,11 +772,15 @@
     background: rgba(255,255,255,0.2);
     border-radius: 3px;
     overflow: hidden;
+    position: relative;
+    z-index: 1;
 }
 .dashboard-score-bar-fill {
     height: 100%;
     background: linear-gradient(90deg, var(--primary), var(--primary-light));
     border-radius: 3px;
+    animation: barGrow 1s ease-out forwards;
+    transform-origin: left;
 }
 .dashboard-score-footer {
     display: flex;
@@ -606,6 +788,8 @@
     margin-top: 12px;
     font-size: 12px;
     color: rgba(255,255,255,0.6);
+    position: relative;
+    z-index: 1;
 }
 .dashboard-score-diff {
     color: var(--success);
@@ -645,19 +829,20 @@
     font-weight: 600;
     cursor: pointer;
     border: none;
-    transition: background 0.2s ease;
+    transition: background 0.2s ease, transform 0.2s ease;
 }
 .dashboard-empty-btn:hover {
     background: var(--primary-light);
+    transform: translateY(-2px);
 }
 
 /* ===== 正确率趋势图 ===== */
 .dashboard-trend-section {
     margin: 0 16px 16px;
-    background: var(--card-bg);
     border-radius: var(--card-radius);
     padding: 16px;
-    box-shadow: var(--card-shadow);
+    animation: fadeInUp 0.5s ease 1s forwards;
+    opacity: 0;
 }
 .dashboard-trend-header {
     display: flex;
@@ -692,6 +877,10 @@
     cursor: pointer;
     transition: all 0.2s ease;
 }
+.dashboard-trend-period button:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
 .dashboard-trend-period button.active {
     background: var(--primary);
     color: white;
@@ -715,9 +904,11 @@
     font-size: 13px;
 }
 
-/* ===== 诊断报告历史 - 时间线样式 ===== */
+/* ===== 诊断报告历史 ===== */
 .dashboard-report-section {
     margin: 0 16px 16px;
+    animation: fadeInUp 0.5s ease 1.1s forwards;
+    opacity: 0;
 }
 .dashboard-report-timeline {
     position: relative;
@@ -733,13 +924,25 @@
     background: var(--border-color);
 }
 .dashboard-report-card {
-    background: var(--card-bg);
     border-radius: var(--card-radius);
     padding: 16px;
     margin-bottom: 12px;
-    box-shadow: var(--card-shadow);
     position: relative;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: fadeInUp 0.5s ease forwards;
+    opacity: 0;
 }
+
+.dashboard-report-card:nth-child(1) { animation-delay: 0.1s; }
+.dashboard-report-card:nth-child(2) { animation-delay: 0.2s; }
+.dashboard-report-card:nth-child(3) { animation-delay: 0.3s; }
+
+.dashboard-report-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(108, 92, 231, 0.1);
+}
+
 /* 时间线圆点 */
 .dashboard-report-card::before {
     content: '';
@@ -813,18 +1016,15 @@
     padding: 30px;
     color: var(--text-muted);
     font-size: 13px;
-    background: var(--card-bg);
-    border-radius: var(--card-radius);
-    box-shadow: var(--card-shadow);
 }
 
-/* ===== 学习记录统计 - 2x2网格 ===== */
+/* ===== 学习记录统计 ===== */
 .dashboard-stats-section {
     margin: 0 16px 16px;
-    background: var(--card-bg);
     border-radius: var(--card-radius);
     padding: 20px;
-    box-shadow: var(--card-shadow);
+    animation: fadeInUp 0.5s ease 1.2s forwards;
+    opacity: 0;
 }
 .dashboard-stats-title {
     font-size: 15px;
@@ -850,6 +1050,11 @@
     padding: 16px 12px;
     background: #FAFBFC;
     border-radius: 12px;
+    transition: transform 0.2s ease, background 0.2s ease;
+}
+.dashboard-stat-item:hover {
+    transform: scale(1.02);
+    background: #F1F5F9;
 }
 .dashboard-stat-num {
     font-size: 28px;
@@ -868,27 +1073,153 @@
     height: 32px;
 }
 
-/* ===== 动画 ===== */
+/* ===== 关键帧动画 ===== */
+
+/* 光晕呼吸动画 */
+@keyframes breathe {
+    0%, 100% { 
+        opacity: 0.8;
+        transform: translateX(-50%) scale(1);
+    }
+    50% { 
+        opacity: 1;
+        transform: translateX(-50%) scale(1.05);
+    }
+}
+
+@keyframes breathe2 {
+    0%, 100% { 
+        opacity: 0.6;
+        transform: scale(1);
+    }
+    50% { 
+        opacity: 0.8;
+        transform: scale(1.1);
+    }
+}
+
+/* 光晕脉冲 - 深色卡片 */
+@keyframes glowPulse {
+    0%, 100% { 
+        opacity: 0.5;
+        transform: scale(1);
+    }
+    50% { 
+        opacity: 0.8;
+        transform: scale(1.1);
+    }
+}
+
+/* Shimmer光泽扫过 */
+@keyframes shimmer {
+    0% { 
+        left: -100%;
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% { 
+        left: 200%;
+        opacity: 0;
+    }
+}
+
+/* 环形进度条动画 */
+@keyframes ringProgress {
+    from {
+        stroke-dashoffset: 263.89; /* 2 * PI * 42 */
+    }
+    to {
+        /* 由JS设置的stroke-dashoffset */
+    }
+}
+
+/* 格子入场动画 */
+@keyframes fadeInScale {
+    from { 
+        opacity: 0; 
+        transform: scale(0.8);
+    }
+    to { 
+        opacity: 1; 
+        transform: scale(1);
+    }
+}
+
+/* 进度条增长动画 */
+@keyframes barGrow {
+    from {
+        transform: scaleX(0);
+    }
+    to {
+        transform: scaleX(1);
+    }
+}
+
+/* 通用淡入上移动画 */
+@keyframes fadeInUp {
+    from { 
+        opacity: 0; 
+        transform: translateY(20px);
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0);
+    }
+}
+
+/* 脉冲动画 */
 @keyframes pulse {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.5; }
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+/* 数字跳动动画 */
+@keyframes countUp {
+    0% {
+        transform: translateY(10px);
+        opacity: 0;
+    }
+    50% {
+        transform: translateY(-3px);
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
 
-.dashboard-overview-card,
-.dashboard-radar-section,
-.dashboard-plan-section,
-.dashboard-heatmap-section,
-.dashboard-weak-card,
-.dashboard-score-section,
-.dashboard-trend-section,
-.dashboard-report-card,
-.dashboard-stats-section {
-    animation: fadeIn 0.3s ease forwards;
+.count-up-animate {
+    animation: countUp 0.4s ease-out forwards;
+}
+
+/* ===== 无障碍：尊重减少动画偏好 ===== */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .dashboard-glow,
+    .dashboard-glow-2 {
+        animation: none;
+    }
+    
+    .shimmer-card::before {
+        display: none;
+    }
+    
+    .dashboard-heatmap-cell {
+        opacity: 1;
+        animation: none;
+    }
 }
 
 /* ===== 移动端适配 ===== */
@@ -933,5 +1264,15 @@
     }
     .dashboard-radar-dim-tag {
         min-width: calc(33% - 8px);
+    }
+    
+    /* 移动端光晕缩小 */
+    .dashboard-glow {
+        width: 500px;
+        height: 400px;
+    }
+    .dashboard-glow-2 {
+        width: 250px;
+        height: 250px;
     }
 }
