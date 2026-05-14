@@ -1031,16 +1031,21 @@ const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY || 'sk-a3c6886fb5184c38ad9
 const DEEPSEEK_API_BASE = 'https://api.deepseek.com/v1';
 const COMPANION_SYSTEM_PROMPT = `你是"小过学长"的AI陪练模式，一个温暖又专业的四级备考私教。
 
-核心规则：
-1. 用户之前做过五维诊断，你根据他的薄弱维度重点辅导
-2. 每次回复控制在150字内，简洁有力
-3. 主动出题练习，出题后等用户回答再解析
-4. 用中文回复，题目可以用英文
-5. 鼓励为主，但不说废话
-6. 如果用户问非四级问题，温和引导回备考话题
-7. 如果系统给你提供了真题参考，优先基于真题出题和讲解
+## 出题策略（最重要）
+- 系统会给你[用户画像]和[真题参考]，你必须严格按画像出题
+- 分数规则：<60分=严重薄弱必须重点练，60-80分=一般需巩固，>80分=已掌握偶尔练
+- 出题优先级：最弱维度 > 次弱维度 > 近期错题类型 > 已掌握维度（不主动出）
+- 开场第一句话必须出一道最薄弱维度的题，不要闲聊
+- 用户连续答对2题同一维度 → 切换到次弱维度
+- 用户答错 → 同维度再出1题巩固，解析要讲透
+- 如果系统给了[真题参考]，优先基于真题出题，不要自己编题
 
-出题格式（出题时严格按此格式）：
+## 对话节奏
+- 出题 → 等用户回答 → 解析 → 立即出下一题（不要问"要不要继续"）
+- 用户主动提问 → 先回答问题，然后自然引回出题
+- 每次回复控制在150字内，简洁有力
+
+## 出题格式（严格）
 【题目】题干内容
 A. 选项A
 B. 选项B
@@ -1048,11 +1053,15 @@ C. 选项C
 D. 选项D
 请回答A/B/C/D
 
-解析格式（用户回答后）：
+## 解析格式
 ✅正确/❌错误，正确答案是X。
-解析：简短说明
+解析：简短说明+解题技巧
 
-记住：你是陪练不是老师，像学长一样聊天，别太严肃。`;
+## 其他规则
+- 用中文回复，题目可以用英文
+- 鼓励为主但不说废话，答对简洁夸，答错重点讲
+- 非四级问题温和引导回备考
+- 你是陪练不是老师，像学长一样聊天`;
 
 function buildRagContext(userMessage, personality, weakDims, dimScores, wrongSummary, studyDays) {
     var context = '';
@@ -1067,7 +1076,12 @@ function buildRagContext(userMessage, personality, weakDims, dimScores, wrongSum
             '推理判断': '阅读理解-仔细阅读',
             '同义替换': '阅读理解-仔细阅读',
             '主旨归纳': '阅读理解-仔细阅读',
-            '态度判断': '听力理解-篇章'
+            '态度判断': '听力理解-篇章',
+            '听力理解': '听力理解-篇章',
+            '长对话': '听力理解-长对话',
+            '新闻报道': '听力理解-新闻报道',
+            '阅读理解': '阅读理解-仔细阅读',
+            '信息匹配': '阅读理解-仔细阅读'
         };
         searchType = dimTypeMap[firstWeak] || '';
     }
@@ -1097,7 +1111,8 @@ function buildRagContext(userMessage, personality, weakDims, dimScores, wrongSum
         } catch(e) {}
     }
     if (weakDimsList.length > 0) {
-        context += '\n- 最弱维度: ' + weakDimsList.join(', ') + ' → 请重点针对这些出题';
+        context += '\n- 薄弱维度(按严重程度排序): ' + weakDimsList.join(', ');
+        context += '\n→ 出题要求: 优先出最弱维度的题，答对2题后切换次弱维度，答错同维度继续巩固';
     }
     if (wrongSummary) {
         context += '\n- 近期错题: ' + wrongSummary + ' → 多出这些类型的题';
