@@ -3043,8 +3043,13 @@ function showPaySuccess(plan) {
         '<div class="pay-success-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>' +
         '<div class="pay-sheet-title" style="margin-bottom:4px">激活成功</div>' +
         '<div style="font-size:14px;color:#6C5CE7;font-weight:700;margin-bottom:16px">' + (planNames[plan] || plan) + ' 已开通</div>' +
-        '<button onclick="closePayModal();switchTab(\'diagnosis\');openChat(\'companion\')" style="width:100%;padding:14px;background:#6C5CE7;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer">开始AI陪练</button>' +
-        '<button onclick="closePayModal()" style="width:100%;padding:12px;background:transparent;color:#94a3b8;border:none;font-size:13px;cursor:pointer;margin-top:4px">稍后再说</button>';
+        '<div style="font-size:13px;color:#64748B;margin-bottom:16px">正在跳转到AI陪练...</div>';
+    // 自动跳转到聊天页面开始使用
+    setTimeout(function() {
+        closePayModal();
+        switchTab('diagnosis');
+        setTimeout(function() { openChat('companion'); }, 300);
+    }, 1500);
 }
 
 function openActivateCodeModal() {
