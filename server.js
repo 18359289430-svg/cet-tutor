@@ -833,6 +833,84 @@ const server = http.createServer((req, res) => {
         return;
     }
 
+
+// ===== DeepSeek API 直连（陪练模式） =====
+const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY || 'sk-a3c6886fb5184c38ad9c4b37448816cb';
+const DEEPSEEK_API_BASE = 'https://api.deepseek.com/v1';
+const COMPANION_SYSTEM_PROMPT = `你是"小过学长"的AI陪练模式，一个温暖又专业的四级备考私教。
+
+核心规则：
+1. 用户之前做过五维诊断，你根据他的薄弱维度重点辅导
+2. 每次回复控制在150字内，简洁有力
+3. 主动出题练习，出题后等用户回答再解析
+4. 用中文回复，题目可以用英文
+5. 鼓励为主，但不说废话
+6. 如果用户问非四级问题，温和引导回备考话题
+
+出题格式：
+- 听力薄弱：出听力技巧题或原文理解题
+- 阅读薄弱：出同义替换/主旨归纳练习
+- 词汇薄弱：出高频词辨析
+- 写译薄弱：出翻译或句型练习
+
+记住：你是陪练不是老师，像学长一样聊天，别太严肃。`;
+
+// POST /api/deepseek/chat - DeepSeek陪练对话
+async function handleDeepseekChat(req, res) {
+    try {
+        const body = await parseBody(req);
+        const { messages, stream } = body;
+        if (!messages || !messages.length) {
+            return sendJson(res, 400, { error: '参数缺失' });
+        }
+
+        // 限流检查
+        const userId = body.user_id || 'anonymous';
+        const verifiedPlan = getVerifiedUserPlan(req, userId, body);
+        if (verifiedPlan === 'free') {
+            const chatCount = checkChatLimitBackend(userId);
+            if (chatCount > 24) {
+                return sendJson(res, 429, { error: '今日免费陪练额度已用完，明天恢复。升级冲刺营即可无限对话～' });
+            }
+        }
+
+        const payload = {
+            model: 'deepseek-chat',
+            messages: [{ role: 'system', content: COMPANION_SYSTEM_PROMPT }, ...messages.slice(-20)],
+            stream: stream !== false,
+            temperature: 0.7,
+            max_tokens: 500
+        };
+
+        if (payload.stream) {
+            const resp = await fetch(DEEPSEEK_API_BASE + '/chat/completions', {
+                method: 'POST',
+                headers: { 'Authorization': 'Bearer ' + DEEPSEEK_API_KEY, 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            res.writeHead(200, {
+                'Content-Type': 'text/event-stream',
+                'Cache-Control': 'no-cache',
+                'Connection': 'keep-alive',
+                'X-Accel-Buffering': 'no'
+            });
+            resp.body.pipe(res);
+        } else {
+            const resp = await fetch(DEEPSEEK_API_BASE + '/chat/completions', {
+                method: 'POST',
+                headers: { 'Authorization': 'Bearer ' + DEEPSEEK_API_KEY, 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await resp.json();
+            const reply = data.choices && data.choices[0] && data.choices[0].message ? data.choices[0].message.content : '';
+            sendJson(res, 200, { code: 0, data: { content: reply, usage: data.usage || {} } });
+        }
+    } catch(e) {
+        console.error('[DeepSeek Error]', e.message);
+        sendJson(res, 500, { error: 'AI服务暂时不可用，请稍后再试' });
+    }
+}
+
     // 静态文件
     if (pathname === '/' || pathname === '/index.html') {
         sendHtml(res, html, req);

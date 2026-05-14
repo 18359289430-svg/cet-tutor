@@ -6391,10 +6391,26 @@
             };
 
             try {
-                var resp = await fetch('/api/chat/send', {
+                // 陪练模式用DeepSeek直连，诊断模式用Coze
+                var isCompanion = chatState.currentMode === 'companion';
+                var fetchUrl = isCompanion ? '/api/deepseek/chat' : '/api/chat/send';
+                var fetchPayload = payload;
+                
+                if (isCompanion) {
+                    // DeepSeek用OpenAI格式，非流式（后续可改流式）
+                    fetchPayload = {
+                        user_id: userId,
+                        messages: chatState.chatHistory.concat([{ role: 'user', content: contextPrefix + text }]),
+                        stream: false,
+                        plan_token: (state.userData && state.userData.planToken) || '',
+                        plan_order_id: (state.userData && state.userData.planOrderId) || ''
+                    };
+                }
+
+                var resp = await fetch(fetchUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
+                    body: JSON.stringify(fetchPayload)
                 });
 
                 if (!resp.ok) {
@@ -6418,6 +6434,21 @@
                 var buffer = '';
 
                 var streamStartTime = Date.now();
+                
+                // DeepSeek非流式响应处理
+                if (isCompanion) {
+                    var jsonResp = await resp.json();
+                    var replyText = (jsonResp.data && jsonResp.data.content) || '';
+                    bubbleEl.innerHTML = formatBotMessage(replyText);
+                    chatState.currentStreamText = replyText;
+                    chatState.chatHistory.push({ role: 'assistant', content: replyText, content_type: 'text' });
+                    chatState.chatRounds++;
+                    updateChatListMeta(replyText);
+                    savePracticeRecord();
+                    checkStreakOnChat();
+                    chatState.isStreaming = false;
+                    return;
+                }
                 var firstChunkReceived = false;
                 while (true) {
                     var result = await reader.read();
