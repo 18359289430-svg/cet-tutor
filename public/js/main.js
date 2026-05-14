@@ -1439,17 +1439,6 @@ function initApp() {
             
             // 清空消息显示 - 引导式开场白
             var container = document.getElementById('chat-messages');
-            container.innerHTML = '<div class="custom-chat-msg ai">' +
-                '<div class="custom-chat-avatar"><svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 7h8M8 11h8M8 15h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>' +
-                '<div class="custom-chat-bubble">' +
-                '<p>嗨！我是小过学长 👋</p>' +
-                '<p style="margin-top:8px">我能帮你这些：</p>' +
-                '<p style="margin-top:4px">📋 做个诊断测水平</p>' +
-                '<p>💬 陪你刷真题练手</p>' +
-                '<p>❌ 复习之前的错题</p>' +
-                '<p>📝 批改你的作文</p>' +
-                '<p style="margin-top:8px;color:#6C5CE7;font-weight:600">直接说就行！</p>' +
-                '<div class="custom-chat-time">刚刚</div>' +
             container.innerHTML = '<div class="custom-chat-msg ai welcome-msg">' +
                 '<div class="custom-chat-avatar"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>' +
                 '<div class="welcome-bubble-card">' +
@@ -1679,17 +1668,6 @@ function initApp() {
             
             // 清空消息显示 - 引导式开场白
             var container = document.getElementById('chat-messages');
-            container.innerHTML = '<div class="custom-chat-msg ai">' +
-                '<div class="custom-chat-avatar"><svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 7h8M8 11h8M8 15h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>' +
-                '<div class="custom-chat-bubble">' +
-                '<p>嗨！我是小过学长 👋</p>' +
-                '<p style="margin-top:8px">我能帮你这些：</p>' +
-                '<p style="margin-top:4px">📋 做个诊断测水平</p>' +
-                '<p>💬 陪你刷真题练手</p>' +
-                '<p>❌ 复习之前的错题</p>' +
-                '<p>📝 批改你的作文</p>' +
-                '<p style="margin-top:8px;color:#6C5CE7;font-weight:600">直接说就行！</p>' +
-                '<div class="custom-chat-time">刚刚</div>' +
             container.innerHTML = '<div class="custom-chat-msg ai welcome-msg">' +
                 '<div class="custom-chat-avatar"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>' +
                 '<div class="welcome-bubble-card">' +
