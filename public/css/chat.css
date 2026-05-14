@@ -228,10 +228,14 @@
 .custom-chat-page { 
     display: flex; 
     flex-direction: column; 
-    height: 100%; 
+    position: absolute; 
+    top: 0; 
+    left: 0; 
+    right: 0; 
+    bottom: 0; 
     background: linear-gradient(180deg, #FAFAFB 0%, #FFFFFF 100%);
     overflow: hidden; 
-    position: relative;
+    z-index: 5;
 }
 /* 顶部渐变光晕 */
 .custom-chat-page::before {
@@ -345,7 +349,7 @@
 .custom-chat-messages {
     flex: 1; 
     overflow-y: auto; 
-    padding: 28px 20px 140px; 
+    padding: 28px 20px 16px; 
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none; 
     -ms-overflow-style: none; 
@@ -1604,7 +1608,7 @@
         font-size: 18px;
     }
     .custom-chat-messages {
-        padding: 20px 16px 120px;
+        padding: 20px 16px 16px;
     }
     .custom-chat-bubble {
         max-width: 85%;
@@ -1622,4 +1626,54 @@
     .chip-grid {
         grid-template-columns: repeat(3, 1fr);
     }
+}
+/* ===== 消息区底部留白 ===== */
+/* flex布局下input-area自然占位，padding-bottom只需留视觉间距 */
+/* 但因为tab-bar在chat-page外部覆盖底部，需要额外留出tab-bar高度 */
+.custom-chat-messages {
+    padding-bottom: calc(80px + 60px + var(--safe-bottom, 0px)) !important;
+}
+@media (max-width: 480px) {
+    .custom-chat-messages {
+        padding-bottom: calc(70px + 55px + var(--safe-bottom, 0px)) !important;
+    }
+}
+
+/* 输入区 - 参考DeepSeek：更紧凑精致 */
+.custom-chat-input-area {
+    padding: 8px 16px 12px;
+    background: rgba(255, 255, 255, 0.97);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: none;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.04);
+}
+
+/* 快捷按钮更紧凑 */
+.quick-mode-tags {
+    gap: 8px;
+    margin-bottom: 8px;
+}
+.quick-tag-pill {
+    padding: 8px 14px;
+    font-size: 12px;
+    border-radius: 18px;
+}
+
+/* 输入框行更紧凑 */
+.custom-chat-input-row {
+    border-radius: 24px;
+    padding: 4px 4px 4px 16px;
+}
+.custom-chat-input {
+    padding: 8px 0;
+    font-size: 14px;
+    min-height: 20px;
+}
+
+/* 发送按钮 */
+.custom-chat-send {
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 50% !important;
 }

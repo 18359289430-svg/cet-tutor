@@ -25,6 +25,9 @@ const PORT = process.env.PORT || 8080;
 let ADMIN_KEY = process.env.ADMIN_KEY;
 if (!ADMIN_KEY) { console.error('FATAL: ADMIN_KEY not set. Set it in .env.local'); process.exit(1); }
 let SECRET_KEY = process.env.SECRET_KEY;
+
+// CORS配置：支持环境变量配置，默认使用当前部署URL
+const CORS_ORIGIN = process.env.CORS_ORIGIN || 'https://cet-tutor-production.up.railway.app';
 if (!SECRET_KEY) { console.error('FATAL: SECRET_KEY not set. Set it in .env.local'); process.exit(1); }
 
 // API 限流：每个IP每分钟最多60次请求
@@ -72,7 +75,6 @@ const PLANS = {
 };
 
 // 内存订单存储
-const orders = new Map();
 
 // ===== 限流持久化：chatLimitMap 改为基于文件存储 =====
 // 修复问题1和问题3：限流持久化到文件，启动时加载，每次更新后写入
@@ -132,6 +134,42 @@ function cleanupExpiredLimits() {
         saveRateLimits(chatLimitMap);
     }
 }
+
+
+// ===== 订单持久化：orders Map 改为基于文件存储 =====
+const ORDERS_FILE = path.join(__dirname, 'orders.json');
+
+// 加载订单数据（启动时）
+function loadOrders() {
+    try {
+        if (fs.existsSync(ORDERS_FILE)) {
+            const data = fs.readFileSync(ORDERS_FILE, 'utf8');
+            const parsed = JSON.parse(data);
+            const map = new Map();
+            for (const [key, value] of Object.entries(parsed)) {
+                map.set(key, value);
+            }
+            console.log(`[订单] 已加载 ${map.size} 条订单记录`);
+            return map;
+        }
+    } catch (e) {
+        console.error('[订单] 加载订单数据失败:', e.message);
+    }
+    return new Map();
+}
+
+// 保存订单数据到文件
+function saveOrders() {
+    try {
+        const obj = Object.fromEntries(orders);
+        fs.writeFileSync(ORDERS_FILE, JSON.stringify(obj, null, 2), 'utf8');
+    } catch (e) {
+        console.error('[订单] 保存订单数据失败:', e.message);
+    }
+}
+
+// 初始化订单Map（从文件加载）
+const orders = loadOrders();
 
 // 检查聊天限流（后端唯一数据源）
 // 修复问题2：统一为 >=10 次拦截
@@ -224,9 +262,25 @@ function verifySign(params) {
 
 // 解析POST body
 function parseBody(req) {
+    // 检查Content-Length头，超过1MB返回413
+    const contentLength = req.headers['content-length'];
+    if (contentLength && parseInt(contentLength) > 1048576) {
+        return Promise.reject(new Error('PAYLOAD_TOO_LARGE'));
+    }
+    
     return new Promise((resolve, reject) => {
         let body = '';
-        req.on('data', chunk => body += chunk);
+        let bodyLength = 0;
+        req.on('data', chunk => {
+            bodyLength += Buffer.byteLength(chunk, 'utf8');
+            // 同时检查chunk拼接后累计长度
+            if (bodyLength > 1048576) {
+                req.destroy();
+                reject(new Error('PAYLOAD_TOO_LARGE'));
+                return;
+            }
+            body += chunk;
+        });
         req.on('end', () => {
             try {
                 resolve(body ? JSON.parse(body) : {});
@@ -242,7 +296,7 @@ function parseBody(req) {
 function sendJson(res, statusCode, data) {
     res.writeHead(statusCode, {
         'Content-Type': 'application/json; charset=utf-8',
-        'Access-Control-Allow-Origin': 'https://cet-tutor-production.up.railway.app',
+        'Access-Control-Allow-Origin': CORS_ORIGIN,
         'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
         'Access-Control-Allow-Headers': 'Content-Type'
     });
@@ -262,6 +316,12 @@ async function handleApi(req, res, pathname) {
     }
 
     try {
+        // ===== 健康检查 =====
+        if (pathname === '/api/health') {
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            return res.end(JSON.stringify({ status: 'ok', uptime: Math.floor(process.uptime()), timestamp: Date.now() }));
+        }
+
         // ===== 手动收款模式 API =====
 
 
@@ -303,6 +363,7 @@ async function handleApi(req, res, pathname) {
             });
 
             console.log(`[订单创建] ${orderId} - ${planConfig.name} - ¥${planConfig.price}`);
+            saveOrders();
 
             return sendJson(res, 200, {
                 orderId,
@@ -396,6 +457,7 @@ async function handleApi(req, res, pathname) {
                     userId: user_id || null
                 });
 
+                saveOrders();
                 console.log(`[面包多订单激活] ${orderIdTrimmed} - ${PLANS[plan].name} - ¥${amount}`);
 
                 return sendJson(res, 200, {
@@ -409,6 +471,59 @@ async function handleApi(req, res, pathname) {
                 console.error('[面包多验证失败]', e);
                 return sendJson(res, 200, { success: false, error: '验证服务暂时不可用，请稍后重试' });
             }
+        }
+
+        // POST /api/mbd-webhook - 面包多支付回调（自动激活）
+        if (pathname === '/api/mbd-webhook' && req.method === 'POST') {
+            const body = await parseBody(req);
+            const { order_id, status, amount, product_id } = body;
+
+            if (!order_id) {
+                return sendJson(res, 400, { error: '缺少order_id' });
+            }
+
+            // 只有支付成功才激活
+            if (status !== 'paid' && status !== 'completed') {
+                return sendJson(res, 200, { success: false, error: '订单未支付' });
+            }
+
+            const orderIdTrimmed = order_id.trim();
+            const activationId = 'mbd_' + orderIdTrimmed;
+
+            // 如果已经激活过，直接返回成功
+            if (orders.has(activationId) && orders.get(activationId).status === 'activated') {
+                return sendJson(res, 200, { success: true, already_activated: true });
+            }
+
+            // 根据金额判断套餐
+            let plan = 'sprint';
+            const amt = parseFloat(amount || 0);
+            if (amt >= 100) plan = 'flagship';
+            else if (amt >= 30) plan = 'sprint';
+
+            // 自动创建并激活订单
+            const token = crypto.createHash('md5').update(activationId + plan + SECRET_KEY).digest('hex');
+            orders.set(activationId, {
+                orderId: activationId,
+                mbdOrderId: orderIdTrimmed,
+                plan,
+                amount: amt,
+                status: 'activated',
+                activatedAt: Date.now(),
+                token,
+                ip: getClientIp(req),
+                autoActivated: true  // 标记为自动激活
+            });
+
+            saveOrders();
+            console.log(`[面包多Webhook自动激活] ${orderIdTrimmed} - ${PLANS[plan].name} - ¥${amt}`);
+
+            return sendJson(res, 200, { 
+                success: true, 
+                plan,
+                token,
+                orderId: activationId 
+            });
         }
 
         // POST /api/activate-with-code - 激活码激活
@@ -508,6 +623,7 @@ async function handleApi(req, res, pathname) {
                     source: 'activation_code'
                 });
 
+                saveOrders();
                 console.log(`[激活码激活] ${orderId} - ${PLANS[plan].name}`);
 
                 return sendJson(res, 200, {
@@ -608,6 +724,7 @@ async function handleApi(req, res, pathname) {
                 status: 'pending'
             });
         }
+            saveOrders();
 
         // GET /api/verify-token - 验证token（用户打开页面时调用）
         if (pathname === '/api/verify-token' && req.method === 'GET') {
@@ -941,8 +1058,8 @@ async function handleApi(req, res, pathname) {
 
             const order = orders.get(orderId);
             if (!order) {
-                // 可能是免费订单或测试订单，直接返回paid
-                return sendJson(res, 200, { paid: true });
+                // 修复：order不存在时返回paid=false，避免漏洞
+                return sendJson(res, 200, { paid: false });
             }
 
             return sendJson(res, 200, {
@@ -1157,6 +1274,8 @@ function sendHtml(res, htmlContent, req) {
     const contentLength = Buffer.byteLength(htmlContent, 'utf-8');
     res.setHeader('X-Content-Type-Options', 'nosniff');
     res.setHeader('Cache-Control', 'no-cache'); // HTML不缓存，确保更新即时生效
+    // CSP安全头
+    res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://api.deepseek.com https://api.coze.cn; font-src 'self'; frame-src 'none'; object-src 'none'");
     
     if (shouldCompress(req, contentLength)) {
         res.setHeader('Content-Type', 'text/html; charset=utf-8');
@@ -1222,7 +1341,6 @@ function searchQuiz(keyword, type, limit) {
 // GET /api/quiz/search - 搜索真题
 // ?keyword=xxx&type=xxx&limit=5
 // ===== DeepSeek API 直连（陪练模式） =====
-const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY || '';
 const DEEPSEEK_API_BASE = 'https://api.deepseek.com/v1';
 const COMPANION_SYSTEM_PROMPT = `你是"小过学长"的AI陪练模式，一个温暖又专业的四级备考私教。
 
@@ -1626,7 +1744,7 @@ async function handleChatSend(req, res) {
                 'Cache-Control': 'no-cache',
                 'Connection': 'keep-alive',
                 'X-Accel-Buffering': 'no',
-                'Access-Control-Allow-Origin': 'https://cet-tutor-production.up.railway.app'
+                'Access-Control-Allow-Origin': CORS_ORIGIN
             });
             // Node.js 18+ fetch returns Web ReadableStream
             const reader = resp.body.getReader();

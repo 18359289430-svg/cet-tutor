@@ -825,7 +825,7 @@
     }
 
     function resetUpgradeCardState() {
-        var lastReset = localStorage.getItem('cet_upgrade_card_reset');
+        var lastReset = (function() { try { return localStorage.getItem('cet_upgrade_card_reset'); } catch(e) { return null; } })();
         var today = new Date().toISOString().slice(0, 10);
         if (lastReset !== today) {
             upgradeCardShown = false;

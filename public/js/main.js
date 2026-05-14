@@ -9,6 +9,35 @@
                 { type:'资料囤积狂', color:'#4A7C8C', emoji:'📦', img:'imgs/tunji.webp', honor:'四级资料收藏家', comment:'收藏=学会，囤满=稳过', scores:{"细节定位":85,"推理判断":70,"同义替换":80,"主旨归纳":75,"态度判断":60} }
             ];
 
+        // ===== localStorage 安全读取辅助函数 =====
+        function safeGetItem(key, defaultValue) {
+            try {
+                var data = localStorage.getItem(key);
+                if (data === null) return defaultValue;
+                return JSON.parse(data);
+            } catch(e) {
+                return defaultValue;
+            }
+        }
+
+        function safeSetItem(key, value) {
+            try {
+                localStorage.setItem(key, JSON.stringify(value));
+            } catch(e) {}
+        }
+
+        // ===== fetch超时处理 =====
+        function fetchWithTimeout(url, options, timeout) {
+            timeout = timeout || 15000;
+            return Promise.race([
+                fetch(url, options),
+                new Promise(function(_, reject) {
+                    setTimeout(function() { reject(new Error('请求超时，请重试')); }, timeout);
+                })
+            ]);
+        }
+
+
         var state = {
             currentTab: 'home',
             userData: null,
@@ -74,12 +103,16 @@ function initApp() {
 
             // 恢复上次的tab和聊天状态
             restoreLastState();
+            
+            // 处理URL hash路由（不与?uid=&?code=冲突）
+            handleHashNavigation();
 
             // 领取链接自动激活：/claim?sprint&code=CET4S-XXXXX-YYYY
             checkClaimUrl();
             
             // 初始化输入框placeholder（免费额度提示）
             updateChatInputPlaceholder();
+            setTimeout(initChatPadding, 200);
         }
 
         function loadUserData() {
@@ -99,44 +132,110 @@ function initApp() {
             }
         }
 
+        // ===== URL hash路由处理 =====
+        function handleHashNavigation() {
+            var hash = window.location.hash.slice(1); // 去掉#
+            if (!hash) return;
+            
+            var tabMap = {
+                'home': 'home',
+                'practice': 'diagnosis',
+                'data': 'data',
+                'profile': 'profile',
+                'chat': 'diagnosis'
+            };
+            
+            var targetTab = tabMap[hash];
+            if (targetTab) {
+                switchTab(targetTab);
+                if (hash === 'chat' || hash === 'practice') {
+                    showChatList();
+                    // 如果是chat，尝试打开上次聊天
+                    var lastChatMode = localStorage.getItem('cet_last_chat_mode');
+                    if (lastChatMode) {
+                        setTimeout(function() { openChat(lastChatMode); }, 100);
+                    }
+                }
+            }
+        }
+
+        // 监听hash变化
+        window.addEventListener('hashchange', handleHashNavigation);
+
         function checkClaimUrl() {
             var params = new URLSearchParams(window.location.search);
             var claimCode = params.get('code');
-            if (!claimCode) return;
+            var orderId = params.get('order_id') || params.get('orderId');
 
             // 如果已经有套餐了就不重复激活
             if (state.userData && state.userData.plan && state.userData.plan !== 'free') {
                 showToast('您已开通' + (state.userData.plan === 'flagship' ? '全程营' : '冲刺营') + '，无需重复激活');
-                // 清除URL参数
                 window.history.replaceState({}, '', '/');
                 return;
             }
 
-            // 自动激活
+            // 优先处理order_id参数（面包多订单号自动激活）
+            if (orderId) {
+                activateWithOrderIdDirect(orderId.trim());
+                return;
+            }
+
+            // 处理激活码
+            if (!claimCode) return;
             fetch('/api/activate-with-code', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ code: claimCode.trim() })
             }).then(function(r) { return r.json(); }).then(function(resp) {
                 if (resp.success) {
-                    state.userData = state.userData || {};
-                    state.userData.plan = resp.plan;
-                    state.userData.planToken = resp.token;
-                    state.userData.planOrderId = resp.orderId;
-                    state.userData.planActivatedAt = Date.now();
-                    localStorage.setItem('cet_user', JSON.stringify(state.userData));
-                    updateProfileStats();
-                    updateHomeStatus();
+                    activateSuccess(resp.plan, resp.token, resp.orderId);
                     showToast('🎉 ' + (resp.plan === 'flagship' ? '全程营' : '冲刺营') + ' 已开通！');
                 } else {
                     showToast('激活失败：' + (resp.error || '激活码无效'));
                 }
-                // 清除URL参数
                 window.history.replaceState({}, '', '/');
             }).catch(function(e) {
                 showToast('网络错误，请重试');
                 window.history.replaceState({}, '', '/');
             });
+        }
+
+        // 面包多订单号直接激活（从URL参数进入）
+        function activateWithOrderIdDirect(orderId) {
+            var plan = 'sprint';
+            var msgEl = document.getElementById('activate-msg') || document.createElement('div');
+            
+            fetch('/api/activate-with-mbd-order', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ order_id: orderId, plan: plan })
+            }).then(function(r) { return r.json(); }).then(function(resp) {
+                if (resp.success) {
+                    activateSuccess(resp.plan, resp.token, resp.orderId);
+                    showToast('🎉 ' + (resp.plan === 'flagship' ? '全程营' : '冲刺营') + ' 已开通！');
+                    // 激活成功后自动跳转到聊天页面开始使用
+                    switchTab('diagnosis');
+                    setTimeout(function() { openChat('companion'); }, 500);
+                } else {
+                    showToast('激活失败：' + (resp.error || '订单验证失败'));
+                }
+                window.history.replaceState({}, '', '/');
+            }).catch(function(e) {
+                showToast('网络错误，请重试');
+                window.history.replaceState({}, '', '/');
+            });
+        }
+
+        // 统一的激活成功处理
+        function activateSuccess(plan, token, orderId) {
+            state.userData = state.userData || {};
+            state.userData.plan = plan;
+            state.userData.planToken = token;
+            state.userData.planOrderId = orderId;
+            state.userData.planActivatedAt = Date.now();
+            localStorage.setItem('cet_user', JSON.stringify(state.userData));
+            updateProfileStats();
+            updateHomeStatus();
         }
 
         function initGreeting() {
@@ -177,6 +276,10 @@ function initApp() {
             document.querySelectorAll('.tab-item').forEach(function(item) {
                 item.classList.toggle('active', item.dataset.tab === tab);
             });
+            // URL hash路由
+            var hashName = tab === 'diagnosis' ? 'practice' : tab;
+            window.location.hash = hashName;
+            localStorage.setItem('cet_current_tab', tab);
             if (tab === 'diagnosis') {
                 // Don't auto-init, let openChat handle it
             }
@@ -803,7 +906,7 @@ function initApp() {
                 if (data) return JSON.parse(data);
                 
                 // 兼容旧数据：从cet_user中读取诊断数据作为最近一次报告
-                var userData = JSON.parse(localStorage.getItem('cet_user') || '{}');
+                var userData = safeGetItem('cet_user', {});
                 if (userData && userData.diagnosis && userData.diagnosis.type) {
                     // 估算一个诊断日期
                     var diagDate = userData.diagnosedAt ? new Date(userData.diagnosedAt) : new Date();
@@ -993,7 +1096,7 @@ function initApp() {
                 var data = localStorage.getItem('cet4_ability_scores');
                 if (data) return JSON.parse(data);
                 // 兼容旧数据: 从cet_user中读取诊断数据
-                var userData = JSON.parse(localStorage.getItem('cet_user') || '{}');
+                var userData = safeGetItem('cet_user', {});
                 if (userData && userData.diagnosis) {
                     return { dims: userData.diagnosis };
                 }
@@ -1006,7 +1109,7 @@ function initApp() {
                 var data = localStorage.getItem('cet4_user_profile');
                 if (data) return JSON.parse(data);
                 // 兼容旧数据
-                var userData = JSON.parse(localStorage.getItem('cet_user') || '{}');
+                var userData = safeGetItem('cet_user', {});
                 if (userData && userData.startDate) {
                     return { startDate: userData.startDate };
                 }
@@ -1347,6 +1450,18 @@ function initApp() {
                 '<p>📝 批改你的作文</p>' +
                 '<p style="margin-top:8px;color:#6C5CE7;font-weight:600">直接说就行！</p>' +
                 '<div class="custom-chat-time">刚刚</div>' +
+            container.innerHTML = '<div class="custom-chat-msg ai welcome-msg">' +
+                '<div class="custom-chat-avatar"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>' +
+                '<div class="welcome-bubble-card">' +
+                '<p style="font-size:17px;font-weight:700;color:#1E293B;margin-bottom:12px">嗨！我是小过学长 👋</p>' +
+                '<p style="margin-bottom:12px;color:#64748B">我能帮你这些：</p>' +
+                '<div style="display:flex;flex-direction:column;gap:10px">' +
+                '<div style="display:flex;align-items:center;gap:10px"><span style="width:6px;height:6px;border-radius:50%;background:#6C5CE7;flex-shrink:0"></span><span style="color:#475569;font-size:15px">做个诊断测水平</span></div>' +
+                '<div style="display:flex;align-items:center;gap:10px"><span style="width:6px;height:6px;border-radius:50%;background:#6C5CE7;flex-shrink:0"></span><span style="color:#475569;font-size:15px">陪你刷真题练手</span></div>' +
+                '<div style="display:flex;align-items:center;gap:10px"><span style="width:6px;height:6px;border-radius:50%;background:#6C5CE7;flex-shrink:0"></span><span style="color:#475569;font-size:15px">复习之前的错题</span></div>' +
+                '<div style="display:flex;align-items:center;gap:10px"><span style="width:6px;height:6px;border-radius:50%;background:#6C5CE7;flex-shrink:0"></span><span style="color:#475569;font-size:15px">批改你的作文</span></div>' +
+                '</div>' +
+                '<p style="margin-top:16px;color:#6C5CE7;font-weight:600;font-size:15px">直接说就行！</p>' +
                 '</div></div>';
             
             // 更新标题
@@ -1575,6 +1690,18 @@ function initApp() {
                 '<p>📝 批改你的作文</p>' +
                 '<p style="margin-top:8px;color:#6C5CE7;font-weight:600">直接说就行！</p>' +
                 '<div class="custom-chat-time">刚刚</div>' +
+            container.innerHTML = '<div class="custom-chat-msg ai welcome-msg">' +
+                '<div class="custom-chat-avatar"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>' +
+                '<div class="welcome-bubble-card">' +
+                '<p style="font-size:17px;font-weight:700;color:#1E293B;margin-bottom:12px">嗨！我是小过学长 👋</p>' +
+                '<p style="margin-bottom:12px;color:#64748B">我能帮你这些：</p>' +
+                '<div style="display:flex;flex-direction:column;gap:10px">' +
+                '<div style="display:flex;align-items:center;gap:10px"><span style="width:6px;height:6px;border-radius:50%;background:#6C5CE7;flex-shrink:0"></span><span style="color:#475569;font-size:15px">做个诊断测水平</span></div>' +
+                '<div style="display:flex;align-items:center;gap:10px"><span style="width:6px;height:6px;border-radius:50%;background:#6C5CE7;flex-shrink:0"></span><span style="color:#475569;font-size:15px">陪你刷真题练手</span></div>' +
+                '<div style="display:flex;align-items:center;gap:10px"><span style="width:6px;height:6px;border-radius:50%;background:#6C5CE7;flex-shrink:0"></span><span style="color:#475569;font-size:15px">复习之前的错题</span></div>' +
+                '<div style="display:flex;align-items:center;gap:10px"><span style="width:6px;height:6px;border-radius:50%;background:#6C5CE7;flex-shrink:0"></span><span style="color:#475569;font-size:15px">批改你的作文</span></div>' +
+                '</div>' +
+                '<p style="margin-top:16px;color:#6C5CE7;font-weight:600;font-size:15px">直接说就行！</p>' +
                 '</div></div>';
             
             // 更新标题
@@ -1596,6 +1723,7 @@ function initApp() {
             
             // 更新输入框placeholder（免费额度提示）
             updateChatInputPlaceholder();
+            setTimeout(initChatPadding, 200);
             // 如果有初始消息，延迟发送
             if (arguments[1]) {
                 setTimeout(function() { sendSuggestion(arguments[1]); }, 300);
@@ -1757,6 +1885,7 @@ function initApp() {
 
             container.appendChild(msgDiv);
             scrollChatToBottom();
+            updateChatPadding();
             return msgDiv;
         }
 
@@ -1769,6 +1898,7 @@ function initApp() {
                 '<div class="custom-chat-bubble"><div class="typing-indicator"><span></span><span></span><span></span></div></div>';
             container.appendChild(msgDiv);
             scrollChatToBottom();
+            updateChatPadding();
         }
 
         function removeTypingIndicator() {
@@ -1780,6 +1910,30 @@ function initApp() {
             var container = document.getElementById('chat-messages');
             setTimeout(function() { container.scrollTop = container.scrollHeight; }, 100);
         }
+        function updateChatPadding() {
+            var container = document.getElementById('chat-messages');
+            var inputArea = document.getElementById('chat-input-area');
+            var tabBar = document.querySelector('.tab-bar');
+            if (!container || !inputArea) return;
+            var inputHeight = inputArea.offsetHeight || 0;
+            var tabHeight = tabBar ? tabBar.offsetHeight : 60;
+            var paddingBottom = inputHeight + tabHeight + 16;
+            container.style.paddingBottom = paddingBottom + 'px';
+        }
+
+        // Update padding on load and resize
+        var chatPaddingObserver = null;
+        function initChatPadding() {
+            updateChatPadding();
+            window.addEventListener('resize', updateChatPadding);
+            // Observe input area height changes (quick tags show/hide)
+            var inputArea = document.getElementById('chat-input-area');
+            if (inputArea && window.ResizeObserver) {
+                chatPaddingObserver = new ResizeObserver(updateChatPadding);
+                chatPaddingObserver.observe(inputArea);
+            }
+        }
+
 
         function formatBotText(text) {
             // Parse markdown-like formatting
@@ -1846,7 +2000,7 @@ function initApp() {
                 
                 // 设置cet4_user_profile的startDate（如果还没有）
                 try {
-                    var profile = JSON.parse(localStorage.getItem('cet4_user_profile') || '{}');
+                    var profile = safeGetItem('cet4_user_profile', {});
                     if (!profile.startDate) {
                         profile.startDate = today;
                         localStorage.setItem('cet4_user_profile', JSON.stringify(profile));
@@ -2016,7 +2170,7 @@ function initApp() {
             // Create conversation if needed
             if (!chatState.conversationId) {
                 try {
-                    var createResp = await fetch('/api/chat/conversation', { method: 'POST' });
+                    var createResp = await fetchWithTimeout('/api/chat/conversation', { method: 'POST' });
                     var createData = await createResp.json();
                     if (createData.data && createData.data.id) {
                         chatState.conversationId = createData.data.id;
@@ -2205,7 +2359,7 @@ function initApp() {
                     
                     // 练习天数
                     var streak = 0;
-                    try { var sd = JSON.parse(localStorage.getItem('cet_streak') || '{}'); streak = sd.current || 0; } catch(e){}
+                    try { var sd = safeGetItem('cet_streak', {current: 0}); streak = sd.current || 0; } catch(e){}
                     
                     fetchPayload = {
                         user_id: userId,
@@ -2221,7 +2375,7 @@ function initApp() {
                     };
                 }
 
-                var resp = await fetch(fetchUrl, {
+                var resp = await fetchWithTimeout(fetchUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(fetchPayload)
@@ -2330,6 +2484,7 @@ function initApp() {
                                     if (timeEl) bubbleEl.appendChild(timeEl);
                                 }
                                 scrollChatToBottom();
+            updateChatPadding();
                             }
                             // Also capture conversation_id from conversation.chat.completed or message completed
                             if (evt.type === 'conversation.chat.created' || evt.type === 'conversation.chat.in_progress') {
@@ -2391,7 +2546,7 @@ function initApp() {
                     console.log('[Stream] fullText is empty, falling back to message polling...');
                     if (chatState.chatId && chatState.conversationId) {
                         try {
-                            var pollResp = await fetch('/api/chat/messages?chat_id=' + chatState.chatId + '&conversation_id=' + chatState.conversationId);
+                            var pollResp = await fetchWithTimeout('/api/chat/messages?chat_id=' + chatState.chatId + '&conversation_id=' + chatState.conversationId);
                             if (pollResp.ok) {
                                 var pollData = await pollResp.json();
                                 if (pollData.data && pollData.data.length > 0) {
@@ -2968,8 +3123,13 @@ function showPaySuccess(plan) {
         '<div class="pay-success-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>' +
         '<div class="pay-sheet-title" style="margin-bottom:4px">激活成功</div>' +
         '<div style="font-size:14px;color:#6C5CE7;font-weight:700;margin-bottom:16px">' + (planNames[plan] || plan) + ' 已开通</div>' +
-        '<button onclick="closePayModal();switchTab(\'diagnosis\');openChat(\'companion\')" style="width:100%;padding:14px;background:#6C5CE7;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer">开始AI陪练</button>' +
-        '<button onclick="closePayModal()" style="width:100%;padding:12px;background:transparent;color:#94a3b8;border:none;font-size:13px;cursor:pointer;margin-top:4px">稍后再说</button>';
+        '<div style="font-size:13px;color:#64748B;margin-bottom:16px">正在跳转到AI陪练...</div>';
+    // 自动跳转到聊天页面开始使用
+    setTimeout(function() {
+        closePayModal();
+        switchTab('diagnosis');
+        setTimeout(function() { openChat('companion'); }, 300);
+    }, 1500);
 }
 
 function openActivateCodeModal() {
@@ -3041,7 +3201,7 @@ function parseTaskDone(taskStr) {
             localStorage.setItem('cet_user', JSON.stringify(state.userData));
         }
         // Trigger check-in
-        var streak = JSON.parse(localStorage.getItem('cet_streak') || '{"count":0,"lastDate":""}');
+        var streak = safeGetItem('cet_streak', {count:0,lastDate:""});
         var today = new Date().toISOString().split('T')[0];
         if (streak.lastDate !== today) {
             streak.count = (streak.count || 0) + 1;
@@ -3227,7 +3387,6 @@ function handleDailyTask() {
     setTimeout(function() { sendSuggestion(msg); }, 300);
 }
 
-// ====== 每日一练 Quiz System ======
 var quizState = {
     isActive: false,
     currentQuestion: null,
@@ -3341,7 +3500,7 @@ async function requestQuizQuestion() {
     // 确保有会话
     if (!chatState.conversationId) {
         try {
-            var createResp = await fetch('/api/chat/conversation', { method: 'POST' });
+            var createResp = await fetchWithTimeout('/api/chat/conversation', { method: 'POST' });
             var createData = await createResp.json();
             if (createData.data && createData.data.id) {
                 chatState.conversationId = createData.data.id;
@@ -3354,7 +3513,7 @@ async function requestQuizQuestion() {
     
     // 发送请求
     try {
-        var resp = await fetch('/api/chat/send', {
+        var resp = await fetchWithTimeout('/api/chat/send', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -3697,7 +3856,7 @@ const LIMIT_CACHE_TTL = 5000; // 缓存5秒
 // 从后端获取剩余对话次数（异步）
 async function fetchRemainingFromBackend(userId) {
     try {
-        var resp = await fetch('/api/chat/remaining', {
+        var resp = await fetchWithTimeout('/api/chat/remaining', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -4035,7 +4194,7 @@ function showDiagnosisReport(text) {
         
         // 写入cet4_user_profile的startDate（如果还没有）
         try {
-            var profile = JSON.parse(localStorage.getItem('cet4_user_profile') || '{}');
+            var profile = safeGetItem('cet4_user_profile', {});
             if (!profile.startDate) {
                 profile.startDate = getTodayStr();
                 localStorage.setItem('cet4_user_profile', JSON.stringify(profile));
@@ -4092,7 +4251,7 @@ async function startNewDiagnosis() {
     
     try {
         // 调用API获取题目
-        var resp = await fetch('/api/diagnosis/questions');
+        var resp = await fetchWithTimeout('/api/diagnosis/questions');
         var result = await resp.json();
         
         // 解析新版JSON格式（包含passages数组）
@@ -4367,7 +4526,7 @@ async function generateDiagReport() {
             }
         });
         
-        var resp = await fetch('/api/diagnosis/report', {
+        var resp = await fetchWithTimeout('/api/diagnosis/report', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -4607,7 +4766,7 @@ function generateDefaultPlan(dims) {
 
 function saveLearningPlan(plan) {
     try {
-        var profile = JSON.parse(localStorage.getItem('cet4_user_profile') || '{}');
+        var profile = safeGetItem('cet4_user_profile', {});
         profile.learning_plan = plan;
         profile.plan_updated = getTodayStr();
         localStorage.setItem('cet4_user_profile', JSON.stringify(profile));
@@ -4616,7 +4775,7 @@ function saveLearningPlan(plan) {
 
 function getLearningPlan() {
     try {
-        var profile = JSON.parse(localStorage.getItem('cet4_user_profile') || '{}');
+        var profile = safeGetItem('cet4_user_profile', {});
         return profile.learning_plan || null;
     } catch(e) { return null; }
 }
@@ -5076,6 +5235,7 @@ function appendLimitHintToMessage(aiDiv) {
     
     // 同时更新输入框placeholder
     updateChatInputPlaceholder();
+            setTimeout(initChatPadding, 200);
 }
 
 // 渲染限额系统消息卡片
@@ -5102,6 +5262,7 @@ function appendLimitSystemCard() {
     
     container.appendChild(msgDiv);
     scrollChatToBottom();
+            updateChatPadding();
 }
 
 // 关闭限额卡片（隐藏而非删除，保留位置）

@@ -136,12 +136,12 @@
         }
         .home-cta-primary {
             flex: 1;
-            padding: 14px 20px;
-            background: white;
-            color: #4A3CB5;
+            padding: 16px 24px;
+            background: linear-gradient(135deg, #6C5CE7, #A29BFE);
+            color: white;
             border: none;
-            border-radius: 14px;
-            font-size: 15px;
+            border-radius: 16px;
+            font-size: 17px;
             font-weight: 700;
             cursor: pointer;
             display: flex;
@@ -149,6 +149,9 @@
             justify-content: center;
             gap: 8px;
             transition: all 0.2s;
+            box-shadow: 0 4px 16px rgba(108, 92, 231, 0.35);
+            position: relative;
+            overflow: hidden;
         }
         .home-cta-primary:active { transform: scale(0.97); }
         .home-cta-primary::after {
@@ -180,6 +183,13 @@
         }
         .home-cta-secondary:active { transform: scale(0.97); }
         .home-cta-secondary svg { width: 16px; height: 16px; }
+        .home-cta-hint {
+            text-align: center;
+            color: rgba(255,255,255,0.8);
+            font-size: 13px;
+            margin-top: 12px;
+            letter-spacing: 0.5px;
+        }
         .home-hero-bottom {
             display: flex;
             align-items: center;
