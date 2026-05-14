@@ -1635,8 +1635,16 @@
         grid-template-columns: repeat(3, 1fr);
     }
 }
-/* ===== 消息区底部留白由JS动态计算 ===== */
-/* updateChatPadding()会根据输入区+tab-bar实际高度设置padding-bottom */
+/* ===== 消息区底部留白 ===== */
+/* 基础安全值，JS会在打开聊天时动态调整为精确值 */
+.custom-chat-messages {
+    padding-bottom: 240px !important;
+}
+@media (max-width: 480px) {
+    .custom-chat-messages {
+        padding-bottom: 200px !important;
+    }
+}
 
 /* 输入区 - 参考DeepSeek：更紧凑精致 */
 .custom-chat-input-area {

@@ -451,6 +451,59 @@ async function handleApi(req, res, pathname) {
             }
         }
 
+        // POST /api/mbd-webhook - 面包多支付回调（自动激活）
+        if (pathname === '/api/mbd-webhook' && req.method === 'POST') {
+            const body = await parseBody(req);
+            const { order_id, status, amount, product_id } = body;
+
+            if (!order_id) {
+                return sendJson(res, 400, { error: '缺少order_id' });
+            }
+
+            // 只有支付成功才激活
+            if (status !== 'paid' && status !== 'completed') {
+                return sendJson(res, 200, { success: false, error: '订单未支付' });
+            }
+
+            const orderIdTrimmed = order_id.trim();
+            const activationId = 'mbd_' + orderIdTrimmed;
+
+            // 如果已经激活过，直接返回成功
+            if (orders.has(activationId) && orders.get(activationId).status === 'activated') {
+                return sendJson(res, 200, { success: true, already_activated: true });
+            }
+
+            // 根据金额判断套餐
+            let plan = 'sprint';
+            const amt = parseFloat(amount || 0);
+            if (amt >= 100) plan = 'flagship';
+            else if (amt >= 30) plan = 'sprint';
+
+            // 自动创建并激活订单
+            const token = crypto.createHash('md5').update(activationId + plan + SECRET_KEY).digest('hex');
+            orders.set(activationId, {
+                orderId: activationId,
+                mbdOrderId: orderIdTrimmed,
+                plan,
+                amount: amt,
+                status: 'activated',
+                activatedAt: Date.now(),
+                token,
+                ip: getClientIp(req),
+                autoActivated: true  // 标记为自动激活
+            });
+
+            saveOrders();
+            console.log(`[面包多Webhook自动激活] ${orderIdTrimmed} - ${PLANS[plan].name} - ¥${amt}`);
+
+            return sendJson(res, 200, { 
+                success: true, 
+                plan,
+                token,
+                orderId: activationId 
+            });
+        }
+
         // POST /api/activate-with-code - 激活码激活
         if (pathname === '/api/activate-with-code' && req.method === 'POST') {
             const body = await parseBody(req);

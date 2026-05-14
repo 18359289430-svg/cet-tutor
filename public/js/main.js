@@ -121,41 +121,77 @@ function initApp() {
         function checkClaimUrl() {
             var params = new URLSearchParams(window.location.search);
             var claimCode = params.get('code');
-            if (!claimCode) return;
+            var orderId = params.get('order_id') || params.get('orderId');
 
             // 如果已经有套餐了就不重复激活
             if (state.userData && state.userData.plan && state.userData.plan !== 'free') {
                 showToast('您已开通' + (state.userData.plan === 'flagship' ? '全程营' : '冲刺营') + '，无需重复激活');
-                // 清除URL参数
                 window.history.replaceState({}, '', '/');
                 return;
             }
 
-            // 自动激活
+            // 优先处理order_id参数（面包多订单号自动激活）
+            if (orderId) {
+                activateWithOrderIdDirect(orderId.trim());
+                return;
+            }
+
+            // 处理激活码
+            if (!claimCode) return;
             fetch('/api/activate-with-code', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ code: claimCode.trim() })
             }).then(function(r) { return r.json(); }).then(function(resp) {
                 if (resp.success) {
-                    state.userData = state.userData || {};
-                    state.userData.plan = resp.plan;
-                    state.userData.planToken = resp.token;
-                    state.userData.planOrderId = resp.orderId;
-                    state.userData.planActivatedAt = Date.now();
-                    localStorage.setItem('cet_user', JSON.stringify(state.userData));
-                    updateProfileStats();
-                    updateHomeStatus();
+                    activateSuccess(resp.plan, resp.token, resp.orderId);
                     showToast('🎉 ' + (resp.plan === 'flagship' ? '全程营' : '冲刺营') + ' 已开通！');
                 } else {
                     showToast('激活失败：' + (resp.error || '激活码无效'));
                 }
-                // 清除URL参数
                 window.history.replaceState({}, '', '/');
             }).catch(function(e) {
                 showToast('网络错误，请重试');
                 window.history.replaceState({}, '', '/');
             });
+        }
+
+        // 面包多订单号直接激活（从URL参数进入）
+        function activateWithOrderIdDirect(orderId) {
+            var plan = 'sprint';
+            var msgEl = document.getElementById('activate-msg') || document.createElement('div');
+            
+            fetch('/api/activate-with-mbd-order', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ order_id: orderId, plan: plan })
+            }).then(function(r) { return r.json(); }).then(function(resp) {
+                if (resp.success) {
+                    activateSuccess(resp.plan, resp.token, resp.orderId);
+                    showToast('🎉 ' + (resp.plan === 'flagship' ? '全程营' : '冲刺营') + ' 已开通！');
+                    // 激活成功后自动跳转到聊天页面开始使用
+                    switchTab('diagnosis');
+                    setTimeout(function() { openChat('companion'); }, 500);
+                } else {
+                    showToast('激活失败：' + (resp.error || '订单验证失败'));
+                }
+                window.history.replaceState({}, '', '/');
+            }).catch(function(e) {
+                showToast('网络错误，请重试');
+                window.history.replaceState({}, '', '/');
+            });
+        }
+
+        // 统一的激活成功处理
+        function activateSuccess(plan, token, orderId) {
+            state.userData = state.userData || {};
+            state.userData.plan = plan;
+            state.userData.planToken = token;
+            state.userData.planOrderId = orderId;
+            state.userData.planActivatedAt = Date.now();
+            localStorage.setItem('cet_user', JSON.stringify(state.userData));
+            updateProfileStats();
+            updateHomeStatus();
         }
 
         function initGreeting() {
