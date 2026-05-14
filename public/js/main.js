@@ -20,6 +20,36 @@
         // 对话列表状态在用户进入diagnosis tab时初始化
 
         if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', initApp); } else { initApp(); }
+
+        // ===== CountUp动画函数 =====
+        function animateCountUp(element, target, duration, suffix) {
+            if (!element) return;
+            suffix = suffix || '';
+            var start = 0;
+            var startTime = performance.now();
+            
+            // 检查是否启用减少动画
+            var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (prefersReducedMotion) {
+                element.textContent = target + suffix;
+                return;
+            }
+            
+            function update(currentTime) {
+                var elapsed = currentTime - startTime;
+                var progress = Math.min(elapsed / duration, 1);
+                // 使用easeOutQuart缓动
+                var easeProgress = 1 - Math.pow(1 - progress, 4);
+                var current = Math.round(easeProgress * target);
+                element.textContent = current + suffix;
+                
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+            requestAnimationFrame(update);
+        }
+
 function initApp() {
             // Fix mobile 100vh issue - set real viewport height
             function setAppHeight() {
@@ -125,6 +155,9 @@ function initApp() {
             if (text) text.textContent = diff > 0 ? '距考试 ' + diff + ' 天' : '考试季';
             var homeCd = document.getElementById('home-countdown');
             if (homeCd) homeCd.textContent = '距考试' + diff + '天';
+            // 更新聊天页面倒计时药丸
+            var chatCd = document.getElementById('chat-countdown');
+            if (chatCd) chatCd.textContent = diff > 0 ? '距考试' + diff + '天' : '考试季';
         }
 
         function initTabEvents() {
@@ -3569,7 +3602,7 @@ function showQuizStats() {
     var html = '<div class="quiz-stats show">';
     html += '<div class="quiz-stats-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>';
     html += '<div class="quiz-stats-title">' + titleText + '</div>';
-    html += '<div class="quiz-stats-rate">' + rate + '<span>%</span></div>';
+    html += '<div class="quiz-stats-rate"><span id="quiz-stats-rate-num">' + rate + '</span><span>%</span></div>';
     html += '<div class="quiz-stats-grid">';
     html += '<div class="quiz-stats-item"><div class="quiz-stats-item-value">' + quizState.correctCount + '</div><div class="quiz-stats-item-label">正确</div></div>';
     html += '<div class="quiz-stats-item"><div class="quiz-stats-item-value">' + quizState.wrongCount + '</div><div class="quiz-stats-item-label">错误</div></div>';
@@ -3582,6 +3615,14 @@ function showQuizStats() {
     
     body.innerHTML = html;
     
+    // CountUp动画 - 正确率从0滚动到实际值
+    setTimeout(function() {
+        var rateNumEl = document.getElementById('quiz-stats-rate-num');
+        if (rateNumEl) {
+            animateCountUp(rateNumEl, rate, 1500);
+        }
+    }, 300);
+
     // 更新打卡
     var daily = getDailyTaskInfo();
     if (!daily.completed.includes('quiz')) {
