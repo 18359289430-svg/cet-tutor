@@ -4895,6 +4895,7 @@
                         </div>
                     </div>
                     <!-- Input area -->
+                    <div class="chat-quota-hint" id="chat-quota-hint" style="display:none"></div>
                     <div class="custom-chat-input-area" id="chat-input-area">
                         <!-- Quick chips / suggestions -->
                         <div class="custom-chips-row" id="input-chips" style="display:none">
@@ -8376,11 +8377,14 @@ async function checkChatLimitAsync(userId) {
     if (_cachedLimitInfo && (now - _cachedLimitTime) < LIMIT_CACHE_TTL) {
         var plan = _cachedLimitInfo.plan || 'free';
         if (plan !== 'free') {
+            updateQuotaHint(-1); // 付费用户不显示
             return { limited: false };
         }
         var remaining = _cachedLimitInfo.remaining;
+        updateQuotaHint(remaining);
         if (remaining <= 0) {
-            return { limited: true, message: '今日免费陪练额度已用完（25轮/天），明天恢复。升级冲刺营即可无限对话+逐句批改～' };
+            showUpgradeCard();
+            return { limited: true, message: '' };
         }
         return { limited: false, remaining: remaining };
     }
@@ -8395,27 +8399,78 @@ async function checkChatLimitAsync(userId) {
         
         var verifiedPlan = backendData.plan || 'free';
         if (verifiedPlan !== 'free') {
+            updateQuotaHint(-1);
             return { limited: false };
         }
         var remaining = backendData.remaining;
+        updateQuotaHint(remaining);
         if (remaining <= 0) {
-            return { limited: true, message: '今日免费陪练额度已用完（25轮/天），明天恢复。升级冲刺营即可无限对话+逐句批改～' };
+            showUpgradeCard();
+            return { limited: true, message: '' };
         }
         return { limited: false, remaining: remaining };
     }
     
-    // 后端请求失败，使用本地降级（保留原有逻辑）
+    // 后端请求失败，使用本地降级
     var user = state.userData || {};
     var plan = user.plan || 'free';
     if (plan !== 'free') {
+        updateQuotaHint(-1);
         return { limited: false };
     }
     var usage = getChatUsage();
     var limit = 25;
-    if (usage.count >= limit) {
-        return { limited: true, message: '今日免费陪练额度已用完（25轮/天），明天恢复。升级冲刺营即可无限对话+逐句批改～' };
+    var remaining = Math.max(0, limit - usage.count);
+    updateQuotaHint(remaining);
+    if (remaining <= 0) {
+        showUpgradeCard();
+        return { limited: true, message: '' };
     }
-    return { limited: false, remaining: limit - usage.count };
+    return { limited: false, remaining: remaining };
+}
+
+// 更新额度提示
+function updateQuotaHint(remaining) {
+    var hint = document.getElementById('chat-quota-hint');
+    if (!hint) return;
+    if (remaining < 0) {
+        hint.style.display = 'none';
+        return;
+    }
+    if (remaining <= 5) {
+        hint.textContent = '今日还剩' + remaining + '轮免费对话';
+        hint.style.display = '';
+    } else {
+        hint.style.display = 'none';
+    }
+}
+
+// 显示升级卡片
+function showUpgradeCard() {
+    var overlay = document.getElementById('upgrade-overlay');
+    if (!overlay) {
+        var div = document.createElement('div');
+        div.id = 'upgrade-overlay';
+        div.className = 'upgrade-overlay';
+        div.innerHTML = '<div class="upgrade-card" style="position:relative">' +
+            '<button class="upgrade-close" onclick="closeUpgradeCard()">' +
+                '<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
+            '</button>' +
+            '<div class="upgrade-icon">' +
+                '<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>' +
+            '</div>' +
+            '<div class="upgrade-title">今日免费额度已用完</div>' +
+            '<div class="upgrade-subtitle">明天恢复25轮免费对话<br>或升级冲刺营无限对话</div>' +
+            '<a class="upgrade-btn" href="#" onclick="event.preventDefault();closeUpgradeCard();openPayment(\'sprint\')">了解冲刺营</a>' +
+        '</div>';
+        document.body.appendChild(div);
+    }
+    document.getElementById('upgrade-overlay').style.display = 'flex';
+}
+
+function closeUpgradeCard() {
+    var overlay = document.getElementById('upgrade-overlay');
+    if (overlay) overlay.style.display = 'none';
 }
 
 // 同步版本（用于UI显示等不需要最新数据的场景）
