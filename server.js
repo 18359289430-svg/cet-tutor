@@ -262,9 +262,25 @@ function verifySign(params) {
 
 // 解析POST body
 function parseBody(req) {
+    // 检查Content-Length头，超过1MB返回413
+    const contentLength = req.headers['content-length'];
+    if (contentLength && parseInt(contentLength) > 1048576) {
+        return Promise.reject(new Error('PAYLOAD_TOO_LARGE'));
+    }
+    
     return new Promise((resolve, reject) => {
         let body = '';
-        req.on('data', chunk => body += chunk);
+        let bodyLength = 0;
+        req.on('data', chunk => {
+            bodyLength += Buffer.byteLength(chunk, 'utf8');
+            // 同时检查chunk拼接后累计长度
+            if (bodyLength > 1048576) {
+                req.destroy();
+                reject(new Error('PAYLOAD_TOO_LARGE'));
+                return;
+            }
+            body += chunk;
+        });
         req.on('end', () => {
             try {
                 resolve(body ? JSON.parse(body) : {});
