@@ -3506,6 +3506,47 @@
         }
         
         /* 阅读原文 */
+        /* 阅读原文包装 */
+        .diag-passage-wrap {
+            background: #F8F9FA;
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            border: 1px solid #EEE;
+        }
+        .diag-passage-wrap .diag-passage-toggle {
+            font-size: 13px;
+            color: #6C5CE7;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 500;
+        }
+        .diag-passage-wrap .diag-passage-toggle .toggle-arrow {
+            font-size: 10px;
+            color: #999;
+        }
+        .diag-passage-wrap .diag-passage-content {
+            margin-top: 12px;
+            max-height: none;
+            overflow: visible;
+        }
+        .diag-passage-wrap .diag-passage-text {
+            font-size: 13px;
+            line-height: 1.8;
+            color: #555;
+            white-space: pre-wrap;
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
         .diag-passage-card {
             background: white;
             border-radius: 16px;
@@ -5009,7 +5050,7 @@
                     </div>
                         <div class="home-hero-top">
                             <div class="home-greeting" id="greeting-text">早上好</div>
-                            <div class="home-streak-pill" id="home-streak" onclick="openQuiz()">
+                            <div class="home-streak-pill" id="home-streak" onclick="doCheckIn()">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c.5 4-2 7-4 9.5C6 14 5.5 16 6 18c.7 3 3.5 4 6 4s5.3-1 6-4c.5-2 0-4-2-6.5C14 9 11.5 6 12 2z"/></svg>
                                 <span id="streak-num">0</span>天
                             </div>
@@ -5021,7 +5062,7 @@
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
                                 <span id="home-cta-text">开始AI诊断</span>
                             </button>
-                            <button class="home-cta-secondary" onclick="openQuiz()">
+                            <button class="home-cta-secondary" onclick="doCheckIn()">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
                                 一练
                             </button>
@@ -5094,7 +5135,7 @@
                                 <div class="ai-cap-sub">逐句精准优化</div>
                             </div>
                         </div>
-                        <div class="ai-cap-item" onclick="openQuiz()">
+                        <div class="ai-cap-item" onclick="doCheckIn()">
                             <div class="ai-cap-icon pink">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                             </div>
@@ -5902,7 +5943,7 @@
                     var config = DIM_CONFIGS[dim] || {};
                     var score = dims[dim] || 0;
                     var actionText = getWeakActionText(dim, score);
-                    html += '<div class="dashboard-weak-card" onclick="openQuiz()">';
+                    html += '<div class="dashboard-weak-card" onclick="doCheckIn()">';
                     html += '<div class="dashboard-weak-icon" style="background:' + (config.color || '#6C5CE7') + '20">';
                     html += config.icon || '📚';
                     html += '</div>';
@@ -8689,7 +8730,7 @@ async function requestQuizQuestion() {
     
     // 发送请求
     try {
-        var resp = await fetch('/api/chat/stream', {
+        var resp = await fetch('/api/chat/send', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -9422,7 +9463,22 @@ async function startNewDiagnosis() {
         var resp = await fetch('/api/diagnosis/questions');
         var result = await resp.json();
         
-        if (result.code !== 0 || !result.data || result.data.length === 0) {
+        // 解析新版JSON格式（包含passages数组）
+        var questions = [];
+        if (result && result.passages) {
+            // 新版格式：从passages中提取所有题目
+            result.passages.forEach(function(passage) {
+                if (passage.questions) {
+                    passage.questions.forEach(function(q) {
+                        // 存储passage_text供折叠展示（如果需要）
+                        q._passageText = passage.text;
+                        questions.push(q);
+                    });
+                }
+            });
+        }
+        
+        if (questions.length === 0) {
             // fallback到旧模式
             closeDiagOverlay();
             // 提示用户使用旧模式
@@ -9432,7 +9488,7 @@ async function startNewDiagnosis() {
             return;
         }
         
-        diagState.questions = result.data;
+        diagState.questions = questions;
         diagState.phase = 'questions';
         document.getElementById('diag-progress-wrap').style.display = '';
         
@@ -9467,22 +9523,46 @@ function showCurrentQuestion() {
     var progress = Math.round((diagState.currentQIndex / 15) * 100);
     document.getElementById('diag-progress-fill').style.width = progress + '%';
     document.getElementById('diag-progress-text').textContent = '第' + (diagState.currentQIndex + 1) + '题/共15题';
-    document.getElementById('diag-correct-count').textContent = '正确: ' + diagState.correctCount;
     
-    // 简化题目显示（不显示原文区域，因为我们的题目没有原文）
-    var html = 
-        '<div class="diag-question-card">' +
-            '<div class="diag-question-num">第 ' + (diagState.currentQIndex + 1) + ' / 15 题</div>' +
-            '<div class="diag-question-text">' + q.question + '</div>' +
-            '<div class="diag-options">' +
-                renderOptionBtn('A', q.optionA, 'A') +
-                renderOptionBtn('B', q.optionB, 'B') +
-                renderOptionBtn('C', q.optionC, 'C') +
-                renderOptionBtn('D', q.optionD, 'D') +
+    // 构建HTML
+    var html = '<div class="diag-question-card">';
+    
+    // 显示可折叠的阅读原文
+    if (q._passageText) {
+        html += '<div class="diag-passage-wrap">' +
+            '<div class="diag-passage-toggle" onclick="togglePassage(this)">📖 点击展开阅读原文 <span class="toggle-arrow">▼</span></div>' +
+            '<div class="diag-passage-content" style="display:none">' +
+            '<div class="diag-passage-text">' + escapeHtml(q._passageText) + '</div>' +
             '</div>' +
         '</div>';
+    }
+    
+    html += '<div class="diag-question-num">第 ' + (diagState.currentQIndex + 1) + ' / 15 题</div>' +
+        '<div class="diag-question-text">' + escapeHtml(q.question) + '</div>' +
+        '<div class="diag-options">' +
+            renderOptionBtn('A', q.optionA, 'A') +
+            renderOptionBtn('B', q.optionB, 'B') +
+            renderOptionBtn('C', q.optionC, 'C') +
+            renderOptionBtn('D', q.optionD, 'D') +
+        '</div>' +
+    '</div>';
     
     document.getElementById('diag-body').innerHTML = html;
+}
+
+// 切换原文折叠/展开
+function togglePassage(btn) {
+    var content = btn.nextElementSibling;
+    var arrow = btn.querySelector('.toggle-arrow');
+    if (content.style.display === 'none') {
+        content.style.display = '';
+        arrow.textContent = '▲';
+        btn.innerHTML = '📖 收起阅读原文 <span class="toggle-arrow">▲</span>';
+    } else {
+        content.style.display = 'none';
+        arrow.textContent = '▼';
+        btn.innerHTML = '📖 点击展开阅读原文 <span class="toggle-arrow">▼</span>';
+    }
 }
 
 // 渲染选项按钮
@@ -9496,41 +9576,23 @@ function renderOptionBtn(letter, text, value) {
 // 选择选项
 function selectOption(btn, selectedValue) {
     var q = diagState.questions[diagState.currentQIndex];
-    var correctAnswer = q.correct_answer;
+    var correctAnswer = q.answer || q.correct_answer;
     var isCorrect = selectedValue === correctAnswer;
     
     // 禁用所有按钮
     var allBtns = document.querySelectorAll('.diag-option-btn');
     allBtns.forEach(function(b) { b.classList.add('disabled'); });
     
-    // 标记正确/错误
-    var correctLetter = correctAnswer;
-    allBtns.forEach(function(b) {
-        var btnLetter = b.querySelector('.diag-option-letter').textContent;
-        if (btnLetter === correctLetter) {
-            b.classList.add('correct');
-            b.innerHTML += '<div class="diag-result-icon correct">✓</div>';
-        } else if (b === btn && !isCorrect) {
-            b.classList.add('wrong');
-            b.innerHTML += '<div class="diag-result-icon wrong">✗</div>';
-        }
-    });
-    
-    // 记录答案
+    // 记录答案（不显示对错）
     diagState.answers.push({
         id: q.id,
-        answer: selectedValue,
-        correct_answer: correctAnswer,
+        userAnswer: selectedValue,
+        correctAnswer: correctAnswer,
         isCorrect: isCorrect,
-        ability: q.ability || '细节理解'
+        ability: q.ability || '细节定位'
     });
     
-    if (isCorrect) {
-        diagState.correctCount++;
-        document.getElementById('diag-correct-count').textContent = '正确: ' + diagState.correctCount;
-    }
-    
-    // 1.5秒后自动下一题
+    // 500ms后自动下一题（快速但不突兀）
     setTimeout(function() {
         diagState.currentQIndex++;
         if (diagState.currentQIndex >= 15) {
@@ -9538,7 +9600,7 @@ function selectOption(btn, selectedValue) {
         } else {
             showCurrentQuestion();
         }
-    }, 1500);
+    }, 500);
 }
 
 // 显示自评问卷
@@ -9657,12 +9719,28 @@ async function generateDiagReport() {
         '</div>';
     
     try {
+        // 构建自评数据
+        var selfAssessment = {
+            listening: '中等',
+            writing: '中等',
+            translation: '中等'
+        };
+        diagState.selfEval.forEach(function(item) {
+            if (item.dimension === '听力') {
+                selfAssessment.listening = item.answer === 'A' ? '中等' : item.answer === 'B' ? '较弱' : '薄弱';
+            } else if (item.dimension === '写作') {
+                selfAssessment.writing = item.answer === 'A' ? '中等' : item.answer === 'B' ? '较弱' : '薄弱';
+            } else if (item.dimension === '翻译') {
+                selfAssessment.translation = item.answer === 'A' ? '中等' : item.answer === 'B' ? '较弱' : '薄弱';
+            }
+        });
+        
         var resp = await fetch('/api/diagnosis/report', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 answers: diagState.answers,
-                self_eval: diagState.selfEval
+                selfAssessment: selfAssessment
             })
         });
         
@@ -10290,7 +10368,7 @@ function drawReportShareImage() {
         <div class="diag-progress-wrap" id="diag-progress-wrap" style="display:none">
             <div class="diag-progress-info">
                 <span id="diag-progress-text">第1题/共15题</span>
-                <span id="diag-correct-count">正确: 0</span>
+                <span id="diag-self-eval-hint" style="display:none;color:#6C5CE7;font-size:12px">自评问卷</span>
             </div>
             <div class="diag-progress-bar">
                 <div class="diag-progress-fill" id="diag-progress-fill" style="width:0%"></div>

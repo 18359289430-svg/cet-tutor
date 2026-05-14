@@ -658,6 +658,222 @@ async function handleApi(req, res, pathname) {
             return sendJson(res, 404, { error: '诊断题库未找到' });
         }
 
+        // POST /api/diagnosis/report - 生成诊断报告（使用DeepSeek）
+        if (pathname === '/api/diagnosis/report' && req.method === 'POST') {
+            const body = await parseBody(req);
+            const { answers, selfAssessment } = body;
+
+            if (!answers || !Array.isArray(answers) || answers.length === 0) {
+                return sendJson(res, 400, { error: '缺少答题数据' });
+            }
+
+            // 确保DeepSeek API Key存在
+            const dsApiKey = DEEPSEEK_API_KEY || process.env.DEEPSEEK_API_KEY;
+            if (!dsApiKey) {
+                return sendJson(res, 500, { error: 'DeepSeek API未配置' });
+            }
+
+            try {
+                // 计算五维能力得分
+                const abilityMap = {
+                    '细节定位': { correct: 0, total: 0 },
+                    '推理判断': { correct: 0, total: 0 },
+                    '同义替换': { correct: 0, total: 0 },
+                    '主旨归纳': { correct: 0, total: 0 },
+                    '态度判断': { correct: 0, total: 0 }
+                };
+
+                answers.forEach(function(a) {
+                    var ability = a.ability || '细节定位';
+                    if (abilityMap[ability]) {
+                        abilityMap[ability].total++;
+                        if (a.userAnswer === a.correctAnswer) {
+                            abilityMap[ability].correct++;
+                        }
+                    }
+                });
+
+                // 计算各维度百分比
+                var dims = {};
+                Object.keys(abilityMap).forEach(function(k) {
+                    dims[k] = abilityMap[k].total > 0 ? Math.round((abilityMap[k].correct / abilityMap[k].total) * 100) : 0;
+                });
+
+                // 计算总正确率
+                var totalCorrect = answers.filter(function(a) { return a.userAnswer === a.correctAnswer; }).length;
+                var totalRate = Math.round((totalCorrect / answers.length) * 100);
+
+                // 人格匹配逻辑（优先级从高到低）
+                var personality = '佛系随缘选手';
+                var roast = '';
+                var dimsArray = Object.values(dims);
+                var maxDim = Math.max.apply(null, dimsArray);
+                var minDim = Math.min.apply(null, dimsArray);
+                var dimRange = maxDim - minDim;
+
+                // 1. 全知全能·学神 — 正确率≥80%
+                if (totalRate >= 80) {
+                    personality = '全知全能·学神';
+                    roast = '太强了吧！这就是传说中的"天选之人"吗？四级对你来说就是洒洒水啦~';
+                }
+                // 2. 偏科大佬 — 有2个维度≥90%且2个维度≤40%
+                else {
+                    var highDims = Object.values(dims).filter(function(v) { return v >= 90; }).length;
+                    var lowDims = Object.values(dims).filter(function(v) { return v <= 40; }).length;
+                    if (highDims >= 2 && lowDims >= 2) {
+                        personality = '偏科大佬';
+                        roast = '你这是"特长生"体质啊！某些能力爆表，某些能力...emmm，需要雨露均沾一下~';
+                    }
+                    // 3. 脑补大师 — 推理判断正确率<50%且非偏科大佬
+                    else if (dims['推理判断'] < 50) {
+                        personality = '脑补大师';
+                        roast = '你的脑洞比黑洞还大！推理题全靠蒙对吧？别慌，这是可以训练的~';
+                    }
+                    // 4. 临时抱佛脚选手 — 细节定位50%-70%且同义替换50%-70%且推理判断40%-60%
+                    else if (dims['细节定位'] >= 50 && dims['细节定位'] <= 70 &&
+                             dims['同义替换'] >= 50 && dims['同义替换'] <= 70 &&
+                             dims['推理判断'] >= 40 && dims['推理判断'] <= 60) {
+                        personality = '临时抱佛脚选手';
+                        roast = '平时不烧香，临时抱佛脚说的就是你吧？不过能抱上，说明底子还行~';
+                    }
+                    // 5. 资料囤积狂 — 同义替换≥60%且态度判断≥50%且主旨归纳≥50%且非以上类型
+                    else if (dims['同义替换'] >= 60 && dims['态度判断'] >= 50 && dims['主旨归纳'] >= 50) {
+                        personality = '资料囤积狂';
+                        roast = '收藏夹里躺着一百G资料对吧？但光囤不用可不行哦~';
+                    }
+                    // 6. 吗喽型选手 — 各维度均在30%-70%且均衡（最高最低差值≤30%）
+                    else if (dimRange <= 30 && dimsArray.every(function(v) { return v >= 30 && v <= 70; })) {
+                        personality = '吗喽型选手';
+                        roast = '稳如老狗，说的就是你！不偏科但也没有特别突出的，均衡型选手~';
+                    }
+                    // 7. 摆烂冠军 — 正确率≤30%且非偏科大佬
+                    else if (totalRate <= 30) {
+                        personality = '摆烂冠军';
+                        roast = '摆烂摆出新境界！不过没关系，从现在开始努力，一切都还来得及~';
+                    }
+                    // 8. 佛系随缘选手 — 默认
+                    else {
+                        personality = '佛系随缘选手';
+                        roast = '缘分到了自然就会~四级这东西嘛，随缘随缘~（其实需要认真备考哦）';
+                    }
+                }
+
+                // 自评数据处理
+                var listeningLevel = '中等';
+                var writingLevel = '中等';
+                var translationLevel = '中等';
+                if (selfAssessment) {
+                    if (selfAssessment.listening) listeningLevel = selfAssessment.listening;
+                    if (selfAssessment.writing) writingLevel = selfAssessment.writing;
+                    if (selfAssessment.translation) translationLevel = selfAssessment.translation;
+                }
+
+                // 构建DeepSeek prompt
+                var prompt = '你是四级备考AI教练。用户刚刚完成了一套15道阅读诊断题，请生成一份个性化的诊断报告。\n\n';
+                prompt += '【用户答题情况】\n';
+                answers.forEach(function(a, idx) {
+                    var isCorrect = a.userAnswer === a.correctAnswer ? '✓' : '✗';
+                    prompt += (idx + 1) + '. [' + a.ability + '] 用户选' + a.userAnswer + '，正确答案' + a.correctAnswer + ' ' + isCorrect + '\n';
+                });
+                prompt += '\n【五维能力得分】(正确数/该维度总数×100)\n';
+                Object.keys(dims).forEach(function(k) {
+                    prompt += k + ': ' + dims[k] + '分\n';
+                });
+                prompt += '\n总正确率: ' + totalRate + '%（' + totalCorrect + '/15）\n';
+                prompt += '\n【自评结果】\n';
+                prompt += '听力: ' + listeningLevel + ' | 写作: ' + writingLevel + ' | 翻译: ' + translationLevel + '\n';
+                prompt += '\n【匹配人格】' + personality + '\n';
+                prompt += roast + '\n';
+                prompt += '\n请生成一份完整的诊断报告，包含：\n';
+                prompt += '1. 对用户整体表现的评价\n';
+                prompt += '2. 五维能力的详细分析\n';
+                prompt += '3. 针对薄弱项的提升建议\n';
+                prompt += '4. 备考策略推荐\n\n';
+                prompt += '报告最后请用以下格式输出结果标签（方便前端解析）：\n';
+                prompt += '[RESULT:type=' + personality + '|score=' + totalRate;
+                Object.keys(dims).forEach(function(k) {
+                    prompt += '|' + k + '=' + dims[k];
+                });
+                prompt += ']';
+
+                // 调用DeepSeek API
+                var dsPayload = {
+                    model: 'deepseek-v4-flash',
+                    messages: [
+                        { role: 'system', content: '你是一位专业、幽默、温暖的四级备考AI教练。你的任务是根据用户的答题数据生成个性化的诊断报告。报告要既有专业性，又有趣味性，像朋友聊天一样自然。' },
+                        { role: 'user', content: prompt }
+                    ],
+                    temperature: 0.7,
+                    max_tokens: 1500
+                };
+
+                var dsResp = await fetch(DEEPSEEK_API_BASE + '/chat/completions', {
+                    method: 'POST',
+                    headers: { 'Authorization': 'Bearer ' + dsApiKey, 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dsPayload)
+                });
+
+                if (!dsResp.ok) {
+                    var errText = await dsResp.text();
+                    console.error('[DeepSeek API错误]', dsResp.status, errText);
+                    return sendJson(res, 500, { error: 'AI服务暂时不可用' });
+                }
+
+                var dsData = await dsResp.json();
+                var reportText = dsData.choices && dsData.choices[0] && dsData.choices[0].message ? dsData.choices[0].message.content : '';
+
+                // 提取RESULT标签
+                var resultTag = '';
+                var resultMatch = reportText.match(/\[RESULT:[^\]]+\]/);
+                if (resultMatch) {
+                    resultTag = resultMatch[0];
+                    reportText = reportText.replace(resultMatch[0], '').trim();
+                }
+
+                // 解析resultTag
+                var resultData = { type: personality, score: totalRate, dims: dims };
+                if (resultTag) {
+                    var tagContent = resultTag.match(/\[RESULT:(.+)\]/)[1];
+                    var pairs = tagContent.split('|');
+                    pairs.forEach(function(pair) {
+                        var kv = pair.split('=');
+                        if (kv.length === 2) {
+                            var key = kv[0].trim();
+                            var val = kv[1].trim();
+                            if (key === 'type') resultData.type = val;
+                            else if (key === 'score') resultData.score = parseInt(val) || 0;
+                            else if (['细节定位', '推理判断', '同义替换', '主旨归纳', '态度判断'].indexOf(key) !== -1) {
+                                resultData.dims[key] = parseInt(val) || 0;
+                            }
+                        }
+                    });
+                }
+
+                return sendJson(res, 200, {
+                    code: 0,
+                    data: {
+                        report: reportText,
+                        result_tag: resultTag,
+                        result: resultData,
+                        personality: personality,
+                        roast: roast,
+                        dimension_scores: dims,
+                        total_correct: totalCorrect,
+                        total_rate: totalRate,
+                        self_assessment: {
+                            listening: listeningLevel,
+                            writing: writingLevel,
+                            translation: translationLevel
+                        }
+                    }
+                });
+
+            } catch(e) {
+                console.error('[诊断报告生成失败]', e);
+                return sendJson(res, 500, { error: '生成诊断报告失败: ' + e.message });
+            }
+        }
+
         // GET /api/admin/orders - 管理员查看所有订单
         if (pathname === '/api/admin/orders' && req.method === 'GET') {
             const url = new URL(req.url, `http://localhost:${PORT}`);
@@ -896,6 +1112,25 @@ async function handleApi(req, res, pathname) {
         sendJson(res, 404, { error: 'API不存在' });
 
     } catch (error) {
+        // GET /api/quiz/random - 随机获取真题（每日一练用）
+        if (pathname === '/api/quiz/random' && req.method === 'GET') {
+            try {
+                const csvPath = path.join(__dirname, 'data', 'quiz_questions.json');
+                if (!fs.existsSync(csvPath)) {
+                    return sendJson(res, 200, { code: 0, data: null, msg: '题库文件不存在' });
+                }
+                const questions = JSON.parse(fs.readFileSync(csvPath, 'utf-8'));
+                const type = url.searchParams.get('type'); // 可选：按题型筛选
+                let pool = questions;
+                if (type) pool = questions.filter(q => q.type === type);
+                if (pool.length === 0) pool = questions;
+                const idx = Math.floor(Math.random() * pool.length);
+                sendJson(res, 200, { code: 0, data: pool[idx] });
+            } catch(e) {
+                sendJson(res, 500, { code: 1, msg: '获取题目失败' });
+            }
+            return;
+        }
         console.error('[API错误]', error);
         sendJson(res, 500, { error: '服务器错误' });
     }
@@ -952,25 +1187,6 @@ const server = http.createServer((req, res) => {
     }
 
 
-    // GET /api/quiz/random - 随机获取真题（每日一练用）
-    if (pathname === '/api/quiz/random' && req.method === 'GET') {
-        try {
-            const csvPath = path.join(__dirname, 'data', 'quiz_questions.json');
-            if (!fs.existsSync(csvPath)) {
-                return sendJson(res, 200, { code: 0, data: null, msg: '题库文件不存在' });
-            }
-            const questions = JSON.parse(fs.readFileSync(csvPath, 'utf-8'));
-            const type = url.searchParams.get('type'); // 可选：按题型筛选
-            let pool = questions;
-            if (type) pool = questions.filter(q => q.type === type);
-            if (pool.length === 0) pool = questions;
-            const idx = Math.floor(Math.random() * pool.length);
-            sendJson(res, 200, { code: 0, data: pool[idx] });
-        } catch(e) {
-            sendJson(res, 500, { code: 1, msg: '获取题目失败' });
-        }
-        return;
-    }
 
 
 
