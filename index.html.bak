@@ -2890,35 +2890,6 @@
 }
 .chip-card-icon { font-size:18px; line-height:1; }
 .chip-card-text { font-size:11px; font-weight:500; color:#475569; text-align:center; white-space:nowrap; }
-
-/* 快捷模式标签 - 浅灰圆角胶囊按钮风格 */
-.quick-mode-tags::-webkit-scrollbar { display:none; }
-.quick-tag-pill {
-    display:inline-flex;
-    align-items:center;
-    gap:4px;
-    padding:6px 14px;
-    background:#F5F5F7;
-    border:1px solid #E5E5EA;
-    border-radius:20px;
-    font-size:13px;
-    font-weight:500;
-    color:#475569;
-    white-space:nowrap;
-    cursor:pointer;
-    transition:all 0.15s;
-    flex-shrink:0;
-}
-.quick-tag-pill:active {
-    transform:scale(0.96);
-    background:#E5E5EA;
-}
-.quick-tag-pill.active {
-    background:#6C5CE7;
-    border-color:#6C5CE7;
-    color:#fff;
-}
-.quick-tag-pill span { font-size:14px; }
 .chip-flagship-row {
     display:flex; gap:8px; margin-top:6px; overflow-x:auto;
     scrollbar-width:none; -ms-overflow-style:none;
@@ -2988,46 +2959,6 @@
 .chat-clear-dialog button { flex:1; padding:10px; border-radius:10px; font-size:14px; font-weight:600; border:none; cursor:pointer; }
 .chat-clear-dialog .btn-cancel { background:#F1F5F9; color:#475569; }
 .chat-clear-dialog .btn-confirm { background:#EF4444; color:#fff; }
-
-/* ====== 错题复习模式 ====== */
-.review-overlay {
-    position:fixed; top:0; left:0; right:0; bottom:0; background:#F8F9FA; z-index:1002; display:flex; flex-direction:column;
-}
-.review-header {
-    padding:16px 20px; padding-top:calc(16px + var(--safe-top)); display:flex; align-items:center; gap:12px; background:#fff; border-bottom:1px solid #F1F5F9;
-}
-.review-back { width:36px; height:36px; border-radius:50%; background:#F1F5F9; display:flex; align-items:center; justify-content:center; cursor:pointer; border:none; }
-.review-back:active { background:#E2E8F0; }
-.review-back svg { width:20px; height:20px; stroke:#475569; stroke-width:2; }
-.review-title { font-size:17px; font-weight:700; color:#1E293B; flex:1; }
-.review-progress { font-size:13px; color:#64748B; }
-.review-body { flex:1; overflow-y:auto; padding:20px 16px; -webkit-overflow-scrolling:touch; }
-.review-question-card { background:#fff; border-radius:16px; padding:20px; margin-bottom:16px; box-shadow:0 1px 4px rgba(0,0,0,0.04); }
-.review-q-type { font-size:12px; color:#94A3B8; margin-bottom:8px; }
-.review-q-text { font-size:15px; color:#1a1a2e; line-height:1.7; margin-bottom:16px; }
-.review-options { display:flex; flex-direction:column; gap:10px; }
-.review-option {
-    padding:14px 16px; border-radius:12px; border:1.5px solid #E2E8F0; font-size:14px; color:#475569; cursor:pointer;
-    transition:all 0.2s; display:flex; align-items:center; gap:10px;
-}
-.review-option:active { transform:scale(0.98); }
-.review-option.selected { border-color:#6C5CE7; background:#F8F7FF; color:#6C5CE7; font-weight:600; }
-.review-option.correct { border-color:#00B894; background:#E8F8F0; color:#00B894; }
-.review-option.wrong { border-color:#E17055; background:#FEF2F2; color:#E17055; }
-.review-option-letter { width:24px; height:24px; border-radius:50%; background:#F1F5F9; display:flex; align-items:center; justify-content:center; font-weight:600; font-size:13px; }
-.review-option.selected .review-option-letter { background:#6C5CE7; color:#fff; }
-.review-option.correct .review-option-letter { background:#00B894; color:#fff; }
-.review-option.wrong .review-option-letter { background:#E17055; color:#fff; }
-.review-result-card { text-align:center; padding:40px 20px; }
-.review-result-icon { width:80px; height:80px; border-radius:50%; background:linear-gradient(135deg,#6C5CE7,#A29BFE); display:flex; align-items:center; justify-content:center; margin:0 auto 20px; }
-.review-result-icon svg { width:40px; height:40px; stroke:#fff; }
-.review-result-title { font-size:24px; font-weight:700; color:#1a1a2e; margin-bottom:8px; }
-.review-result-sub { font-size:14px; color:#64748B; margin-bottom:24px; }
-.review-result-stats { display:flex; justify-content:center; gap:30px; margin-bottom:24px; }
-.review-stat { text-align:center; }
-.review-stat-num { font-size:28px; font-weight:700; color:#6C5CE7; }
-.review-stat-label { font-size:12px; color:#94A3B8; }
-.review-action-btn { padding:14px 32px; background:#6C5CE7; color:#fff; border:none; border-radius:12px; font-size:15px; font-weight:600; cursor:pointer; }
 
 /* ====== 支付弹窗 ====== */
 .pay-modal {
@@ -3454,270 +3385,6 @@
             cursor: pointer;
         }
 
-        /* ====== 新诊断模式界面 ====== */
-        .diag-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: #F8F9FA;
-            z-index: 1200;
-            display: none;
-            flex-direction: column;
-        }
-        .diag-overlay.active { display: flex; }
-        
-        .diag-header {
-            padding: 16px 20px;
-            padding-top: calc(16px + var(--safe-top));
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: white;
-            flex-shrink: 0;
-            border-bottom: 1px solid #F1F5F9;
-        }
-        .diag-back-btn {
-            width: 36px;
-            height: 36px;
-            border: none;
-            background: #F5F5F5;
-            border-radius: 10px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.2s;
-        }
-        .diag-back-btn:active { background: #E5E5E5; }
-        .diag-back-btn svg { width: 20px; height: 20px; color: #333; }
-        .diag-title { flex: 1; text-align: center; font-size: 17px; font-weight: 600; }
-        .diag-progress-wrap { padding: 12px 20px; background: white; flex-shrink: 0; }
-        .diag-progress-info { display: flex; justify-content: space-between; font-size: 13px; color: #666; margin-bottom: 8px; }
-        .diag-progress-bar { height: 4px; background: #E5E7EB; border-radius: 2px; overflow: hidden; }
-        .diag-progress-fill { height: 100%; background: linear-gradient(90deg, #6C5CE7, #A29BFE); border-radius: 2px; transition: width 0.3s ease; }
-        
-        .diag-body {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
-            -webkit-overflow-scrolling: touch;
-        }
-        
-        /* 阅读原文 */
-        .diag-passage-card {
-            background: white;
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 20px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-        .diag-passage-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 12px;
-        }
-        .diag-passage-label {
-            font-size: 13px;
-            color: #6C5CE7;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .diag-passage-toggle {
-            font-size: 13px;
-            color: #999;
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 4px 8px;
-        }
-        .diag-passage-content {
-            font-size: 14px;
-            line-height: 1.8;
-            color: #333;
-            max-height: 150px;
-            overflow: hidden;
-            transition: max-height 0.3s ease;
-        }
-        .diag-passage-content.expanded { max-height: 1000px; }
-        
-        /* 题目区域 */
-        .diag-question-card {
-            background: white;
-            border-radius: 16px;
-            padding: 20px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-        .diag-question-num {
-            font-size: 12px;
-            color: #999;
-            margin-bottom: 8px;
-        }
-        .diag-question-text {
-            font-size: 15px;
-            line-height: 1.7;
-            color: #1a1a1a;
-            margin-bottom: 16px;
-        }
-        
-        /* 选项按钮 */
-        .diag-options { display: flex; flex-direction: column; gap: 10px; }
-        .diag-option-btn {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            padding: 14px 16px;
-            background: #F8F9FA;
-            border: 2px solid transparent;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-align: left;
-        }
-        .diag-option-btn:active { transform: scale(0.98); }
-        .diag-option-btn.selected { background: #EDE9FE; border-color: #6C5CE7; }
-        .diag-option-btn.correct { background: #D1FAE5; border-color: #10B981; }
-        .diag-option-btn.wrong { background: #FEE2E2; border-color: #EF4444; }
-        .diag-option-btn.disabled { pointer-events: none; }
-        .diag-option-letter {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            background: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            font-weight: 600;
-            color: #666;
-            flex-shrink: 0;
-            transition: all 0.2s;
-        }
-        .diag-option-btn.selected .diag-option-letter { background: #6C5CE7; color: white; }
-        .diag-option-btn.correct .diag-option-letter { background: #10B981; color: white; }
-        .diag-option-btn.wrong .diag-option-letter { background: #EF4444; color: white; }
-        .diag-option-text { font-size: 14px; line-height: 1.5; color: #333; }
-        
-        /* 正确/错误提示 */
-        .diag-result-icon {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            margin-left: auto;
-            flex-shrink: 0;
-        }
-        .diag-result-icon.correct { background: #10B981; color: white; }
-        .diag-result-icon.wrong { background: #EF4444; color: white; }
-        
-        /* 自评问卷 */
-        .diag-eval-section { margin-top: 20px; }
-        .diag-eval-title {
-            font-size: 17px;
-            font-weight: 600;
-            text-align: center;
-            margin-bottom: 8px;
-        }
-        .diag-eval-subtitle {
-            font-size: 13px;
-            color: #999;
-            text-align: center;
-            margin-bottom: 24px;
-        }
-        .diag-eval-item {
-            background: white;
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 16px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-        .diag-eval-label {
-            font-size: 15px;
-            font-weight: 600;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .diag-eval-options { display: flex; gap: 10px; }
-        .diag-eval-btn {
-            flex: 1;
-            padding: 12px 8px;
-            background: #F5F5F5;
-            border: 2px solid transparent;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-align: center;
-        }
-        .diag-eval-btn:active { transform: scale(0.98); }
-        .diag-eval-btn.selected { background: #EDE9FE; border-color: #6C5CE7; }
-        .diag-eval-btn .eval-letter { font-size: 20px; font-weight: 700; color: #6C5CE7; margin-bottom: 4px; }
-        .diag-eval-btn .eval-desc { font-size: 12px; color: #666; }
-        
-        /* 提交按钮 */
-        .diag-submit-btn {
-            width: 100%;
-            padding: 16px;
-            background: linear-gradient(135deg, #6C5CE7, #A29BFE);
-            border: none;
-            border-radius: 14px;
-            color: white;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 24px;
-            transition: all 0.2s;
-        }
-        .diag-submit-btn:active { transform: scale(0.98); opacity: 0.9; }
-        .diag-submit-btn:disabled { background: #D1D5DB; cursor: not-allowed; }
-        
-        /* 加载状态 */
-        .diag-loading {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 60px 20px;
-        }
-        .diag-spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid #E5E7EB;
-            border-top-color: #6C5CE7;
-            border-radius: 50%;
-            animation: diag-spin 1s linear infinite;
-        }
-        @keyframes diag-spin { to { transform: rotate(360deg); } }
-        .diag-loading-text { margin-top: 16px; font-size: 14px; color: #666; }
-        
-        /* 生成报告按钮 */
-        .diag-generate-btn {
-            width: 100%;
-            padding: 18px;
-            background: linear-gradient(135deg, #6C5CE7, #A29BFE);
-            border: none;
-            border-radius: 14px;
-            color: white;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 24px;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        .diag-generate-btn:active { transform: scale(0.98); opacity: 0.9; }
-
         /* ====== 作文批改界面 ====== */
         .essay-overlay {
             position: fixed;
@@ -4024,419 +3691,6 @@
             color: white;
         }
         .essay-result-actions button:active { transform: scale(0.98); }
-
-        /* ===== 错题复习系统样式 ===== */
-        .review-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.5);
-            z-index: 1001;
-            display: none;
-            align-items: flex-end;
-            justify-content: center;
-        }
-        .review-overlay.show { display: flex; }
-        .review-sheet {
-            background: white;
-            border-radius: 24px 24px 0 0;
-            width: 100%;
-            max-width: 430px;
-            max-height: 90vh;
-            overflow-y: auto;
-            transform: translateY(100%);
-            transition: transform 0.3s ease;
-        }
-        .review-overlay.show .review-sheet { transform: translateY(0); }
-        .review-handle {
-            width: 36px;
-            height: 4px;
-            background: #E2E8F0;
-            border-radius: 2px;
-            margin: 12px auto;
-        }
-        .review-header {
-            padding: 16px 20px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border-bottom: 1px solid #F1F5F9;
-        }
-        .review-back {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: #F1F5F9;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            border: none;
-        }
-        .review-back:active { background: #E2E8F0; }
-        .review-back svg { width: 20px; height: 20px; stroke: #475569; stroke-width: 2; }
-        .review-header-info { flex: 1; }
-        .review-header-title { font-size: 17px; font-weight: 700; color: #1E293B; }
-        .review-header-sub { font-size: 12px; color: #94A3B8; margin-top: 2px; }
-        .review-progress {
-            padding: 16px 20px;
-            background: #F8F9FA;
-        }
-        .review-progress-bar {
-            height: 8px;
-            background: #E2E8F0;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-        .review-progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #6C5CE7, #A29BFE);
-            border-radius: 4px;
-            transition: width 0.3s ease;
-        }
-        .review-progress-text {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 8px;
-            font-size: 12px;
-            color: #64748B;
-        }
-        .review-body { padding: 20px; }
-        .review-question {
-            font-size: 16px;
-            font-weight: 600;
-            color: #1a1a2e;
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-        .review-options { display: flex; flex-direction: column; gap: 12px; }
-        .review-option {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            padding: 16px;
-            background: #FFFFFF;
-            border: 1px solid #E2E8F0;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .review-option:active { transform: scale(0.98); }
-        .review-option:hover { border-color: #6C5CE7; }
-        .review-option.selected { border-color: #6C5CE7; background: #F8F6FF; }
-        .review-option.correct { border-color: #00B894; background: #E8F8F0; }
-        .review-option.wrong { border-color: #E17055; background: #FFF5F3; }
-        .review-option-letter {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            background: #F1F5F9;
-            color: #475569;
-            font-weight: 600;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-        .review-option.correct .review-option-letter { background: #00B894; color: white; }
-        .review-option.wrong .review-option-letter { background: #E17055; color: white; }
-        .review-option-text { font-size: 15px; color: #1a1a2e; line-height: 1.5; flex: 1; }
-        .review-feedback {
-            margin-top: 16px;
-            padding: 16px;
-            border-radius: 12px;
-            display: none;
-        }
-        .review-feedback.show { display: block; }
-        .review-feedback.correct { background: #E8F8F0; }
-        .review-feedback.wrong { background: #FFF5F3; }
-        .review-feedback-title {
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-        .review-feedback.correct .review-feedback-title { color: #00B894; }
-        .review-feedback.wrong .review-feedback-title { color: #E17055; }
-        .review-feedback-text { font-size: 13px; color: #475569; line-height: 1.5; }
-        .review-next-btn {
-            width: 100%;
-            padding: 16px;
-            background: #6C5CE7;
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 20px;
-            display: none;
-        }
-        .review-next-btn.show { display: block; }
-        .review-next-btn:active { background: #5849C4; }
-        .review-empty {
-            text-align: center;
-            padding: 60px 20px;
-        }
-        .review-empty-icon {
-            width: 80px;
-            height: 80px;
-            background: #E8F8F0;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-        }
-        .review-empty-icon svg { width: 40px; height: 40px; stroke: #00B894; stroke-width: 1.5; }
-        .review-empty-title { font-size: 18px; font-weight: 700; color: #1a1a2e; margin-bottom: 8px; }
-        .review-empty-desc { font-size: 14px; color: #64748B; }
-
-        /* ===== 学习计划样式 ===== */
-        .plan-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.5);
-            z-index: 1002;
-            display: none;
-            align-items: flex-end;
-            justify-content: center;
-        }
-        .plan-overlay.show { display: flex; }
-        .plan-sheet {
-            background: white;
-            border-radius: 24px 24px 0 0;
-            width: 100%;
-            max-width: 430px;
-            max-height: 90vh;
-            overflow-y: auto;
-            transform: translateY(100%);
-            transition: transform 0.3s ease;
-        }
-        .plan-overlay.show .plan-sheet { transform: translateY(0); }
-        .plan-loading {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 60px 20px;
-        }
-        .plan-loading-spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid #F1F5F9;
-            border-top-color: #6C5CE7;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .plan-loading-text { font-size: 15px; color: #64748B; margin-top: 16px; }
-        .plan-content { padding: 20px; }
-        .plan-week-card {
-            background: #FFFFFF;
-            border: 1px solid #F0F0F5;
-            border-radius: 16px;
-            margin-bottom: 16px;
-            overflow: hidden;
-        }
-        .plan-week-header {
-            background: linear-gradient(135deg, #6C5CE7 0%, #A29BFE 100%);
-            color: white;
-            padding: 16px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .plan-week-icon {
-            width: 40px;
-            height: 40px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .plan-week-icon svg { width: 20px; height: 20px; stroke: white; stroke-width: 2; }
-        .plan-week-title { font-size: 16px; font-weight: 700; }
-        .plan-week-desc { font-size: 12px; opacity: 0.8; margin-top: 2px; }
-        .plan-tasks { padding: 12px 16px; }
-        .plan-task {
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            padding: 10px 0;
-            border-bottom: 1px solid #F1F5F9;
-        }
-        .plan-task:last-child { border-bottom: none; }
-        .plan-task-check {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: #F1F5F9;
-            border: 2px solid #E2E8F0;
-            flex-shrink: 0;
-            margin-top: 2px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .plan-task-check.done { background: #00B894; border-color: #00B894; }
-        .plan-task-check.done::after {
-            content: '';
-            display: block;
-            width: 6px;
-            height: 10px;
-            border: 2px solid white;
-            border-top: none;
-            border-left: none;
-            transform: rotate(45deg) translate(-1px, -1px);
-            margin: 2px auto;
-        }
-        .plan-task-text { font-size: 14px; color: #475569; line-height: 1.5; }
-        .plan-task.done .plan-task-text { text-decoration: line-through; color: #94A3B8; }
-        .plan-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-        .plan-actions button {
-            flex: 1;
-            padding: 14px;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            border: none;
-            transition: all 0.2s;
-        }
-        .plan-actions .btn-secondary { background: #F1F5F9; color: #475569; }
-        .plan-actions .btn-primary { background: #6C5CE7; color: white; }
-
-        /* ===== 升级引导卡片 ===== */
-        .upgrade-card {
-            position: fixed;
-            bottom: 80px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: white;
-            border-radius: 16px;
-            padding: 20px;
-            width: calc(100% - 32px);
-            max-width: 380px;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.12);
-            z-index: 1003;
-            display: none;
-        }
-        .upgrade-card.show { display: block; animation: slideUp 0.3s ease; }
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateX(-50%) translateY(20px); }
-            to { opacity: 1; transform: translateX(-50%) translateY(0); }
-        }
-        .upgrade-card-header { text-align: center; margin-bottom: 16px; }
-        .upgrade-card-title { font-size: 17px; font-weight: 700; color: #1a1a2e; }
-        .upgrade-card-sub { font-size: 13px; color: #64748B; margin-top: 4px; }
-        .upgrade-card-btn {
-            width: 100%;
-            padding: 14px;
-            background: #6C5CE7;
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .upgrade-card-btn:active { background: #5849C4; }
-        .upgrade-card-close {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            width: 24px;
-            height: 24px;
-            background: #F1F5F9;
-            border: none;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .upgrade-card-close svg { width: 14px; height: 14px; stroke: #64748B; }
-
-        /* ===== 用户中心错题本入口 ===== */
-        .menu-item-new.wrong-book {
-            position: relative;
-        }
-        .wrong-book-badge {
-            position: absolute;
-            right: 40px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 12px;
-            color: #E17055;
-            font-weight: 600;
-        }
-
-        /* ===== 作文批改结构化结果 ===== */
-        .essay-dimensions {
-            display: flex;
-            gap: 8px;
-            margin: 16px 0;
-        }
-        .essay-dimension {
-            flex: 1;
-            text-align: center;
-            padding: 12px 8px;
-            background: #F8F9FA;
-            border-radius: 12px;
-        }
-        .essay-dimension-label { font-size: 11px; color: #64748B; margin-bottom: 4px; }
-        .essay-dimension-value { font-size: 20px; font-weight: 700; color: #6C5CE7; }
-        .essay-sentence-highlight {
-            background: #FFF5F3;
-            border-left: 3px solid #E17055;
-            padding: 12px;
-            margin: 8px 0;
-            border-radius: 0 8px 8px 0;
-            cursor: pointer;
-            position: relative;
-        }
-        .essay-sentence-tooltip {
-            display: none;
-            position: absolute;
-            left: 0;
-            right: 0;
-            top: 100%;
-            background: white;
-            border: 1px solid #E17055;
-            border-radius: 8px;
-            padding: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            z-index: 10;
-            margin-top: 8px;
-        }
-        .essay-sentence-highlight:hover .essay-sentence-tooltip { display: block; }
-        .essay-sentence-issue { font-size: 13px; color: #E17055; margin-bottom: 8px; }
-        .essay-sentence-suggestion { font-size: 13px; color: #00B894; }
-        .essay-overall-comment {
-            background: #F8F6FF;
-            border-radius: 12px;
-            padding: 16px;
-            margin-top: 16px;
-        }
-        .essay-overall-comment-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: #6C5CE7;
-            margin-bottom: 8px;
-        }
-        .essay-overall-comment-text { font-size: 13px; color: #475569; line-height: 1.6; }
-
 
         /* ===== 进度仪表盘 ===== */
         .dashboard-page {
@@ -4839,137 +4093,6 @@
             font-weight: 600;
             cursor: pointer;
         }
-        
-        /* 正确率趋势图 */
-        .dashboard-trend-section {
-            margin: 0 16px 16px;
-            background: white;
-            border-radius: 16px;
-            padding: 16px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-        }
-        .dashboard-trend-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-        .dashboard-trend-title {
-            font-size: 15px;
-            font-weight: 600;
-            color: #1a1a2e;
-        }
-        .dashboard-trend-period {
-            font-size: 12px;
-            color: #94a3b8;
-        }
-        .dashboard-trend-canvas-wrap {
-            position: relative;
-            height: 160px;
-        }
-        .dashboard-trend-canvas-wrap canvas {
-            width: 100% !important;
-            height: 100% !important;
-        }
-        .dashboard-trend-empty {
-            text-align: center;
-            padding: 30px;
-            color: #94a3b8;
-            font-size: 13px;
-        }
-        
-        /* 诊断报告历史 */
-        .dashboard-report-section {
-            margin: 0 16px 16px;
-        }
-        .dashboard-report-card {
-            background: white;
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-        }
-        .dashboard-report-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-        .dashboard-report-date {
-            font-size: 13px;
-            color: #94a3b8;
-        }
-        .dashboard-report-score {
-            font-size: 20px;
-            font-weight: 700;
-            color: #6C5CE7;
-        }
-        .dashboard-report-dims {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 8px;
-            margin-top: 12px;
-        }
-        .dashboard-report-dim {
-            text-align: center;
-        }
-        .dashboard-report-dim-name {
-            font-size: 10px;
-            color: #94a3b8;
-            margin-bottom: 4px;
-        }
-        .dashboard-report-dim-score {
-            font-size: 14px;
-            font-weight: 600;
-            color: #1a1a2e;
-        }
-        .dashboard-report-empty {
-            text-align: center;
-            padding: 30px;
-            color: #94a3b8;
-            font-size: 13px;
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-        }
-        
-        /* 学习记录统计 */
-        .dashboard-stats-section {
-            margin: 0 16px 16px;
-            background: white;
-            border-radius: 16px;
-            padding: 16px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-        }
-        .dashboard-stats-title {
-            font-size: 15px;
-            font-weight: 600;
-            color: #1a1a2e;
-            margin-bottom: 16px;
-        }
-        .dashboard-stats-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
-        }
-        .dashboard-stat-item {
-            text-align: center;
-        }
-        .dashboard-stat-num {
-            font-size: 24px;
-            font-weight: 700;
-            color: #6C5CE7;
-        }
-        .dashboard-stat-label {
-            font-size: 12px;
-            color: #94a3b8;
-            margin-top: 4px;
-        }
-        
-        /* 底部安全区域 */
-        .dashboard-bottom-spacer {
-            height: calc(70px + var(--safe-bottom));
-        }
 
     </style>
 
@@ -5118,7 +4241,7 @@
                         <div class="home-data-label">次练习</div>
                     </div>
                     <div class="home-data-divider"></div>
-                    <div class="home-data-item" onclick="switchTab('progress')">
+                    <div class="home-data-item" onclick="switchTab('study')">
                         <div class="home-data-cta">查看详情 →</div>
                     </div>
                 </div>
@@ -5127,6 +4250,108 @@
                 <div class="home-section-title">备考人格 <span class="home-section-more" onclick="switchTab('personality')">查看全部</span></div>
                 <div class="home-personality-preview" id="home-personality-preview"></div>
 
+            </div>
+
+            <!-- 学习页 -->
+            <div class="tab-page" id="tab-study">
+                <div class="study-page">
+                    <!-- 学习页头部 -->
+                    <div class="study-header">
+                        <div class="study-header-left">
+                            <div class="study-title">今日学习</div>
+                            <div class="study-sub" id="study-date-sub">坚持就是胜利</div>
+                        </div>
+                        <div class="study-streak-badge" id="study-streak-badge">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c.5 4-2 7-4 9.5C6 14 5.5 16 6 18c.7 3 3.5 4 6 4s5.3-1 6-4c.5-2 0-4-2-6.5C14 9 11.5 6 12 2z"/></svg>
+                            <span id="study-streak-num">0</span>天连续
+                        </div>
+                    </div>
+
+                    <!-- 打卡进度 -->
+                    <div class="study-progress-card">
+                        <div class="study-progress-top">
+                            <div class="study-progress-label">今日进度</div>
+                            <div class="study-progress-pct" id="study-progress-pct">0/3</div>
+                        </div>
+                        <div class="study-progress-bar">
+                            <div class="study-progress-fill" id="study-progress-fill" style="width:0%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Duolingo风格Streak卡片 -->
+                    <div class="study-streak-card" id="study-streak-card">
+                        <div class="streak-fire">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c.5 4-2 7-4 9.5C6 14 5.5 16 6 18c.7 3 3.5 4 6 4s5.3-1 6-4c.5-2 0-4-2-6.5C14 9 11.5 6 12 2z"/></svg>
+                        </div>
+                        <div class="streak-info">
+                            <div class="streak-info-title">连续打卡中</div>
+                            <div class="streak-info-sub">坚持就是胜利，不要断签！</div>
+                        </div>
+                        <div style="text-align:center">
+                            <div class="streak-num-big" id="streak-num-big">0</div>
+                            <div class="streak-num-label">天</div>
+                        </div>
+                    </div>
+
+                    <!-- 增强统计（墨墨风格） -->
+                    <div class="study-stats-enhanced">
+                        <div class="study-stat-en">
+                            <div class="study-stat-en-val" id="study-en-streak">0</div>
+                            <div class="study-stat-en-label">连续天数</div>
+                        </div>
+                        <div class="study-stat-en">
+                            <div class="study-stat-en-val" id="study-en-tasks">0</div>
+                            <div class="study-stat-en-label">完成练习</div>
+                        </div>
+                        <div class="study-stat-en">
+                            <div class="study-stat-en-val" id="study-en-chats">0</div>
+                            <div class="study-stat-en-label">AI对话</div>
+                        </div>
+                    </div>
+
+                    <!-- 今日任务 -->
+                    <div class="study-section-title">今日任务</div>
+
+                    <div class="daily-card" id="daily-task-card" onclick="handleDailyTask()">
+                        <div class="daily-card-inner">
+                            <div class="daily-card-icon-wrap">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                            </div>
+                            <div class="daily-card-body">
+                                <div class="daily-card-title" id="daily-task-title">今日一练</div>
+                                <div class="daily-card-sub" id="daily-task-desc">每天3分钟，保持手感</div>
+                            </div>
+                            <div class="daily-card-badge" id="daily-task-badge">GO</div>
+                        </div>
+                    </div>
+
+                    <!-- 备考计划入口 -->
+                    <div class="study-plan-card" id="study-plan-card" onclick="handlePlanCardClick()">
+                        <div class="study-plan-left">
+                            <div class="study-plan-icon" id="study-plan-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                            </div>
+                            <div class="study-plan-text">
+                                <div class="study-plan-title" id="study-plan-title">AI备考计划</div>
+                                <div class="study-plan-desc" id="study-plan-desc">定制你的专属冲刺方案</div>
+                            </div>
+                        </div>
+                        <svg class="chat-suggest-arrow" viewBox="0 0 24 24" fill="none" stroke="#C0C0C8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                    </div>
+
+                    <div class="study-plan-card" onclick="openEssayOverlay()">
+                        <div class="study-plan-left">
+                            <div class="study-plan-icon pink">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                            </div>
+                            <div class="study-plan-text">
+                                <div class="study-plan-title">作文批改</div>
+                                <div class="study-plan-desc">AI精准批改，逐句优化</div>
+                            </div>
+                        </div>
+                        <svg class="chat-suggest-arrow" viewBox="0 0 24 24" fill="none" stroke="#C0C0C8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                    </div>
+                </div>
             </div>
 
             <!-- 进度仪表盘页 -->
@@ -5163,7 +4388,7 @@
             <div class="new-chat-modal" id="new-chat-modal">
                 <div class="new-chat-sheet">
                     <div class="new-chat-sheet-title">选择对话类型</div>
-                    <div class="new-chat-option" onclick="startNewDiagnosis();hideNewChatModal();">
+                    <div class="new-chat-option" onclick="createNewChat('diagnosis')">
                         <div class="new-chat-option-icon diagnosis">
                             <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                         </div>
@@ -5204,48 +4429,36 @@
                     </div>
                     <!-- Messages -->
                     <div class="custom-chat-messages" id="chat-messages">
-                        <!-- AI welcome message - 引导式开场白 -->
+                        <!-- AI welcome message -->
                         <div class="custom-chat-msg ai">
                             <div class="custom-chat-avatar">
                                 <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                             </div>
                             <div class="custom-chat-bubble">
-                                <p>嗨！我是小过学长 👋</p>
-                                <p style="margin-top:8px">我能帮你这些：</p>
-                                <p style="margin-top:4px">📋 做个诊断测水平</p>
-                                <p>💬 陪你刷真题练手</p>
-                                <p>❌ 复习之前的错题</p>
-                                <p>📝 批改你的作文</p>
-                                <p style="margin-top:8px;color:#6C5CE7;font-weight:600">直接说就行！</p>
+                                <p>嗨！我是小过学长 &#x1F44B;</p>
+                                <p>基于<strong>海量</strong>真题数据分析你的薄弱点，随时问我任何备考问题</p>
                                 <div class="custom-chat-time">刚刚</div>
                             </div>
                         </div>
-                        <!-- 快捷操作按钮 -->
-                        <div style="display:flex;gap:8px;margin:12px 0 0 38px;">
-                            <button class="custom-chat-chip" onclick="handleQuickAction('diagnosis')" style="background:linear-gradient(135deg,#6C5CE7,#8B7CF7);color:#fff;border:none;">
-                                📋 开始诊断
-                            </button>
-                            <button class="custom-chat-chip" onclick="handleQuickAction('companion')" style="background:#F0EEFF;color:#6C5CE7;border:none;">
-                                💬 继续陪练
-                            </button>
-                        </div>
                     </div>
                     <!-- Input area -->
-                    <div class="chat-quota-hint" id="chat-quota-hint" style="display:none"></div>
                     <div class="custom-chat-input-area" id="chat-input-area">
-                        <!-- 快捷标签 - 输入框上方 -->
-                        <div class="quick-mode-tags" id="quick-mode-tags" style="display:flex;gap:6px;margin-bottom:8px;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;">
-                            <button class="quick-tag-pill" data-mode="diagnosis" onclick="handleModeTag('diagnosis')">
-                                <span>📋</span>诊断
+                        <!-- Quick chips / suggestions -->
+                        <div class="custom-chips-row" id="input-chips" style="display:none">
+                        </div>
+                        <!-- Action bar (深度思考等) -->
+                        <div class="chat-action-bar" id="chat-action-bar">
+                            <button class="action-bar-btn" id="btn-think" onclick="toggleThinkMode()" title="深度思考">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                                <span>深度思考</span>
                             </button>
-                            <button class="quick-tag-pill" data-mode="companion" onclick="handleModeTag('companion')">
-                                <span>💬</span>陪练
+                            <button class="action-bar-btn" onclick="copyLastMessage()" title="复制回复">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                                <span>复制</span>
                             </button>
-                            <button class="quick-tag-pill" data-mode="wrongbook" onclick="handleModeTag('wrongbook')">
-                                <span>❌</span>错题
-                            </button>
-                            <button class="quick-tag-pill" data-mode="essay" onclick="handleModeTag('essay')">
-                                <span>📝</span>作文
+                            <button class="action-bar-btn" onclick="regenerateLastResponse()" title="重新生成">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                                <span>重新生成</span>
                             </button>
                         </div>
                         <!-- Input row -->
@@ -5419,17 +4632,6 @@
                         <span class="menu-text-new">诊断记录</span>
                         <span class="menu-arrow-new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
                     </div>
-                    <div class="menu-item-new wrong-book" onclick="openReview()">
-                        <div class="menu-icon-new orange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div>
-                        <span class="menu-text-new">错题本</span>
-                        <span class="wrong-book-badge" id="wrong-book-badge"></span>
-                        <span class="menu-arrow-new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
-                    </div>
-                    <div class="menu-item-new" onclick="showLearningPlan()">
-                        <div class="menu-icon-new purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
-                        <span class="menu-text-new">学习计划</span>
-                        <span class="menu-arrow-new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
-                    </div>
                 </div>
 
                 <div class="menu-group-label">账户</div>
@@ -5461,19 +4663,23 @@
             </div>
         </div>
 
-        <!-- 底部Tab - 4个Tab -->
+        <!-- 底部Tab -->
         <div class="tab-bar">
             <div class="tab-item active" data-tab="home" onclick="switchTab('home')">
                 <div class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
                 <span class="tab-label">首页</span>
             </div>
-            <div class="tab-item" data-tab="diagnosis" onclick="switchTab('diagnosis')">
-                <div class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
-                <span class="tab-label">练习</span>
+            <div class="tab-item" data-tab="study" onclick="switchTab('study')">
+                <div class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 6v6l4 2"/></svg></div>
+                <span class="tab-label">学习</span>
             </div>
             <div class="tab-item" data-tab="progress" onclick="switchTab('progress')">
                 <div class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg></div>
-                <span class="tab-label">数据</span>
+                <span class="tab-label">进度</span>
+            </div>
+            <div class="tab-item" data-tab="diagnosis" onclick="switchTab('diagnosis')">
+                <div class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+                <span class="tab-label">AI教练</span>
             </div>
             <div class="tab-item" data-tab="profile" onclick="switchTab('profile')">
                 <div class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
@@ -5561,9 +4767,6 @@
             updateProfileStats();
             updateHomeStatus();
             updatePlanDisplay();
-            updateWrongBookBadge();
-            // 预渲染数据页面
-            try { renderDashboard(); } catch(e) { console.error('renderDashboard error:', e); }
 
             // 恢复上次的tab和聊天状态
             restoreLastState();
@@ -5675,54 +4878,8 @@
             }
         }
 
-        // ===== 快捷操作函数 =====
-        function handleQuickAction(mode) {
-            // 开场白快捷按钮处理
-            if (mode === 'diagnosis') {
-                startNewDiagnosis();
-            } else if (mode === 'companion') {
-                createNewChat('companion');
-            }
-        }
-
-        function handleModeTag(mode) {
-            // 快捷标签切换模式
-            var tag = document.querySelector('.quick-tag-pill[data-mode="' + mode + '"]');
-            if (!tag) return;
-
-            // 切换激活状态
-            document.querySelectorAll('.quick-tag-pill').forEach(function(t) {
-                t.classList.remove('active');
-            });
-            tag.classList.add('active');
-
-            // 设置Bot ID和模式（根据mode选择对应的Bot）
-            var botMap = {
-                'diagnosis': '7636289658620215331',
-                'companion': '7637702903679631395',
-                'wrongbook': '7637702903679631395',  // 错题复习使用陪练Bot
-                'essay': '7637702903679631395'       // 作文批改使用陪练Bot
-            };
-            chatState.botId = botMap[mode] || '7637702903679631395';
-            chatState.currentMode = mode;
-
-            // 发送对应消息
-            var messages = {
-                'diagnosis': '我想做一个AI诊断，帮我分析四级薄弱点',
-                'companion': '继续陪我练习，帮我针对薄弱点强化训练',
-                'wrongbook': '复习我之前的错题',
-                'essay': '我想批改作文'
-            };
-
-            var msg = messages[mode];
-            if (msg) {
-                sendSuggestion(msg);
-            }
-        }
-
         // ===== 进度仪表盘函数 =====
         function renderDashboard() {
-            try {
             var container = document.getElementById('dashboard-content');
             if (!container) return;
             
@@ -5945,75 +5102,6 @@
                 html += '</div>';
             }
             
-            // 学习记录统计
-            html += '<div class="dashboard-stats-section">';
-            html += '<div class="dashboard-stats-title">📈 学习数据统计</div>';
-            html += '<div class="dashboard-stats-grid">';
-            html += '<div class="dashboard-stat-item">';
-            html += '<div class="dashboard-stat-num">' + streak.count + '</div>';
-            html += '<div class="dashboard-stat-label">连续学习天数</div>';
-            html += '</div>';
-            html += '<div class="dashboard-stat-item">';
-            html += '<div class="dashboard-stat-num">' + totalPractice + '</div>';
-            html += '<div class="dashboard-stat-label">累计练习题数</div>';
-            html += '</div>';
-            html += '<div class="dashboard-stat-item">';
-            html += '<div class="dashboard-stat-num">' + accuracy + '%</div>';
-            html += '<div class="dashboard-stat-label">总正确率</div>';
-            html += '</div>';
-            html += '<div class="dashboard-stat-item">';
-            html += '<div class="dashboard-stat-num">' + (userData.studyDays || 0) + '</div>';
-            html += '<div class="dashboard-stat-label">学习总天数</div>';
-            html += '</div>';
-            html += '</div>';
-            html += '</div>';
-            
-            // 正确率趋势图
-            html += '<div class="dashboard-trend-section">';
-            html += '<div class="dashboard-trend-header">';
-            html += '<div class="dashboard-trend-title">📈 正确率趋势</div>';
-            html += '<div class="dashboard-trend-period">近7天</div>';
-            html += '</div>';
-            html += '<div class="dashboard-trend-canvas-wrap">';
-            html += '<canvas id="dashboard-trend-canvas"></canvas>';
-            html += '</div>';
-            html += '</div>';
-            
-            // 诊断报告历史（模拟数据）
-            html += '<div class="dashboard-report-section">';
-            html += '<div class="dashboard-section-title">📋 诊断报告历史</div>';
-            var reportHistory = getDiagnosisReports();
-            if (reportHistory && reportHistory.length > 0) {
-                reportHistory.forEach(function(report) {
-                    html += '<div class="dashboard-report-card">';
-                    html += '<div class="dashboard-report-header">';
-                    html += '<div class="dashboard-report-date">' + report.date + '</div>';
-                    html += '<div class="dashboard-report-score">' + report.score + '分</div>';
-                    html += '</div>';
-                    html += '<div class="dashboard-report-dims">';
-                    var dimNames = ['细节定位', '推理判断', '同义替换', '主旨归纳', '态度判断'];
-                    dimNames.forEach(function(dim) {
-                        var dimScore = report.dims && report.dims[dim] ? report.dims[dim] : '--';
-                        html += '<div class="dashboard-report-dim">';
-                        html += '<div class="dashboard-report-dim-name">' + dim + '</div>';
-                        html += '<div class="dashboard-report-dim-score">' + (typeof dimScore === 'number' ? dimScore + '分' : dimScore) + '</div>';
-                        html += '</div>';
-                    });
-                    html += '</div>';
-                    html += '</div>';
-                });
-            } else {
-                html += '<div class="dashboard-report-empty">';
-                html += '<div style="font-size:40px;margin-bottom:12px">📝</div>';
-                html += '<div>暂无诊断记录</div>';
-                html += '<div style="font-size:12px;margin-top:4px">完成AI诊断后即可查看报告</div>';
-                html += '</div>';
-            }
-            html += '</div>';
-            
-            // 底部安全区域
-            html += '<div class="dashboard-bottom-spacer"></div>';
-            
             container.innerHTML = html;
             
             // 绘制雷达图
@@ -6021,16 +5109,6 @@
                 setTimeout(function() {
                     drawDashboardRadar(dims);
                 }, 100);
-            }
-            
-            // 绘制正确率趋势图
-            setTimeout(function() {
-                drawDashboardTrend();
-            }, 150);
-            } catch(e) { 
-                console.error('renderDashboard error:', e); 
-                var c = document.getElementById('dashboard-content');
-                if(c) c.innerHTML = '<div style="padding:40px 20px;text-align:center"><div style="font-size:40px;margin-bottom:12px">📊</div><div style="font-size:16px;font-weight:600">数据页面加载失败</div><div style="font-size:13px;color:#64748B;margin-top:8px">请刷新页面重试</div></div>';
             }
         }
         
@@ -6146,187 +5224,6 @@
                 ctx.fillText(score + '', x, y + 16);
                 ctx.font = '12px -apple-system, BlinkMacSystemFont, sans-serif';
             }
-        }
-        
-        function getDiagnosisReports() {
-            // 从localStorage获取诊断报告历史
-            try {
-                var data = localStorage.getItem('cet4_diagnosis_reports');
-                if (data) return JSON.parse(data);
-                
-                // 兼容旧数据：从cet_user中读取诊断数据作为最近一次报告
-                var userData = JSON.parse(localStorage.getItem('cet_user') || '{}');
-                if (userData && userData.diagnosis && userData.diagnosis.type) {
-                    // 估算一个诊断日期
-                    var diagDate = userData.diagnosedAt ? new Date(userData.diagnosedAt) : new Date();
-                    var dateStr = (diagDate.getMonth() + 1) + '月' + diagDate.getDate() + '日';
-                    
-                    // 计算预估分数
-                    var dims = userData.diagnosis;
-                    var weights = {
-                        '细节定位': 0.25, '推理判断': 0.25, '同义替换': 0.2,
-                        '主旨归纳': 0.15, '态度判断': 0.15
-                    };
-                    var weightedSum = 0, weightSum = 0;
-                    Object.keys(weights).forEach(function(key) {
-                        if (dims[key]) {
-                            weightedSum += dims[key] * weights[key];
-                            weightSum += weights[key];
-                        }
-                    });
-                    var estimatedScore = weightSum > 0 ? Math.round((weightedSum / weightSum) * 7.1) : 0;
-                    estimatedScore = Math.max(425, Math.min(710, estimatedScore));
-                    
-                    return [{
-                        date: dateStr,
-                        score: estimatedScore,
-                        dims: dims
-                    }];
-                }
-            } catch(e) {}
-            return [];
-        }
-        
-        function drawDashboardTrend() {
-            var canvas = document.getElementById('dashboard-trend-canvas');
-            if (!canvas) return;
-            
-            var ctx = canvas.getContext('2d');
-            var dpr = window.devicePixelRatio || 1;
-            var width = canvas.offsetWidth || 300;
-            var height = 160;
-            
-            canvas.width = width * dpr;
-            canvas.height = height * dpr;
-            canvas.style.width = width + 'px';
-            canvas.style.height = height + 'px';
-            ctx.scale(dpr, dpr);
-            
-            // 获取近7天的正确率数据
-            var trendData = [];
-            var practiceHistory = getPracticeHistory();
-            var today = new Date();
-            
-            for (var i = 6; i >= 0; i--) {
-                var d = new Date(today);
-                d.setDate(d.getDate() - i);
-                var dateStr = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
-                
-                var dayTotal = 0;
-                var dayCorrect = 0;
-                practiceHistory.forEach(function(item) {
-                    if (item.date === dateStr) {
-                        dayTotal += (item.count || 1);
-                        dayCorrect += (item.correct || 0);
-                    }
-                });
-                
-                var accuracy = dayTotal > 0 ? Math.round((dayCorrect / dayTotal) * 100) : null;
-                trendData.push({ date: dateStr, accuracy: accuracy, total: dayTotal });
-            }
-            
-            // 检查是否有数据
-            var hasData = trendData.some(function(d) { return d.accuracy !== null; });
-            if (!hasData) {
-                ctx.fillStyle = '#94a3b8';
-                ctx.font = '13px -apple-system, BlinkMacSystemFont, sans-serif';
-                ctx.textAlign = 'center';
-                ctx.fillText('暂无练习数据', width / 2, height / 2);
-                return;
-            }
-            
-            var padding = { top: 20, right: 20, bottom: 30, left: 40 };
-            var chartWidth = width - padding.left - padding.right;
-            var chartHeight = height - padding.top - padding.bottom;
-            
-            // Y轴范围 0-100
-            var yMin = 0, yMax = 100;
-            
-            // 绘制Y轴网格线
-            ctx.strokeStyle = '#F1F5F9';
-            ctx.lineWidth = 1;
-            for (var y = 0; y <= 100; y += 25) {
-                var yPos = padding.top + chartHeight - (y - yMin) / (yMax - yMin) * chartHeight;
-                ctx.beginPath();
-                ctx.moveTo(padding.left, yPos);
-                ctx.lineTo(width - padding.right, yPos);
-                ctx.stroke();
-                
-                // Y轴标签
-                ctx.fillStyle = '#94a3b8';
-                ctx.font = '10px -apple-system, BlinkMacSystemFont, sans-serif';
-                ctx.textAlign = 'right';
-                ctx.fillText(y + '%', padding.left - 8, yPos + 4);
-            }
-            
-            // 绘制折线
-            var points = [];
-            var validPoints = [];
-            trendData.forEach(function(d, i) {
-                if (d.accuracy !== null) {
-                    var x = padding.left + (i / 6) * chartWidth;
-                    var y = padding.top + chartHeight - (d.accuracy - yMin) / (yMax - yMin) * chartHeight;
-                    points.push({ x: x, y: y, accuracy: d.accuracy });
-                    validPoints.push({ x: x, y: y });
-                }
-            });
-            
-            // 绘制线和数据点
-            if (validPoints.length > 0) {
-                // 渐变填充
-                ctx.beginPath();
-                validPoints.forEach(function(p, i) {
-                    if (i === 0) ctx.moveTo(p.x, p.y);
-                    else ctx.lineTo(p.x, p.y);
-                });
-                
-                // 填充到X轴
-                var lastPoint = validPoints[validPoints.length - 1];
-                var firstPoint = validPoints[0];
-                ctx.lineTo(lastPoint.x, padding.top + chartHeight);
-                ctx.lineTo(firstPoint.x, padding.top + chartHeight);
-                ctx.closePath();
-                
-                var gradient = ctx.createLinearGradient(0, padding.top, 0, padding.top + chartHeight);
-                gradient.addColorStop(0, 'rgba(108,92,231,0.3)');
-                gradient.addColorStop(1, 'rgba(108,92,231,0.05)');
-                ctx.fillStyle = gradient;
-                ctx.fill();
-                
-                // 绘制线条
-                ctx.beginPath();
-                validPoints.forEach(function(p, i) {
-                    if (i === 0) ctx.moveTo(p.x, p.y);
-                    else ctx.lineTo(p.x, p.y);
-                });
-                ctx.strokeStyle = '#6C5CE7';
-                ctx.lineWidth = 2;
-                ctx.stroke();
-                
-                // 绘制数据点
-                validPoints.forEach(function(p) {
-                    ctx.beginPath();
-                    ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
-                    ctx.fillStyle = '#6C5CE7';
-                    ctx.fill();
-                    ctx.strokeStyle = '#fff';
-                    ctx.lineWidth = 2;
-                    ctx.stroke();
-                });
-            }
-            
-            // X轴标签
-            var dayLabels = ['一', '二', '三', '四', '五', '六', '日'];
-            trendData.forEach(function(d, i) {
-                var x = padding.left + (i / 6) * chartWidth;
-                var date = new Date(d.date);
-                var label = dayLabels[date.getDay() === 0 ? 6 : date.getDay() - 1];
-                
-                ctx.fillStyle = '#94a3b8';
-                ctx.font = '10px -apple-system, BlinkMacSystemFont, sans-serif';
-                ctx.textAlign = 'center';
-                ctx.fillText(label, x, height - 8);
-            });
         }
         
         function getPracticeHistory() {
@@ -6686,24 +5583,15 @@
             chatState.currentStreamText = '';
             chatState.currentMode = mode; // 保存当前模式
             
-            // 清空消息显示 - 引导式开场白
+            // 清空消息显示
             var container = document.getElementById('chat-messages');
             container.innerHTML = '<div class="custom-chat-msg ai">' +
                 '<div class="custom-chat-avatar"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>' +
                 '<div class="custom-chat-bubble">' +
                 '<p>嗨！我是小过学长 👋</p>' +
-                '<p style="margin-top:8px">我能帮你这些：</p>' +
-                '<p style="margin-top:4px">📋 做个诊断测水平</p>' +
-                '<p>💬 陪你刷真题练手</p>' +
-                '<p>❌ 复习之前的错题</p>' +
-                '<p>📝 批改你的作文</p>' +
-                '<p style="margin-top:8px;color:#6C5CE7;font-weight:600">直接说就行！</p>' +
+                '<p>基于<strong>海量</strong>真题数据分析你的薄弱点，随时问我任何备考问题</p>' +
                 '<div class="custom-chat-time">刚刚</div>' +
-                '</div></div>' +
-                '<div style="display:flex;gap:8px;margin:12px 0 0 38px;">' +
-                '<button class="custom-chat-chip" onclick="handleQuickAction(\'diagnosis\')" style="background:linear-gradient(135deg,#6C5CE7,#8B7CF7);color:#fff;border:none;">📋 开始诊断</button>' +
-                '<button class="custom-chat-chip" onclick="handleQuickAction(\'companion\')" style="background:#F0EEFF;color:#6C5CE7;border:none;">💬 继续陪练</button>' +
-                '</div>';
+                '</div></div>';
             
             // 更新标题
             document.getElementById('chat-title').textContent = mode === 'diagnosis' ? '小过学长' : 'AI陪练';
@@ -6920,24 +5808,15 @@
             chatState.currentMode = mode;
             chatState.hasReplied = false;
             
-            // 清空消息显示 - 引导式开场白
+            // 清空消息显示
             var container = document.getElementById('chat-messages');
             container.innerHTML = '<div class="custom-chat-msg ai">' +
                 '<div class="custom-chat-avatar"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>' +
                 '<div class="custom-chat-bubble">' +
                 '<p>嗨！我是小过学长 👋</p>' +
-                '<p style="margin-top:8px">我能帮你这些：</p>' +
-                '<p style="margin-top:4px">📋 做个诊断测水平</p>' +
-                '<p>💬 陪你刷真题练手</p>' +
-                '<p>❌ 复习之前的错题</p>' +
-                '<p>📝 批改你的作文</p>' +
-                '<p style="margin-top:8px;color:#6C5CE7;font-weight:600">直接说就行！</p>' +
+                '<p>基于<strong>海量</strong>真题数据分析你的薄弱点，随时问我任何备考问题</p>' +
                 '<div class="custom-chat-time">刚刚</div>' +
-                '</div></div>' +
-                '<div style="display:flex;gap:8px;margin:12px 0 0 38px;">' +
-                '<button class="custom-chat-chip" onclick="handleQuickAction(\'diagnosis\')" style="background:linear-gradient(135deg,#6C5CE7,#8B7CF7);color:#fff;border:none;">📋 开始诊断</button>' +
-                '<button class="custom-chat-chip" onclick="handleQuickAction(\'companion\')" style="background:#F0EEFF;color:#6C5CE7;border:none;">💬 继续陪练</button>' +
-                '</div>';
+                '</div></div>';
             
             // 更新标题
             document.getElementById('chat-title').textContent = mode === 'diagnosis' ? '小过学长' : 'AI陪练';
@@ -6972,7 +5851,7 @@
             if (mode === 'diagnosis') {
                 chips.innerHTML = '' +
                     '<div class="chip-grid">' +
-                    '<div class="custom-chip-card" onclick="startNewDiagnosis()" style="background:linear-gradient(135deg,#6C5CE7,#A29BFE);color:white"><span class="chip-card-icon" style="background:rgba(255,255,255,0.2)">🔍</span><span class="chip-card-text">开始诊断</span></div>' +
+                    '<div class="custom-chip-card" onclick="sendSuggestion(this.dataset.msg)" data-msg="开始四级诊断"><span class="chip-card-icon" style="background:linear-gradient(135deg,#6C5CE7,#A29BFE)">🔍</span><span class="chip-card-text">开始诊断</span></div>' +
                     '<div class="custom-chip-card" onclick="sendSuggestion(this.dataset.msg)" data-msg="我的阅读成绩很差怎么办"><span class="chip-card-icon" style="background:linear-gradient(135deg,#00B894,#55EFC4)">📖</span><span class="chip-card-text">阅读提分</span></div>' +
                     '<div class="custom-chip-card" onclick="sendSuggestion(this.dataset.msg)" data-msg="听力听不懂怎么练"><span class="chip-card-icon" style="background:linear-gradient(135deg,#FDCB6E,#F39C12)">🎧</span><span class="chip-card-text">听力技巧</span></div>' +
                     '<div class="custom-chip-card" onclick="sendSuggestion(this.dataset.msg)" data-msg="写作翻译怎么复习"><span class="chip-card-icon" style="background:linear-gradient(135deg,#E17055,#D63031)">✍️</span><span class="chip-card-text">写译方法</span></div>' +
@@ -7554,7 +6433,7 @@
                     fetchPayload = {
                         user_id: userId,
                         messages: chatState.chatHistory.concat([{ role: 'user', content: contextPrefix + text }]),
-                        stream: true,
+                        stream: false,
                         personality: personality,
                         weak_dims: weakDims,
                         dim_scores: JSON.stringify(dimScores),
@@ -7593,42 +6472,15 @@
 
                 var streamStartTime = Date.now();
                 
-                // DeepSeek流式SSE解析（与Coze流式共享同一个reader循环）
+                // DeepSeek非流式响应处理
                 if (isCompanion) {
-                    var companionDone = false;
-                    while (!companionDone) {
-                        var result = await reader.read();
-                        if (result.done) { companionDone = true; break; }
-                        if (!firstChunkReceived) {
-                            firstChunkReceived = true;
-                            console.log('[DeepSeek Stream] First chunk in', Date.now() - streamStartTime, 'ms');
-                        }
-                        buffer += decoder.decode(result.value, { stream: true });
-                        var lines = buffer.split('\n');
-                        buffer = lines.pop() || '';
-                        for (var i = 0; i < lines.length; i++) {
-                            var line = lines[i].trim();
-                            if (!line || line.startsWith(':') || line.startsWith('event:')) continue;
-                            if (!line.startsWith('data:')) continue;
-                            var dataStr = line.substring(5).trim();
-                            if (dataStr === '[DONE]') { companionDone = true; break; }
-                            try {
-                                var evt = JSON.parse(dataStr);
-                                // OpenAI/DeepSeek stream format
-                                if (evt.choices && evt.choices[0]) {
-                                    var delta = evt.choices[0].delta;
-                                    if (delta && delta.content) {
-                                        fullText += delta.content;
-                                        chatState.currentStreamText = fullText;
-                                        bubbleEl.innerHTML = formatBotMessage(fullText);
-                                    }
-                                }
-                            } catch(e) {}
-                        }
-                    }
-                    chatState.chatHistory.push({ role: 'assistant', content: fullText, content_type: 'text' });
+                    var jsonResp = await resp.json();
+                    var replyText = (jsonResp.data && jsonResp.data.content) || '';
+                    bubbleEl.innerHTML = formatBotMessage(replyText);
+                    chatState.currentStreamText = replyText;
+                    chatState.chatHistory.push({ role: 'assistant', content: replyText, content_type: 'text' });
                     chatState.chatRounds++;
-                    updateChatListMeta(fullText);
+                    updateChatListMeta(replyText);
                     savePracticeRecord();
                     checkStreakOnChat();
                     chatState.isStreaming = false;
@@ -8114,8 +6966,16 @@ function showClearChatModal() {
         })();
     
 function handleHomeCta() {
-    // 使用新的前端诊断模式
-    startNewDiagnosis();
+    var user = JSON.parse(localStorage.getItem('cet_user') || '{}');
+    var hasDiag = user.personality || (user.diagnosis && user.diagnosis.type);
+    if (hasDiag) {
+        // 已诊断，直接进陪练
+        openChat('companion');
+    } else {
+        // 未诊断，进诊断
+        openChat('diagnosis');
+        setTimeout(function(){ sendSuggestion('开始AI诊断，帮我找出四级薄弱点'); }, 300);
+    }
 }
 
 function selectPlan(plan) {
@@ -9051,14 +7911,11 @@ async function checkChatLimitAsync(userId) {
     if (_cachedLimitInfo && (now - _cachedLimitTime) < LIMIT_CACHE_TTL) {
         var plan = _cachedLimitInfo.plan || 'free';
         if (plan !== 'free') {
-            updateQuotaHint(-1); // 付费用户不显示
             return { limited: false };
         }
         var remaining = _cachedLimitInfo.remaining;
-        updateQuotaHint(remaining);
         if (remaining <= 0) {
-            showUpgradeCard();
-            return { limited: true, message: '' };
+            return { limited: true, message: '今日免费陪练额度已用完（25轮/天），明天恢复。升级冲刺营即可无限对话+逐句批改～' };
         }
         return { limited: false, remaining: remaining };
     }
@@ -9073,78 +7930,27 @@ async function checkChatLimitAsync(userId) {
         
         var verifiedPlan = backendData.plan || 'free';
         if (verifiedPlan !== 'free') {
-            updateQuotaHint(-1);
             return { limited: false };
         }
         var remaining = backendData.remaining;
-        updateQuotaHint(remaining);
         if (remaining <= 0) {
-            showUpgradeCard();
-            return { limited: true, message: '' };
+            return { limited: true, message: '今日免费陪练额度已用完（25轮/天），明天恢复。升级冲刺营即可无限对话+逐句批改～' };
         }
         return { limited: false, remaining: remaining };
     }
     
-    // 后端请求失败，使用本地降级
+    // 后端请求失败，使用本地降级（保留原有逻辑）
     var user = state.userData || {};
     var plan = user.plan || 'free';
     if (plan !== 'free') {
-        updateQuotaHint(-1);
         return { limited: false };
     }
     var usage = getChatUsage();
     var limit = 25;
-    var remaining = Math.max(0, limit - usage.count);
-    updateQuotaHint(remaining);
-    if (remaining <= 0) {
-        showUpgradeCard();
-        return { limited: true, message: '' };
+    if (usage.count >= limit) {
+        return { limited: true, message: '今日免费陪练额度已用完（25轮/天），明天恢复。升级冲刺营即可无限对话+逐句批改～' };
     }
-    return { limited: false, remaining: remaining };
-}
-
-// 更新额度提示
-function updateQuotaHint(remaining) {
-    var hint = document.getElementById('chat-quota-hint');
-    if (!hint) return;
-    if (remaining < 0) {
-        hint.style.display = 'none';
-        return;
-    }
-    if (remaining <= 5) {
-        hint.textContent = '今日还剩' + remaining + '轮免费对话';
-        hint.style.display = '';
-    } else {
-        hint.style.display = 'none';
-    }
-}
-
-// 显示升级卡片
-function showUpgradeCard() {
-    var overlay = document.getElementById('upgrade-overlay');
-    if (!overlay) {
-        var div = document.createElement('div');
-        div.id = 'upgrade-overlay';
-        div.className = 'upgrade-overlay';
-        div.innerHTML = '<div class="upgrade-card" style="position:relative">' +
-            '<button class="upgrade-close" onclick="closeUpgradeCard()">' +
-                '<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
-            '</button>' +
-            '<div class="upgrade-icon">' +
-                '<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>' +
-            '</div>' +
-            '<div class="upgrade-title">今日免费额度已用完</div>' +
-            '<div class="upgrade-subtitle">明天恢复25轮免费对话<br>或升级冲刺营无限对话</div>' +
-            '<a class="upgrade-btn" href="#" onclick="event.preventDefault();closeUpgradeCard();openPayment(\'sprint\')">了解冲刺营</a>' +
-        '</div>';
-        document.body.appendChild(div);
-    }
-    document.getElementById('upgrade-overlay').style.display = 'flex';
-}
-
-function closeUpgradeCard() {
-    var overlay = document.getElementById('upgrade-overlay');
-    if (overlay) overlay.style.display = 'none';
+    return { limited: false, remaining: limit - usage.count };
 }
 
 // 同步版本（用于UI显示等不需要最新数据的场景）
@@ -9384,409 +8190,6 @@ function showDiagnosisReport(text) {
     }
 }
 
-// ===== 新诊断模式 =====
-// 诊断状态
-var diagState = {
-    questions: [],
-    currentQIndex: 0,
-    answers: [],
-    selfEval: [],
-    correctCount: 0,
-    phase: 'loading' // loading, questions, selfeval, generating, done
-};
-
-// 开始新诊断流程
-async function startNewDiagnosis() {
-    var overlay = document.getElementById('diag-overlay');
-    if (!overlay) return;
-    
-    // 重置状态
-    diagState = {
-        questions: [],
-        currentQIndex: 0,
-        answers: [],
-        selfEval: [],
-        correctCount: 0,
-        phase: 'loading'
-    };
-    
-    // 显示界面
-    overlay.classList.add('active');
-    document.getElementById('diag-progress-wrap').style.display = 'none';
-    
-    // 显示加载
-    renderDiagLoading('正在加载题目...');
-    
-    try {
-        // 调用API获取题目
-        var resp = await fetch('/api/diagnosis/questions');
-        var result = await resp.json();
-        
-        if (result.code !== 0 || !result.data || result.data.length === 0) {
-            // fallback到旧模式
-            closeDiagOverlay();
-            // 提示用户使用旧模式
-            showToast('新诊断模式暂不可用，将使用AI对话诊断');
-            openChat('diagnosis');
-            sendSuggestion('开始AI诊断，帮我找出四级薄弱点');
-            return;
-        }
-        
-        diagState.questions = result.data;
-        diagState.phase = 'questions';
-        document.getElementById('diag-progress-wrap').style.display = '';
-        
-        // 开始答题
-        showCurrentQuestion();
-        
-    } catch(e) {
-        console.error('[诊断加载失败]', e);
-        closeDiagOverlay();
-        showToast('加载题目失败，请重试');
-    }
-}
-
-// 渲染加载状态
-function renderDiagLoading(text) {
-    var body = document.getElementById('diag-body');
-    body.innerHTML = 
-        '<div class="diag-loading">' +
-            '<div class="diag-spinner"></div>' +
-            '<div class="diag-loading-text">' + text + '</div>' +
-        '</div>';
-}
-
-// 显示当前题目
-function showCurrentQuestion() {
-    var q = diagState.questions[diagState.currentQIndex];
-    if (!q) {
-        showSelfEval();
-        return;
-    }
-    
-    var progress = Math.round((diagState.currentQIndex / 15) * 100);
-    document.getElementById('diag-progress-fill').style.width = progress + '%';
-    document.getElementById('diag-progress-text').textContent = '第' + (diagState.currentQIndex + 1) + '题/共15题';
-    document.getElementById('diag-correct-count').textContent = '正确: ' + diagState.correctCount;
-    
-    // 简化题目显示（不显示原文区域，因为我们的题目没有原文）
-    var html = 
-        '<div class="diag-question-card">' +
-            '<div class="diag-question-num">第 ' + (diagState.currentQIndex + 1) + ' / 15 题</div>' +
-            '<div class="diag-question-text">' + q.question + '</div>' +
-            '<div class="diag-options">' +
-                renderOptionBtn('A', q.optionA, 'A') +
-                renderOptionBtn('B', q.optionB, 'B') +
-                renderOptionBtn('C', q.optionC, 'C') +
-                renderOptionBtn('D', q.optionD, 'D') +
-            '</div>' +
-        '</div>';
-    
-    document.getElementById('diag-body').innerHTML = html;
-}
-
-// 渲染选项按钮
-function renderOptionBtn(letter, text, value) {
-    return '<div class="diag-option-btn" onclick="selectOption(this, \'' + value + '\')">' +
-        '<div class="diag-option-letter">' + letter + '</div>' +
-        '<div class="diag-option-text">' + text + '</div>' +
-    '</div>';
-}
-
-// 选择选项
-function selectOption(btn, selectedValue) {
-    var q = diagState.questions[diagState.currentQIndex];
-    var correctAnswer = q.correct_answer;
-    var isCorrect = selectedValue === correctAnswer;
-    
-    // 禁用所有按钮
-    var allBtns = document.querySelectorAll('.diag-option-btn');
-    allBtns.forEach(function(b) { b.classList.add('disabled'); });
-    
-    // 标记正确/错误
-    var correctLetter = correctAnswer;
-    allBtns.forEach(function(b) {
-        var btnLetter = b.querySelector('.diag-option-letter').textContent;
-        if (btnLetter === correctLetter) {
-            b.classList.add('correct');
-            b.innerHTML += '<div class="diag-result-icon correct">✓</div>';
-        } else if (b === btn && !isCorrect) {
-            b.classList.add('wrong');
-            b.innerHTML += '<div class="diag-result-icon wrong">✗</div>';
-        }
-    });
-    
-    // 记录答案
-    diagState.answers.push({
-        id: q.id,
-        answer: selectedValue,
-        correct_answer: correctAnswer,
-        isCorrect: isCorrect,
-        ability: q.ability || '细节理解'
-    });
-    
-    if (isCorrect) {
-        diagState.correctCount++;
-        document.getElementById('diag-correct-count').textContent = '正确: ' + diagState.correctCount;
-    }
-    
-    // 1.5秒后自动下一题
-    setTimeout(function() {
-        diagState.currentQIndex++;
-        if (diagState.currentQIndex >= 15) {
-            showSelfEval();
-        } else {
-            showCurrentQuestion();
-        }
-    }, 1500);
-}
-
-// 显示自评问卷
-function showSelfEval() {
-    diagState.phase = 'selfeval';
-    
-    var progress = Math.round((diagState.currentQIndex / 15) * 100);
-    document.getElementById('diag-progress-fill').style.width = progress + '%';
-    document.getElementById('diag-progress-text').textContent = '自评问卷';
-    document.getElementById('diag-correct-count').textContent = '正确: ' + diagState.correctCount;
-    
-    var html = 
-        '<div class="diag-eval-section">' +
-            '<div class="diag-eval-title">📋 自我评估</div>' +
-            '<div class="diag-eval-subtitle">根据你的实际情况选择</div>' +
-            
-            '<div class="diag-eval-item">' +
-                '<div class="diag-eval-label">🎧 听力能力</div>' +
-                '<div class="diag-eval-options">' +
-                    '<div class="diag-eval-btn" onclick="selectEval(this, \'听力\', \'A\')">' +
-                        '<div class="eval-letter">A</div><div class="eval-desc">中等水平</div>' +
-                    '</div>' +
-                    '<div class="diag-eval-btn" onclick="selectEval(this, \'听力\', \'B\')">' +
-                        '<div class="eval-letter">B</div><div class="eval-desc">较弱</div>' +
-                    '</div>' +
-                    '<div class="diag-eval-btn" onclick="selectEval(this, \'听力\', \'C\')">' +
-                        '<div class="eval-letter">C</div><div class="eval-desc">比较薄弱</div>' +
-                    '</div>' +
-                '</div>' +
-            '</div>' +
-            
-            '<div class="diag-eval-item">' +
-                '<div class="diag-eval-label">✍️ 写作能力</div>' +
-                '<div class="diag-eval-options">' +
-                    '<div class="diag-eval-btn" onclick="selectEval(this, \'写作\', \'A\')">' +
-                        '<div class="eval-letter">A</div><div class="eval-desc">中等水平</div>' +
-                    '</div>' +
-                    '<div class="diag-eval-btn" onclick="selectEval(this, \'写作\', \'B\')">' +
-                        '<div class="eval-letter">B</div><div class="eval-desc">较弱</div>' +
-                    '</div>' +
-                    '<div class="diag-eval-btn" onclick="selectEval(this, \'写作\', \'C\')">' +
-                        '<div class="eval-letter">C</div><div class="eval-desc">比较薄弱</div>' +
-                    '</div>' +
-                '</div>' +
-            '</div>' +
-            
-            '<div class="diag-eval-item">' +
-                '<div class="diag-eval-label">🔄 翻译能力</div>' +
-                '<div class="diag-eval-options">' +
-                    '<div class="diag-eval-btn" onclick="selectEval(this, \'翻译\', \'A\')">' +
-                        '<div class="eval-letter">A</div><div class="eval-desc">中等水平</div>' +
-                    '</div>' +
-                    '<div class="diag-eval-btn" onclick="selectEval(this, \'翻译\', \'B\')">' +
-                        '<div class="eval-letter">B</div><div class="eval-desc">较弱</div>' +
-                    '</div>' +
-                    '<div class="diag-eval-btn" onclick="selectEval(this, \'翻译\', \'C\')">' +
-                        '<div class="eval-letter">C</div><div class="eval-desc">比较薄弱</div>' +
-                    '</div>' +
-                '</div>' +
-            '</div>' +
-            
-            '<button class="diag-generate-btn" id="diag-generate-btn" onclick="generateDiagReport()" disabled>' +
-                '<span>✨</span> 生成诊断报告' +
-            '</button>' +
-        '</div>';
-    
-    document.getElementById('diag-body').innerHTML = html;
-}
-
-// 选择自评选项
-function selectEval(btn, dimension, value) {
-    // 取消该维度的其他选择
-    var siblings = btn.parentElement.querySelectorAll('.diag-eval-btn');
-    siblings.forEach(function(s) { s.classList.remove('selected'); });
-    btn.classList.add('selected');
-    
-    // 更新状态
-    var found = false;
-    for (var i = 0; i < diagState.selfEval.length; i++) {
-        if (diagState.selfEval[i].dimension === dimension) {
-            diagState.selfEval[i].answer = value;
-            found = true;
-            break;
-        }
-    }
-    if (!found) {
-        diagState.selfEval.push({ dimension: dimension, answer: value });
-    }
-    
-    // 检查是否所有选项都已选择
-    checkEvalComplete();
-}
-
-// 检查自评是否完成
-function checkEvalComplete() {
-    var btn = document.getElementById('diag-generate-btn');
-    if (!btn) return;
-    
-    var evalDims = ['听力', '写作', '翻译'];
-    var allSelected = evalDims.every(function(dim) {
-        return diagState.selfEval.some(function(e) { return e.dimension === dim; });
-    });
-    
-    btn.disabled = !allSelected;
-}
-
-// 生成诊断报告
-async function generateDiagReport() {
-    diagState.phase = 'generating';
-    
-    // 显示加载
-    document.getElementById('diag-body').innerHTML = 
-        '<div class="diag-loading">' +
-            '<div class="diag-spinner"></div>' +
-            '<div class="diag-loading-text">AI正在分析你的答题情况...</div>' +
-        '</div>';
-    
-    try {
-        var resp = await fetch('/api/diagnosis/report', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                answers: diagState.answers,
-                self_eval: diagState.selfEval
-            })
-        });
-        
-        var result = await resp.json();
-        
-        if (result.code !== 0 || !result.data) {
-            throw new Error(result.error || '生成报告失败');
-        }
-        
-        // 构建报告文本（兼容旧格式）
-        var reportText = buildReportText(result.data);
-        
-        // 显示报告
-        diagState.phase = 'done';
-        showDiagnosisReport(reportText);
-        
-        // 关闭诊断界面
-        closeDiagOverlay();
-        
-    } catch(e) {
-        console.error('[生成报告失败]', e);
-        document.getElementById('diag-body').innerHTML = 
-            '<div class="diag-loading">' +
-                '<div class="diag-loading-text">生成报告失败: ' + e.message + '</div>' +
-                '<button class="diag-submit-btn" onclick="startNewDiagnosis()" style="margin-top:20px">重新诊断</button>' +
-            '</div>';
-    }
-}
-
-// 构建报告文本（兼容旧格式）
-function buildReportText(data) {
-    // 提取result_tag中的维度分数
-    var dims = {};
-    if (data.result_tag) {
-        var parts = data.result_tag.split('|');
-        parts.forEach(function(p) {
-            var kv = p.split('=');
-            if (kv.length === 2) {
-                var key = kv[0].trim();
-                var val = parseInt(kv[1]) || 0;
-                if (['细节定位', '推理判断', '同义替换', '主旨归纳', '态度判断'].indexOf(key) !== -1) {
-                    dims[key] = val;
-                }
-            }
-        });
-    }
-    
-    // 从dimension_scores补充
-    if (data.dimension_scores) {
-        Object.keys(data.dimension_scores).forEach(function(k) {
-            if (['细节定位', '推理判断', '同义替换', '主旨归纳', '态度判断'].indexOf(k) !== -1) {
-                dims[k] = data.dimension_scores[k] || dims[k] || 0;
-            }
-        });
-    }
-    
-    // 计算总评分
-    var totalScore = 0;
-    var count = 0;
-    Object.keys(dims).forEach(function(k) {
-        totalScore += dims[k];
-        count++;
-    });
-    if (count > 0) totalScore = Math.round(totalScore / count);
-    
-    // 构建兼容格式
-    var text = '【五维诊断】\n';
-    Object.keys(dims).forEach(function(k) {
-        text += k + ': ' + dims[k] + '\n';
-    });
-    text += '\n综合评分: ' + totalScore + '\n';
-    text += '\n你是"' + (data.personality || '佛系随缘') + '"！\n';
-    text += '\n' + (data.roast || '') + '\n';
-    text += '\n[RESULT:type=' + (data.personality || '佛系随缘') + '|score=' + totalScore;
-    Object.keys(dims).forEach(function(k) {
-        text += '|' + k + '=' + dims[k];
-    });
-    text += ']';
-    
-    // 保存到reportData
-    reportData = {
-        riskLevel: totalScore >= 60 ? 'low' : totalScore >= 40 ? 'mid' : 'high',
-        totalScore: totalScore,
-        dims: dims,
-        weakDims: buildWeakDims(dims),
-        advice: (data.suggestions || []).join('\n'),
-        tips: data.suggestions || [],
-        personality: data.personality || '佛系随缘',
-        roast: data.roast || '',
-        shareText: data.share_text || '',
-        correctCount: data.correct_count || diagState.correctCount,
-        totalCount: data.total_count || 15,
-        accuracy: data.accuracy || Math.round(diagState.correctCount / 15 * 100)
-    };
-    
-    return text;
-}
-
-// 构建弱维度列表
-function buildWeakDims(dims) {
-    var arr = Object.keys(dims).map(function(k) {
-        return { name: k, score: dims[k] };
-    }).sort(function(a, b) {
-        return a.score - b.score;
-    });
-    return arr.slice(0, 2);
-}
-
-// 退出诊断
-function exitDiagnosis() {
-    if (diagState.phase === 'generating') {
-        if (!confirm('报告生成中，确定要退出吗？')) return;
-    }
-    closeDiagOverlay();
-}
-
-// 关闭诊断界面
-function closeDiagOverlay() {
-    var overlay = document.getElementById('diag-overlay');
-    if (overlay) {
-        overlay.classList.remove('active');
-    }
-}
-
 // 关闭报告页
 function closeReportPage() {
     var overlay = document.getElementById('report-overlay');
@@ -9806,146 +8209,6 @@ function continuePractice() {
     setTimeout(function() {
         openChat('companion');
     }, 350);
-}
-
-// ===== 学习计划系统 =====
-var planState = {
-    data: null,
-    dims: null
-};
-
-function generateLearningPlan() {
-    var dims = reportData ? reportData.dims : null;
-    if (!dims) {
-        showToast('请先完成诊断测试');
-        return;
-    }
-    
-    planState.dims = dims;
-    showPlanOverlay();
-    
-    // 调用API生成计划
-    var systemPrompt = '你是四级备考规划专家。用户已完成能力诊断，五维分数如下：' + 
-        JSON.stringify(dims) + '。请根据这些分数生成4周学习计划，返回JSON格式：{"weeks":[{"week":1,"focus":"本周重点","tasks":["任务1","任务2"]},{"week":2,"focus":"本周重点","tasks":["任务1","任务2"]},{"week":3,"focus":"本周重点","tasks":["任务1","任务2"]},{"week":4,"focus":"本周重点","tasks":["任务1","任务2"]}]} 只返回JSON。';
-    
-    fetch('/api/deepseek/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            messages: [
-                { role: 'system', content: systemPrompt },
-                { role: 'user', content: '请根据我的诊断报告生成4周学习计划' }
-            ],
-            stream: false
-        })
-    })
-    .then(function(r){ return r.json(); })
-    .then(function(resp){
-        if (resp.code === 0 && resp.data && resp.data.content) {
-            try {
-                var jsonMatch = resp.data.content.match(/\{[\s\S]*\}/);
-                if (jsonMatch) {
-                    planState.data = JSON.parse(jsonMatch[0]);
-                } else {
-                    planState.data = { weeks: generateDefaultPlan(dims) };
-                }
-            } catch(e) {
-                planState.data = { weeks: generateDefaultPlan(dims) };
-            }
-        } else {
-            planState.data = { weeks: generateDefaultPlan(dims) };
-        }
-        saveLearningPlan(planState.data);
-        renderPlanContent();
-    })
-    .catch(function(){
-        planState.data = { weeks: generateDefaultPlan(dims) };
-        saveLearningPlan(planState.data);
-        renderPlanContent();
-    });
-}
-
-function generateDefaultPlan(dims) {
-    var tasks = [];
-    var weekTasks = [
-        { focus: '听力强化', tasks: ['完成2篇听力练习', '背诵30个高频词汇', '练习1套真题'] },
-        { focus: '阅读提升', tasks: ['完成3篇阅读练习', '整理高频同义替换', '分析长难句结构'] },
-        { focus: '写译突破', tasks: ['背诵5个写作模板', '练习1篇作文', '整理翻译高频词组'] },
-        { focus: '综合冲刺', tasks: ['完成1套全真模拟', '复习错题本', '查漏补缺'] }
-    ];
-    return weekTasks;
-}
-
-function saveLearningPlan(plan) {
-    try {
-        var profile = JSON.parse(localStorage.getItem('cet4_user_profile') || '{}');
-        profile.learning_plan = plan;
-        profile.plan_updated = getTodayStr();
-        localStorage.setItem('cet4_user_profile', JSON.stringify(profile));
-    } catch(e) {}
-}
-
-function getLearningPlan() {
-    try {
-        var profile = JSON.parse(localStorage.getItem('cet4_user_profile') || '{}');
-        return profile.learning_plan || null;
-    } catch(e) { return null; }
-}
-
-function showPlanOverlay() {
-    var overlay = document.getElementById('plan-overlay');
-    if (!overlay) {
-        var div = document.createElement('div');
-        div.id = 'plan-overlay';
-        div.className = 'plan-overlay';
-        div.innerHTML = '<div class="plan-header">' +
-            '<button class="plan-back" onclick="closePlanOverlay()">' +
-                '<svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>' +
-            '</button>' +
-            '<div class="plan-title">4周学习计划</div>' +
-        '</div>' +
-        '<div class="plan-body" id="plan-body">' +
-            '<div class="plan-loading" id="plan-loading">' +
-                '<div class="plan-loading-spinner"></div>' +
-                '<div class="plan-loading-text">AI正在生成学习计划...</div>' +
-            '</div>' +
-        '</div>';
-        document.body.appendChild(div);
-    }
-    document.getElementById('plan-loading').style.display = '';
-    document.getElementById('plan-body').innerHTML = '<div class="plan-loading" id="plan-loading"><div class="plan-loading-spinner"></div><div class="plan-loading-text">AI正在生成学习计划...</div></div>';
-    document.getElementById('plan-overlay').style.display = 'flex';
-}
-
-function closePlanOverlay() {
-    var overlay = document.getElementById('plan-overlay');
-    if (overlay) overlay.style.display = 'none';
-}
-
-function renderPlanContent() {
-    var body = document.getElementById('plan-body');
-    if (!body || !planState.data || !planState.data.weeks) return;
-    
-    var html = '';
-    planState.data.weeks.forEach(function(week) {
-        html += '<div class="plan-week-card">' +
-            '<div class="plan-week-header">' +
-                '<div class="plan-week-title">第' + week.week + '周</div>' +
-                '<div class="plan-week-badge">Week ' + week.week + '</div>' +
-            '</div>';
-        if (week.focus) {
-            html += '<div class="plan-focus">重点：' + week.focus + '</div>';
-        }
-        html += '<ul class="plan-tasks">';
-        if (week.tasks && week.tasks.length) {
-            week.tasks.forEach(function(task) {
-                html += '<li class="plan-task"><span class="plan-task-dot"></span>' + task + '</li>';
-            });
-        }
-        html += '</ul></div>';
-    });
-    
-    body.innerHTML = html;
 }
 
 // 打开报告支付弹窗
@@ -10276,31 +8539,6 @@ function drawReportShareImage() {
         </div>
     </div>
 
-    <!-- 新诊断模式界面 -->
-    <div class="diag-overlay" id="diag-overlay">
-        <div class="diag-header">
-            <button class="diag-back-btn" id="diag-back-btn" onclick="exitDiagnosis()">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="15 18 9 12 15 6"/>
-                </svg>
-            </button>
-            <div class="diag-title" id="diag-title">四级诊断</div>
-            <div style="width:36px"></div>
-        </div>
-        <div class="diag-progress-wrap" id="diag-progress-wrap" style="display:none">
-            <div class="diag-progress-info">
-                <span id="diag-progress-text">第1题/共15题</span>
-                <span id="diag-correct-count">正确: 0</span>
-            </div>
-            <div class="diag-progress-bar">
-                <div class="diag-progress-fill" id="diag-progress-fill" style="width:0%"></div>
-            </div>
-        </div>
-        <div class="diag-body" id="diag-body">
-            <!-- 动态内容 -->
-        </div>
-    </div>
-
     <!-- 诊断报告页 -->
     <div class="report-overlay" id="report-overlay" style="display:none">
         <div class="report-header">
@@ -10314,7 +8552,7 @@ function drawReportShareImage() {
         <div class="report-content" id="report-content">
             <!-- 动态内容由JS填充 -->
         </div>
-        <div class="report-cta-section" id="report-cta-section">
+        <div class="report-cta-section">
             <button class="report-cta-btn" onclick="openReportPayModal()">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M12 2L2 7l10 5 10-5-10-5z"/>
@@ -10323,8 +8561,7 @@ function drawReportShareImage() {
                 </svg>
                 <span id="report-cta-text">升级冲刺营，针对性提升</span>
             </button>
-            <button class="report-secondary-btn" onclick="generateLearningPlan()">生成4周学习计划</button>
-            <button class="report-secondary-btn" style="margin-top:10px" onclick="continuePractice()">继续AI陪练</button>
+            <button class="report-secondary-btn" onclick="continuePractice()">继续AI陪练</button>
         </div>
     </div>
 
@@ -10395,7 +8632,6 @@ function drawReportShareImage() {
 
         function showWrongBook() {
             var list = getWrongQuestions();
-            var unreviewedCount = list.filter(function(q){return !q.reviewed}).length;
             var overlay = document.createElement('div');
             overlay.className = 'chat-clear-modal';
             overlay.id = 'wrong-book-modal';
@@ -10413,153 +8649,22 @@ function drawReportShareImage() {
                     html += '</div>';
                 }
             }
-            html += '<div class="btn-row" style="margin-top:12px">';
-            if (unreviewedCount > 0) {
-                html += '<button class="btn-confirm" style="background:#6C5CE7;flex:2" onclick="startReview()">开始复习(' + unreviewedCount + '题)</button>';
-            }
-            html += '<button class="btn-cancel" onclick="closeWrongBook()">关闭</button></div></div>';
+            html += '<div class="btn-row"><button class="btn-cancel" onclick="closeWrongBook()">关闭</button></div></div>';
             overlay.innerHTML = html;
             document.body.appendChild(overlay);
         }
         function closeWrongBook() { var m = document.querySelector('#wrong-book-modal'); if(m) m.remove(); }
 
-        // ===== 错题复习系统 =====
-        var reviewState = {
-            questions: [],
-            currentIndex: 0,
-            mastered: 0,
-            total: 0
-        };
-
-        function startReview() {
-            closeWrongBook();
-            var allWrong = getWrongQuestions().filter(function(q){return !q.reviewed});
-            if (allWrong.length === 0) {
-                showToast('暂无需要复习的错题');
-                return;
-            }
-            reviewState.questions = allWrong;
-            reviewState.currentIndex = 0;
-            reviewState.mastered = 0;
-            reviewState.total = allWrong.length;
-            showReviewOverlay();
-        }
-
-        function showReviewOverlay() {
-            var overlay = document.getElementById('review-overlay');
-            if (!overlay) {
-                var div = document.createElement('div');
-                div.id = 'review-overlay';
-                div.className = 'review-overlay';
-                div.innerHTML = '<div class="review-header">' +
-                    '<button class="review-back" onclick="closeReviewOverlay()">' +
-                        '<svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>' +
-                    '</button>' +
-                    '<div class="review-title">错题复习</div>' +
-                    '<div class="review-progress" id="review-progress"></div>' +
-                '</div>' +
-                '<div class="review-body" id="review-body"></div>';
-                document.body.appendChild(div);
-            }
-            renderReviewQuestion();
-            document.getElementById('review-overlay').style.display = 'flex';
-        }
-
-        function closeReviewOverlay() {
-            var overlay = document.getElementById('review-overlay');
-            if (overlay) overlay.style.display = 'none';
-        }
-
-        function renderReviewQuestion() {
-            var q = reviewState.questions[reviewState.currentIndex];
-            var progress = document.getElementById('review-progress');
-            var body = document.getElementById('review-body');
-            progress.textContent = (reviewState.currentIndex + 1) + '/' + reviewState.total;
-            
-            var options = ['A', 'B', 'C', 'D'];
-            var optionTexts = [q.optionA, q.optionB, q.optionC, q.optionD];
-            
-            var html = '<div class="review-question-card">' +
-                '<div class="review-q-type">' + (q.type||'') + ' · ' + (q.difficulty||'') + '</div>' +
-                '<div class="review-q-text">' + (q.question||'') + '</div>' +
-                '<div class="review-options">';
-            
-            for (var i = 0; i < 4; i++) {
-                if (optionTexts[i]) {
-                    html += '<div class="review-option" onclick="selectReviewOption(this, '' + options[i] + '', '' + q.id + '')">' +
-                        '<div class="review-option-letter">' + options[i] + '</div>' +
-                        '<div>' + optionTexts[i] + '</div>' +
-                    '</div>';
-                }
-            }
-            html += '</div></div>';
-            body.innerHTML = html;
-        }
-
-        function selectReviewOption(el, selected, qId) {
-            var q = reviewState.questions[reviewState.currentIndex];
-            var isCorrect = selected === q.answer;
-            
-            // 禁用所有选项
-            var options = document.querySelectorAll('.review-option');
-            options.forEach(function(opt) {
-                opt.style.pointerEvents = 'none';
-                var letter = opt.querySelector('.review-option-letter').textContent;
-                if (letter === q.answer) {
-                    opt.classList.add('correct');
-                } else if (opt === el && !isCorrect) {
-                    opt.classList.add('wrong');
-                }
-            });
-            
-            if (isCorrect) {
-                reviewState.mastered++;
-                markReviewed(qId);
-                showToast('已掌握');
-            } else {
-                showToast('再想想，下次继续');
-            }
-            
-            // 延迟进入下一题
-            setTimeout(function() {
-                reviewState.currentIndex++;
-                if (reviewState.currentIndex >= reviewState.total) {
-                    showReviewResult();
-                } else {
-                    renderReviewQuestion();
-                }
-            }, 1200);
-        }
-
-        function showReviewResult() {
-            var body = document.getElementById('review-body');
-            body.innerHTML = '<div class="review-result-card">' +
-                '<div class="review-result-icon">' +
-                    '<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>' +
-                '</div>' +
-                '<div class="review-result-title">复习完成</div>' +
-                '<div class="review-result-sub">本次复习结果</div>' +
-                '<div class="review-result-stats">' +
-                    '<div class="review-stat"><div class="review-stat-num">' + reviewState.mastered + '</div><div class="review-stat-label">掌握</div></div>' +
-                    '<div class="review-stat"><div class="review-stat-num">' + reviewState.total + '</div><div class="review-stat-label">共复习</div></div>' +
-                '</div>' +
-                '<button class="review-action-btn" onclick="closeReviewOverlay();showWrongBook();">返回错题本</button>' +
-            '</div>';
-        }
-
     <script>
     // ===== 作文批改系统 =====
     var essayState = {
         selectedTopic: '',
-        selectedTopicId: '',
         isSubmitting: false,
-        lastResult: null,
-        topics: []
+        lastResult: null
     };
 
     function openEssayOverlay() {
         essayState.selectedTopic = '';
-        essayState.selectedTopicId = '';
         essayState.isSubmitting = false;
         var textarea = document.getElementById('essay-textarea');
         if (textarea) textarea.value = '';
@@ -10572,53 +8677,20 @@ function drawReportShareImage() {
         if (inputBody) inputBody.style.display = '';
         if (resultSection) resultSection.style.display = 'none';
         document.getElementById('essay-overlay').classList.add('show');
-        // 加载作文题目
-        loadEssayTopics();
-    }
-
-    function loadEssayTopics() {
-        var grid = document.getElementById('essay-topic-grid');
-        if (!grid) return;
-        grid.innerHTML = '<div style="text-align:center;padding:20px;color:#94A3B8">加载中...</div>';
-        fetch('/api/deepseek/quiz-topics')
-            .then(function(r){ return r.json(); })
-            .then(function(resp){
-                if (resp.code === 0 && resp.data) {
-                    essayState.topics = resp.data;
-                    renderEssayTopics();
-                } else {
-                    grid.innerHTML = '<div style="text-align:center;padding:20px;color:#94A3B8">暂无题目</div>';
-                }
-            })
-            .catch(function(){
-                grid.innerHTML = '<div style="text-align:center;padding:20px;color:#94A3B8">加载失败，请重试</div>';
-            });
-    }
-
-    function renderEssayTopics() {
-        var grid = document.getElementById('essay-topic-grid');
-        if (!grid || !essayState.topics.length) return;
-        var html = '';
-        essayState.topics.forEach(function(topic) {
-            html += '<div class="essay-topic-btn" onclick="selectEssayTopic(this, \'' + topic.title.replace(/'/g, "\\'") + '\', \'' + topic.id + '\')">' + topic.title + '</div>';
-        });
-        grid.innerHTML = html;
     }
 
     function closeEssayOverlay() {
         document.getElementById('essay-overlay').classList.remove('show');
     }
 
-    function selectEssayTopic(btn, topic, topicId) {
+    function selectEssayTopic(btn, topic) {
         var topicBtns = document.querySelectorAll('.essay-topic-btn');
         topicBtns.forEach(function(b) { b.classList.remove('selected'); });
         if (essayState.selectedTopic === topic) {
             essayState.selectedTopic = '';
-            essayState.selectedTopicId = '';
         } else {
             btn.classList.add('selected');
             essayState.selectedTopic = topic;
-            essayState.selectedTopicId = topicId || '';
         }
     }
 
@@ -10633,83 +8705,6 @@ function drawReportShareImage() {
     }
 
     async function submitEssay() {
-        // 优先使用结构化API
-        try {
-            await submitEssayWithAPI();
-        } catch (e) {
-            console.error('结构化API失败，回退到聊天方式');
-            await submitEssayFallback();
-        }
-    }
-
-    async function submitEssayWithAPI() {
-        var textarea = document.getElementById('essay-textarea');
-        var essayText = textarea.value.trim();
-
-        if (!essayText || essayText.length < 20) {
-            showToast('请输入至少20个词的作文内容');
-            return;
-        }
-
-        if (essayState.isSubmitting) return;
-        essayState.isSubmitting = true;
-
-        var inputBody = document.getElementById('essay-input-body');
-        var resultSection = document.getElementById('essay-result-section');
-        if (inputBody) inputBody.style.display = 'none';
-        if (resultSection) {
-            resultSection.style.display = '';
-            resultSection.innerHTML = '<div class="essay-loading"><div class="essay-loading-spinner"></div><div class="essay-loading-text">AI正在批改中，请稍候...</div></div>';
-        }
-
-        var topicPrefix = essayState.selectedTopic ? '【题目类型】' + essayState.selectedTopic + '\n' : '';
-
-        // 结构化批改的系统提示
-        var systemPrompt = '你是一个专业的四级英语作文批改老师。请对用户的作文进行批改，并严格按以下JSON格式返回：\n\n{\n  "total_score": 12,\n  "dimensions": {\n    "content": 4,\n    "organization": 4,\n    "language": 4\n  },\n  "sentences": [\n    {\n      "original": "原句内容",\n      "issue": "问题描述",\n      "suggestion": "修改建议"\n    }\n  ],\n  "overall_comment": "总体评价和建议"\n}\n\n注意：总分15分，三个维度各5分，只指出2-4个最重要的问题句，只返回JSON。';
-
-        var userMessage = topicPrefix + '【我的作文】\n' + essayText;
-
-        try {
-            var resp = await fetch('/api/deepseek/chat', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    system: systemPrompt,
-                    messages: [{ role: 'user', content: userMessage }],
-                    temperature: 0.3,
-                    max_tokens: 2000
-                })
-            });
-
-            if (!resp.ok) {
-                throw new Error('API请求失败');
-            }
-
-            var data = await resp.json();
-            var content = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
-
-            if (!content) {
-                throw new Error('无法获取批改结果');
-            }
-
-            // 解析JSON
-            var jsonMatch = content.match(/\{[\s\S]*\}/);
-            if (jsonMatch) {
-                var result = JSON.parse(jsonMatch[0]);
-                essayState.lastResult = result;
-                renderStructuredEssayResult(result, essayText);
-            } else {
-                throw new Error('响应格式错误');
-            }
-        } catch (e) {
-            console.error('作文批改失败:', e);
-            throw e; // 向上抛出错误，让submitEssay回退
-        }
-
-        essayState.isSubmitting = false;
-    }
-
-    async function submitEssayFallback() {
         var textarea = document.getElementById('essay-textarea');
         var essayText = textarea.value.trim();
         
@@ -10738,134 +8733,31 @@ function drawReportShareImage() {
             return;
         }
         
+        var topicPrefix = essayState.selectedTopic ? '【题目类型】' + essayState.selectedTopic + '\n' : '';
+        var message = topicPrefix + '【我的作文】\n' + essayText + '\n\n请按以下格式批改：\n\n【评分】X/15分\n【字数】XX词\n\n【逐句批改】\n原文：xxx\n问题：xxx\n改写：xxx\n\n【核心建议】3条最重要建议\n\n【改写范文】完整改写版本';
+        
         try {
-            // 调用结构化批改API
-            var resp = await fetch('/api/deepseek/essay-grade', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    essay_text: essayText,
-                    topic: essayState.selectedTopic
-                })
-            });
+            switchTab('diagnosis');
+            await new Promise(function(resolve) { setTimeout(resolve, 300); });
             
-            var result = await resp.json();
-            incrementChatUsage();
+            if (chatState.botId !== '7637702903679631395') {
+                openChat('companion');
+                await new Promise(function(resolve) { setTimeout(resolve, 200); });
+            }
             
-            if (result.code === 0 && result.data) {
-                if (result.data.parse_error) {
-                    // JSON解析失败，显示原始文本
-                    showEssayResultRaw(result.data.raw);
-                } else {
-                    // 结构化结果显示
-                    showEssayResultStructured(result.data);
-                }
-            } else {
-                showToast(result.error || '批改失败，请重试');
-                closeEssayOverlay();
+            var input = document.getElementById('chat-input');
+            if (input) {
+                input.value = message;
+                essayState.pendingResponse = true;
+                incrementChatUsage();
+                await sendMessage();
             }
         } catch (e) {
             console.error('Essay submit error:', e);
             showToast('提交失败，请重试');
             closeEssayOverlay();
+            essayState.isSubmitting = false;
         }
-        
-        essayState.isSubmitting = false;
-    }
-
-    function showEssayResultStructured(data) {
-        var resultSection = document.getElementById('essay-result-section');
-        if (!resultSection) return;
-        
-        var totalScore = data.total_score || 0;
-        var contentScore = data.content_score || 0;
-        var orgScore = data.organization_score || 0;
-        var langScore = data.language_score || 0;
-        
-        var scoreLevel = totalScore >= 12 ? '优秀' : totalScore >= 9 ? '良好' : totalScore >= 6 ? '及格' : '需提升';
-        
-        var html = '<div class="essay-result-section">' +
-            '<div class="essay-result-header">' +
-                '<div class="essay-score-ring">' +
-                    '<svg viewBox="0 0 100 100">' +
-                        '<circle class="bg" cx="50" cy="50" r="42"/>' +
-                        '<circle class="progress" cx="50" cy="50" r="42" stroke-dasharray="264" stroke-dashoffset="' + (264 - 264 * totalScore / 15) + '"/>' +
-                    '</svg>' +
-                    '<div class="essay-score-text">' + totalScore + '</div>' +
-                '</div>' +
-                '<div class="essay-result-title">' + scoreLevel + '水平</div>' +
-                '<div class="essay-result-sub">总分 ' + totalScore + '/15 · 内容' + contentScore + ' · 结构' + orgScore + ' · 语言' + langScore + '</div>' +
-            '</div>' +
-            '<div class="essay-result-body">';
-        
-        // 三维度进度条
-        html += '<div style="margin-bottom:20px">' +
-            '<div style="font-size:14px;font-weight:600;color:#1a1a2e;margin-bottom:12px">分项评分</div>' +
-            '<div style="margin-bottom:8px">' +
-                '<div style="display:flex;justify-content:space-between;font-size:12px;color:#64748B;margin-bottom:4px">' +
-                    '<span>内容得分</span><span>' + contentScore + '/5</span>' +
-                '</div>' +
-                '<div style="height:6px;background:#F1F5F9;border-radius:3px;overflow:hidden">' +
-                    '<div style="height:100%;width:' + (contentScore * 20) + '%;background:#6C5CE7;border-radius:3px"></div>' +
-                '</div>' +
-            '</div>' +
-            '<div style="margin-bottom:8px">' +
-                '<div style="display:flex;justify-content:space-between;font-size:12px;color:#64748B;margin-bottom:4px">' +
-                    '<span>结构得分</span><span>' + orgScore + '/5</span>' +
-                '</div>' +
-                '<div style="height:6px;background:#F1F5F9;border-radius:3px;overflow:hidden">' +
-                    '<div style="height:100%;width:' + (orgScore * 20) + '%;background:#00B894;border-radius:3px"></div>' +
-                '</div>' +
-            '</div>' +
-            '<div style="margin-bottom:8px">' +
-                '<div style="display:flex;justify-content:space-between;font-size:12px;color:#64748B;margin-bottom:4px">' +
-                    '<span>语言得分</span><span>' + langScore + '/5</span>' +
-                '</div>' +
-                '<div style="height:6px;background:#F1F5F9;border-radius:3px;overflow:hidden">' +
-                    '<div style="height:100%;width:' + (langScore * 20) + '%;background:#F39C12;border-radius:3px"></div>' +
-                '</div>' +
-            '</div>' +
-        '</div>';
-        
-        // 逐句批改
-        if (data.sentences && data.sentences.length > 0) {
-            html += '<div style="font-size:14px;font-weight:600;color:#1a1a2e;margin-bottom:12px">逐句批改</div>';
-            data.sentences.forEach(function(s) {
-                html += '<div class="essay-sentence-card">' +
-                    '<div class="essay-sentence-original">' + (s.original || '') + '</div>' +
-                    '<div class="essay-sentence-reason">' + (s.issue || '') + '</div>' +
-                    '<div class="essay-sentence-revised">' + (s.suggestion || '') + '</div>' +
-                '</div>';
-            });
-        }
-        
-        // 总评
-        if (data.overall_comment) {
-            html += '<div class="essay-advice-section">' +
-                '<div class="essay-advice-title">' +
-                    '<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>' +
-                    '总评' +
-                '</div>' +
-                '<div style="font-size:14px;color:#475569;line-height:1.7">' + data.overall_comment + '</div>' +
-            '</div>';
-        }
-        
-        html += '</div></div>';
-        resultSection.innerHTML = html;
-    }
-
-    function showEssayResultRaw(rawText) {
-        var resultSection = document.getElementById('essay-result-section');
-        if (!resultSection) return;
-        resultSection.innerHTML = '<div class="essay-result-section">' +
-            '<div class="essay-result-header" style="background:linear-gradient(135deg,#6C5CE7,#A29BFE)">' +
-                '<div style="font-size:18px;font-weight:700;margin-bottom:4px">批改结果</div>' +
-                '<div style="font-size:13px;opacity:0.9">详细批改如下</div>' +
-            '</div>' +
-            '<div class="essay-result-body">' +
-                '<div style="font-size:14px;color:#1a1a2e;line-height:1.8;white-space:pre-wrap;background:#F8F9FA;padding:16px;border-radius:12px">' + rawText + '</div>' +
-            '</div>' +
-        '</div>';
     }
 
     function parseEssayResultFromText(text) {
@@ -11049,386 +8941,6 @@ function drawReportShareImage() {
         }
         showToast('结果已保存');
     }
-
-
-    // ===== 错题复习系统 =====
-    var reviewState = {
-        questions: [],
-        currentIndex: 0,
-        masteredCount: 0,
-        totalCount: 0
-    };
-
-    function getWrongQuestions() {
-        try {
-            var data = localStorage.getItem('cet_wrong_questions');
-            return data ? JSON.parse(data) : [];
-        } catch (e) {
-            return [];
-        }
-    }
-
-    function saveWrongQuestion(question) {
-        var questions = getWrongQuestions();
-        var exists = questions.some(function(q) {
-            return q.question === question.question && q.type === question.type;
-        });
-        if (!exists) {
-            questions.push({
-                ...question,
-                reviewed: false,
-                addedAt: Date.now()
-            });
-            localStorage.setItem('cet_wrong_questions', JSON.stringify(questions));
-        }
-        updateWrongBookBadge();
-            // 预渲染数据页面
-            try { renderDashboard(); } catch(e) { console.error('renderDashboard error:', e); }
-    }
-
-    function updateWrongBookBadge() {
-        var questions = getWrongQuestions();
-        var unreviewedCount = questions.filter(function(q) { return !q.reviewed; }).length;
-        var badges = document.querySelectorAll('.wrong-book-badge');
-        badges.forEach(function(badge) {
-            if (badge) {
-                badge.textContent = unreviewedCount > 0 ? unreviewedCount + '道待复习' : '';
-            }
-        });
-    }
-
-    function openReview() {
-        var questions = getWrongQuestions().filter(function(q) { return !q.reviewed; });
-        reviewState.questions = questions;
-        reviewState.currentIndex = 0;
-        reviewState.masteredCount = 0;
-        reviewState.totalCount = questions.length;
-
-        if (questions.length === 0) {
-            document.getElementById('review-body').innerHTML = '<div class="review-empty"><div class="review-empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div><div class="review-empty-title">太棒了！</div><div class="review-empty-desc">暂无待复习的错题，继续保持！</div></div>';
-            document.getElementById('review-progress').style.display = 'none';
-        } else {
-            document.getElementById('review-progress').style.display = '';
-            renderReviewQuestion();
-        }
-
-        updateReviewProgress();
-        document.getElementById('review-overlay').classList.add('show');
-    }
-
-    function closeReview() {
-        document.getElementById('review-overlay').classList.remove('show');
-        updateWrongBookBadge();
-            // 预渲染数据页面
-            try { renderDashboard(); } catch(e) { console.error('renderDashboard error:', e); }
-    }
-
-    function updateReviewProgress() {
-        var mastered = reviewState.masteredCount;
-        var total = reviewState.totalCount;
-        var remaining = total - reviewState.currentIndex;
-        var progress = total > 0 ? ((reviewState.currentIndex) / total) * 100 : 0;
-
-        document.getElementById('review-progress-fill').style.width = progress + '%';
-        document.getElementById('review-status-text').textContent = '已掌握 ' + mastered + ' 题';
-        document.getElementById('review-total-text').textContent = '剩余 ' + remaining + ' 题';
-        document.getElementById('review-subtitle').textContent = '第 ' + (reviewState.currentIndex + 1) + ' / ' + total + ' 题';
-    }
-
-    function renderReviewQuestion() {
-        var body = document.getElementById('review-body');
-        var question = reviewState.questions[reviewState.currentIndex];
-
-        if (!question) {
-            body.innerHTML = '<div class="review-empty"><div class="review-empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div><div class="review-empty-title">复习完成！</div><div class="review-empty-desc">已掌握 ' + reviewState.masteredCount + ' 道错题，继续加油！</div><button class="review-next-btn show" onclick="closeReview()">完成</button></div>';
-            return;
-        }
-
-        var html = '<div class="review-question">' + escapeHtml(question.question) + '</div>';
-        html += '<div class="review-options">';
-
-        var options = [
-            { key: 'A', text: question.optionA },
-            { key: 'B', text: question.optionB },
-            { key: 'C', text: question.optionC },
-            { key: 'D', text: question.optionD }
-        ];
-
-        options.forEach(function(opt) {
-            html += '<div class="review-option" onclick="selectReviewOption(this, \'' + opt.key + '\')" data-option="' + opt.key + '">';
-            html += '<div class="review-option-letter">' + opt.key + '</div>';
-            html += '<div class="review-option-text">' + escapeHtml(opt.text) + '</div>';
-            html += '</div>';
-        });
-
-        html += '</div>';
-        html += '<div class="review-feedback" id="review-feedback">';
-        html += '<div class="review-feedback-title" id="review-feedback-title"></div>';
-        html += '<div class="review-feedback-text" id="review-feedback-text"></div>';
-        html += '</div>';
-        html += '<button class="review-next-btn" id="review-next-btn" onclick="nextReviewQuestion()">下一题</button>';
-
-        body.innerHTML = html;
-    }
-
-    function selectReviewOption(el, option) {
-        var question = reviewState.questions[reviewState.currentIndex];
-        var isCorrect = option === question.answer;
-
-        document.querySelectorAll('.review-option').forEach(function(opt) {
-            opt.classList.add('disabled');
-            if (opt.dataset.option === question.answer) {
-                opt.classList.add('correct');
-            }
-        });
-
-        el.classList.add(isCorrect ? 'correct' : 'wrong');
-
-        var feedback = document.getElementById('review-feedback');
-        var feedbackTitle = document.getElementById('review-feedback-title');
-        var feedbackText = document.getElementById('review-feedback-text');
-
-        feedback.classList.add('show', isCorrect ? 'correct' : 'wrong');
-        feedbackTitle.innerHTML = isCorrect ? '回答正确！' : '回答错误';
-        feedbackText.textContent = question.explanation || '';
-
-        if (isCorrect) {
-            question.reviewed = true;
-            reviewState.masteredCount++;
-            saveReviewState();
-        }
-
-        document.getElementById('review-next-btn').classList.add('show');
-        updateReviewProgress();
-    }
-
-    function nextReviewQuestion() {
-        reviewState.currentIndex++;
-        updateReviewProgress();
-        renderReviewQuestion();
-    }
-
-    function saveReviewState() {
-        localStorage.setItem('cet_wrong_questions', JSON.stringify(reviewState.questions));
-    }
-
-    // ===== 学习计划系统 =====
-    var planState = { data: null, currentWeek: 0 };
-
-    function openPlan() {
-        document.getElementById('plan-overlay').classList.add('show');
-        generateLearningPlan();
-    }
-
-    function closePlan() {
-        document.getElementById('plan-overlay').classList.remove('show');
-    }
-
-    function generateLearningPlan() {
-        var scores = getAbilityScores();
-
-        if (!scores || !scores.总分) {
-            document.getElementById('plan-body').innerHTML = '<div style="padding:40px 20px;text-align:center;"><div style="color:#64748B;font-size:15px;">请先完成诊断测试再生成学习计划</div><button class="review-next-btn show" onclick="closePlan()" style="margin-top:20px;">返回</button></div>';
-            return;
-        }
-
-        var systemPrompt = '你是一个专业的四级英语学习规划师。根据用户五维分数生成4周学习计划。返回JSON格式：{"weeks":[{"title":"第1周：xxx","focus":"xxx","tasks":["任务1","任务2","任务3"]}]}';
-
-        var userMessage = '我的五维分数：总分：' + scores.总分 + '，细节定位：' + (scores.细节定位||0) + '，推理判断：' + (scores.推理判断||0) + '，同义替换：' + (scores.同义替换||0) + '，主旨归纳：' + (scores.主旨归纳||0) + '，态度判断：' + (scores.态度判断||0);
-
-        fetch('/api/deepseek/chat', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                system: systemPrompt,
-                messages: [{ role: 'user', content: userMessage }],
-                temperature: 0.7,
-                max_tokens: 2000
-            })
-        }).then(function(resp) { return resp.json(); })
-        .then(function(data) {
-            var content = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
-            var jsonMatch = content && content.match(/\{[\s\S]*\}/);
-            if (jsonMatch) {
-                planState.data = JSON.parse(jsonMatch[0]);
-                renderPlan();
-                savePlanToLocalStorage(planState.data);
-            } else {
-                throw new Error('解析失败');
-            }
-        }).catch(function(e) {
-            console.error('生成学习计划失败:', e);
-            planState.data = {
-                weeks: [
-                    { title: '第1周：词汇夯实', focus: '高频词汇记忆', tasks: ['每日记忆30个核心词汇', '完成1篇听力精听', '复习2道阅读真题'] },
-                    { title: '第2周：阅读强化', focus: '阅读技巧', tasks: ['完成3篇阅读练习', '练习同义替换', '整理生词本'] },
-                    { title: '第3周：写译提升', focus: '写作翻译', tasks: ['背诵3篇范文', '完成2篇翻译', '整理常用句型'] },
-                    { title: '第4周：综合冲刺', focus: '全科模拟', tasks: ['完成2套模拟题', '复习错题本', '调整应考状态'] }
-                ]
-            };
-            renderPlan();
-            savePlanToLocalStorage(planState.data);
-        });
-    }
-
-    function renderPlan() {
-        var body = document.getElementById('plan-body');
-        var plan = planState.data;
-        if (!plan || !plan.weeks || plan.weeks.length === 0) {
-            body.innerHTML = '<div style="padding:40px 20px;text-align:center;"><div style="color:#64748B;font-size:15px;">暂无学习计划</div></div>';
-            return;
-        }
-
-        var savedProgress = getPlanProgress();
-        var html = '<div class="plan-content">';
-        plan.weeks.forEach(function(week, idx) {
-            html += '<div class="plan-week-card">';
-            html += '<div class="plan-week-header"><div class="plan-week-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div><div class="plan-week-title">' + escapeHtml(week.title) + '</div><div class="plan-week-desc">' + escapeHtml(week.focus || '') + '</div></div></div>';
-            html += '<div class="plan-tasks">';
-            if (week.tasks) {
-                week.tasks.forEach(function(task, taskIdx) {
-                    var isDone = savedProgress && savedProgress[idx] && savedProgress[idx][taskIdx];
-                    html += '<div class="plan-task' + (isDone ? ' done' : '') + '"><div class="plan-task-check' + (isDone ? ' done' : '') + '" onclick="togglePlanTask(' + idx + ', ' + taskIdx + ')"></div><div class="plan-task-text">' + escapeHtml(task) + '</div></div>';
-                });
-            }
-            html += '</div></div>';
-        });
-        html += '<div class="plan-actions"><button class="btn-secondary" onclick="closePlan()">关闭</button><button class="btn-primary" onclick="regeneratePlan()">重新生成</button></div></div>';
-        body.innerHTML = html;
-    }
-
-    function savePlanToLocalStorage(plan) {
-        localStorage.setItem('cet_learning_plan', JSON.stringify({ plan: plan, createdAt: Date.now() }));
-    }
-
-    function getPlanProgress() {
-        try {
-            var data = localStorage.getItem('cet_plan_progress');
-            return data ? JSON.parse(data) : null;
-        } catch (e) { return null; }
-    }
-
-    function togglePlanTask(weekIdx, taskIdx) {
-        var progress = getPlanProgress() || {};
-        if (!progress[weekIdx]) progress[weekIdx] = {};
-        progress[weekIdx][taskIdx] = !progress[weekIdx][taskIdx];
-        localStorage.setItem('cet_plan_progress', JSON.stringify(progress));
-        renderPlan();
-    }
-
-    function regeneratePlan() {
-        document.getElementById('plan-body').innerHTML = '<div class="plan-loading"><div class="plan-loading-spinner"></div><div class="plan-loading-text">AI正在为你重新生成学习计划...</div></div>';
-        generateLearningPlan();
-    }
-
-    function getAbilityScores() {
-        try {
-            var data = localStorage.getItem('cet4_ability_scores');
-            return data ? JSON.parse(data) : null;
-        } catch (e) { return null; }
-    }
-
-    function getUserProfile() {
-        try {
-            var data = localStorage.getItem('cet4_user_profile');
-            return data ? JSON.parse(data) : null;
-        } catch (e) { return null; }
-    }
-
-    // ===== 付费转化引导 =====
-    var upgradeCardShown = false;
-
-    function showUpgradeCard(remaining) {
-        if (upgradeCardShown) return;
-        upgradeCardShown = true;
-        var card = document.getElementById('upgrade-card');
-        var title = document.getElementById('upgrade-card-title');
-        var sub = document.getElementById('upgrade-card-sub');
-        if (remaining === 0) {
-            title.textContent = '今日免费额度已用完';
-            sub.textContent = '明天恢复免费对话，或升级冲刺营无限对话';
-        } else {
-            title.textContent = '今日还剩' + remaining + '轮免费对话';
-            sub.textContent = '升级冲刺营可获得无限对话次数';
-        }
-        card.classList.add('show');
-    }
-
-    function closeUpgradeCard() {
-        document.getElementById('upgrade-card').classList.remove('show');
-    }
-
-    function openUpgradePage() {
-        closeUpgradeCard();
-        switchTab('plans');
-    }
-
-    function checkUpgradePrompt(remaining) {
-        if (remaining <= 5 && remaining > 0) {
-            var hint = document.getElementById('chat-remaining-hint');
-            if (hint) {
-                hint.textContent = '今日还剩' + remaining + '轮免费对话';
-                hint.style.display = 'block';
-            }
-        }
-        if (remaining === 0) showUpgradeCard(0);
-    }
-
-    function resetUpgradeCardState() {
-        var lastReset = localStorage.getItem('cet_upgrade_card_reset');
-        var today = new Date().toISOString().slice(0, 10);
-        if (lastReset !== today) {
-            upgradeCardShown = false;
-            localStorage.setItem('cet_upgrade_card_reset', today);
-        }
-    }
-
-    resetUpgradeCardState();
-
-    // ===== 渲染结构化作文批改结果 =====
-    function renderStructuredEssayResult(result, originalText) {
-        var resultSection = document.getElementById('essay-result-section');
-        if (!resultSection) return;
-
-        var score = result.total_score || 0;
-        var maxScore = 15;
-        var circumference = 2 * Math.PI * 42;
-        var offset = circumference - (score / maxScore) * circumference;
-        var title = score >= 13 ? '优秀' : score >= 10 ? '良好' : score >= 7 ? '及格' : '需改进';
-        var subText = score >= 13 ? '词汇丰富，结构清晰' : score >= 10 ? '内容充实，逻辑较好' : score >= 7 ? '基本达标，还需努力' : '建议重点提升';
-
-        var html = '<div class="essay-result-header"><div class="essay-score-ring"><svg width="100" height="100" viewBox="0 0 100 100"><circle class="bg" cx="50" cy="50" r="42"/><circle class="progress" cx="50" cy="50" r="42" stroke-dasharray="' + circumference + '" stroke-dashoffset="' + offset + '"/></svg><div class="essay-score-text">' + score + '</div></div><div class="essay-result-title">' + title + '水平</div><div class="essay-result-sub">' + subText + '</div></div>';
-
-        if (result.dimensions) {
-            html += '<div class="essay-dimensions">';
-            html += '<div class="essay-dimension"><div class="essay-dimension-label">内容</div><div class="essay-dimension-value">' + (result.dimensions.content || 0) + '</div></div>';
-            html += '<div class="essay-dimension"><div class="essay-dimension-label">结构</div><div class="essay-dimension-value">' + (result.dimensions.organization || 0) + '</div></div>';
-            html += '<div class="essay-dimension"><div class="essay-dimension-label">语言</div><div class="essay-dimension-value">' + (result.dimensions.language || 0) + '</div></div>';
-            html += '</div>';
-        }
-
-        html += '<div class="essay-result-body">';
-
-        if (result.sentences && result.sentences.length > 0) {
-            html += '<div style="font-size:15px;font-weight:600;color:#1a1a2e;margin-bottom:12px;">逐句批改</div>';
-            result.sentences.forEach(function(s) {
-                if (s.original) {
-                    html += '<div class="essay-sentence-highlight"><div style="font-size:14px;color:#475569;margin-bottom:8px;">' + escapeHtml(s.original) + '</div><div class="essay-sentence-tooltip">';
-                    if (s.issue) html += '<div class="essay-sentence-issue">问题：' + escapeHtml(s.issue) + '</div>';
-                    if (s.suggestion) html += '<div class="essay-sentence-suggestion">建议：' + escapeHtml(s.suggestion) + '</div>';
-                    html += '</div></div>';
-                }
-            });
-        }
-
-        if (result.overall_comment) {
-            html += '<div class="essay-overall-comment"><div class="essay-overall-comment-title">总评</div><div class="essay-overall-comment-text">' + escapeHtml(result.overall_comment) + '</div></div>';
-        }
-
-        html += '</div><div class="essay-result-actions"><button class="btn-retry" onclick="retryEssay()">重新批改</button><button class="btn-save" onclick="saveEssayResult()">保存结果</button></div>';
-        resultSection.innerHTML = html;
-    }
-
     </script>
 
     <!-- 作文批改界面 -->
@@ -11443,13 +8955,13 @@ function drawReportShareImage() {
             <div class="essay-sheet-body" id="essay-input-body">
                 <div class="essay-topic-section">
                     <div class="essay-topic-label">选择题目（可选）</div>
-                    <div class="essay-topic-grid" id="essay-topic-grid">
-                        <div class="essay-topic-btn" onclick="selectEssayTopic(this, '活动邀请信', 'essay_001')">📝 活动邀请信</div>
-                        <div class="essay-topic-btn" onclick="selectEssayTopic(this, '感谢信', 'essay_002')">💌 感谢信</div>
-                        <div class="essay-topic-btn" onclick="selectEssayTopic(this, '投诉信', 'essay_003')">📋 投诉信</div>
-                        <div class="essay-topic-btn" onclick="selectEssayTopic(this, '建议信', 'essay_004')">💡 建议信</div>
-                        <div class="essay-topic-btn" onclick="selectEssayTopic(this, '道歉信', 'essay_005')">🤝 道歉信</div>
-                        <div class="essay-topic-btn" onclick="selectEssayTopic(this, '自我介绍', 'essay_006')">👤 自我介绍</div>
+                    <div class="essay-topic-grid">
+                        <div class="essay-topic-btn" onclick="selectEssayTopic(this, '活动邀请信')">📝 活动邀请信</div>
+                        <div class="essay-topic-btn" onclick="selectEssayTopic(this, '感谢信')">💌 感谢信</div>
+                        <div class="essay-topic-btn" onclick="selectEssayTopic(this, '投诉信')">📋 投诉信</div>
+                        <div class="essay-topic-btn" onclick="selectEssayTopic(this, '建议信')">💡 建议信</div>
+                        <div class="essay-topic-btn" onclick="selectEssayTopic(this, '道歉信')">🤝 道歉信</div>
+                        <div class="essay-topic-btn" onclick="selectEssayTopic(this, '自我介绍')">👤 自我介绍</div>
                     </div>
                 </div>
                 <div class="essay-input-section">
@@ -11464,69 +8976,5 @@ function drawReportShareImage() {
             </div>
         </div>
     </div>
-
-
-    <!-- 错题复习界面 -->
-    <div class="review-overlay" id="review-overlay">
-        <div class="review-sheet">
-            <div class="review-handle"></div>
-            <div class="review-header">
-                <button class="review-back" onclick="closeReview()">
-                    <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-                </button>
-                <div class="review-header-info">
-                    <div class="review-header-title">错题复习</div>
-                    <div class="review-header-sub" id="review-subtitle">正在加载...</div>
-                </div>
-            </div>
-            <div class="review-progress">
-                <div class="review-progress-bar">
-                    <div class="review-progress-fill" id="review-progress-fill" style="width:0%"></div>
-                </div>
-                <div class="review-progress-text">
-                    <span id="review-status-text">已掌握 0 题</span>
-                    <span id="review-total-text">共 0 题</span>
-                </div>
-            </div>
-            <div class="review-body" id="review-body">
-                <!-- 动态填充错题内容 -->
-            </div>
-        </div>
-    </div>
-
-    <!-- 学习计划界面 -->
-    <div class="plan-overlay" id="plan-overlay">
-        <div class="plan-sheet">
-            <div class="review-handle"></div>
-            <div class="review-header">
-                <button class="review-back" onclick="closePlan()">
-                    <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-                </button>
-                <div class="review-header-info">
-                    <div class="review-header-title">学习路径规划</div>
-                    <div class="review-header-sub">基于你的诊断报告生成</div>
-                </div>
-            </div>
-            <div id="plan-body">
-                <div class="plan-loading">
-                    <div class="plan-loading-spinner"></div>
-                    <div class="plan-loading-text">AI正在为你生成4周学习计划...</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 升级引导卡片 -->
-    <div class="upgrade-card" id="upgrade-card">
-        <button class="upgrade-card-close" onclick="closeUpgradeCard()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        </button>
-        <div class="upgrade-card-header">
-            <div class="upgrade-card-title" id="upgrade-card-title">今日免费额度已用完</div>
-            <div class="upgrade-card-sub" id="upgrade-card-sub">明天恢复免费对话，或升级冲刺营无限对话</div>
-        </div>
-        <button class="upgrade-card-btn" onclick="openUpgradePage()">了解冲刺营</button>
-    </div>
-
 </body>
 </html>
