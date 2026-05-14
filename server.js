@@ -1474,16 +1474,34 @@ async function handleDeepseekEssayGrade(req, res) {
         return;
     }
 
-    // CSS/JS静态文件服务（拆分后的模块化文件）
+    // CSS/JS静态文件服务（拆分后的模块化文件）+ gzip压缩
     const cssJsDir = path.join(__dirname, 'public');
     if ((pathname.startsWith('/css/') || pathname.startsWith('/js/'))) {
         const filePath = path.join(cssJsDir, pathname);
         if (fs.existsSync(filePath)) {
             const ext = path.extname(filePath).toLowerCase();
             const contentTypes = {'.css': 'text/css; charset=utf-8', '.js': 'application/javascript; charset=utf-8'};
-            res.setHeader('Cache-Control', 'public, max-age=3600');
-            res.setHeader('Content-Type', contentTypes[ext] || 'application/octet-stream');
-            res.end(fs.readFileSync(filePath));
+            const fileContent = fs.readFileSync(filePath);
+            const acceptEncoding = req.headers['accept-encoding'] || '';
+            if (acceptEncoding.includes('gzip') && fileContent.length > 1024) {
+                zlib.gzip(fileContent, (err, compressed) => {
+                    if (!err) {
+                        res.setHeader('Cache-Control', 'public, max-age=3600');
+                        res.setHeader('Content-Type', contentTypes[ext] || 'application/octet-stream');
+                        res.setHeader('Content-Encoding', 'gzip');
+                        res.setHeader('Vary', 'Accept-Encoding');
+                        res.end(compressed);
+                    } else {
+                        res.setHeader('Cache-Control', 'public, max-age=3600');
+                        res.setHeader('Content-Type', contentTypes[ext] || 'application/octet-stream');
+                        res.end(fileContent);
+                    }
+                });
+            } else {
+                res.setHeader('Cache-Control', 'public, max-age=3600');
+                res.setHeader('Content-Type', contentTypes[ext] || 'application/octet-stream');
+                res.end(fileContent);
+            }
             return;
         }
     }
