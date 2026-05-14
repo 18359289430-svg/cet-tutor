@@ -251,6 +251,7 @@ function sendJson(res, statusCode, data) {
 
 // 处理API请求
 async function handleApi(req, res, pathname) {
+    const url = new URL(req.url, `http://localhost:${PORT}`);
     // 统一设置CSP
 
     // 处理CORS预检
@@ -1109,9 +1110,6 @@ async function handleApi(req, res, pathname) {
         }
 
         // 404
-        sendJson(res, 404, { error: 'API不存在' });
-
-    } catch (error) {
         // GET /api/quiz/random - 随机获取真题（每日一练用）
         if (pathname === '/api/quiz/random' && req.method === 'GET') {
             try {
@@ -1127,10 +1125,15 @@ async function handleApi(req, res, pathname) {
                 const idx = Math.floor(Math.random() * pool.length);
                 sendJson(res, 200, { code: 0, data: pool[idx] });
             } catch(e) {
-                sendJson(res, 500, { code: 1, msg: '获取题目失败' });
+                sendJson(res, 500, { code: 1, msg: '获取题目失败', error: e.message });
             }
             return;
         }
+
+        // 404
+        sendJson(res, 404, { error: 'API不存在' });
+
+    } catch (error) {
         console.error('[API错误]', error);
         sendJson(res, 500, { error: '服务器错误' });
     }
@@ -1469,6 +1472,20 @@ async function handleDeepseekEssayGrade(req, res) {
             res.end(adminHtml);
         }
         return;
+    }
+
+    // CSS/JS静态文件服务（拆分后的模块化文件）
+    const cssJsDir = path.join(__dirname, 'public');
+    if ((pathname.startsWith('/css/') || pathname.startsWith('/js/'))) {
+        const filePath = path.join(cssJsDir, pathname);
+        if (fs.existsSync(filePath)) {
+            const ext = path.extname(filePath).toLowerCase();
+            const contentTypes = {'.css': 'text/css; charset=utf-8', '.js': 'application/javascript; charset=utf-8'};
+            res.setHeader('Cache-Control', 'public, max-age=3600');
+            res.setHeader('Content-Type', contentTypes[ext] || 'application/octet-stream');
+            res.end(fs.readFileSync(filePath));
+            return;
+        }
     }
 
     // public目录静态文件服务

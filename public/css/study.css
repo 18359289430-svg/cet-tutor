@@ -1,0 +1,108 @@
+        /* ===== 学习页 ===== */
+        .study-page {
+            padding-bottom: 20px;
+        }
+        .study-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 24px 20px 16px;
+        }
+        .study-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: #1a1a2e;
+            letter-spacing: -0.5px;
+        }
+        .study-sub {
+            font-size: 13px;
+            color: #94a3b8;
+            margin-top: 2px;
+        }
+        .study-streak-badge {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 14px;
+            background: linear-gradient(135deg, #6C5CE7, #8B7CF7);
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            color: white;
+        }
+        .study-streak-badge svg { width: 14px; height: 14px; }
+
+        /* 打卡进度 */
+        .study-progress-card {
+            margin: 0 16px 16px;
+            padding: 16px 20px;
+            background: #FFFFFF;
+            border: 1px solid #F0F0F5;
+            border-radius: 14px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+        }
+        .study-progress-top {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .study-progress-label { font-size: 14px; font-weight: 600; color: #1a1a2e; }
+        .study-progress-pct { font-size: 14px; font-weight: 700; color: #6C5CE7; }
+        .study-progress-bar {
+            height: 8px;
+            background: #F0F0F5;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .study-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #6C5CE7, #8B7CF7);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .study-section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1a1a2e;
+            padding: 8px 20px 12px;
+        }
+
+        /* 备考计划入口卡 */
+        .study-plan-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 0 16px 8px;
+            padding: 14px 16px;
+            background: #FFFFFF;
+            border: 1px solid #F0F0F5;
+            border-radius: 14px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .study-plan-card:active { background: #F8F8FA; transform: scale(0.98); }
+        .study-plan-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+            min-width: 0;
+        }
+        .study-plan-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: #F0EEFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .study-plan-icon svg { width: 20px; height: 20px; stroke: #6C5CE7; stroke-width: 1.8; }
+        .study-plan-icon.pink { background: #FCE4EC; }
+        .study-plan-icon.pink svg { stroke: #E84393; }
+        .study-plan-title { font-size: 14px; font-weight: 600; color: #1a1a2e; }
+        .study-plan-desc { font-size: 12px; color: #94a3b8; margin-top: 2px; }
+

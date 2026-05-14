@@ -1,0 +1,279 @@
+/* ====== 错题复习模式 ====== */
+.review-overlay {
+    position:fixed; top:0; left:0; right:0; bottom:0; background:#F8F9FA; z-index:1002; display:flex; flex-direction:column;
+}
+.review-header {
+    padding:16px 20px; padding-top:calc(16px + var(--safe-top)); display:flex; align-items:center; gap:12px; background:#fff; border-bottom:1px solid #F1F5F9;
+}
+.review-back { width:36px; height:36px; border-radius:50%; background:#F1F5F9; display:flex; align-items:center; justify-content:center; cursor:pointer; border:none; }
+.review-back:active { background:#E2E8F0; }
+.review-back svg { width:20px; height:20px; stroke:#475569; stroke-width:2; }
+.review-title { font-size:17px; font-weight:700; color:#1E293B; flex:1; }
+.review-progress { font-size:13px; color:#64748B; }
+.review-body { flex:1; overflow-y:auto; padding:20px 16px; -webkit-overflow-scrolling:touch; }
+.review-question-card { background:#fff; border-radius:16px; padding:20px; margin-bottom:16px; box-shadow:0 1px 4px rgba(0,0,0,0.04); }
+.review-q-type { font-size:12px; color:#94A3B8; margin-bottom:8px; }
+.review-q-text { font-size:15px; color:#1a1a2e; line-height:1.7; margin-bottom:16px; }
+.review-options { display:flex; flex-direction:column; gap:10px; }
+.review-option {
+    padding:14px 16px; border-radius:12px; border:1.5px solid #E2E8F0; font-size:14px; color:#475569; cursor:pointer;
+    transition:all 0.2s; display:flex; align-items:center; gap:10px;
+}
+.review-option:active { transform:scale(0.98); }
+.review-option.selected { border-color:#6C5CE7; background:#F8F7FF; color:#6C5CE7; font-weight:600; }
+.review-option.correct { border-color:#00B894; background:#E8F8F0; color:#00B894; }
+.review-option.wrong { border-color:#E17055; background:#FEF2F2; color:#E17055; }
+.review-option-letter { width:24px; height:24px; border-radius:50%; background:#F1F5F9; display:flex; align-items:center; justify-content:center; font-weight:600; font-size:13px; }
+.review-option.selected .review-option-letter { background:#6C5CE7; color:#fff; }
+.review-option.correct .review-option-letter { background:#00B894; color:#fff; }
+.review-option.wrong .review-option-letter { background:#E17055; color:#fff; }
+.review-result-card { text-align:center; padding:40px 20px; }
+.review-result-icon { width:80px; height:80px; border-radius:50%; background:linear-gradient(135deg,#6C5CE7,#A29BFE); display:flex; align-items:center; justify-content:center; margin:0 auto 20px; }
+.review-result-icon svg { width:40px; height:40px; stroke:#fff; }
+.review-result-title { font-size:24px; font-weight:700; color:#1a1a2e; margin-bottom:8px; }
+.review-result-sub { font-size:14px; color:#64748B; margin-bottom:24px; }
+.review-result-stats { display:flex; justify-content:center; gap:30px; margin-bottom:24px; }
+.review-stat { text-align:center; }
+.review-stat-num { font-size:28px; font-weight:700; color:#6C5CE7; }
+.review-stat-label { font-size:12px; color:#94A3B8; }
+.review-action-btn { padding:14px 32px; background:#6C5CE7; color:#fff; border:none; border-radius:12px; font-size:15px; font-weight:600; cursor:pointer; }
+
+        /* ===== 错题复习系统样式 ===== */
+        .review-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1001;
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+        }
+        .review-overlay.show { display: flex; }
+        .review-sheet {
+            background: white;
+            border-radius: 24px 24px 0 0;
+            width: 100%;
+            max-width: 430px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+        .review-overlay.show .review-sheet { transform: translateY(0); }
+        .review-handle {
+            width: 36px;
+            height: 4px;
+            background: #E2E8F0;
+            border-radius: 2px;
+            margin: 12px auto;
+        }
+        .review-header {
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid #F1F5F9;
+        }
+        .review-back {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #F1F5F9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: none;
+        }
+        .review-back:active { background: #E2E8F0; }
+        .review-back svg { width: 20px; height: 20px; stroke: #475569; stroke-width: 2; }
+        .review-header-info { flex: 1; }
+        .review-header-title { font-size: 17px; font-weight: 700; color: #1E293B; }
+        .review-header-sub { font-size: 12px; color: #94A3B8; margin-top: 2px; }
+        .review-progress {
+            padding: 16px 20px;
+            background: #F8F9FA;
+        }
+        .review-progress-bar {
+            height: 8px;
+            background: #E2E8F0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .review-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #6C5CE7, #A29BFE);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        .review-progress-text {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 12px;
+            color: #64748B;
+        }
+        .review-body { padding: 20px; }
+        .review-question {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1a2e;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        .review-options { display: flex; flex-direction: column; gap: 12px; }
+        .review-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 16px;
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .review-option:active { transform: scale(0.98); }
+        .review-option:hover { border-color: #6C5CE7; }
+        .review-option.selected { border-color: #6C5CE7; background: #F8F6FF; }
+        .review-option.correct { border-color: #00B894; background: #E8F8F0; }
+        .review-option.wrong { border-color: #E17055; background: #FFF5F3; }
+        .review-option-letter {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #F1F5F9;
+            color: #475569;
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .review-option.correct .review-option-letter { background: #00B894; color: white; }
+        .review-option.wrong .review-option-letter { background: #E17055; color: white; }
+        .review-option-text { font-size: 15px; color: #1a1a2e; line-height: 1.5; flex: 1; }
+        .review-feedback {
+            margin-top: 16px;
+            padding: 16px;
+            border-radius: 12px;
+            display: none;
+        }
+        .review-feedback.show { display: block; }
+        .review-feedback.correct { background: #E8F8F0; }
+        .review-feedback.wrong { background: #FFF5F3; }
+        .review-feedback-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .review-feedback.correct .review-feedback-title { color: #00B894; }
+        .review-feedback.wrong .review-feedback-title { color: #E17055; }
+        .review-feedback-text { font-size: 13px; color: #475569; line-height: 1.5; }
+        .review-next-btn {
+            width: 100%;
+            padding: 16px;
+            background: #6C5CE7;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            display: none;
+        }
+        .review-next-btn.show { display: block; }
+        .review-next-btn:active { background: #5849C4; }
+        .review-empty {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        .review-empty-icon {
+            width: 80px;
+            height: 80px;
+            background: #E8F8F0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+        .review-empty-icon svg { width: 40px; height: 40px; stroke: #00B894; stroke-width: 1.5; }
+        .review-empty-title { font-size: 18px; font-weight: 700; color: #1a1a2e; margin-bottom: 8px; }
+        .review-empty-desc { font-size: 14px; color: #64748B; }
+
+        /* ===== 用户中心错题本入口 ===== */
+        .menu-item-new.wrong-book {
+            position: relative;
+        }
+        .wrong-book-badge {
+            position: absolute;
+            right: 40px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 12px;
+            color: #E17055;
+            font-weight: 600;
+        }
+
+        /* ===== 作文批改结构化结果 ===== */
+        .essay-dimensions {
+            display: flex;
+            gap: 8px;
+            margin: 16px 0;
+        }
+        .essay-dimension {
+            flex: 1;
+            text-align: center;
+            padding: 12px 8px;
+            background: #F8F9FA;
+            border-radius: 12px;
+        }
+        .essay-dimension-label { font-size: 11px; color: #64748B; margin-bottom: 4px; }
+        .essay-dimension-value { font-size: 20px; font-weight: 700; color: #6C5CE7; }
+        .essay-sentence-highlight {
+            background: #FFF5F3;
+            border-left: 3px solid #E17055;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 0 8px 8px 0;
+            cursor: pointer;
+            position: relative;
+        }
+        .essay-sentence-tooltip {
+            display: none;
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 100%;
+            background: white;
+            border: 1px solid #E17055;
+            border-radius: 8px;
+            padding: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            z-index: 10;
+            margin-top: 8px;
+        }
+        .essay-sentence-highlight:hover .essay-sentence-tooltip { display: block; }
+        .essay-sentence-issue { font-size: 13px; color: #E17055; margin-bottom: 8px; }
+        .essay-sentence-suggestion { font-size: 13px; color: #00B894; }
+        .essay-overall-comment {
+            background: #F8F6FF;
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+        .essay-overall-comment-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #6C5CE7;
+            margin-bottom: 8px;
+        }
+        .essay-overall-comment-text { font-size: 13px; color: #475569; line-height: 1.6; }
+
+

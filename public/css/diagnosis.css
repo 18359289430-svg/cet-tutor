@@ -1,0 +1,631 @@
+        /* ========== 诊断报告页 ========== */
+        .report-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #F8F9FA;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .report-header {
+            padding: 16px 20px;
+            padding-top: calc(16px + var(--safe-top));
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: white;
+            flex-shrink: 0;
+            border-bottom: 1px solid #F1F5F9;
+        }
+
+        .report-back {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #F1F5F9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: none;
+        }
+        .report-back:active { background: #E2E8F0; }
+        .report-back svg { width: 20px; height: 20px; stroke: #475569; stroke-width: 2; }
+
+        .report-header-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: #1E293B;
+            letter-spacing: -0.3px;
+        }
+
+        .report-content {
+            flex: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding: 20px 16px;
+            padding-bottom: calc(80px + var(--safe-bottom));
+        }
+
+        /* 风险等级标签 */
+        .report-risk-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        .report-risk-high { background: #FEE2E2; color: #DC2626; }
+        .report-risk-mid { background: #FEF3C7; color: #D97706; }
+        .report-risk-low { background: #D1FAE5; color: #059669; }
+        .report-risk-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        /* 综合评分 */
+        .report-score-section {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .report-score-num {
+            font-size: 56px;
+            font-weight: 800;
+            color: var(--primary);
+            line-height: 1;
+            letter-spacing: -2px;
+        }
+        .report-score-denom {
+            font-size: 24px;
+            font-weight: 400;
+            color: #A29BFE;
+        }
+        .report-score-label {
+            font-size: 13px;
+            color: #94A3B8;
+            margin-top: 4px;
+        }
+
+        /* 雷达图区域 */
+        .report-radar-section {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+        .report-radar-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1E293B;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        .report-radar-canvas-wrap {
+            display: flex;
+            justify-content: center;
+        }
+        #report-radar-canvas {
+            max-width: 280px;
+        }
+
+        /* 五维分数卡片 */
+        .report-dims-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .report-dim-card {
+            background: white;
+            border-radius: 12px;
+            padding: 14px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+        .report-dim-name {
+            font-size: 12px;
+            color: #94A3B8;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .report-dim-score {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1E293B;
+            line-height: 1;
+        }
+        .report-dim-bar {
+            height: 4px;
+            background: #F1F5F9;
+            border-radius: 2px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+        .report-dim-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 0.6s ease;
+        }
+        .report-dim-tip {
+            font-size: 12px;
+            color: #64748B;
+            margin-top: 8px;
+            line-height: 1.4;
+        }
+
+        /* 专项建议卡片 */
+        .report-advice-section {
+            margin-bottom: 16px;
+        }
+        .report-section-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1E293B;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .report-advice-card {
+            background: linear-gradient(135deg, #6C5CE7 0%, #A29BFE 100%);
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 10px;
+            color: white;
+        }
+        .report-advice-label {
+            font-size: 11px;
+            font-weight: 600;
+            opacity: 0.8;
+            margin-bottom: 6px;
+        }
+        .report-advice-dim {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .report-advice-text {
+            font-size: 13px;
+            line-height: 1.6;
+            opacity: 0.95;
+        }
+
+        /* 备考建议 */
+        .report-tips-section {
+            margin-bottom: 16px;
+        }
+        .report-tip-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 12px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+        .report-tip-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            background: rgba(108,92,231,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 14px;
+        }
+        .report-tip-text {
+            font-size: 13px;
+            color: #475569;
+            line-height: 1.5;
+            flex: 1;
+        }
+
+        /* CTA按钮 */
+        .report-cta-section {
+            padding: 16px;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid #F1F5F9;
+            padding-bottom: calc(16px + var(--safe-bottom));
+            max-width: 430px;
+            margin: 0 auto;
+        }
+        .report-cta-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #6C5CE7 0%, #8B7CF7 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .report-cta-btn:active { transform: scale(0.98); opacity: 0.9; }
+        .report-secondary-btn {
+            width: 100%;
+            padding: 12px;
+            background: #F8F9FA;
+            color: #64748B;
+            border: 1px solid #E2E8F0;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .report-secondary-btn:active { background: #F1F5F9; }
+
+        /* 分享弹窗 */
+        .report-share-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .report-share-box {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            max-width: 320px;
+            margin: auto;
+            text-align: center;
+        }
+        .report-share-canvas-wrap {
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 12px;
+            background: #F8F9FA;
+        }
+        .report-share-canvas-wrap canvas {
+            width: 100%;
+            display: block;
+        }
+        .report-share-hint {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 16px;
+        }
+        .report-share-close {
+            width: 100%;
+            padding: 12px;
+            background: #F5F5F5;
+            border: none;
+            border-radius: 10px;
+            color: #666;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        /* ====== 新诊断模式界面 ====== */
+        .diag-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #F8F9FA;
+            z-index: 1200;
+            display: none;
+            flex-direction: column;
+        }
+        .diag-overlay.active { display: flex; }
+        
+        .diag-header {
+            padding: 16px 20px;
+            padding-top: calc(16px + var(--safe-top));
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: white;
+            flex-shrink: 0;
+            border-bottom: 1px solid #F1F5F9;
+        }
+        .diag-back-btn {
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: #F5F5F5;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+        .diag-back-btn:active { background: #E5E5E5; }
+        .diag-back-btn svg { width: 20px; height: 20px; color: #333; }
+        .diag-title { flex: 1; text-align: center; font-size: 17px; font-weight: 600; }
+        .diag-progress-wrap { padding: 12px 20px; background: white; flex-shrink: 0; }
+        .diag-progress-info { display: flex; justify-content: space-between; font-size: 13px; color: #666; margin-bottom: 8px; }
+        .diag-progress-bar { height: 4px; background: #E5E7EB; border-radius: 2px; overflow: hidden; }
+        .diag-progress-fill { height: 100%; background: linear-gradient(90deg, #6C5CE7, #A29BFE); border-radius: 2px; transition: width 0.3s ease; }
+        
+        .diag-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        /* 阅读原文 */
+        /* 阅读原文包装 */
+        .diag-passage-wrap {
+            background: #F8F9FA;
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            border: 1px solid #EEE;
+        }
+        .diag-passage-wrap .diag-passage-toggle {
+            font-size: 13px;
+            color: #6C5CE7;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 500;
+        }
+        .diag-passage-wrap .diag-passage-toggle .toggle-arrow {
+            font-size: 10px;
+            color: #999;
+        }
+        .diag-passage-wrap .diag-passage-content {
+            margin-top: 12px;
+            max-height: none;
+            overflow: visible;
+        }
+        .diag-passage-wrap .diag-passage-text {
+            font-size: 13px;
+            line-height: 1.8;
+            color: #555;
+            white-space: pre-wrap;
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .diag-passage-card {
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .diag-passage-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        .diag-passage-label {
+            font-size: 13px;
+            color: #6C5CE7;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .diag-passage-toggle {
+            font-size: 13px;
+            color: #999;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px 8px;
+        }
+        .diag-passage-content {
+            font-size: 14px;
+            line-height: 1.8;
+            color: #333;
+            max-height: 150px;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        .diag-passage-content.expanded { max-height: 1000px; }
+        
+        /* 题目区域 */
+        .diag-question-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .diag-question-num {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 8px;
+        }
+        .diag-question-text {
+            font-size: 15px;
+            line-height: 1.7;
+            color: #1a1a1a;
+            margin-bottom: 16px;
+        }
+        
+        /* 选项按钮 */
+        .diag-options { display: flex; flex-direction: column; gap: 10px; }
+        .diag-option-btn {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 14px 16px;
+            background: #F8F9FA;
+            border: 2px solid transparent;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+        }
+        .diag-option-btn:active { transform: scale(0.98); }
+        .diag-option-btn.selected { background: #EDE9FE; border-color: #6C5CE7; }
+        .diag-option-btn.correct { background: #D1FAE5; border-color: #10B981; }
+        .diag-option-btn.wrong { background: #FEE2E2; border-color: #EF4444; }
+        .diag-option-btn.disabled { pointer-events: none; }
+        .diag-option-letter {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: #666;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+        .diag-option-btn.selected .diag-option-letter { background: #6C5CE7; color: white; }
+        .diag-option-btn.correct .diag-option-letter { background: #10B981; color: white; }
+        .diag-option-btn.wrong .diag-option-letter { background: #EF4444; color: white; }
+        .diag-option-text { font-size: 14px; line-height: 1.5; color: #333; }
+        
+        /* 正确/错误提示 */
+        .diag-result-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            margin-left: auto;
+            flex-shrink: 0;
+        }
+        .diag-result-icon.correct { background: #10B981; color: white; }
+        .diag-result-icon.wrong { background: #EF4444; color: white; }
+        
+        /* 自评问卷 */
+        .diag-eval-section { margin-top: 20px; }
+        .diag-eval-title {
+            font-size: 17px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+        .diag-eval-subtitle {
+            font-size: 13px;
+            color: #999;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .diag-eval-item {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .diag-eval-label {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .diag-eval-options { display: flex; gap: 10px; }
+        .diag-eval-btn {
+            flex: 1;
+            padding: 12px 8px;
+            background: #F5F5F5;
+            border: 2px solid transparent;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        .diag-eval-btn:active { transform: scale(0.98); }
+        .diag-eval-btn.selected { background: #EDE9FE; border-color: #6C5CE7; }
+        .diag-eval-btn .eval-letter { font-size: 20px; font-weight: 700; color: #6C5CE7; margin-bottom: 4px; }
+        .diag-eval-btn .eval-desc { font-size: 12px; color: #666; }
+        
+        /* 提交按钮 */
+        .diag-submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #6C5CE7, #A29BFE);
+            border: none;
+            border-radius: 14px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 24px;
+            transition: all 0.2s;
+        }
+        .diag-submit-btn:active { transform: scale(0.98); opacity: 0.9; }
+        .diag-submit-btn:disabled { background: #D1D5DB; cursor: not-allowed; }
+        
+        /* 加载状态 */
+        .diag-loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px;
+        }
+        .diag-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #E5E7EB;
+            border-top-color: #6C5CE7;
+            border-radius: 50%;
+            animation: diag-spin 1s linear infinite;
+        }
+        @keyframes diag-spin { to { transform: rotate(360deg); } }
+        .diag-loading-text { margin-top: 16px; font-size: 14px; color: #666; }
+        
+        /* 生成报告按钮 */
+        .diag-generate-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #6C5CE7, #A29BFE);
+            border: none;
+            border-radius: 14px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 24px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .diag-generate-btn:active { transform: scale(0.98); opacity: 0.9; }
+

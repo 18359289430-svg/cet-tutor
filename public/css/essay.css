@@ -1,0 +1,307 @@
+        /* ====== 作文批改界面 ====== */
+        .essay-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1100;
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+        }
+        .essay-overlay.show { display: flex; }
+        .essay-sheet {
+            background: white;
+            border-radius: 24px 24px 0 0;
+            width: 100%;
+            max-width: 430px;
+            max-height: 92vh;
+            overflow-y: auto;
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .essay-overlay.show .essay-sheet { transform: translateY(0); }
+        .essay-sheet-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #F0F0F0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .essay-sheet-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a1a2e;
+        }
+        .essay-close-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #F1F5F9;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #64748B;
+        }
+        .essay-close-btn:active { background: #E2E8F0; }
+        .essay-close-btn svg { width: 18px; height: 18px; }
+        .essay-sheet-body { padding: 20px; }
+        
+        /* 题目选择区 */
+        .essay-topic-section { margin-bottom: 16px; }
+        .essay-topic-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 10px;
+        }
+        .essay-topic-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        .essay-topic-btn {
+            padding: 12px;
+            border-radius: 12px;
+            border: 1.5px solid #E2E8F0;
+            background: white;
+            font-size: 13px;
+            color: #475569;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
+        }
+        .essay-topic-btn:active { transform: scale(0.98); }
+        .essay-topic-btn.selected {
+            border-color: #6C5CE7;
+            background: #F8F7FF;
+            color: #6C5CE7;
+            font-weight: 600;
+        }
+        
+        /* 作文输入区 */
+        .essay-input-section { margin-bottom: 16px; }
+        .essay-textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 16px;
+            border: 1.5px solid #E2E8F0;
+            border-radius: 16px;
+            font-size: 14px;
+            line-height: 1.7;
+            resize: vertical;
+            font-family: inherit;
+            color: #1a1a2e;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .essay-textarea:focus { border-color: #6C5CE7; }
+        .essay-textarea::placeholder { color: #94a3b8; }
+        .essay-word-count {
+            text-align: right;
+            font-size: 12px;
+            color: #94a3b8;
+            margin-top: 8px;
+        }
+        
+        /* 提交按钮 */
+        .essay-submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: #6C5CE7;
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .essay-submit-btn:active { transform: scale(0.98); background: #5849C4; }
+        .essay-submit-btn:disabled { background: #A29BFE; cursor: not-allowed; }
+        
+        /* 加载状态 */
+        .essay-loading {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        .essay-loading-spinner {
+            width: 48px;
+            height: 48px;
+            border: 3px solid #F0F0F0;
+            border-top-color: #6C5CE7;
+            border-radius: 50%;
+            margin: 0 auto 16px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .essay-loading-text { font-size: 15px; color: #64748B; }
+        
+        /* 批改结果区 */
+        .essay-result-section { padding: 0 0 32px; }
+        .essay-result-header {
+            text-align: center;
+            padding: 24px 20px;
+            background: linear-gradient(135deg, #6C5CE7 0%, #A29BFE 100%);
+            border-radius: 20px 20px 0 0;
+            color: white;
+        }
+        .essay-score-ring {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 12px;
+            position: relative;
+        }
+        .essay-score-ring svg {
+            transform: rotate(-90deg);
+        }
+        .essay-score-ring circle {
+            fill: none;
+            stroke-width: 8;
+        }
+        .essay-score-ring .bg { stroke: rgba(255,255,255,0.3); }
+        .essay-score-ring .progress { stroke: white; stroke-linecap: round; transition: stroke-dashoffset 1s ease; }
+        .essay-score-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 28px;
+            font-weight: 800;
+        }
+        .essay-result-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .essay-result-sub {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+        .essay-result-body { padding: 20px; }
+        
+        /* 逐句批改卡片 */
+        .essay-sentence-card {
+            background: white;
+            border: 1px solid #F0F0F0;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        .essay-sentence-original {
+            font-size: 14px;
+            color: #E17055;
+            line-height: 1.7;
+            margin-bottom: 10px;
+            padding-left: 12px;
+            border-left: 3px solid #E17055;
+        }
+        .essay-sentence-revised {
+            font-size: 14px;
+            color: #00B894;
+            line-height: 1.7;
+            margin-bottom: 10px;
+            padding-left: 12px;
+            border-left: 3px solid #00B894;
+        }
+        .essay-sentence-reason {
+            font-size: 13px;
+            color: #64748B;
+            background: #F8F9FA;
+            border-radius: 8px;
+            padding: 10px 12px;
+        }
+        
+        /* 改写范文 */
+        .essay-rewrite-section {
+            background: #F8F7FF;
+            border-radius: 16px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+        .essay-rewrite-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #6C5CE7;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .essay-rewrite-title svg { width: 16px; height: 16px; }
+        .essay-rewrite-text {
+            font-size: 14px;
+            color: #1a1a2e;
+            line-height: 1.8;
+            white-space: pre-wrap;
+        }
+        
+        /* 核心建议 */
+        .essay-advice-section {
+            margin-top: 16px;
+        }
+        .essay-advice-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .essay-advice-title svg { stroke: #6C5CE7; width: 18px; height: 18px; }
+        .essay-advice-list { list-style: none; padding: 0; margin: 0; }
+        .essay-advice-item {
+            font-size: 14px;
+            color: #475569;
+            padding: 10px 0;
+            border-bottom: 1px solid #F0F0F0;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        .essay-advice-item:last-child { border-bottom: none; }
+        .essay-advice-num {
+            width: 20px;
+            height: 20px;
+            background: #6C5CE7;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        
+        /* 结果页底部按钮 */
+        .essay-result-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .essay-result-actions button {
+            flex: 1;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+        .essay-result-actions .btn-retry {
+            background: #F1F5F9;
+            color: #475569;
+        }
+        .essay-result-actions .btn-save {
+            background: #6C5CE7;
+            color: white;
+        }
+        .essay-result-actions button:active { transform: scale(0.98); }
+
