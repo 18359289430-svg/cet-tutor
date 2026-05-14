@@ -198,6 +198,16 @@ function initApp() {
             }
         }
 
+        function handleCapsuleClick(text) {
+            // 快捷胶囊按钮点击处理
+            var input = document.getElementById('chat-input');
+            if (input) {
+                input.value = text;
+                // 自动发送
+                sendMessage();
+            }
+        }
+
         function handleModeTag(mode) {
             // 快捷标签切换模式
             var tag = document.querySelector('.quick-tag-pill[data-mode="' + mode + '"]');
@@ -1190,7 +1200,7 @@ function initApp() {
                 var isActive = currentConversationId === item.id;
                 var modeClass = item.mode || 'diagnosis';
                 var modeIcon = modeClass === 'diagnosis' 
-                    ? '<svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>'
+                    ? '<svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 7h8M8 11h8M8 15h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>'
                     : '<svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>';
                 var modeTag = modeClass === 'diagnosis' ? '诊断' : '陪练';
                 var preview = truncateText(item.lastMsg, 30) || '暂无消息';
@@ -1327,7 +1337,7 @@ function initApp() {
             // 清空消息显示 - 引导式开场白
             var container = document.getElementById('chat-messages');
             container.innerHTML = '<div class="custom-chat-msg ai">' +
-                '<div class="custom-chat-avatar"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>' +
+                '<div class="custom-chat-avatar"><svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 7h8M8 11h8M8 15h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>' +
                 '<div class="custom-chat-bubble">' +
                 '<p>嗨！我是小过学长 👋</p>' +
                 '<p style="margin-top:8px">我能帮你这些：</p>' +
@@ -1555,7 +1565,7 @@ function initApp() {
             // 清空消息显示 - 引导式开场白
             var container = document.getElementById('chat-messages');
             container.innerHTML = '<div class="custom-chat-msg ai">' +
-                '<div class="custom-chat-avatar"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>' +
+                '<div class="custom-chat-avatar"><svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 7h8M8 11h8M8 15h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>' +
                 '<div class="custom-chat-bubble">' +
                 '<p>嗨！我是小过学长 👋</p>' +
                 '<p style="margin-top:8px">我能帮你这些：</p>' +
@@ -1737,7 +1747,7 @@ function initApp() {
             var timeStr = getNowTime();
 
             if (role === 'ai') {
-                msgDiv.innerHTML = '<div class="custom-chat-avatar"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>' +
+                msgDiv.innerHTML = '<div class="custom-chat-avatar"><svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 7h8M8 11h8M8 15h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>' +
                     '<div class="custom-chat-bubble">' + formatBotText(text) + '<div class="custom-chat-time">' + timeStr + '</div></div>';
             } else if (role === 'system') {
                 msgDiv.innerHTML = '<div class="custom-chat-bubble">' + escapeHtml(text) + '</div>';
@@ -1755,7 +1765,7 @@ function initApp() {
             var msgDiv = document.createElement('div');
             msgDiv.className = 'custom-chat-msg ai';
             msgDiv.id = 'typing-indicator';
-            msgDiv.innerHTML = '<div class="custom-chat-avatar"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>' +
+            msgDiv.innerHTML = '<div class="custom-chat-avatar"><svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 7h8M8 11h8M8 15h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>' +
                 '<div class="custom-chat-bubble"><div class="typing-indicator"><span></span><span></span><span></span></div></div>';
             container.appendChild(msgDiv);
             scrollChatToBottom();

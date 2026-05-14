@@ -368,32 +368,28 @@
 .custom-chat-msg.ai { animation: bubbleIn 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
 .custom-chat-msg.user .custom-chat-bubble { animation: bubbleIn 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
 
-/* ===== 5. Avatar - 增大头像区域 ===== */
+/* ===== 5. Avatar - 小头像样式 ===== */
 .custom-chat-avatar {
-    width: 36px; 
-    height: 36px; 
+    width: 32px; 
+    height: 32px; 
     border-radius: 50%; 
     flex-shrink: 0; 
-    margin-top: 4px;
-    background: linear-gradient(135deg, #6C5CE7, #A29BFE);
+    margin-top: 2px;
+    background: linear-gradient(135deg, #7c3aed, #9f7aea);
     display: flex; 
     align-items: center; 
     justify-content: center;
-    box-shadow: 0 4px 12px rgba(108, 92, 231, 0.3);
-    position: relative;
+    box-shadow: 0 2px 8px rgba(124, 58, 237, 0.25);
+    flex-shrink: 0;
 }
-/* AI头像glow效果 */
-.custom-chat-avatar::before {
-    content: '';
-    position: absolute;
-    inset: -4px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, rgba(108, 92, 231, 0.3), rgba(162, 155, 254, 0.3));
-    z-index: -1;
-    filter: blur(8px);
-    opacity: 0.6;
+/* 小头像内的"四"字图标 */
+.custom-chat-avatar svg { 
+    width: 16px; 
+    height: 16px; 
+    stroke: white; 
+    stroke-width: 2; 
+    fill: none; 
 }
-.custom-chat-avatar svg { width: 18px; height: 18px; stroke: white; stroke-width: 2; fill: none; }
 .custom-chat-msg.user .custom-chat-avatar { display: none; }
 
 /* ===== 6. Bubbles - 大幅增加padding和圆角 ===== */
@@ -454,46 +450,32 @@
 
 /* 标准气泡样式 */
 .custom-chat-bubble {
-    max-width: 78%;  /* 从80%减小，让气泡更紧凑但有呼吸感 */
-    padding: 14px 18px;  /* 从10px 14px增加 */
-    border-radius: 18px;  /* 从18px增加 */
-    font-size: 15px;  /* 从14px增加 */
+    max-width: 78%;
+    padding: 14px 18px;
+    border-radius: 16px;
+    font-size: 15px;
     line-height: 1.7; 
     word-break: break-word; 
     position: relative; 
     overflow: hidden;
 }
-/* AI气泡 - 白色毛玻璃背景 */
+/* AI气泡 - 白色背景带边框 */
 .custom-chat-msg.ai .custom-chat-bubble {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: #fff;
     color: #1E293B; 
-    border-top-left-radius: 6px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06), 0 0 0 0.5px rgba(0, 0, 0, 0.03);
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
-/* 用户气泡 - 紫色渐变 */
+/* 用户气泡 - 品牌紫色 */
 .custom-chat-msg.user .custom-chat-bubble {
-    background: linear-gradient(135deg, #6C5CE7 0%, #8B7CF7 50%, #9D8FFF 100%);
+    background: #7c3aed;
     color: #fff; 
-    border-top-right-radius: 6px;
-    box-shadow: 0 4px 16px rgba(108, 92, 231, 0.3);
+    box-shadow: 0 4px 16px rgba(124, 58, 237, 0.3);
     position: relative;
 }
-/* 用户气泡shimmer光泽 */
+/* 用户气泡shimmer光泽 - 移除，纯色不需要 */
 .custom-chat-msg.user .custom-chat-bubble::before {
-    content: '';
-    position: absolute;
-    top: 0; 
-    left: -100%;
-    width: 60%; 
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
-    animation: shimmerSlide 3s ease-in-out infinite;
-}
-@keyframes shimmerSlide {
-    0% { left: -100%; }
-    50%, 100% { left: 150%; }
+    display: none;
 }
 .custom-chat-msg.system { justify-content: center; }
 .custom-chat-msg.system .custom-chat-bubble {
@@ -710,7 +692,7 @@
     z-index: 10;
 }
 
-/* ===== 12. 快捷功能按钮 - 毛玻璃风格，大幅升级 ===== */
+/* ===== 12. 快捷胶囊按钮 - 简洁对话风格 ===== */
 .quick-mode-tags {
     display: flex;
     gap: 10px;
@@ -721,36 +703,42 @@
     padding: 4px 0;
 }
 .quick-mode-tags::-webkit-scrollbar { display: none; }
-.quick-tag-pill {
+/* 新的快捷胶囊按钮样式 */
+.quick-capsule-btn {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 10px 16px;
-    background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(229, 229, 234, 0.6);
-    border-radius: 22px;
-    font-size: 13px;
+    padding: 10px 18px;
+    background: #f3f0ff;
+    border: 1px solid #ddd6fe;
+    border-radius: 20px;
+    font-size: 14px;
     font-weight: 500;
-    color: #64748B;
+    color: #7c3aed;
     white-space: nowrap;
     cursor: pointer;
     transition: all 0.2s ease;
     flex-shrink: 0;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 1px 4px rgba(124, 58, 237, 0.08);
 }
-.quick-tag-pill:active {
-    transform: scale(0.96);
-    background: #E5E5EA;
-}
-.quick-tag-pill.active {
-    background: linear-gradient(135deg, #6C5CE7, #8B7CF7);
-    border-color: #6C5CE7;
+.quick-capsule-btn:hover {
+    background: #7c3aed;
     color: #fff;
-    box-shadow: 0 4px 12px rgba(108, 92, 231, 0.25);
+    border-color: #7c3aed;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
 }
-.quick-tag-pill span { font-size: 15px; }
+.quick-capsule-btn:active {
+    transform: scale(0.96);
+    background: #6d28d9;
+}
+.quick-capsule-btn svg {
+    width: 16px;
+    height: 16px;
+    stroke: currentColor;
+    stroke-width: 2;
+    fill: none;
+}
 
 /* 快捷功能图标按钮 - 毛玻璃风格 */
 .chip-flagship-row {
