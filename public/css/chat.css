@@ -1639,13 +1639,13 @@
 
 /* 消息区底部留足空间：快捷按钮+输入框+间距 */
 .custom-chat-messages {
-    padding-bottom: 180px !important;
+    padding-bottom: 220px !important;
 }
 
 /* 移动端适配 */
 @media (max-width: 480px) {
     .custom-chat-messages {
-        padding-bottom: 160px !important;
+        padding-bottom: 200px !important;
     }
 }
 
