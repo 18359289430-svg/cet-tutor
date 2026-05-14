@@ -1309,7 +1309,7 @@ function initApp() {
                 var preview = truncateText(item.lastMsg, 30) || '暂无消息';
                 var timeStr = formatChatTime(item.lastMsgTime);
                 
-                html += '<div class="chat-card' + (isActive ? ' active' : '') + '" onclick="openConversation(\'\' + item.id + \'\')">' +
+                html += '<div class="chat-card' + (isActive ? ' active' : '') + '" onclick="openConversation(\'' + item.id + '\')">' +
                     '<div class="chat-card-icon ' + modeClass + '">' + modeIcon + '</div>' +
                     '<div class="chat-card-content">' +
                     '<div class="chat-card-header">' +
@@ -1319,7 +1319,7 @@ function initApp() {
                     '<div class="chat-card-preview">' + preview + '</div>' +
                     '<div class="chat-card-time">' + timeStr + '</div>' +
                     '</div>' +
-                    '<button class="chat-card-delete" onclick="event.stopPropagation();deleteConversation(\'\' + item.id + \'\')">' +
+                    '<button class="chat-card-delete" onclick="event.stopPropagation();deleteConversation(\'' + item.id + '\')">' +
                     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>' +
                     '</button>' +
                     '</div>';
@@ -1369,7 +1369,7 @@ function initApp() {
                 var preview = truncateText(item.lastMsg, 28) || '暂无消息预览';
                 var timeStr = formatChatTime(item.lastMsgTime);
                 
-                html += '<div class="chat-card-doubao' + (isActive ? ' active' : '') + '" onclick="openConversation(\'\' + item.id + \'\')">' +
+                html += '<div class="chat-card-doubao' + (isActive ? ' active' : '') + '" onclick="openConversation(\'' + item.id + '\')">' +
                     '<div class="chat-card-avatar" style="' + modeGrad + '">' +
                     '<svg viewBox="0 0 24 24" fill="white" opacity="0.9"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>' +
                     '</div>' +
@@ -1383,7 +1383,7 @@ function initApp() {
                     '<div class="chat-card-tag-doubao ' + modeClass + '">' + modeTag + '</div>' +
                     '</div>' +
                     '</div>' +
-                    '<button class="chat-card-delete-new" onclick="event.stopPropagation();deleteConversation(\'\' + item.id + \'\')">' +
+                    '<button class="chat-card-delete-new" onclick="event.stopPropagation();deleteConversation(\'' + item.id + '\')">' +
                     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>' +
                     '</button>' +
                     '</div>';
