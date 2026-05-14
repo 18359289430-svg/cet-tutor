@@ -2890,6 +2890,35 @@
 }
 .chip-card-icon { font-size:18px; line-height:1; }
 .chip-card-text { font-size:11px; font-weight:500; color:#475569; text-align:center; white-space:nowrap; }
+
+/* 快捷模式标签 - 浅灰圆角胶囊按钮风格 */
+.quick-mode-tags::-webkit-scrollbar { display:none; }
+.quick-tag-pill {
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+    padding:6px 14px;
+    background:#F5F5F7;
+    border:1px solid #E5E5EA;
+    border-radius:20px;
+    font-size:13px;
+    font-weight:500;
+    color:#475569;
+    white-space:nowrap;
+    cursor:pointer;
+    transition:all 0.15s;
+    flex-shrink:0;
+}
+.quick-tag-pill:active {
+    transform:scale(0.96);
+    background:#E5E5EA;
+}
+.quick-tag-pill.active {
+    background:#6C5CE7;
+    border-color:#6C5CE7;
+    color:#fff;
+}
+.quick-tag-pill span { font-size:14px; }
 .chip-flagship-row {
     display:flex; gap:8px; margin-top:6px; overflow-x:auto;
     scrollbar-width:none; -ms-overflow-style:none;
@@ -3424,6 +3453,270 @@
             font-size: 14px;
             cursor: pointer;
         }
+
+        /* ====== 新诊断模式界面 ====== */
+        .diag-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #F8F9FA;
+            z-index: 1200;
+            display: none;
+            flex-direction: column;
+        }
+        .diag-overlay.active { display: flex; }
+        
+        .diag-header {
+            padding: 16px 20px;
+            padding-top: calc(16px + var(--safe-top));
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: white;
+            flex-shrink: 0;
+            border-bottom: 1px solid #F1F5F9;
+        }
+        .diag-back-btn {
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: #F5F5F5;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+        .diag-back-btn:active { background: #E5E5E5; }
+        .diag-back-btn svg { width: 20px; height: 20px; color: #333; }
+        .diag-title { flex: 1; text-align: center; font-size: 17px; font-weight: 600; }
+        .diag-progress-wrap { padding: 12px 20px; background: white; flex-shrink: 0; }
+        .diag-progress-info { display: flex; justify-content: space-between; font-size: 13px; color: #666; margin-bottom: 8px; }
+        .diag-progress-bar { height: 4px; background: #E5E7EB; border-radius: 2px; overflow: hidden; }
+        .diag-progress-fill { height: 100%; background: linear-gradient(90deg, #6C5CE7, #A29BFE); border-radius: 2px; transition: width 0.3s ease; }
+        
+        .diag-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        /* 阅读原文 */
+        .diag-passage-card {
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .diag-passage-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        .diag-passage-label {
+            font-size: 13px;
+            color: #6C5CE7;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .diag-passage-toggle {
+            font-size: 13px;
+            color: #999;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px 8px;
+        }
+        .diag-passage-content {
+            font-size: 14px;
+            line-height: 1.8;
+            color: #333;
+            max-height: 150px;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        .diag-passage-content.expanded { max-height: 1000px; }
+        
+        /* 题目区域 */
+        .diag-question-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .diag-question-num {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 8px;
+        }
+        .diag-question-text {
+            font-size: 15px;
+            line-height: 1.7;
+            color: #1a1a1a;
+            margin-bottom: 16px;
+        }
+        
+        /* 选项按钮 */
+        .diag-options { display: flex; flex-direction: column; gap: 10px; }
+        .diag-option-btn {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 14px 16px;
+            background: #F8F9FA;
+            border: 2px solid transparent;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+        }
+        .diag-option-btn:active { transform: scale(0.98); }
+        .diag-option-btn.selected { background: #EDE9FE; border-color: #6C5CE7; }
+        .diag-option-btn.correct { background: #D1FAE5; border-color: #10B981; }
+        .diag-option-btn.wrong { background: #FEE2E2; border-color: #EF4444; }
+        .diag-option-btn.disabled { pointer-events: none; }
+        .diag-option-letter {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: #666;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+        .diag-option-btn.selected .diag-option-letter { background: #6C5CE7; color: white; }
+        .diag-option-btn.correct .diag-option-letter { background: #10B981; color: white; }
+        .diag-option-btn.wrong .diag-option-letter { background: #EF4444; color: white; }
+        .diag-option-text { font-size: 14px; line-height: 1.5; color: #333; }
+        
+        /* 正确/错误提示 */
+        .diag-result-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            margin-left: auto;
+            flex-shrink: 0;
+        }
+        .diag-result-icon.correct { background: #10B981; color: white; }
+        .diag-result-icon.wrong { background: #EF4444; color: white; }
+        
+        /* 自评问卷 */
+        .diag-eval-section { margin-top: 20px; }
+        .diag-eval-title {
+            font-size: 17px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+        .diag-eval-subtitle {
+            font-size: 13px;
+            color: #999;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .diag-eval-item {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .diag-eval-label {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .diag-eval-options { display: flex; gap: 10px; }
+        .diag-eval-btn {
+            flex: 1;
+            padding: 12px 8px;
+            background: #F5F5F5;
+            border: 2px solid transparent;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        .diag-eval-btn:active { transform: scale(0.98); }
+        .diag-eval-btn.selected { background: #EDE9FE; border-color: #6C5CE7; }
+        .diag-eval-btn .eval-letter { font-size: 20px; font-weight: 700; color: #6C5CE7; margin-bottom: 4px; }
+        .diag-eval-btn .eval-desc { font-size: 12px; color: #666; }
+        
+        /* 提交按钮 */
+        .diag-submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #6C5CE7, #A29BFE);
+            border: none;
+            border-radius: 14px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 24px;
+            transition: all 0.2s;
+        }
+        .diag-submit-btn:active { transform: scale(0.98); opacity: 0.9; }
+        .diag-submit-btn:disabled { background: #D1D5DB; cursor: not-allowed; }
+        
+        /* 加载状态 */
+        .diag-loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px;
+        }
+        .diag-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #E5E7EB;
+            border-top-color: #6C5CE7;
+            border-radius: 50%;
+            animation: diag-spin 1s linear infinite;
+        }
+        @keyframes diag-spin { to { transform: rotate(360deg); } }
+        .diag-loading-text { margin-top: 16px; font-size: 14px; color: #666; }
+        
+        /* 生成报告按钮 */
+        .diag-generate-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #6C5CE7, #A29BFE);
+            border: none;
+            border-radius: 14px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 24px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .diag-generate-btn:active { transform: scale(0.98); opacity: 0.9; }
 
         /* ====== 作文批改界面 ====== */
         .essay-overlay {
@@ -4841,7 +5134,7 @@
             <div class="new-chat-modal" id="new-chat-modal">
                 <div class="new-chat-sheet">
                     <div class="new-chat-sheet-title">选择对话类型</div>
-                    <div class="new-chat-option" onclick="createNewChat('diagnosis')">
+                    <div class="new-chat-option" onclick="startNewDiagnosis();hideNewChatModal();">
                         <div class="new-chat-option-icon diagnosis">
                             <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                         </div>
@@ -4882,37 +5175,48 @@
                     </div>
                     <!-- Messages -->
                     <div class="custom-chat-messages" id="chat-messages">
-                        <!-- AI welcome message -->
+                        <!-- AI welcome message - 引导式开场白 -->
                         <div class="custom-chat-msg ai">
                             <div class="custom-chat-avatar">
                                 <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                             </div>
                             <div class="custom-chat-bubble">
-                                <p>嗨！我是小过学长 &#x1F44B;</p>
-                                <p>基于<strong>海量</strong>真题数据分析你的薄弱点，随时问我任何备考问题</p>
+                                <p>嗨！我是小过学长 👋</p>
+                                <p style="margin-top:8px">我能帮你这些：</p>
+                                <p style="margin-top:4px">📋 做个诊断测水平</p>
+                                <p>💬 陪你刷真题练手</p>
+                                <p>❌ 复习之前的错题</p>
+                                <p>📝 批改你的作文</p>
+                                <p style="margin-top:8px;color:#6C5CE7;font-weight:600">直接说就行！</p>
                                 <div class="custom-chat-time">刚刚</div>
                             </div>
+                        </div>
+                        <!-- 快捷操作按钮 -->
+                        <div style="display:flex;gap:8px;margin:12px 0 0 38px;">
+                            <button class="custom-chat-chip" onclick="handleQuickAction('diagnosis')" style="background:linear-gradient(135deg,#6C5CE7,#8B7CF7);color:#fff;border:none;">
+                                📋 开始诊断
+                            </button>
+                            <button class="custom-chat-chip" onclick="handleQuickAction('companion')" style="background:#F0EEFF;color:#6C5CE7;border:none;">
+                                💬 继续陪练
+                            </button>
                         </div>
                     </div>
                     <!-- Input area -->
                     <div class="chat-quota-hint" id="chat-quota-hint" style="display:none"></div>
                     <div class="custom-chat-input-area" id="chat-input-area">
-                        <!-- Quick chips / suggestions -->
-                        <div class="custom-chips-row" id="input-chips" style="display:none">
-                        </div>
-                        <!-- Action bar (深度思考等) -->
-                        <div class="chat-action-bar" id="chat-action-bar">
-                            <button class="action-bar-btn" id="btn-think" onclick="toggleThinkMode()" title="深度思考">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                                <span>深度思考</span>
+                        <!-- 快捷标签 - 输入框上方 -->
+                        <div class="quick-mode-tags" id="quick-mode-tags" style="display:flex;gap:6px;margin-bottom:8px;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;">
+                            <button class="quick-tag-pill" data-mode="diagnosis" onclick="handleModeTag('diagnosis')">
+                                <span>📋</span>诊断
                             </button>
-                            <button class="action-bar-btn" onclick="copyLastMessage()" title="复制回复">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                                <span>复制</span>
+                            <button class="quick-tag-pill" data-mode="companion" onclick="handleModeTag('companion')">
+                                <span>💬</span>陪练
                             </button>
-                            <button class="action-bar-btn" onclick="regenerateLastResponse()" title="重新生成">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-                                <span>重新生成</span>
+                            <button class="quick-tag-pill" data-mode="wrongbook" onclick="handleModeTag('wrongbook')">
+                                <span>❌</span>错题
+                            </button>
+                            <button class="quick-tag-pill" data-mode="essay" onclick="handleModeTag('essay')">
+                                <span>📝</span>作文
                             </button>
                         </div>
                         <!-- Input row -->
@@ -5128,23 +5432,19 @@
             </div>
         </div>
 
-        <!-- 底部Tab -->
+        <!-- 底部Tab - 4个Tab -->
         <div class="tab-bar">
             <div class="tab-item active" data-tab="home" onclick="switchTab('home')">
                 <div class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
                 <span class="tab-label">首页</span>
             </div>
-            <div class="tab-item" data-tab="study" onclick="switchTab('study')">
-                <div class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 6v6l4 2"/></svg></div>
-                <span class="tab-label">学习</span>
+            <div class="tab-item" data-tab="diagnosis" onclick="switchTab('diagnosis')">
+                <div class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+                <span class="tab-label">练习</span>
             </div>
             <div class="tab-item" data-tab="progress" onclick="switchTab('progress')">
                 <div class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg></div>
-                <span class="tab-label">进度</span>
-            </div>
-            <div class="tab-item" data-tab="diagnosis" onclick="switchTab('diagnosis')">
-                <div class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
-                <span class="tab-label">AI教练</span>
+                <span class="tab-label">数据</span>
             </div>
             <div class="tab-item" data-tab="profile" onclick="switchTab('profile')">
                 <div class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
@@ -5341,6 +5641,41 @@
             }
             if (tab === 'progress') {
                 renderDashboard();
+            }
+        }
+
+        // ===== 快捷操作函数 =====
+        function handleQuickAction(mode) {
+            // 开场白快捷按钮处理
+            if (mode === 'diagnosis') {
+                startNewDiagnosis();
+            } else if (mode === 'companion') {
+                createNewChat('companion');
+            }
+        }
+
+        function handleModeTag(mode) {
+            // 快捷标签切换模式
+            var tag = document.querySelector('.quick-tag-pill[data-mode="' + mode + '"]');
+            if (!tag) return;
+
+            // 切换激活状态
+            document.querySelectorAll('.quick-tag-pill').forEach(function(t) {
+                t.classList.remove('active');
+            });
+            tag.classList.add('active');
+
+            // 发送对应消息
+            var messages = {
+                'diagnosis': '我想做一个AI诊断，帮我分析四级薄弱点',
+                'companion': '继续陪我练习，帮我针对薄弱点强化训练',
+                'wrongbook': '复习我之前的错题',
+                'essay': '我想批改作文'
+            };
+
+            var msg = messages[mode];
+            if (msg) {
+                sendSuggestion(msg);
             }
         }
 
@@ -6049,15 +6384,24 @@
             chatState.currentStreamText = '';
             chatState.currentMode = mode; // 保存当前模式
             
-            // 清空消息显示
+            // 清空消息显示 - 引导式开场白
             var container = document.getElementById('chat-messages');
             container.innerHTML = '<div class="custom-chat-msg ai">' +
                 '<div class="custom-chat-avatar"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>' +
                 '<div class="custom-chat-bubble">' +
                 '<p>嗨！我是小过学长 👋</p>' +
-                '<p>基于<strong>海量</strong>真题数据分析你的薄弱点，随时问我任何备考问题</p>' +
+                '<p style="margin-top:8px">我能帮你这些：</p>' +
+                '<p style="margin-top:4px">📋 做个诊断测水平</p>' +
+                '<p>💬 陪你刷真题练手</p>' +
+                '<p>❌ 复习之前的错题</p>' +
+                '<p>📝 批改你的作文</p>' +
+                '<p style="margin-top:8px;color:#6C5CE7;font-weight:600">直接说就行！</p>' +
                 '<div class="custom-chat-time">刚刚</div>' +
-                '</div></div>';
+                '</div></div>' +
+                '<div style="display:flex;gap:8px;margin:12px 0 0 38px;">' +
+                '<button class="custom-chat-chip" onclick="handleQuickAction(\'diagnosis\')" style="background:linear-gradient(135deg,#6C5CE7,#8B7CF7);color:#fff;border:none;">📋 开始诊断</button>' +
+                '<button class="custom-chat-chip" onclick="handleQuickAction(\'companion\')" style="background:#F0EEFF;color:#6C5CE7;border:none;">💬 继续陪练</button>' +
+                '</div>';
             
             // 更新标题
             document.getElementById('chat-title').textContent = mode === 'diagnosis' ? '小过学长' : 'AI陪练';
@@ -6274,15 +6618,24 @@
             chatState.currentMode = mode;
             chatState.hasReplied = false;
             
-            // 清空消息显示
+            // 清空消息显示 - 引导式开场白
             var container = document.getElementById('chat-messages');
             container.innerHTML = '<div class="custom-chat-msg ai">' +
                 '<div class="custom-chat-avatar"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>' +
                 '<div class="custom-chat-bubble">' +
                 '<p>嗨！我是小过学长 👋</p>' +
-                '<p>基于<strong>海量</strong>真题数据分析你的薄弱点，随时问我任何备考问题</p>' +
+                '<p style="margin-top:8px">我能帮你这些：</p>' +
+                '<p style="margin-top:4px">📋 做个诊断测水平</p>' +
+                '<p>💬 陪你刷真题练手</p>' +
+                '<p>❌ 复习之前的错题</p>' +
+                '<p>📝 批改你的作文</p>' +
+                '<p style="margin-top:8px;color:#6C5CE7;font-weight:600">直接说就行！</p>' +
                 '<div class="custom-chat-time">刚刚</div>' +
-                '</div></div>';
+                '</div></div>' +
+                '<div style="display:flex;gap:8px;margin:12px 0 0 38px;">' +
+                '<button class="custom-chat-chip" onclick="handleQuickAction(\'diagnosis\')" style="background:linear-gradient(135deg,#6C5CE7,#8B7CF7);color:#fff;border:none;">📋 开始诊断</button>' +
+                '<button class="custom-chat-chip" onclick="handleQuickAction(\'companion\')" style="background:#F0EEFF;color:#6C5CE7;border:none;">💬 继续陪练</button>' +
+                '</div>';
             
             // 更新标题
             document.getElementById('chat-title').textContent = mode === 'diagnosis' ? '小过学长' : 'AI陪练';
@@ -6317,7 +6670,7 @@
             if (mode === 'diagnosis') {
                 chips.innerHTML = '' +
                     '<div class="chip-grid">' +
-                    '<div class="custom-chip-card" onclick="sendSuggestion(this.dataset.msg)" data-msg="开始四级诊断"><span class="chip-card-icon" style="background:linear-gradient(135deg,#6C5CE7,#A29BFE)">🔍</span><span class="chip-card-text">开始诊断</span></div>' +
+                    '<div class="custom-chip-card" onclick="startNewDiagnosis()" style="background:linear-gradient(135deg,#6C5CE7,#A29BFE);color:white"><span class="chip-card-icon" style="background:rgba(255,255,255,0.2)">🔍</span><span class="chip-card-text">开始诊断</span></div>' +
                     '<div class="custom-chip-card" onclick="sendSuggestion(this.dataset.msg)" data-msg="我的阅读成绩很差怎么办"><span class="chip-card-icon" style="background:linear-gradient(135deg,#00B894,#55EFC4)">📖</span><span class="chip-card-text">阅读提分</span></div>' +
                     '<div class="custom-chip-card" onclick="sendSuggestion(this.dataset.msg)" data-msg="听力听不懂怎么练"><span class="chip-card-icon" style="background:linear-gradient(135deg,#FDCB6E,#F39C12)">🎧</span><span class="chip-card-text">听力技巧</span></div>' +
                     '<div class="custom-chip-card" onclick="sendSuggestion(this.dataset.msg)" data-msg="写作翻译怎么复习"><span class="chip-card-icon" style="background:linear-gradient(135deg,#E17055,#D63031)">✍️</span><span class="chip-card-text">写译方法</span></div>' +
@@ -7459,16 +7812,8 @@ function showClearChatModal() {
         })();
     
 function handleHomeCta() {
-    var user = JSON.parse(localStorage.getItem('cet_user') || '{}');
-    var hasDiag = user.personality || (user.diagnosis && user.diagnosis.type);
-    if (hasDiag) {
-        // 已诊断，直接进陪练
-        openChat('companion');
-    } else {
-        // 未诊断，进诊断
-        openChat('diagnosis');
-        setTimeout(function(){ sendSuggestion('开始AI诊断，帮我找出四级薄弱点'); }, 300);
-    }
+    // 使用新的前端诊断模式
+    startNewDiagnosis();
 }
 
 function selectPlan(plan) {
@@ -8737,6 +9082,409 @@ function showDiagnosisReport(text) {
     }
 }
 
+// ===== 新诊断模式 =====
+// 诊断状态
+var diagState = {
+    questions: [],
+    currentQIndex: 0,
+    answers: [],
+    selfEval: [],
+    correctCount: 0,
+    phase: 'loading' // loading, questions, selfeval, generating, done
+};
+
+// 开始新诊断流程
+async function startNewDiagnosis() {
+    var overlay = document.getElementById('diag-overlay');
+    if (!overlay) return;
+    
+    // 重置状态
+    diagState = {
+        questions: [],
+        currentQIndex: 0,
+        answers: [],
+        selfEval: [],
+        correctCount: 0,
+        phase: 'loading'
+    };
+    
+    // 显示界面
+    overlay.classList.add('active');
+    document.getElementById('diag-progress-wrap').style.display = 'none';
+    
+    // 显示加载
+    renderDiagLoading('正在加载题目...');
+    
+    try {
+        // 调用API获取题目
+        var resp = await fetch('/api/diagnosis/questions');
+        var result = await resp.json();
+        
+        if (result.code !== 0 || !result.data || result.data.length === 0) {
+            // fallback到旧模式
+            closeDiagOverlay();
+            // 提示用户使用旧模式
+            showToast('新诊断模式暂不可用，将使用AI对话诊断');
+            openChat('diagnosis');
+            sendSuggestion('开始AI诊断，帮我找出四级薄弱点');
+            return;
+        }
+        
+        diagState.questions = result.data;
+        diagState.phase = 'questions';
+        document.getElementById('diag-progress-wrap').style.display = '';
+        
+        // 开始答题
+        showCurrentQuestion();
+        
+    } catch(e) {
+        console.error('[诊断加载失败]', e);
+        closeDiagOverlay();
+        showToast('加载题目失败，请重试');
+    }
+}
+
+// 渲染加载状态
+function renderDiagLoading(text) {
+    var body = document.getElementById('diag-body');
+    body.innerHTML = 
+        '<div class="diag-loading">' +
+            '<div class="diag-spinner"></div>' +
+            '<div class="diag-loading-text">' + text + '</div>' +
+        '</div>';
+}
+
+// 显示当前题目
+function showCurrentQuestion() {
+    var q = diagState.questions[diagState.currentQIndex];
+    if (!q) {
+        showSelfEval();
+        return;
+    }
+    
+    var progress = Math.round((diagState.currentQIndex / 15) * 100);
+    document.getElementById('diag-progress-fill').style.width = progress + '%';
+    document.getElementById('diag-progress-text').textContent = '第' + (diagState.currentQIndex + 1) + '题/共15题';
+    document.getElementById('diag-correct-count').textContent = '正确: ' + diagState.correctCount;
+    
+    // 简化题目显示（不显示原文区域，因为我们的题目没有原文）
+    var html = 
+        '<div class="diag-question-card">' +
+            '<div class="diag-question-num">第 ' + (diagState.currentQIndex + 1) + ' / 15 题</div>' +
+            '<div class="diag-question-text">' + q.question + '</div>' +
+            '<div class="diag-options">' +
+                renderOptionBtn('A', q.optionA, 'A') +
+                renderOptionBtn('B', q.optionB, 'B') +
+                renderOptionBtn('C', q.optionC, 'C') +
+                renderOptionBtn('D', q.optionD, 'D') +
+            '</div>' +
+        '</div>';
+    
+    document.getElementById('diag-body').innerHTML = html;
+}
+
+// 渲染选项按钮
+function renderOptionBtn(letter, text, value) {
+    return '<div class="diag-option-btn" onclick="selectOption(this, \'' + value + '\')">' +
+        '<div class="diag-option-letter">' + letter + '</div>' +
+        '<div class="diag-option-text">' + text + '</div>' +
+    '</div>';
+}
+
+// 选择选项
+function selectOption(btn, selectedValue) {
+    var q = diagState.questions[diagState.currentQIndex];
+    var correctAnswer = q.correct_answer;
+    var isCorrect = selectedValue === correctAnswer;
+    
+    // 禁用所有按钮
+    var allBtns = document.querySelectorAll('.diag-option-btn');
+    allBtns.forEach(function(b) { b.classList.add('disabled'); });
+    
+    // 标记正确/错误
+    var correctLetter = correctAnswer;
+    allBtns.forEach(function(b) {
+        var btnLetter = b.querySelector('.diag-option-letter').textContent;
+        if (btnLetter === correctLetter) {
+            b.classList.add('correct');
+            b.innerHTML += '<div class="diag-result-icon correct">✓</div>';
+        } else if (b === btn && !isCorrect) {
+            b.classList.add('wrong');
+            b.innerHTML += '<div class="diag-result-icon wrong">✗</div>';
+        }
+    });
+    
+    // 记录答案
+    diagState.answers.push({
+        id: q.id,
+        answer: selectedValue,
+        correct_answer: correctAnswer,
+        isCorrect: isCorrect,
+        ability: q.ability || '细节理解'
+    });
+    
+    if (isCorrect) {
+        diagState.correctCount++;
+        document.getElementById('diag-correct-count').textContent = '正确: ' + diagState.correctCount;
+    }
+    
+    // 1.5秒后自动下一题
+    setTimeout(function() {
+        diagState.currentQIndex++;
+        if (diagState.currentQIndex >= 15) {
+            showSelfEval();
+        } else {
+            showCurrentQuestion();
+        }
+    }, 1500);
+}
+
+// 显示自评问卷
+function showSelfEval() {
+    diagState.phase = 'selfeval';
+    
+    var progress = Math.round((diagState.currentQIndex / 15) * 100);
+    document.getElementById('diag-progress-fill').style.width = progress + '%';
+    document.getElementById('diag-progress-text').textContent = '自评问卷';
+    document.getElementById('diag-correct-count').textContent = '正确: ' + diagState.correctCount;
+    
+    var html = 
+        '<div class="diag-eval-section">' +
+            '<div class="diag-eval-title">📋 自我评估</div>' +
+            '<div class="diag-eval-subtitle">根据你的实际情况选择</div>' +
+            
+            '<div class="diag-eval-item">' +
+                '<div class="diag-eval-label">🎧 听力能力</div>' +
+                '<div class="diag-eval-options">' +
+                    '<div class="diag-eval-btn" onclick="selectEval(this, \'听力\', \'A\')">' +
+                        '<div class="eval-letter">A</div><div class="eval-desc">中等水平</div>' +
+                    '</div>' +
+                    '<div class="diag-eval-btn" onclick="selectEval(this, \'听力\', \'B\')">' +
+                        '<div class="eval-letter">B</div><div class="eval-desc">较弱</div>' +
+                    '</div>' +
+                    '<div class="diag-eval-btn" onclick="selectEval(this, \'听力\', \'C\')">' +
+                        '<div class="eval-letter">C</div><div class="eval-desc">比较薄弱</div>' +
+                    '</div>' +
+                '</div>' +
+            '</div>' +
+            
+            '<div class="diag-eval-item">' +
+                '<div class="diag-eval-label">✍️ 写作能力</div>' +
+                '<div class="diag-eval-options">' +
+                    '<div class="diag-eval-btn" onclick="selectEval(this, \'写作\', \'A\')">' +
+                        '<div class="eval-letter">A</div><div class="eval-desc">中等水平</div>' +
+                    '</div>' +
+                    '<div class="diag-eval-btn" onclick="selectEval(this, \'写作\', \'B\')">' +
+                        '<div class="eval-letter">B</div><div class="eval-desc">较弱</div>' +
+                    '</div>' +
+                    '<div class="diag-eval-btn" onclick="selectEval(this, \'写作\', \'C\')">' +
+                        '<div class="eval-letter">C</div><div class="eval-desc">比较薄弱</div>' +
+                    '</div>' +
+                '</div>' +
+            '</div>' +
+            
+            '<div class="diag-eval-item">' +
+                '<div class="diag-eval-label">🔄 翻译能力</div>' +
+                '<div class="diag-eval-options">' +
+                    '<div class="diag-eval-btn" onclick="selectEval(this, \'翻译\', \'A\')">' +
+                        '<div class="eval-letter">A</div><div class="eval-desc">中等水平</div>' +
+                    '</div>' +
+                    '<div class="diag-eval-btn" onclick="selectEval(this, \'翻译\', \'B\')">' +
+                        '<div class="eval-letter">B</div><div class="eval-desc">较弱</div>' +
+                    '</div>' +
+                    '<div class="diag-eval-btn" onclick="selectEval(this, \'翻译\', \'C\')">' +
+                        '<div class="eval-letter">C</div><div class="eval-desc">比较薄弱</div>' +
+                    '</div>' +
+                '</div>' +
+            '</div>' +
+            
+            '<button class="diag-generate-btn" id="diag-generate-btn" onclick="generateDiagReport()" disabled>' +
+                '<span>✨</span> 生成诊断报告' +
+            '</button>' +
+        '</div>';
+    
+    document.getElementById('diag-body').innerHTML = html;
+}
+
+// 选择自评选项
+function selectEval(btn, dimension, value) {
+    // 取消该维度的其他选择
+    var siblings = btn.parentElement.querySelectorAll('.diag-eval-btn');
+    siblings.forEach(function(s) { s.classList.remove('selected'); });
+    btn.classList.add('selected');
+    
+    // 更新状态
+    var found = false;
+    for (var i = 0; i < diagState.selfEval.length; i++) {
+        if (diagState.selfEval[i].dimension === dimension) {
+            diagState.selfEval[i].answer = value;
+            found = true;
+            break;
+        }
+    }
+    if (!found) {
+        diagState.selfEval.push({ dimension: dimension, answer: value });
+    }
+    
+    // 检查是否所有选项都已选择
+    checkEvalComplete();
+}
+
+// 检查自评是否完成
+function checkEvalComplete() {
+    var btn = document.getElementById('diag-generate-btn');
+    if (!btn) return;
+    
+    var evalDims = ['听力', '写作', '翻译'];
+    var allSelected = evalDims.every(function(dim) {
+        return diagState.selfEval.some(function(e) { return e.dimension === dim; });
+    });
+    
+    btn.disabled = !allSelected;
+}
+
+// 生成诊断报告
+async function generateDiagReport() {
+    diagState.phase = 'generating';
+    
+    // 显示加载
+    document.getElementById('diag-body').innerHTML = 
+        '<div class="diag-loading">' +
+            '<div class="diag-spinner"></div>' +
+            '<div class="diag-loading-text">AI正在分析你的答题情况...</div>' +
+        '</div>';
+    
+    try {
+        var resp = await fetch('/api/diagnosis/report', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                answers: diagState.answers,
+                self_eval: diagState.selfEval
+            })
+        });
+        
+        var result = await resp.json();
+        
+        if (result.code !== 0 || !result.data) {
+            throw new Error(result.error || '生成报告失败');
+        }
+        
+        // 构建报告文本（兼容旧格式）
+        var reportText = buildReportText(result.data);
+        
+        // 显示报告
+        diagState.phase = 'done';
+        showDiagnosisReport(reportText);
+        
+        // 关闭诊断界面
+        closeDiagOverlay();
+        
+    } catch(e) {
+        console.error('[生成报告失败]', e);
+        document.getElementById('diag-body').innerHTML = 
+            '<div class="diag-loading">' +
+                '<div class="diag-loading-text">生成报告失败: ' + e.message + '</div>' +
+                '<button class="diag-submit-btn" onclick="startNewDiagnosis()" style="margin-top:20px">重新诊断</button>' +
+            '</div>';
+    }
+}
+
+// 构建报告文本（兼容旧格式）
+function buildReportText(data) {
+    // 提取result_tag中的维度分数
+    var dims = {};
+    if (data.result_tag) {
+        var parts = data.result_tag.split('|');
+        parts.forEach(function(p) {
+            var kv = p.split('=');
+            if (kv.length === 2) {
+                var key = kv[0].trim();
+                var val = parseInt(kv[1]) || 0;
+                if (['细节定位', '推理判断', '同义替换', '主旨归纳', '态度判断'].indexOf(key) !== -1) {
+                    dims[key] = val;
+                }
+            }
+        });
+    }
+    
+    // 从dimension_scores补充
+    if (data.dimension_scores) {
+        Object.keys(data.dimension_scores).forEach(function(k) {
+            if (['细节定位', '推理判断', '同义替换', '主旨归纳', '态度判断'].indexOf(k) !== -1) {
+                dims[k] = data.dimension_scores[k] || dims[k] || 0;
+            }
+        });
+    }
+    
+    // 计算总评分
+    var totalScore = 0;
+    var count = 0;
+    Object.keys(dims).forEach(function(k) {
+        totalScore += dims[k];
+        count++;
+    });
+    if (count > 0) totalScore = Math.round(totalScore / count);
+    
+    // 构建兼容格式
+    var text = '【五维诊断】\n';
+    Object.keys(dims).forEach(function(k) {
+        text += k + ': ' + dims[k] + '\n';
+    });
+    text += '\n综合评分: ' + totalScore + '\n';
+    text += '\n你是"' + (data.personality || '佛系随缘') + '"！\n';
+    text += '\n' + (data.roast || '') + '\n';
+    text += '\n[RESULT:type=' + (data.personality || '佛系随缘') + '|score=' + totalScore;
+    Object.keys(dims).forEach(function(k) {
+        text += '|' + k + '=' + dims[k];
+    });
+    text += ']';
+    
+    // 保存到reportData
+    reportData = {
+        riskLevel: totalScore >= 60 ? 'low' : totalScore >= 40 ? 'mid' : 'high',
+        totalScore: totalScore,
+        dims: dims,
+        weakDims: buildWeakDims(dims),
+        advice: (data.suggestions || []).join('\n'),
+        tips: data.suggestions || [],
+        personality: data.personality || '佛系随缘',
+        roast: data.roast || '',
+        shareText: data.share_text || '',
+        correctCount: data.correct_count || diagState.correctCount,
+        totalCount: data.total_count || 15,
+        accuracy: data.accuracy || Math.round(diagState.correctCount / 15 * 100)
+    };
+    
+    return text;
+}
+
+// 构建弱维度列表
+function buildWeakDims(dims) {
+    var arr = Object.keys(dims).map(function(k) {
+        return { name: k, score: dims[k] };
+    }).sort(function(a, b) {
+        return a.score - b.score;
+    });
+    return arr.slice(0, 2);
+}
+
+// 退出诊断
+function exitDiagnosis() {
+    if (diagState.phase === 'generating') {
+        if (!confirm('报告生成中，确定要退出吗？')) return;
+    }
+    closeDiagOverlay();
+}
+
+// 关闭诊断界面
+function closeDiagOverlay() {
+    var overlay = document.getElementById('diag-overlay');
+    if (overlay) {
+        overlay.classList.remove('active');
+    }
+}
+
 // 关闭报告页
 function closeReportPage() {
     var overlay = document.getElementById('report-overlay');
@@ -9223,6 +9971,31 @@ function drawReportShareImage() {
             <div class="share-card-tip">分享给朋友测测 👇</div>
             <div class="detail-coupon-tip">🎁 限时5折：付款输入优惠码 <strong style="color:#6C5CE7">NGUPFC</strong>（冲刺营）/ <strong style="color:#6C5CE7">WPBWPS</strong>（全程营）</div></div>
             <button class="share-card-close" onclick="closeShareCard()">关闭</button>
+        </div>
+    </div>
+
+    <!-- 新诊断模式界面 -->
+    <div class="diag-overlay" id="diag-overlay">
+        <div class="diag-header">
+            <button class="diag-back-btn" id="diag-back-btn" onclick="exitDiagnosis()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="15 18 9 12 15 6"/>
+                </svg>
+            </button>
+            <div class="diag-title" id="diag-title">四级诊断</div>
+            <div style="width:36px"></div>
+        </div>
+        <div class="diag-progress-wrap" id="diag-progress-wrap" style="display:none">
+            <div class="diag-progress-info">
+                <span id="diag-progress-text">第1题/共15题</span>
+                <span id="diag-correct-count">正确: 0</span>
+            </div>
+            <div class="diag-progress-bar">
+                <div class="diag-progress-fill" id="diag-progress-fill" style="width:0%"></div>
+            </div>
+        </div>
+        <div class="diag-body" id="diag-body">
+            <!-- 动态内容 -->
         </div>
     </div>
 
