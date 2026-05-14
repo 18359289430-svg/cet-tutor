@@ -2960,8 +2960,8 @@ function openPayment(plan) {
     };
     // 面包多商品链接（创建后替换）
     var mbdLinks = {
-        sprint: 'https://mbd.pub/o/bread/YZaTk5tsbA==',
-        flagship: 'https://mbd.pub/o/bread/YZaTk5ttbQ=='
+        sprint: 'https://mbd.pub/o/bread/YZaTk5tsbA==?discount_code=NGUPFC',
+        flagship: 'https://mbd.pub/o/bread/YZaTk5ttbQ==?discount_code=WPBWPS'
     };
 
     var existing = document.getElementById('pay-modal');
@@ -5273,3 +5273,36 @@ function updateChatInputPlaceholder() {
     }
 }
 
+
+function activateWithMbdOrderFromPlans() {
+    var input = document.getElementById('plan-mbd-order-input');
+    var msgEl = document.getElementById('plan-mbd-activate-msg');
+    if (!input || !input.value.trim()) {
+        if (msgEl) { msgEl.style.color = '#E17055'; msgEl.textContent = '请输入面包多订单号'; }
+        return;
+    }
+    if (msgEl) { msgEl.style.color = '#64748B'; msgEl.textContent = '正在验证订单...'; }
+
+    fetch('/api/activate-with-mbd-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ order_id: input.value.trim() })
+    }).then(function(r) { return r.json(); }).then(function(resp) {
+        if (resp.success) {
+            state.userData = state.userData || {};
+            state.userData.plan = resp.plan;
+            state.userData.planToken = resp.token;
+            state.userData.planOrderId = resp.orderId;
+            state.userData.planActivatedAt = Date.now();
+            localStorage.setItem('cet_user', JSON.stringify(state.userData));
+            updateProfileStats();
+            updateHomeStatus();
+            if (msgEl) { msgEl.style.color = '#10B981'; msgEl.textContent = '激活成功！刷新页面即可使用'; }
+            setTimeout(function(){ switchTab('home'); }, 1500);
+        } else {
+            if (msgEl) { msgEl.style.color = '#E17055'; msgEl.textContent = resp.error || '验证失败'; }
+        }
+    }).catch(function(e) {
+        if (msgEl) { msgEl.style.color = '#E17055'; msgEl.textContent = '网络错误，请重试'; }
+    });
+}

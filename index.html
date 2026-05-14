@@ -397,7 +397,7 @@
                             <li>✓ 翻译批改 每日1次（参考译文）</li>
                             <li>✓ 针对短板的每日一练</li>
                         </ul>
-                        <button class="coze-card-btn primary" onclick="event.stopPropagation();openPayment('sprint')">立即购买</button>
+                        <button class="coze-card-btn primary" onclick="event.stopPropagation();window.open('https://mbd.pub/o/bread/YZaTk5tsbA==?discount_code=NGUPFC')">立即购买</button>
                     </div>
                     <div class="coze-card" data-plan="flagship" onclick="selectPlan('flagship')">
                         <div class="coze-card-top">
@@ -413,7 +413,7 @@
                             <li>✓ 深度精讲（为什么错+怎么避坑）</li>
                             <li>✓ 六级衔接指导</li>
                         </ul>
-                        <button class="coze-card-btn primary" onclick="event.stopPropagation();openPayment('flagship')">立即购买</button>
+                        <button class="coze-card-btn primary" onclick="event.stopPropagation();window.open('https://mbd.pub/o/bread/YZaTk5ttbQ==?discount_code=WPBWPS')">立即购买</button>
                     </div>
                 </div>
                 <div class="coze-benefits" id="coze-benefits">
@@ -451,9 +451,16 @@
                         <div class="faq-answer"><p>你的学习数据仅保存在本地浏览器中，我们不会收集或上传你的个人信息。对话内容仅用于提供AI辅导服务。</p></div>
                     </div>
                 </div>
+                <div style="margin:20px 16px;padding:20px;background:#fff;border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,0.04)">
+                    <div style="font-size:15px;font-weight:600;color:#1E293B;margin-bottom:8px">激活订单</div>
+                    <div style="font-size:13px;color:#64748B;margin-bottom:12px">购买后粘贴面包多订单号，自动开通</div>
+                    <div style="display:flex;gap:10px">
+                        <input type="text" id="plan-mbd-order-input" placeholder="粘贴面包多订单号" style="flex:1;padding:12px 14px;border:1.5px solid #E2E8F0;border-radius:10px;font-size:15px;outline:none;letter-spacing:1px" autocomplete="off" spellcheck="false">
+                        <button onclick="activateWithMbdOrderFromPlans()" style="padding:12px 20px;background:#6C5CE7;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;white-space:nowrap;cursor:pointer">验证激活</button>
+                    </div>
+                    <div id="plan-mbd-activate-msg" style="font-size:12px;margin-top:8px;min-height:18px"></div>
+                </div>
             </div>
-
-            <!-- 用户中心 -->
             <div class="tab-page" id="tab-profile">
                 <div class="profile-header-trust">
                     <div class="profile-row">
@@ -699,7 +706,7 @@
 
 
     <!-- JS -->
-    <script src="/js/main.js?v=202605150052"></script>
+    <script src="/js/main.js?v=202605150749"></script>
     <script src="/js/essay.js?v=202605142349"></script>
 </body>
 </html>
