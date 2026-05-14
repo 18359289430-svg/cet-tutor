@@ -4839,6 +4839,137 @@
             font-weight: 600;
             cursor: pointer;
         }
+        
+        /* 正确率趋势图 */
+        .dashboard-trend-section {
+            margin: 0 16px 16px;
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .dashboard-trend-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .dashboard-trend-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a1a2e;
+        }
+        .dashboard-trend-period {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+        .dashboard-trend-canvas-wrap {
+            position: relative;
+            height: 160px;
+        }
+        .dashboard-trend-canvas-wrap canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+        .dashboard-trend-empty {
+            text-align: center;
+            padding: 30px;
+            color: #94a3b8;
+            font-size: 13px;
+        }
+        
+        /* 诊断报告历史 */
+        .dashboard-report-section {
+            margin: 0 16px 16px;
+        }
+        .dashboard-report-card {
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .dashboard-report-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .dashboard-report-date {
+            font-size: 13px;
+            color: #94a3b8;
+        }
+        .dashboard-report-score {
+            font-size: 20px;
+            font-weight: 700;
+            color: #6C5CE7;
+        }
+        .dashboard-report-dims {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .dashboard-report-dim {
+            text-align: center;
+        }
+        .dashboard-report-dim-name {
+            font-size: 10px;
+            color: #94a3b8;
+            margin-bottom: 4px;
+        }
+        .dashboard-report-dim-score {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a2e;
+        }
+        .dashboard-report-empty {
+            text-align: center;
+            padding: 30px;
+            color: #94a3b8;
+            font-size: 13px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        
+        /* 学习记录统计 */
+        .dashboard-stats-section {
+            margin: 0 16px 16px;
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .dashboard-stats-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin-bottom: 16px;
+        }
+        .dashboard-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+        .dashboard-stat-item {
+            text-align: center;
+        }
+        .dashboard-stat-num {
+            font-size: 24px;
+            font-weight: 700;
+            color: #6C5CE7;
+        }
+        .dashboard-stat-label {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+        
+        /* 底部安全区域 */
+        .dashboard-bottom-spacer {
+            height: calc(70px + var(--safe-bottom));
+        }
 
     </style>
 
@@ -5665,6 +5796,16 @@
             });
             tag.classList.add('active');
 
+            // 设置Bot ID和模式（根据mode选择对应的Bot）
+            var botMap = {
+                'diagnosis': '7636289658620215331',
+                'companion': '7637702903679631395',
+                'wrongbook': '7637702903679631395',  // 错题复习使用陪练Bot
+                'essay': '7637702903679631395'       // 作文批改使用陪练Bot
+            };
+            chatState.botId = botMap[mode] || '7637702903679631395';
+            chatState.currentMode = mode;
+
             // 发送对应消息
             var messages = {
                 'diagnosis': '我想做一个AI诊断，帮我分析四级薄弱点',
@@ -5903,6 +6044,75 @@
                 html += '</div>';
             }
             
+            // 学习记录统计
+            html += '<div class="dashboard-stats-section">';
+            html += '<div class="dashboard-stats-title">📈 学习数据统计</div>';
+            html += '<div class="dashboard-stats-grid">';
+            html += '<div class="dashboard-stat-item">';
+            html += '<div class="dashboard-stat-num">' + streak.count + '</div>';
+            html += '<div class="dashboard-stat-label">连续学习天数</div>';
+            html += '</div>';
+            html += '<div class="dashboard-stat-item">';
+            html += '<div class="dashboard-stat-num">' + totalPractice + '</div>';
+            html += '<div class="dashboard-stat-label">累计练习题数</div>';
+            html += '</div>';
+            html += '<div class="dashboard-stat-item">';
+            html += '<div class="dashboard-stat-num">' + accuracy + '%</div>';
+            html += '<div class="dashboard-stat-label">总正确率</div>';
+            html += '</div>';
+            html += '<div class="dashboard-stat-item">';
+            html += '<div class="dashboard-stat-num">' + (userData.studyDays || 0) + '</div>';
+            html += '<div class="dashboard-stat-label">学习总天数</div>';
+            html += '</div>';
+            html += '</div>';
+            html += '</div>';
+            
+            // 正确率趋势图
+            html += '<div class="dashboard-trend-section">';
+            html += '<div class="dashboard-trend-header">';
+            html += '<div class="dashboard-trend-title">📈 正确率趋势</div>';
+            html += '<div class="dashboard-trend-period">近7天</div>';
+            html += '</div>';
+            html += '<div class="dashboard-trend-canvas-wrap">';
+            html += '<canvas id="dashboard-trend-canvas"></canvas>';
+            html += '</div>';
+            html += '</div>';
+            
+            // 诊断报告历史（模拟数据）
+            html += '<div class="dashboard-report-section">';
+            html += '<div class="dashboard-section-title">📋 诊断报告历史</div>';
+            var reportHistory = getDiagnosisReports();
+            if (reportHistory && reportHistory.length > 0) {
+                reportHistory.forEach(function(report) {
+                    html += '<div class="dashboard-report-card">';
+                    html += '<div class="dashboard-report-header">';
+                    html += '<div class="dashboard-report-date">' + report.date + '</div>';
+                    html += '<div class="dashboard-report-score">' + report.score + '分</div>';
+                    html += '</div>';
+                    html += '<div class="dashboard-report-dims">';
+                    var dimNames = ['细节定位', '推理判断', '同义替换', '主旨归纳', '态度判断'];
+                    dimNames.forEach(function(dim) {
+                        var dimScore = report.dims && report.dims[dim] ? report.dims[dim] : '--';
+                        html += '<div class="dashboard-report-dim">';
+                        html += '<div class="dashboard-report-dim-name">' + dim + '</div>';
+                        html += '<div class="dashboard-report-dim-score">' + (typeof dimScore === 'number' ? dimScore + '分' : dimScore) + '</div>';
+                        html += '</div>';
+                    });
+                    html += '</div>';
+                    html += '</div>';
+                });
+            } else {
+                html += '<div class="dashboard-report-empty">';
+                html += '<div style="font-size:40px;margin-bottom:12px">📝</div>';
+                html += '<div>暂无诊断记录</div>';
+                html += '<div style="font-size:12px;margin-top:4px">完成AI诊断后即可查看报告</div>';
+                html += '</div>';
+            }
+            html += '</div>';
+            
+            // 底部安全区域
+            html += '<div class="dashboard-bottom-spacer"></div>';
+            
             container.innerHTML = html;
             
             // 绘制雷达图
@@ -5911,6 +6121,11 @@
                     drawDashboardRadar(dims);
                 }, 100);
             }
+            
+            // 绘制正确率趋势图
+            setTimeout(function() {
+                drawDashboardTrend();
+            }, 150);
         }
         
         function drawDashboardRadar(data) {
@@ -6025,6 +6240,187 @@
                 ctx.fillText(score + '', x, y + 16);
                 ctx.font = '12px -apple-system, BlinkMacSystemFont, sans-serif';
             }
+        }
+        
+        function getDiagnosisReports() {
+            // 从localStorage获取诊断报告历史
+            try {
+                var data = localStorage.getItem('cet4_diagnosis_reports');
+                if (data) return JSON.parse(data);
+                
+                // 兼容旧数据：从cet_user中读取诊断数据作为最近一次报告
+                var userData = JSON.parse(localStorage.getItem('cet_user') || '{}');
+                if (userData && userData.diagnosis && userData.diagnosis.type) {
+                    // 估算一个诊断日期
+                    var diagDate = userData.diagnosedAt ? new Date(userData.diagnosedAt) : new Date();
+                    var dateStr = (diagDate.getMonth() + 1) + '月' + diagDate.getDate() + '日';
+                    
+                    // 计算预估分数
+                    var dims = userData.diagnosis;
+                    var weights = {
+                        '细节定位': 0.25, '推理判断': 0.25, '同义替换': 0.2,
+                        '主旨归纳': 0.15, '态度判断': 0.15
+                    };
+                    var weightedSum = 0, weightSum = 0;
+                    Object.keys(weights).forEach(function(key) {
+                        if (dims[key]) {
+                            weightedSum += dims[key] * weights[key];
+                            weightSum += weights[key];
+                        }
+                    });
+                    var estimatedScore = weightSum > 0 ? Math.round((weightedSum / weightSum) * 7.1) : 0;
+                    estimatedScore = Math.max(425, Math.min(710, estimatedScore));
+                    
+                    return [{
+                        date: dateStr,
+                        score: estimatedScore,
+                        dims: dims
+                    }];
+                }
+            } catch(e) {}
+            return [];
+        }
+        
+        function drawDashboardTrend() {
+            var canvas = document.getElementById('dashboard-trend-canvas');
+            if (!canvas) return;
+            
+            var ctx = canvas.getContext('2d');
+            var dpr = window.devicePixelRatio || 1;
+            var width = canvas.offsetWidth || 300;
+            var height = 160;
+            
+            canvas.width = width * dpr;
+            canvas.height = height * dpr;
+            canvas.style.width = width + 'px';
+            canvas.style.height = height + 'px';
+            ctx.scale(dpr, dpr);
+            
+            // 获取近7天的正确率数据
+            var trendData = [];
+            var practiceHistory = getPracticeHistory();
+            var today = new Date();
+            
+            for (var i = 6; i >= 0; i--) {
+                var d = new Date(today);
+                d.setDate(d.getDate() - i);
+                var dateStr = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+                
+                var dayTotal = 0;
+                var dayCorrect = 0;
+                practiceHistory.forEach(function(item) {
+                    if (item.date === dateStr) {
+                        dayTotal += (item.count || 1);
+                        dayCorrect += (item.correct || 0);
+                    }
+                });
+                
+                var accuracy = dayTotal > 0 ? Math.round((dayCorrect / dayTotal) * 100) : null;
+                trendData.push({ date: dateStr, accuracy: accuracy, total: dayTotal });
+            }
+            
+            // 检查是否有数据
+            var hasData = trendData.some(function(d) { return d.accuracy !== null; });
+            if (!hasData) {
+                ctx.fillStyle = '#94a3b8';
+                ctx.font = '13px -apple-system, BlinkMacSystemFont, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('暂无练习数据', width / 2, height / 2);
+                return;
+            }
+            
+            var padding = { top: 20, right: 20, bottom: 30, left: 40 };
+            var chartWidth = width - padding.left - padding.right;
+            var chartHeight = height - padding.top - padding.bottom;
+            
+            // Y轴范围 0-100
+            var yMin = 0, yMax = 100;
+            
+            // 绘制Y轴网格线
+            ctx.strokeStyle = '#F1F5F9';
+            ctx.lineWidth = 1;
+            for (var y = 0; y <= 100; y += 25) {
+                var yPos = padding.top + chartHeight - (y - yMin) / (yMax - yMin) * chartHeight;
+                ctx.beginPath();
+                ctx.moveTo(padding.left, yPos);
+                ctx.lineTo(width - padding.right, yPos);
+                ctx.stroke();
+                
+                // Y轴标签
+                ctx.fillStyle = '#94a3b8';
+                ctx.font = '10px -apple-system, BlinkMacSystemFont, sans-serif';
+                ctx.textAlign = 'right';
+                ctx.fillText(y + '%', padding.left - 8, yPos + 4);
+            }
+            
+            // 绘制折线
+            var points = [];
+            var validPoints = [];
+            trendData.forEach(function(d, i) {
+                if (d.accuracy !== null) {
+                    var x = padding.left + (i / 6) * chartWidth;
+                    var y = padding.top + chartHeight - (d.accuracy - yMin) / (yMax - yMin) * chartHeight;
+                    points.push({ x: x, y: y, accuracy: d.accuracy });
+                    validPoints.push({ x: x, y: y });
+                }
+            });
+            
+            // 绘制线和数据点
+            if (validPoints.length > 0) {
+                // 渐变填充
+                ctx.beginPath();
+                validPoints.forEach(function(p, i) {
+                    if (i === 0) ctx.moveTo(p.x, p.y);
+                    else ctx.lineTo(p.x, p.y);
+                });
+                
+                // 填充到X轴
+                var lastPoint = validPoints[validPoints.length - 1];
+                var firstPoint = validPoints[0];
+                ctx.lineTo(lastPoint.x, padding.top + chartHeight);
+                ctx.lineTo(firstPoint.x, padding.top + chartHeight);
+                ctx.closePath();
+                
+                var gradient = ctx.createLinearGradient(0, padding.top, 0, padding.top + chartHeight);
+                gradient.addColorStop(0, 'rgba(108,92,231,0.3)');
+                gradient.addColorStop(1, 'rgba(108,92,231,0.05)');
+                ctx.fillStyle = gradient;
+                ctx.fill();
+                
+                // 绘制线条
+                ctx.beginPath();
+                validPoints.forEach(function(p, i) {
+                    if (i === 0) ctx.moveTo(p.x, p.y);
+                    else ctx.lineTo(p.x, p.y);
+                });
+                ctx.strokeStyle = '#6C5CE7';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                // 绘制数据点
+                validPoints.forEach(function(p) {
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
+                    ctx.fillStyle = '#6C5CE7';
+                    ctx.fill();
+                    ctx.strokeStyle = '#fff';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                });
+            }
+            
+            // X轴标签
+            var dayLabels = ['一', '二', '三', '四', '五', '六', '日'];
+            trendData.forEach(function(d, i) {
+                var x = padding.left + (i / 6) * chartWidth;
+                var date = new Date(d.date);
+                var label = dayLabels[date.getDay() === 0 ? 6 : date.getDay() - 1];
+                
+                ctx.fillStyle = '#94a3b8';
+                ctx.font = '10px -apple-system, BlinkMacSystemFont, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(label, x, height - 8);
+            });
         }
         
         function getPracticeHistory() {
