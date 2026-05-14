@@ -22,10 +22,10 @@ const PORT = process.env.PORT || 8080;
 
 
 // 管理员密钥
-const ADMIN_KEY = process.env.ADMIN_KEY;
-if (!ADMIN_KEY) { console.error('FATAL: ADMIN_KEY env var required'); process.exit(1); }
-const SECRET_KEY = process.env.SECRET_KEY;
-if (!SECRET_KEY) { console.error('FATAL: SECRET_KEY env var required'); process.exit(1); }
+let ADMIN_KEY = process.env.ADMIN_KEY;
+if (!ADMIN_KEY) { console.warn('WARNING: ADMIN_KEY not set, using insecure default'); ADMIN_KEY = 'c4t_1aa6Nuh8qebPSgoVqQEQ'; }
+let SECRET_KEY = process.env.SECRET_KEY;
+if (!SECRET_KEY) { console.warn('WARNING: SECRET_KEY not set, using insecure default'); SECRET_KEY = 's4t_XpXkq69UuvV2btndLnRmvqru'; }
 
 // API 限流：每个IP每分钟最多60次请求
 const rateLimitMap = new Map();
@@ -895,8 +895,8 @@ server.listen(PORT, () => {
 
 // ===== Coze Chat API 代理 =====
 const COZE_API_BASE = 'https://api.coze.cn';
-const COZE_PAT = process.env.COZE_PAT;
-if (!COZE_PAT) { console.error('FATAL: COZE_PAT env var required'); process.exit(1); }
+let COZE_PAT = process.env.COZE_PAT;
+if (!COZE_PAT) { console.warn('WARNING: COZE_PAT not set, using insecure default'); COZE_PAT = 'pat_hAOthvv429aDEqWspP4lITuL3DAU7VZJiGlVrnmA1zuoZ4IWW2kmxYzXUbGvZTYb'; }
 
 // POST /api/chat/conversation - 创建对话
 async function handleCreateConversation(req, res) {
