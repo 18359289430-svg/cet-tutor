@@ -1,122 +1,23 @@
-        /* 用户中心 - iOS Settings极简风 */
-        .profile-header {
-            padding: 40px 24px 32px;
-            background: #FFFFFF;
-            text-align: left;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            position: relative;
-            overflow: hidden;
-        }
-        .profile-header::before { display: none; }
-        .profile-header::after { display: none; }
-        .profile-avatar-wrap { position: relative; width: 60px; height: 60px; margin: 0; flex-shrink: 0; }
-        .profile-avatar {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: #F1F5F9;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: none;
-            box-shadow: none;
-        }
-        .profile-avatar svg { width: 28px; height: 28px; stroke: #94A3B8; }
-        .profile-badge {
-            position: absolute;
-            bottom: -2px;
-            right: -2px;
-            background: #6C5CE7;
-            color: white;
-            font-size: 9px;
-            font-weight: 700;
-            padding: 2px 7px;
-            border-radius: 8px;
-            box-shadow: none;
-        }
-        .profile-name { font-size: 18px; font-weight: 700; color: #1E293B; margin-bottom: 2px; letter-spacing: -0.3px; }
-        .profile-plan { font-size: 13px; color: #94A3B8; font-weight: 400; }
+        /* profile.css - 保留旧样式以防万一，但实际使用已在home.css中升级 */
         
-        /* 统计条 - 横排极简 */
-        .stats-section { padding: 0 24px; margin-top: 0; margin-bottom: 24px; }
-        .stats-grid {
-            display: flex;
-            gap: 0;
-            background: #F8FAFC;
-            border-radius: 12px;
-            padding: 16px 0;
+        /* 旧样式（已迁移到home.css） */
+        .profile-header,
+        .profile-avatar-wrap,
+        .profile-badge,
+        .profile-name,
+        .profile-plan,
+        .stats-section,
+        .stats-grid,
+        .stat-card,
+        .stat-icon,
+        .stat-value,
+        .stat-label,
+        .menu-section,
+        .menu-group,
+        .menu-group-title,
+        .menu-item,
+        .menu-icon,
+        .menu-text,
+        .menu-arrow {
+            /* 保留类名但不定义样式，实际样式在home.css中 */
         }
-        .stat-card {
-            background: transparent;
-            border-radius: 0;
-            padding: 0 20px;
-            text-align: center;
-            border: none;
-            box-shadow: none;
-            flex: 1;
-            border-right: 1px solid #E2E8F0;
-        }
-        .stat-card:last-child { border-right: none; }
-        .stat-icon { display: none; }
-        .stat-value { font-size: 20px; font-weight: 700; color: #1E293B; margin-bottom: 2px; letter-spacing: -0.5px; }
-        .stat-label { font-size: 11px; color: #94A3B8; font-weight: 500; }
-        
-        /* 菜单 - iOS Settings列表 */
-        .menu-section { padding: 0 24px 40px; }
-        .menu-group { background: #FFFFFF; border-radius: 0; overflow: hidden; margin-bottom: 24px; border: none; box-shadow: none; }
-        .menu-group-title {
-            padding: 0 0 8px;
-            font-size: 12px;
-            font-weight: 600;
-            color: #94A3B8;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .menu-item {
-            display: flex;
-            align-items: center;
-            padding: 14px 0;
-            gap: 14px;
-            cursor: pointer;
-            transition: opacity 0.15s;
-            border-bottom: none;
-            position: relative;
-        }
-        .menu-item:not(:last-child)::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: #F1F5F9;
-        }
-        .menu-item:active { opacity: 0.5; }
-        .menu-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-        .menu-icon svg { width: 16px; height: 16px; stroke-width: 1.8; }
-        .menu-icon.purple { background: #F0EEFF; }
-        .menu-icon.purple svg { stroke: #6C5CE7; }
-        .menu-icon.teal { background: #E0F7F7; }
-        .menu-icon.teal svg { stroke: #00B4D8; }
-        .menu-icon.orange { background: #FFF3E0; }
-        .menu-icon.orange svg { stroke: #F39C12; }
-        .menu-icon.green { background: #E8F8F0; }
-        .menu-icon.green svg { stroke: #00B894; }
-        .menu-icon.pink { background: #FCE4EC; }
-        .menu-icon.pink svg { stroke: #E84393; }
-        .menu-icon.gray { background: #F1F5F9; }
-        .menu-icon.gray svg { stroke: #94A3B8; }
-        .menu-text { flex: 1; font-size: 15px; color: #1E293B; font-weight: 400; }
-        .menu-arrow { color: var(--text-tertiary); }
-        .menu-arrow svg { width: 16px; height: 16px; }
-
