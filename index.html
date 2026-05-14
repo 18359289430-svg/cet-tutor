@@ -6899,7 +6899,7 @@
                     fetchPayload = {
                         user_id: userId,
                         messages: chatState.chatHistory.concat([{ role: 'user', content: contextPrefix + text }]),
-                        stream: false,
+                        stream: true,
                         personality: personality,
                         weak_dims: weakDims,
                         dim_scores: JSON.stringify(dimScores),
@@ -6938,15 +6938,42 @@
 
                 var streamStartTime = Date.now();
                 
-                // DeepSeek非流式响应处理
+                // DeepSeek流式SSE解析（与Coze流式共享同一个reader循环）
                 if (isCompanion) {
-                    var jsonResp = await resp.json();
-                    var replyText = (jsonResp.data && jsonResp.data.content) || '';
-                    bubbleEl.innerHTML = formatBotMessage(replyText);
-                    chatState.currentStreamText = replyText;
-                    chatState.chatHistory.push({ role: 'assistant', content: replyText, content_type: 'text' });
+                    var companionDone = false;
+                    while (!companionDone) {
+                        var result = await reader.read();
+                        if (result.done) { companionDone = true; break; }
+                        if (!firstChunkReceived) {
+                            firstChunkReceived = true;
+                            console.log('[DeepSeek Stream] First chunk in', Date.now() - streamStartTime, 'ms');
+                        }
+                        buffer += decoder.decode(result.value, { stream: true });
+                        var lines = buffer.split('\n');
+                        buffer = lines.pop() || '';
+                        for (var i = 0; i < lines.length; i++) {
+                            var line = lines[i].trim();
+                            if (!line || line.startsWith(':') || line.startsWith('event:')) continue;
+                            if (!line.startsWith('data:')) continue;
+                            var dataStr = line.substring(5).trim();
+                            if (dataStr === '[DONE]') { companionDone = true; break; }
+                            try {
+                                var evt = JSON.parse(dataStr);
+                                // OpenAI/DeepSeek stream format
+                                if (evt.choices && evt.choices[0]) {
+                                    var delta = evt.choices[0].delta;
+                                    if (delta && delta.content) {
+                                        fullText += delta.content;
+                                        chatState.currentStreamText = fullText;
+                                        bubbleEl.innerHTML = formatBotMessage(fullText);
+                                    }
+                                }
+                            } catch(e) {}
+                        }
+                    }
+                    chatState.chatHistory.push({ role: 'assistant', content: fullText, content_type: 'text' });
                     chatState.chatRounds++;
-                    updateChatListMeta(replyText);
+                    updateChatListMeta(fullText);
                     savePracticeRecord();
                     checkStreakOnChat();
                     chatState.isStreaming = false;
