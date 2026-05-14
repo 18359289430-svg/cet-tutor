@@ -4898,7 +4898,7 @@ function drawReportShareImage() {
 
 // ===== 免费AI对话限额逻辑 (GPT风格) =====
 // 每日免费额度：3条AI对话消息
-var CET4_DAILY_FREE_LIMIT = 3;
+var CET4_DAILY_FREE_LIMIT = 20;
 var CET4_CHAT_COUNT_KEY_PREFIX = 'cet4_chat_count_';
 
 // 获取今天的日期字符串 YYYYMMDD
