@@ -1534,6 +1534,8 @@ function initApp() {
             // mode='diagnosis' 表示明确要诊断，不自动跳转（重新诊断用）
             // mode='companion' 表示明确要陪练
             if (mode === 'chat') {
+                mode = hasDiagnosis ? 'companion' : 'diagnosis';
+            }
             var botMap = {
                 'diagnosis': '7636289658620215331',
                 'companion': '7637702903679631395'
@@ -5110,4 +5112,3 @@ function updateChatInputPlaceholder() {
     }
 }
 
-}
