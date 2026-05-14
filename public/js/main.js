@@ -281,69 +281,116 @@ function initApp() {
                 weakDims = sortedDims.slice(0, 2);
             }
             
+            // SVG图标定义
+            var icons = {
+                chart: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 21H3V3"/><path d="M21 9l-6 6-4-4-6 6"/></svg>',
+                flame: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z"/></svg>',
+                target: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>',
+                alert: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
+                calendar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>',
+                trending: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>',
+                list: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>',
+                stats: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>',
+                search: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>',
+                pencil: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 114 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>',
+                book: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>',
+                check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+                arrow: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>'
+            };
+            
             var html = '';
             
-            // Hero区域
+            // ===== Hero区域 - 优雅简洁 =====
             html += '<div class="dashboard-hero">';
             html += '<div class="dashboard-hero-title">学习进度</div>';
             html += '<div class="dashboard-hero-sub">让你的进步看得见</div>';
+            html += '<div class="dashboard-hero-divider"></div>';
             html += '<div class="dashboard-hero-countdown">';
             html += '<span class="dashboard-hero-countdown-dot"></span>';
-            html += '距离四级考试还有 ' + daysToExam + ' 天</div>';
+            html += '距考试 ' + daysToExam + ' 天</div>';
             html += '</div>';
             
-            // 概览卡片
+            // ===== 概览卡片 - 2大+2小布局 =====
             html += '<div class="dashboard-overview">';
-            html += '<div class="dashboard-overview-card streak">';
-            html += '<div class="overview-icon" style="background:rgba(255,255,255,0.2)">🔥</div>';
+            // 大卡片1: 连续学习天数
+            html += '<div class="dashboard-overview-card large streak-card">';
+            html += '<div class="overview-icon" style="background:rgba(255,255,255,0.2)">' + icons.flame + '</div>';
             html += '<div class="overview-num">' + streak.count + '</div>';
             html += '<div class="overview-label">连续学习天数</div>';
             html += '</div>';
-            html += '<div class="dashboard-overview-card">';
-            html += '<div class="overview-icon" style="background:#F0F0FF">📝</div>';
+            // 大卡片2: 预估分数
+            html += '<div class="dashboard-overview-card large score-card">';
+            html += '<div class="overview-icon" style="background:rgba(255,255,255,0.2)">' + icons.target + '</div>';
+            html += '<div class="overview-num">' + (hasDimData ? estimatedScore : '--') + '</div>';
+            html += '<div class="overview-label">预估分数</div>';
+            html += '</div>';
+            // 小卡片1: 今日练习
+            html += '<div class="dashboard-overview-card small practice">';
+            html += '<div class="overview-icon" style="background:rgba(0,184,148,0.1)">' + icons.pencil + '</div>';
             html += '<div class="overview-num">' + todayCount + '</div>';
-            html += '<div class="overview-label">今日练习题数</div>';
+            html += '<div class="overview-label">今日练习</div>';
             html += '</div>';
-            html += '<div class="dashboard-overview-card">';
-            html += '<div class="overview-icon" style="background:#FFF5F0">📚</div>';
-            html += '<div class="overview-num">' + totalPractice + '</div>';
-            html += '<div class="overview-label">累计练习题数</div>';
-            html += '</div>';
-            html += '<div class="dashboard-overview-card">';
-            html += '<div class="overview-icon" style="background:#F0FFF5">✅</div>';
+            // 小卡片2: 正确率
+            html += '<div class="dashboard-overview-card small accuracy">';
+            html += '<div class="overview-icon" style="background:rgba(108,92,231,0.1)">' + icons.check + '</div>';
             html += '<div class="overview-num">' + accuracy + '%</div>';
             html += '<div class="overview-label">总正确率</div>';
             html += '</div>';
             html += '</div>';
             
-            // 雷达图区域
+            // ===== 五维能力雷达图区域 =====
             html += '<div class="dashboard-radar-section">';
             html += '<div class="dashboard-radar-header">';
-            html += '<div class="dashboard-radar-title">📊 五维能力分析</div>';
+            html += '<div class="dashboard-radar-title">' + icons.chart + '五维能力分析</div>';
             if (weakDims.length > 0) {
-                html += '<div class="dashboard-radar-tip">💡 最弱项: ' + weakDims[0] + '</div>';
+                html += '<div class="dashboard-radar-tip">' + icons.alert + '最弱项: ' + weakDims[0] + '</div>';
             }
             html += '</div>';
             if (hasDimData) {
                 html += '<div class="dashboard-radar-canvas-wrap">';
                 html += '<canvas id="dashboard-radar-canvas" width="260" height="260"></canvas>';
                 html += '</div>';
+                // 维度标签
+                html += '<div class="dashboard-radar-dims">';
+                var dimNames = ['细节定位', '推理判断', '同义替换', '主旨归纳', '态度判断'];
+                dimNames.forEach(function(dim) {
+                    var score = dims[dim] || 0;
+                    var isWeak = weakDims.indexOf(dim) !== -1;
+                    html += '<div class="dashboard-radar-dim-tag' + (isWeak ? ' weak' : '') + '">';
+                    html += '<span class="dashboard-radar-dim-name">' + dim + '</span>';
+                    html += '<span class="dashboard-radar-dim-score">' + score + '</span>';
+                    html += '</div>';
+                });
+                html += '</div>';
             } else {
                 html += '<div class="dashboard-radar-empty">';
-                html += '<div class="dashboard-radar-empty-icon">🔍</div>';
+                html += '<div class="dashboard-radar-empty-icon">' + icons.search + '</div>';
                 html += '<div class="dashboard-radar-empty-text">完成首次诊断后解锁<br>AI将分析你的五维能力</div>';
                 html += '</div>';
             }
             html += '</div>';
             
-            // 45天计划进度
+            // ===== 45天计划进度 - 环形进度条 =====
             html += '<div class="dashboard-plan-section">';
             html += '<div class="dashboard-plan-header">';
-            html += '<div class="dashboard-plan-title">📅 45天冲刺计划</div>';
+            html += '<div class="dashboard-plan-title">' + icons.calendar + '45天冲刺计划</div>';
             html += '<div class="dashboard-plan-day">第 ' + currentDay + ' 天 / 45天</div>';
             html += '</div>';
-            html += '<div class="dashboard-plan-progress">';
-            html += '<div class="dashboard-plan-progress-fill" style="width:' + planProgress + '%"></div>';
+            // SVG环形进度
+            var circumference = 2 * Math.PI * 42;
+            var offset = circumference - (planProgress / 100) * circumference;
+            html += '<div class="dashboard-plan-circle-wrap">';
+            html += '<div class="dashboard-plan-circle">';
+            html += '<svg viewBox="0 0 100 100">';
+            html += '<defs><linearGradient id="planGradient" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#6C5CE7"/><stop offset="100%" stop-color="#A29BFE"/></linearGradient></defs>';
+            html += '<circle class="dashboard-plan-circle-bg" cx="50" cy="50" r="42"/>';
+            html += '<circle class="dashboard-plan-circle-progress" cx="50" cy="50" r="42" stroke-dasharray="' + circumference + '" stroke-dashoffset="' + offset + '"/>';
+            html += '</svg>';
+            html += '<div class="dashboard-plan-circle-text">';
+            html += '<div class="dashboard-plan-circle-day">' + planProgress + '%</div>';
+            html += '<div class="dashboard-plan-circle-label">完成度</div>';
+            html += '</div>';
+            html += '</div>';
             html += '</div>';
             html += '<div class="dashboard-plan-footer">';
             html += '<span>开始于 ' + formatDate(startDate) + '</span>';
@@ -351,9 +398,9 @@ function initApp() {
             html += '</div>';
             html += '</div>';
             
-            // 近7天热力图
+            // ===== 近7天热力图 =====
             html += '<div class="dashboard-heatmap-section">';
-            html += '<div class="dashboard-heatmap-title">📈 近7天练习热力图</div>';
+            html += '<div class="dashboard-heatmap-title">' + icons.trending + '近7天练习热力图</div>';
             html += '<div class="dashboard-heatmap-grid">';
             var dayLabels = ['一', '二', '三', '四', '五', '六', '日'];
             for (var i = 0; i < 7; i++) {
@@ -371,37 +418,38 @@ function initApp() {
             html += '</div>';
             html += '</div>';
             
-            // 薄弱项卡片
+            // ===== 薄弱项卡片 - 左侧彩色竖条 =====
             if (weakDims.length > 0) {
                 html += '<div class="dashboard-weak-section">';
-                html += '<div class="dashboard-section-title">⚠️ 薄弱项专项提升</div>';
+                html += '<div class="dashboard-section-title">' + icons.alert + '薄弱项专项提升</div>';
                 weakDims.forEach(function(dim) {
                     var config = DIM_CONFIGS[dim] || {};
                     var score = dims[dim] || 0;
                     var actionText = getWeakActionText(dim, score);
                     html += '<div class="dashboard-weak-card" onclick="doCheckIn()">';
-                    html += '<div class="dashboard-weak-icon" style="background:' + (config.color || '#6C5CE7') + '20">';
-                    html += config.icon || '📚';
+                    html += '<div class="dashboard-weak-icon" style="background:' + (config.color || '#6C5CE7') + '15">';
+                    html += '<svg viewBox="0 0 24 24" fill="none" stroke="' + (config.color || '#6C5CE7') + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>';
                     html += '</div>';
                     html += '<div class="dashboard-weak-info">';
                     html += '<div class="dashboard-weak-name">' + dim + '</div>';
                     html += '<div class="dashboard-weak-score">当前分数: ' + score + '分</div>';
+                    html += '<div class="dashboard-weak-bar"><div class="dashboard-weak-bar-fill" style="width:' + score + '%"></div></div>';
                     html += '<div class="dashboard-weak-action">' + actionText + '</div>';
                     html += '</div>';
-                    html += '<div class="dashboard-weak-arrow">→</div>';
+                    html += '<div class="dashboard-weak-arrow">' + icons.arrow + '</div>';
                     html += '</div>';
                 });
                 html += '</div>';
             }
             
-            // 预估分数
+            // ===== 预估分数卡 - 深色高亮 =====
             if (hasDimData) {
-                var targetScore = 500; // 默认目标
+                var targetScore = 500;
                 var diff = targetScore - estimatedScore;
                 var scorePercent = Math.round(((estimatedScore - 425) / (710 - 425)) * 100);
                 html += '<div class="dashboard-score-section">';
                 html += '<div class="dashboard-score-header">';
-                html += '<div class="dashboard-score-title">🎯 预估分数</div>';
+                html += '<div class="dashboard-score-title">' + icons.target + '预估分数</div>';
                 html += '<div class="dashboard-score-target">目标: ' + targetScore + ' 分</div>';
                 html += '</div>';
                 html += '<div class="dashboard-score-main">';
@@ -416,15 +464,15 @@ function initApp() {
                 if (diff > 0) {
                     html += '<span class="dashboard-score-diff">还差 ' + diff + ' 分</span>';
                 } else {
-                    html += '<span style="color:#00B894">🎉 已超过目标!</span>';
+                    html += '<span style="color:#00B894">已超过目标</span>';
                 }
                 html += '</div>';
                 html += '</div>';
             }
             
-            // 学习记录统计
+            // ===== 学习记录统计 =====
             html += '<div class="dashboard-stats-section">';
-            html += '<div class="dashboard-stats-title">📈 学习数据统计</div>';
+            html += '<div class="dashboard-stats-title">' + icons.stats + '学习数据统计</div>';
             html += '<div class="dashboard-stats-grid">';
             html += '<div class="dashboard-stat-item">';
             html += '<div class="dashboard-stat-num">' + streak.count + '</div>';
@@ -445,20 +493,21 @@ function initApp() {
             html += '</div>';
             html += '</div>';
             
-            // 正确率趋势图
+            // ===== 正确率趋势图 =====
             html += '<div class="dashboard-trend-section">';
             html += '<div class="dashboard-trend-header">';
-            html += '<div class="dashboard-trend-title">📈 正确率趋势</div>';
-            html += '<div class="dashboard-trend-period">近7天</div>';
+            html += '<div class="dashboard-trend-title">' + icons.trending + '正确率趋势</div>';
+            html += '<div class="dashboard-trend-period"><button class="active">近7天</button></div>';
             html += '</div>';
             html += '<div class="dashboard-trend-canvas-wrap">';
             html += '<canvas id="dashboard-trend-canvas"></canvas>';
             html += '</div>';
             html += '</div>';
             
-            // 诊断报告历史（模拟数据）
+            // ===== 诊断报告历史 - 时间线样式 =====
             html += '<div class="dashboard-report-section">';
-            html += '<div class="dashboard-section-title">📋 诊断报告历史</div>';
+            html += '<div class="dashboard-section-title">' + icons.list + '诊断报告历史</div>';
+            html += '<div class="dashboard-report-timeline">';
             var reportHistory = getDiagnosisReports();
             if (reportHistory && reportHistory.length > 0) {
                 reportHistory.forEach(function(report) {
@@ -471,24 +520,29 @@ function initApp() {
                     var dimNames = ['细节定位', '推理判断', '同义替换', '主旨归纳', '态度判断'];
                     dimNames.forEach(function(dim) {
                         var dimScore = report.dims && report.dims[dim] ? report.dims[dim] : '--';
+                        var isWeak = weakDims.indexOf(dim) !== -1;
                         html += '<div class="dashboard-report-dim">';
                         html += '<div class="dashboard-report-dim-name">' + dim + '</div>';
-                        html += '<div class="dashboard-report-dim-score">' + (typeof dimScore === 'number' ? dimScore + '分' : dimScore) + '</div>';
+                        html += '<div class="dashboard-report-dim-score' + (isWeak ? ' weak' : '') + '">' + (typeof dimScore === 'number' ? dimScore + '分' : dimScore) + '</div>';
                         html += '</div>';
                     });
                     html += '</div>';
+                    if (report.personality) {
+                        html += '<div class="dashboard-report-personality">' + report.personality + '</div>';
+                    }
                     html += '</div>';
                 });
             } else {
                 html += '<div class="dashboard-report-empty">';
-                html += '<div style="font-size:40px;margin-bottom:12px">📝</div>';
+                html += '<div class="dashboard-empty-icon">' + icons.pencil + '</div>';
                 html += '<div>暂无诊断记录</div>';
                 html += '<div style="font-size:12px;margin-top:4px">完成AI诊断后即可查看报告</div>';
                 html += '</div>';
             }
+            html += '</div>'; // end timeline
             html += '</div>';
             
-            // 底部安全区域
+            // ===== 底部安全区域 =====
             html += '<div class="dashboard-bottom-spacer"></div>';
             
             container.innerHTML = html;
@@ -510,6 +564,7 @@ function initApp() {
                 if(c) c.innerHTML = '<div style="padding:40px 20px;text-align:center"><div style="font-size:40px;margin-bottom:12px">📊</div><div style="font-size:16px;font-weight:600">数据页面加载失败</div><div style="font-size:13px;color:#64748B;margin-top:8px">请刷新页面重试</div></div>';
             }
         }
+
         
         function drawDashboardRadar(data) {
             var canvas = document.getElementById('dashboard-radar-canvas');
