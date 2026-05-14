@@ -891,11 +891,14 @@ D. 选项D
 
 记住：你是陪练不是老师，像学长一样聊天，别太严肃。`;
 
-function buildRagContext(userMessage, personality, weakDims) {
+function buildRagContext(userMessage, personality, weakDims, dimScores, wrongSummary, studyDays) {
     var context = '';
-    // 根据薄弱维度搜题
+    // 根据最薄弱维度搜题（精准匹配题型）
     var searchType = '';
-    if (weakDims && weakDims.length > 0) {
+    var weakDimsList = weakDims || [];
+    if (weakDimsList.length > 0) {
+        // 提取维度名（去掉分数）
+        var firstWeak = weakDimsList[0].replace(/\(.*?\)/, '').trim();
         var dimTypeMap = {
             '细节定位': '阅读理解-仔细阅读',
             '推理判断': '阅读理解-仔细阅读',
@@ -903,7 +906,7 @@ function buildRagContext(userMessage, personality, weakDims) {
             '主旨归纳': '阅读理解-仔细阅读',
             '态度判断': '听力理解-篇章'
         };
-        searchType = dimTypeMap[weakDims[0]] || '';
+        searchType = dimTypeMap[firstWeak] || '';
     }
     // 按关键词搜
     var keyword = '';
@@ -919,12 +922,27 @@ function buildRagContext(userMessage, personality, weakDims) {
             context += '   答案:' + q.answer + ' 解析:' + (q.explanation || '').substring(0,100) + '\n';
         });
     }
-    if (personality) {
-        context += '\n[用户备考人格: ' + personality + ']';
+    
+    // 完整用户画像
+    context += '\n\n[用户画像]';
+    if (personality) context += '\n- 备考人格: ' + personality;
+    if (dimScores) {
+        try {
+            var scores = JSON.parse(dimScores);
+            context += '\n- 五维能力: ';
+            for (var k in scores) context += k + '=' + scores[k] + '分  ';
+        } catch(e) {}
     }
-    if (weakDims && weakDims.length > 0) {
-        context += '\n[薄弱维度: ' + weakDims.join(', ') + '，重点练这些]';
+    if (weakDimsList.length > 0) {
+        context += '\n- 最弱维度: ' + weakDimsList.join(', ') + ' → 请重点针对这些出题';
     }
+    if (wrongSummary) {
+        context += '\n- 近期错题: ' + wrongSummary + ' → 多出这些类型的题';
+    }
+    if (studyDays > 0) {
+        context += '\n- 已学习: ' + studyDays + '天';
+    }
+    
     return context;
 }
 
@@ -951,7 +969,7 @@ async function handleDeepseekChat(req, res) {
         const lastMsg = messages[messages.length - 1];
         const userPersonality = body.personality || '';
         const weakDims = body.weak_dims || [];
-        const ragCtx = buildRagContext(lastMsg.content || '', userPersonality, weakDims);
+        const ragCtx = buildRagContext(lastMsg.content || '', userPersonality, weakDims, body.dim_scores, body.wrong_summary, body.study_days || 0);
         if (ragCtx && lastMsg.content) {
             lastMsg.content += ragCtx;
         }

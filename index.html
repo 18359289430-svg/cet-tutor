@@ -6397,19 +6397,48 @@
                 var fetchPayload = payload;
                 
                 if (isCompanion) {
-                    // DeepSeek用OpenAI格式，带RAG上下文
+                    // DeepSeek用OpenAI格式，带完整用户画像+RAG上下文
                     var ud = state.userData || {};
                     var personality = ud.personality || (ud.diagnosis && ud.diagnosis.type) || '';
+                    
+                    // 五维分数详情
+                    var dimScores = {};
+                    if (ud.diagnosis && ud.diagnosis.dims) {
+                        dimScores = ud.diagnosis.dims;
+                    }
+                    
+                    // 薄弱维度（按分数排序，最弱的排前面）
                     var weakDims = [];
                     if (ud.diagnosis && ud.diagnosis.dims) {
-                        for (var k in ud.diagnosis.dims) { if (ud.diagnosis.dims[k] < 60) weakDims.push(k); }
+                        var dimArr = [];
+                        for (var k in ud.diagnosis.dims) { dimArr.push({name: k, score: ud.diagnosis.dims[k]}); }
+                        dimArr.sort(function(a,b){return a.score - b.score;});
+                        weakDims = dimArr.filter(function(d){return d.score < 60;}).map(function(d){return d.name + '(' + d.score + '分)';});
                     }
+                    
+                    // 近期错题统计
+                    var wrongQs = getWrongQuestions();
+                    var wrongStats = {};
+                    for (var i = 0; i < Math.min(wrongQs.length, 30); i++) {
+                        var t = wrongQs[i].type || '未知';
+                        wrongStats[t] = (wrongStats[t] || 0) + 1;
+                    }
+                    var wrongSummary = '';
+                    for (var t in wrongStats) { wrongSummary += t + ':' + wrongStats[t] + '题  '; }
+                    
+                    // 练习天数
+                    var streak = 0;
+                    try { var sd = JSON.parse(localStorage.getItem('cet_streak') || '{}'); streak = sd.current || 0; } catch(e){}
+                    
                     fetchPayload = {
                         user_id: userId,
                         messages: chatState.chatHistory.concat([{ role: 'user', content: contextPrefix + text }]),
                         stream: false,
                         personality: personality,
                         weak_dims: weakDims,
+                        dim_scores: JSON.stringify(dimScores),
+                        wrong_summary: wrongSummary,
+                        study_days: streak,
                         plan_token: (state.userData && state.userData.planToken) || '',
                         plan_order_id: (state.userData && state.userData.planOrderId) || ''
                     };
