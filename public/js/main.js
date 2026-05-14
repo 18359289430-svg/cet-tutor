@@ -4580,36 +4580,16 @@ function renderReportPage() {
             '<button style="padding:10px 20px;background:#F8F9FA;border:1px solid #E2E8F0;border-radius:8px;font-size:13px;color:#64748B;cursor:pointer" onclick="showReportShare()">📱 分享报告</button>' +
         '</div>';
     
-    // 动态CTA：根据弱项生成针对性引导文案
+    // 简洁CTA提示：一行文字点一下弱项
     try {
-        var ctaInsight = document.getElementById('report-cta-insight');
-        var ctaText = document.getElementById('report-cta-text');
-        if (ctaInsight && d.weakDims && d.weakDims.length > 0) {
-            var weakest = d.weakDims[0];
-            var weakName = weakest.name || weakest;
-            var weakScore = weakest.score || 0;
-            // 合规话术：陈述事实+提供路径，不承诺效果
-            if (weakScore < 40) {
-                ctaInsight.innerHTML = 
-                    '<div class="report-insight-badge">发现薄弱项</div>' +
-                    '<div class="report-insight-main">你的' + weakName + '仅 <strong>' + weakScore + '分</strong>，低于及格线</div>' +
-                    '<div class="report-insight-sub">专项训练已为你准备好，按弱项出真题讲解</div>';
-                ctaText.textContent = '解锁专项训练计划';
-            } else if (weakScore < 60) {
-                ctaInsight.innerHTML = 
-                    '<div class="report-insight-badge">待提升</div>' +
-                    '<div class="report-insight-main">你的' + weakName + ' <strong>' + weakScore + '分</strong>，有提升空间</div>' +
-                    '<div class="report-insight-sub">针对性练习可以帮助你巩固这个维度</div>';
-                ctaText.textContent = '解锁针对性训练';
-            } else {
-                ctaInsight.innerHTML = 
-                    '<div class="report-insight-badge">基础扎实</div>' +
-                    '<div class="report-insight-main">五维能力较均衡，可进阶突破</div>' +
-                    '<div class="report-insight-sub">冲刺营提供高频真题和AI深度讲解</div>';
-                ctaText.textContent = '解锁冲刺营';
+        var ctaHint = document.getElementById('report-cta-hint');
+        if (ctaHint && d.weakDims && d.weakDims.length > 0) {
+            var weakName = d.weakDims[0].name || '';
+            if (weakName) {
+                ctaHint.textContent = '你的' + weakName + '较弱，冲刺营有专项训练';
             }
         }
-    } catch(e) { console.log('CTA render error:', e); }
+    } catch(e) {}
 
     // 绘制雷达图
     setTimeout(function() {
