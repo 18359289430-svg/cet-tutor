@@ -644,6 +644,20 @@ async function handleApi(req, res, pathname) {
             });
         }
 
+        // GET /api/diagnosis/questions - 获取诊断题库（真题版v2）
+        if (pathname === '/api/diagnosis/questions' && req.method === 'GET') {
+            const diagnosisFile = path.join(__dirname, 'data/diagnosis_questions.json');
+            try {
+                if (fs.existsSync(diagnosisFile)) {
+                    const data = fs.readFileSync(diagnosisFile, 'utf8');
+                    return sendJson(res, 200, JSON.parse(data));
+                }
+            } catch (e) {
+                console.error('读取诊断题库失败:', e.message);
+            }
+            return sendJson(res, 404, { error: '诊断题库未找到' });
+        }
+
         // GET /api/admin/orders - 管理员查看所有订单
         if (pathname === '/api/admin/orders' && req.method === 'GET') {
             const url = new URL(req.url, `http://localhost:${PORT}`);
