@@ -1326,17 +1326,18 @@ function initApp() {
             
             // 清空消息显示 - 引导式开场白
             var container = document.getElementById('chat-messages');
-            container.innerHTML = '<div class="custom-chat-msg ai">' +
+            container.innerHTML = '<div class="custom-chat-msg ai welcome-msg">' +
                 '<div class="custom-chat-avatar"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>' +
-                '<div class="custom-chat-bubble">' +
-                '<p>嗨！我是小过学长 👋</p>' +
-                '<p style="margin-top:8px">我能帮你这些：</p>' +
-                '<p style="margin-top:4px">📋 做个诊断测水平</p>' +
-                '<p>💬 陪你刷真题练手</p>' +
-                '<p>❌ 复习之前的错题</p>' +
-                '<p>📝 批改你的作文</p>' +
-                '<p style="margin-top:8px;color:#6C5CE7;font-weight:600">直接说就行！</p>' +
-                '<div class="custom-chat-time">刚刚</div>' +
+                '<div class="welcome-bubble-card">' +
+                '<p style="font-size:17px;font-weight:700;color:#1E293B;margin-bottom:12px">嗨！我是小过学长 👋</p>' +
+                '<p style="margin-bottom:12px;color:#64748B">我能帮你这些：</p>' +
+                '<div style="display:flex;flex-direction:column;gap:10px">' +
+                '<div style="display:flex;align-items:center;gap:10px"><span style="width:6px;height:6px;border-radius:50%;background:#6C5CE7;flex-shrink:0"></span><span style="color:#475569;font-size:15px">做个诊断测水平</span></div>' +
+                '<div style="display:flex;align-items:center;gap:10px"><span style="width:6px;height:6px;border-radius:50%;background:#6C5CE7;flex-shrink:0"></span><span style="color:#475569;font-size:15px">陪你刷真题练手</span></div>' +
+                '<div style="display:flex;align-items:center;gap:10px"><span style="width:6px;height:6px;border-radius:50%;background:#6C5CE7;flex-shrink:0"></span><span style="color:#475569;font-size:15px">复习之前的错题</span></div>' +
+                '<div style="display:flex;align-items:center;gap:10px"><span style="width:6px;height:6px;border-radius:50%;background:#6C5CE7;flex-shrink:0"></span><span style="color:#475569;font-size:15px">批改你的作文</span></div>' +
+                '</div>' +
+                '<p style="margin-top:16px;color:#6C5CE7;font-weight:600;font-size:15px">直接说就行！</p>' +
                 '</div></div>';
             
             // 更新标题
@@ -1554,17 +1555,18 @@ function initApp() {
             
             // 清空消息显示 - 引导式开场白
             var container = document.getElementById('chat-messages');
-            container.innerHTML = '<div class="custom-chat-msg ai">' +
+            container.innerHTML = '<div class="custom-chat-msg ai welcome-msg">' +
                 '<div class="custom-chat-avatar"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>' +
-                '<div class="custom-chat-bubble">' +
-                '<p>嗨！我是小过学长 👋</p>' +
-                '<p style="margin-top:8px">我能帮你这些：</p>' +
-                '<p style="margin-top:4px">📋 做个诊断测水平</p>' +
-                '<p>💬 陪你刷真题练手</p>' +
-                '<p>❌ 复习之前的错题</p>' +
-                '<p>📝 批改你的作文</p>' +
-                '<p style="margin-top:8px;color:#6C5CE7;font-weight:600">直接说就行！</p>' +
-                '<div class="custom-chat-time">刚刚</div>' +
+                '<div class="welcome-bubble-card">' +
+                '<p style="font-size:17px;font-weight:700;color:#1E293B;margin-bottom:12px">嗨！我是小过学长 👋</p>' +
+                '<p style="margin-bottom:12px;color:#64748B">我能帮你这些：</p>' +
+                '<div style="display:flex;flex-direction:column;gap:10px">' +
+                '<div style="display:flex;align-items:center;gap:10px"><span style="width:6px;height:6px;border-radius:50%;background:#6C5CE7;flex-shrink:0"></span><span style="color:#475569;font-size:15px">做个诊断测水平</span></div>' +
+                '<div style="display:flex;align-items:center;gap:10px"><span style="width:6px;height:6px;border-radius:50%;background:#6C5CE7;flex-shrink:0"></span><span style="color:#475569;font-size:15px">陪你刷真题练手</span></div>' +
+                '<div style="display:flex;align-items:center;gap:10px"><span style="width:6px;height:6px;border-radius:50%;background:#6C5CE7;flex-shrink:0"></span><span style="color:#475569;font-size:15px">复习之前的错题</span></div>' +
+                '<div style="display:flex;align-items:center;gap:10px"><span style="width:6px;height:6px;border-radius:50%;background:#6C5CE7;flex-shrink:0"></span><span style="color:#475569;font-size:15px">批改你的作文</span></div>' +
+                '</div>' +
+                '<p style="margin-top:16px;color:#6C5CE7;font-weight:600;font-size:15px">直接说就行！</p>' +
                 '</div></div>';
             
             // 更新标题
