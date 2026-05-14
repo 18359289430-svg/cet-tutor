@@ -941,8 +941,8 @@ async function handleApi(req, res, pathname) {
 
             const order = orders.get(orderId);
             if (!order) {
-                // 可能是免费订单或测试订单，直接返回paid
-                return sendJson(res, 200, { paid: true });
+                // 修复：order不存在时返回paid=false，避免漏洞
+                return sendJson(res, 200, { paid: false });
             }
 
             return sendJson(res, 200, {
