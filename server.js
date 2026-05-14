@@ -161,7 +161,7 @@ function getRemainingChats(userId) {
     const key = userId + ':' + today;
     const record = chatLimitMap.get(key);
     const count = record ? record.count : 0;
-    return Math.max(0, 10 - count);
+    return Math.max(0, 25 - count);
 }
 
 // ===== 问题4修复：从后端订单验证用户身份，不信任前端传入的userPlan =====
@@ -753,7 +753,7 @@ async function handleApi(req, res, pathname) {
             return sendJson(res, 200, {
                 remaining,
                 plan: verifiedPlan,
-                limit: verifiedPlan === 'free' ? 10 : -1
+                limit: verifiedPlan === 'free' ? 25 : -1
             });
         }
 
@@ -809,6 +809,27 @@ const server = http.createServer((req, res) => {
             return;
         }
         handleApi(req, res, pathname);
+        return;
+    }
+
+
+    // GET /api/quiz/random - 随机获取真题（每日一练用）
+    if (pathname === '/api/quiz/random' && req.method === 'GET') {
+        try {
+            const csvPath = path.join(__dirname, 'data', 'quiz_questions.json');
+            if (!fs.existsSync(csvPath)) {
+                return sendJson(res, 200, { code: 0, data: null, msg: '题库文件不存在' });
+            }
+            const questions = JSON.parse(fs.readFileSync(csvPath, 'utf-8'));
+            const type = url.searchParams.get('type'); // 可选：按题型筛选
+            let pool = questions;
+            if (type) pool = questions.filter(q => q.type === type);
+            if (pool.length === 0) pool = questions;
+            const idx = Math.floor(Math.random() * pool.length);
+            sendJson(res, 200, { code: 0, data: pool[idx] });
+        } catch(e) {
+            sendJson(res, 500, { code: 1, msg: '获取题目失败' });
+        }
         return;
     }
 
@@ -932,10 +953,11 @@ async function handleChatSend(req, res) {
         
         // 后端聊天限流：免费用户10次/天，付费用户无限
         // 问题2修复：统一为 >=10 次拦截（即 >9 时拦截）
-        if (verifiedPlan === 'free') {
+        const DIAGNOSIS_BOT_ID = '7636289658620215331';
+        if (verifiedPlan === 'free' && bot_id !== DIAGNOSIS_BOT_ID) {
             const chatCount = checkChatLimitBackend(user_id);
-            if (chatCount > 9) {
-                return sendJson(res, 429, { error: '今日免费对话次数已用完，升级套餐可无限对话' });
+            if (chatCount > 24) {
+                return sendJson(res, 429, { error: '今日免费陪练额度已用完，明天恢复。升级冲刺营即可无限对话+逐句批改～' });
             }
         }
 

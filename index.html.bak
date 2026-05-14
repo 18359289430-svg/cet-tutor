@@ -2271,72 +2271,44 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 16px 16px 0;
+            padding: 16px 20px;
             background: #FFFFFF;
+            border-bottom: 1px solid #F0F0F5;
             flex-shrink: 0;
         }
         .chat-list-title {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 700;
             color: #1a1a2e;
             letter-spacing: -0.3px;
         }
         .chat-list-new-btn {
-            width: 36px;
-            height: 36px;
             display: flex;
             align-items: center;
-            justify-content: center;
+            gap: 4px;
+            padding: 8px 14px;
             background: linear-gradient(135deg, #6C5CE7, #8B7CF7);
             color: white;
             border: none;
-            border-radius: 50%;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
-            box-shadow: 0 2px 8px rgba(108,92,231,0.3);
         }
         .chat-list-new-btn:active {
-            transform: scale(0.92);
+            transform: scale(0.96);
+            opacity: 0.9;
         }
         .chat-list-new-btn svg {
-            width: 18px;
-            height: 18px;
+            width: 14px;
+            height: 14px;
         }
-        .chat-list-search-wrap {
-            position: relative;
-            padding: 10px 16px 8px;
-            background: #FFFFFF;
-        }
-        .chat-search-icon {
-            position: absolute;
-            left: 28px;
-            top: 50%;
-            transform: translateY(-30%);
-            width: 15px;
-            height: 15px;
-            stroke: #94A3B8;
-            stroke-width: 2;
-            pointer-events: none;
-        }
-        .chat-list-search {
-            width: 100%;
-            padding: 9px 12px 9px 34px;
-            background: #F5F5F7;
-            border: none;
-            border-radius: 10px;
-            font-size: 13px;
-            color: #1E293B;
-            outline: none;
-            box-sizing: border-box;
-            transition: all 0.2s;
-        }
-        .chat-list-search::placeholder { color: #94A3B8; }
-        .chat-list-search:focus { background: #EEF0FF; box-shadow: 0 0 0 2px rgba(108,92,231,0.15); }
         .chat-list-body {
             flex: 1;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
-            padding: 4px 14px 20px;
+            padding: 12px 16px;
         }
         .chat-list-empty {
             display: flex;
@@ -2372,122 +2344,26 @@
             color: #CBD5E1;
             margin-top: 4px;
         }
-        /* Time group label */
-        .chat-group-label {
-            font-size: 11px;
-            font-weight: 600;
-            color: #94A3B8;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            padding: 8px 4px 6px;
-            margin-top: 4px;
-        }
-        .chat-group-label:first-child { margin-top: 0; }
-        /* Doubao-style chat card */
-        .chat-card-doubao {
+        .chat-card {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             gap: 12px;
-            padding: 12px 14px;
+            padding: 14px 16px;
             background: #FFFFFF;
             border: 1px solid #F0F0F5;
-            border-radius: 14px;
-            margin-bottom: 8px;
+            border-radius: 12px;
+            margin-bottom: 10px;
             cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.15s;
             position: relative;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
         }
-        .chat-card-doubao:hover {
-            border-color: #E0DEFF;
-            box-shadow: 0 2px 8px rgba(108,92,231,0.08);
-        }
-        .chat-card-doubao:active {
+        .chat-card:active {
             transform: scale(0.98);
             background: #FAFAFA;
         }
-        .chat-card-doubao.active {
-            border-color: #6C5CE7;
-            background: #F8F7FF;
-            box-shadow: 0 2px 12px rgba(108,92,231,0.12);
-        }
-        .chat-card-avatar {
-            width: 44px;
-            height: 44px;
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-        }
-        .chat-card-avatar svg { width: 20px; height: 20px; }
-        .chat-card-body { flex: 1; min-width: 0; }
-        .chat-card-top-row {
-            display: flex;
-            align-items: baseline;
-            justify-content: space-between;
-            margin-bottom: 3px;
-        }
-        .chat-card-title-doubao {
-            font-size: 14px;
-            font-weight: 600;
-            color: #1E293B;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            flex: 1;
-            letter-spacing: -0.2px;
-        }
-        .chat-card-time-doubao {
-            font-size: 11px;
-            color: #CBD5E1;
-            flex-shrink: 0;
-            margin-left: 8px;
-        }
-        .chat-card-preview-doubao {
-            font-size: 12.5px;
-            color: #94A3B8;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            margin-bottom: 5px;
-            line-height: 1.4;
-        }
-        .chat-card-footer { display: flex; align-items: center; gap: 6px; }
-        .chat-card-tag-doubao {
-            font-size: 10px;
-            padding: 2px 7px;
-            border-radius: 8px;
-            font-weight: 600;
-        }
-        .chat-card-tag-doubao.diagnosis { background: rgba(108,92,231,0.1); color: #6C5CE7; }
-        .chat-card-tag-doubao.companion { background: rgba(0,184,148,0.1); color: #00B894; }
-        .chat-card-delete-new {
-            width: 28px; height: 28px; border: none; background: transparent;
-            cursor: pointer; display: flex; align-items: center; justify-content: center;
-            border-radius: 50%; flex-shrink: 0; opacity: 0;
-            transition: all 0.15s; margin-left: 4px;
-        }
-        .chat-card-doubao:hover .chat-card-delete-new,
-        .chat-card-doubao:active .chat-card-delete-new { opacity: 1; }
-        .chat-card-delete-new:active { background: #FEE2E2; }
-        .chat-card-delete-new svg { width: 15px; height: 15px; stroke: #94A3B8; stroke-width: 1.8; fill: none; }
-        .chat-card-delete-new:hover svg { stroke: #EF4444; }
-        /* Empty state new */
-        .chat-list-empty-new {
-            display: flex; flex-direction: column; align-items: center;
-            justify-content: center; padding: 40px 20px 20px; text-align: center;
-        }
-        .chat-list-empty-illustration { margin-bottom: 20px; }
-        .chat-list-empty-illustration svg { width: 80px; height: 80px; }
-        .chat-list-empty-title { font-size: 16px; font-weight: 600; color: #475569; margin-bottom: 8px; }
-        .chat-list-empty-desc { font-size: 13px; color: #94A3B8; margin-bottom: 6px; }
-        .chat-list-empty-hint { font-size: 12px; color: #CBD5E1; }
-        .chat-list-empty-new button {
-            margin-top: 20px; padding: 10px 24px; background: linear-gradient(135deg, #6C5CE7, #8B7CF7);
-            color: white; border: none; border-radius: 20px; font-size: 13px; font-weight: 600;
-            cursor: pointer;
+        .chat-card.active {
+            border-left: 3px solid #6C5CE7;
+            background: #FAFAFA;
         }
         .chat-card-icon {
             width: 40px;
@@ -2867,36 +2743,12 @@
 .chat-welcome-card-desc { font-size:11px; color:#94A3B8; margin-top:2px; }
 
 .custom-chips-row {
-    padding:0 2px; margin-bottom:8px; flex-shrink:0;
+    display:flex; gap:8px; padding:0 2px; margin-bottom:10px; overflow-x:auto;
+    scrollbar-width:none; -ms-overflow-style:none; flex-shrink:0;
 }
 .custom-chips-row::-webkit-scrollbar { display:none; }
-/* Chip grid layout - Doubao style */
-.chip-grid {
-    display:grid;
-    grid-template-columns:repeat(3, 1fr);
-    gap:6px;
-    padding:4px 0;
-}
-.custom-chip-card {
-    display:flex; flex-direction:column; align-items:center; gap:5px;
-    padding:10px 6px 8px; background:#FFFFFF; border:1px solid #F0F0F5;
-    border-radius:12px; cursor:pointer; transition:all 0.2s cubic-bezier(0.16,1,0.3,1);
-    box-shadow:0 1px 3px rgba(0,0,0,0.04);
-}
-.custom-chip-card:active {
-    transform:scale(0.96);
-    background:#F5F5FA;
-    box-shadow:none;
-}
-.chip-card-icon { font-size:18px; line-height:1; }
-.chip-card-text { font-size:11px; font-weight:500; color:#475569; text-align:center; white-space:nowrap; }
-.chip-flagship-row {
-    display:flex; gap:8px; margin-top:6px; overflow-x:auto;
-    scrollbar-width:none; -ms-overflow-style:none;
-}
-.chip-flagship-row::-webkit-scrollbar { display:none; }
 .custom-chip-pill {
-    padding:6px 14px; border-radius:20px; font-size:12px; white-space:nowrap;
+    padding:5px 12px; border-radius:16px; font-size:12px; white-space:nowrap;
     cursor:pointer; flex-shrink:0; transition:all 0.15s; display:flex; align-items:center; gap:4px;
     background:#F5F5F7; color:#3C3C43; border:1px solid #E5E5EA;
 }
@@ -2910,22 +2762,6 @@
 .custom-chip-pill.flagship-chip:active {
     background:linear-gradient(135deg, #4338CA 0%, #7C3AED 100%);
 }
-/* Action bar */
-.chat-action-bar {
-    display:flex; gap:4px; padding:0 4px; margin-bottom:6px;
-    overflow-x:auto; scrollbar-width:none;
-}
-.chat-action-bar::-webkit-scrollbar { display:none; }
-.action-bar-btn {
-    display:flex; align-items:center; gap:4px; padding:5px 10px;
-    background:#F5F5F7; border:1px solid #E5E5EA; border-radius:20px;
-    font-size:11.5px; color:#64748B; cursor:pointer; white-space:nowrap;
-    transition:all 0.15s; flex-shrink:0; font-weight:500;
-}
-.action-bar-btn svg { width:13px; height:13px; stroke:currentColor; stroke-width:2; fill:none; }
-.action-bar-btn:active { background:#E5E5EA; }
-.action-bar-btn.active { background:#EEF0FF; border-color:#6C5CE7; color:#6C5CE7; }
-.action-bar-btn.active svg { stroke:#6C5CE7; }
 
 /* Voice button */
 .custom-chat-voice {
@@ -4371,13 +4207,8 @@
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
                         </svg>
+                        新建对话
                     </button>
-                </div>
-                <div class="chat-list-search-wrap">
-                    <svg class="chat-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                    </svg>
-                    <input class="chat-list-search" id="chat-search-input" type="text" placeholder="搜索对话标题..." oninput="filterChatList(this.value)" />
                 </div>
                 <div class="chat-list-body" id="chat-list-body">
                     <!-- 对话卡片由JS渲染 -->
@@ -4443,23 +4274,8 @@
                     </div>
                     <!-- Input area -->
                     <div class="custom-chat-input-area" id="chat-input-area">
-                        <!-- Quick chips / suggestions -->
+                        <!-- Quick chips after messages -->
                         <div class="custom-chips-row" id="input-chips" style="display:none">
-                        </div>
-                        <!-- Action bar (深度思考等) -->
-                        <div class="chat-action-bar" id="chat-action-bar">
-                            <button class="action-bar-btn" id="btn-think" onclick="toggleThinkMode()" title="深度思考">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                                <span>深度思考</span>
-                            </button>
-                            <button class="action-bar-btn" onclick="copyLastMessage()" title="复制回复">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                                <span>复制</span>
-                            </button>
-                            <button class="action-bar-btn" onclick="regenerateLastResponse()" title="重新生成">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-                                <span>重新生成</span>
-                            </button>
                         </div>
                         <!-- Input row -->
                         <div class="custom-chat-input-row">
@@ -4505,7 +4321,7 @@
                         <div class="coze-card-tag">诊断+基础答疑</div>
                         <ul class="coze-card-features">
                             <li>✓ AI诊断+人格卡</li>
-                            <li>✓ AI诊断不限次+陪练25轮/天</li>
+                            <li>✓ AI对话 10轮/天</li>
                             <li>✓ 每日一练+打卡</li>
                             <li>✓ 作文/翻译 评分+问题标注</li>
                         </ul>
@@ -4615,9 +4431,7 @@
 
                 <div class="menu-group-label">学习</div>
                 <div class="menu-list">
-                    <div class="menu-item-new" onclick="showWrongBook()"
-                    ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg><span>错题本</span><span class="wrong-badge" id="wrong-count-badge" style="display:none;background:#E17055;color:white;font-size:10px;padding:1px 6px;border-radius:8px;margin-left:auto"></span></div>
-                <div class="menu-item-new" onclick="switchTab('personality')">
+                    <div class="menu-item-new" onclick="switchTab('personality')">
                         <div class="menu-icon-new pink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
                         <span class="menu-text-new">备考人格卡</span>
                         <span class="menu-arrow-new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
@@ -4785,10 +4599,11 @@
         function restoreLastState() {
             var lastTab = localStorage.getItem('cet_current_tab');
             var lastChatMode = localStorage.getItem('cet_last_chat_mode');
-            // On refresh: always show chat list first, let user pick conversation
-            if (lastTab === 'diagnosis') {
-                switchTab('diagnosis');
-                showChatList();
+            if (lastTab === 'diagnosis' && lastChatMode) {
+                var savedConvId = localStorage.getItem(lastChatMode === 'companion' ? 'cet_companion_conv' : 'cet_diagnosis_conv');
+                if (savedConvId) {
+                    openChat(lastChatMode);
+                }
             }
         }
 
@@ -5473,70 +5288,6 @@
             container.innerHTML = html;
         }
 
-        // 搜索过滤对话列表
-        function filterChatList(keyword) {
-            var list = getChatList();
-            var container = document.getElementById('chat-list-body');
-            if (!container) return;
-            keyword = keyword.trim().toLowerCase();
-            
-            if (keyword === '') {
-                renderChatList();
-                return;
-            }
-            
-            var filtered = list.filter(function(item) {
-                var title = (item.title || '').toLowerCase();
-                var lastMsg = (item.lastMsg || '').toLowerCase();
-                return title.indexOf(keyword) !== -1 || lastMsg.indexOf(keyword) !== -1;
-            });
-            
-            if (filtered.length === 0) {
-                container.innerHTML = '<div class="chat-list-empty-new">' +
-                    '<div class="chat-list-empty-illustration">' +
-                    '<svg viewBox="0 0 80 80" fill="none"><circle cx="40" cy="40" r="38" fill="#F5F5FA" stroke="#E0E0EA" stroke-width="1"/><circle cx="40" cy="36" r="14" stroke="#CBD5E1" stroke-width="2" fill="none"/><line x1="50" y1="46" x2="58" y2="54" stroke="#CBD5E1" stroke-width="2.5" stroke-linecap="round"/></svg>' +
-                    '</div>' +
-                    '<div class="chat-list-empty-title">没有找到相关对话</div>' +
-                    '<div class="chat-list-empty-desc">试试其他关键词</div>' +
-                    '</div>';
-                return;
-            }
-            
-            // Build cards directly (skip grouping for search results)
-            var html = '';
-            for (var i = 0; i < filtered.length; i++) {
-                var item = filtered[i];
-                var isActive = currentConversationId === item.id;
-                var modeClass = item.mode || 'diagnosis';
-                var modeGrad = modeClass === 'diagnosis' 
-                    ? 'background:linear-gradient(135deg,#6C5CE7,#A29BFE);' 
-                    : 'background:linear-gradient(135deg,#00B894,#55EFC4);';
-                var modeTag = modeClass === 'diagnosis' ? '诊断' : '陪练';
-                var preview = truncateText(item.lastMsg, 28) || '暂无消息预览';
-                var timeStr = formatChatTime(item.lastMsgTime);
-                
-                html += '<div class="chat-card-doubao' + (isActive ? ' active' : '') + '" onclick="openConversation(\'\' + item.id + \'\')">' +
-                    '<div class="chat-card-avatar" style="' + modeGrad + '">' +
-                    '<svg viewBox="0 0 24 24" fill="white" opacity="0.9"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>' +
-                    '</div>' +
-                    '<div class="chat-card-body">' +
-                    '<div class="chat-card-top-row">' +
-                    '<div class="chat-card-title-doubao">' + escapeHtml(truncateText(item.title, 18)) + '</div>' +
-                    '<div class="chat-card-time-doubao">' + timeStr + '</div>' +
-                    '</div>' +
-                    '<div class="chat-card-preview-doubao">' + escapeHtml(preview) + '</div>' +
-                    '<div class="chat-card-footer">' +
-                    '<div class="chat-card-tag-doubao ' + modeClass + '">' + modeTag + '</div>' +
-                    '</div>' +
-                    '</div>' +
-                    '<button class="chat-card-delete-new" onclick="event.stopPropagation();deleteConversation(\'\' + item.id + \'\')">' +
-                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>' +
-                    '</button>' +
-                    '</div>';
-            }
-            container.innerHTML = '<div class="chat-group-label">搜索结果</div>' + html;
-        }
-
         // 显示新建对话弹窗
         function showNewChatModal() {
             var modal = document.getElementById('new-chat-modal');
@@ -5849,36 +5600,20 @@
             
             // 诊断模式：显示开始诊断快捷建议
             if (mode === 'diagnosis') {
-                chips.innerHTML = '' +
-                    '<div class="chip-grid">' +
-                    '<div class="custom-chip-card" onclick="sendSuggestion(this.dataset.msg)" data-msg="开始四级诊断"><span class="chip-card-icon" style="background:linear-gradient(135deg,#6C5CE7,#A29BFE)">🔍</span><span class="chip-card-text">开始诊断</span></div>' +
-                    '<div class="custom-chip-card" onclick="sendSuggestion(this.dataset.msg)" data-msg="我的阅读成绩很差怎么办"><span class="chip-card-icon" style="background:linear-gradient(135deg,#00B894,#55EFC4)">📖</span><span class="chip-card-text">阅读提分</span></div>' +
-                    '<div class="custom-chip-card" onclick="sendSuggestion(this.dataset.msg)" data-msg="听力听不懂怎么练"><span class="chip-card-icon" style="background:linear-gradient(135deg,#FDCB6E,#F39C12)">🎧</span><span class="chip-card-text">听力技巧</span></div>' +
-                    '<div class="custom-chip-card" onclick="sendSuggestion(this.dataset.msg)" data-msg="写作翻译怎么复习"><span class="chip-card-icon" style="background:linear-gradient(135deg,#E17055,#D63031)">✍️</span><span class="chip-card-text">写译方法</span></div>' +
-                    '<div class="custom-chip-card" onclick="sendSuggestion(this.dataset.msg)" data-msg="高频词汇有哪些"><span class="chip-card-icon" style="background:linear-gradient(135deg,#FDCB6E,#E17055)">📚</span><span class="chip-card-text">高频词汇</span></div>' +
-                    '<div class="custom-chip-card" onclick="sendSuggestion(this.dataset.msg)" data-msg="有什么高效的备考技巧"><span class="chip-card-icon" style="background:linear-gradient(135deg,#A29BFE,#6C5CE7)">💡</span><span class="chip-card-text">备考技巧</span></div>' +
-                    '</div>';
+                chips.innerHTML = '<div class="custom-chip-pill" onclick="sendSuggestion(this.textContent || this.innerText)">开始诊断</div>';
                 chips.style.display = '';
                 return;
             }
             
-            // 陪练模式：显示豆包风格快捷建议
-            var chipsHtml = '' +
-                '<div class="chip-grid">' +
-                '<div class="custom-chip-card" onclick="sendSuggestion(this.dataset.msg)" data-msg="今天练什么好"><span class="chip-card-icon" style="background:linear-gradient(135deg,#6C5CE7,#A29BFE)">📋</span><span class="chip-card-text">今日练习</span></div>' +
-                '<div class="custom-chip-card" onclick="sendSuggestion(this.dataset.msg)" data-msg="帮我制定一个月的冲刺计划"><span class="chip-card-icon" style="background:linear-gradient(135deg,#0984E3,#74B9FF)">📅</span><span class="chip-card-text">冲刺计划</span></div>' +
-                '<div class="custom-chip-card" onclick="openEssayOverlay()"><span class="chip-card-icon" style="background:linear-gradient(135deg,#00B894,#55EFC4)">✍️</span><span class="chip-card-text">批改作文</span></div>' +
-                '<div class="custom-chip-card" onclick="sendSuggestion(this.dataset.msg)" data-msg="最近做了一套题，帮我分析"><span class="chip-card-icon" style="background:linear-gradient(135deg,#FDCB6E,#F39C12)">📊</span><span class="chip-card-text">错题分析</span></div>' +
-                '<div class="custom-chip-card" onclick="sendSuggestion(this.dataset.msg)" data-msg="高频词汇有哪些"><span class="chip-card-icon" style="background:linear-gradient(135deg,#E17055,#D63031)">📚</span><span class="chip-card-text">高频词汇</span></div>' +
-                '<div class="custom-chip-card" onclick="sendSuggestion(this.dataset.msg)" data-msg="有什么高效的备考技巧"><span class="chip-card-icon" style="background:linear-gradient(135deg,#A29BFE,#6C5CE7)">💡</span><span class="chip-card-text">备考技巧</span></div>' +
-                '</div>';
+            // 陪练模式：显示通用快捷建议
+            var chipsHtml = '<div class="custom-chip-pill" onclick="sendSuggestion(this.textContent || this.innerText)">今天练什么</div>' +
+                '<div class="custom-chip-pill" onclick="openEssayOverlay()">帮我批改作文 ✍️</div>' +
+                '<div class="custom-chip-pill" onclick="sendSuggestion(this.textContent || this.innerText)">制定冲刺计划</div>';
             
-            // Flagship专属
+            // Flagship专属按钮
             if (isFlagship) {
-                chipsHtml += '<div class="chip-flagship-row">' +
-                    '<div class="custom-chip-pill flagship-chip" data-msg="请对我最近的练习进行深度精讲，告诉我为什么错以及怎么避坑" onclick="sendSuggestion(this.dataset.msg)">⭐ 深度精讲</div>' +
-                    '<div class="custom-chip-pill flagship-chip" data-msg="我已经考完四级了，帮我规划六级备考衔接方案" onclick="sendSuggestion(this.dataset.msg)">⭐ 六级衔接</div>' +
-                    '</div>';
+                chipsHtml += '<div class="custom-chip-pill flagship-chip" data-msg="请对我最近的练习进行深度精讲，告诉我为什么错以及怎么避坑" onclick="sendSuggestion(this.dataset.msg)">深度精讲 ⭐</div>' +
+                    '<div class="custom-chip-pill flagship-chip" data-msg="我已经考完四级了，帮我规划六级备考衔接方案" onclick="sendSuggestion(this.dataset.msg)">六级衔接 ⭐</div>';
             }
             
             chips.innerHTML = chipsHtml;
@@ -5897,55 +5632,6 @@
             // No-op: chat is always visible in the tab now
         }
 
-        var thinkModeEnabled = false;
-        
-        function toggleThinkMode() {
-            thinkModeEnabled = !thinkModeEnabled;
-            var btn = document.getElementById('btn-think');
-            if (btn) {
-                btn.classList.toggle('active', thinkModeEnabled);
-            }
-            showToast(thinkModeEnabled ? '🔍 深度思考模式已开启' : '深度思考模式已关闭');
-        }
-        
-        function copyLastMessage() {
-            var msgs = document.querySelectorAll('#chat-messages .custom-chat-msg.ai .custom-chat-bubble');
-            if (msgs.length === 0) { showToast('暂无回复可复制'); return; }
-            var last = msgs[msgs.length - 1];
-            var text = (last.innerText || last.textContent || '').trim();
-            if (!text) { showToast('内容为空'); return; }
-            if (navigator.clipboard) {
-                navigator.clipboard.writeText(text).then(function() {
-                    showToast('已复制到剪贴板');
-                }).catch(function() {
-                    showToast('复制失败，请手动复制');
-                });
-            } else {
-                showToast('复制失败');
-            }
-        }
-        
-        function regenerateLastResponse() {
-            var userMsgs = document.querySelectorAll('#chat-messages .custom-chat-msg.user');
-            if (userMsgs.length === 0) { showToast('没有可重新生成的对话'); return; }
-            var lastUserBubble = userMsgs[userMsgs.length - 1].querySelector('.custom-chat-bubble');
-            if (!lastUserBubble) return;
-            var text = (lastUserBubble.innerText || lastUserBubble.textContent || '').trim();
-            if (!text) return;
-            
-            var aiMsgs = document.querySelectorAll('#chat-messages .custom-chat-msg.ai');
-            if (aiMsgs.length > 0) {
-                aiMsgs[aiMsgs.length - 1].remove();
-            }
-            
-            var input = document.getElementById('chat-input');
-            if (input) {
-                input.value = text;
-                autoResizeInput(input);
-                sendMessage();
-            }
-        }
-        
         function sendSuggestion(text) {
             var input = document.getElementById('chat-input');
             if (input) {
@@ -6170,7 +5856,7 @@
             selectedPlan = selectedPlan || 'free';
             var benefits = [
                 { name: 'AI诊断+人格卡', free: true, sprint: true, flagship: true },
-                { name: 'AI对话答疑', free: '25轮/天', sprint: '45天无限', flagship: '45天无限' },
+                { name: 'AI对话答疑', free: '10轮/天', sprint: '45天无限', flagship: '45天无限' },
                 { name: '作文批改', free: '评分+问题标注', sprint: '逐句改写', flagship: '改写+精讲' },
                 { name: '翻译批改', free: '评分+踩分点', sprint: '参考译文', flagship: '译文+思路精讲' },
                 { name: '每日一练', free: '通用轮换', sprint: '短板定制', flagship: '短板定制' },
@@ -7433,23 +7119,7 @@ async function requestQuizQuestion() {
         randomType = unansweredTypes[Math.floor(Math.random() * unansweredTypes.length)];
     }
     
-    // 从真题库获取题目（不再用AI编题）
-    var realQuizUrl = '/api/quiz/random?type=' + encodeURIComponent(randomType);
-    fetch(realQuizUrl).then(function(r){return r.json()}).then(function(resp){
-        if(resp.code===0 && resp.data){
-            var q = resp.data;
-            renderRealQuiz(q);
-        } else {
-            // fallback: 用AI生成
-            // fallback AI quiz handled below
     var prompt = '请出一道四级' + randomType + '选择题。请严格按照以下格式返回（不要有任何其他内容）：\n[QUIZ:type=' + randomType + '|question=题目内容|optionA=选项A|optionB=选项B|optionC=选项C|optionD=选项D|answer=A|explanation=详细解析]';
-            startAiQuiz(prompt, randomType);
-        }
-    }).catch(function(){
-        // fallback AI quiz handled below
-    var prompt = '请出一道四级' + randomType + '选择题。请严格按照以下格式返回（不要有任何其他内容）：\n[QUIZ:type=' + randomType + '|question=题目内容|optionA=选项A|optionB=选项B|optionC=选项C|optionD=选项D|answer=A|explanation=详细解析]';
-        startAiQuiz(prompt, randomType);
-    });
     
     // 切换到陪练Bot
     var botMap = { 'diagnosis': '7636289658620215331', 'companion': '7637702903679631395' };
@@ -7629,9 +7299,6 @@ function selectQuizOption(el, option) {
     } else {
         quizState.wrongCount++;
         quizState.wrongTypes[question.type] = (quizState.wrongTypes[question.type] || 0) + 1;
-        // 保存到错题本
-        saveWrongQuestion({id: question.id || ('q_'+Date.now()), type: question.type, question: question.question, optionA: question.optionA, optionB: question.optionB, optionC: question.optionC, optionD: question.optionD, answer: question.answer, userAnswer: option, explanation: question.explanation, difficulty: question.difficulty || 'Medium'});
-        updateWrongCount();
     }
     
     // 显示反馈
@@ -7847,7 +7514,7 @@ async function checkChatLimitAsync(userId) {
         }
         var remaining = _cachedLimitInfo.remaining;
         if (remaining <= 0) {
-            return { limited: true, message: '今日免费陪练额度已用完（25轮/天），明天恢复。升级冲刺营即可无限对话+逐句批改～' };
+            return { limited: true, message: '今日免费额度已用完（10轮/天），明天恢复。升级冲刺营即可无限对话+逐句批改～' };
         }
         return { limited: false, remaining: remaining };
     }
@@ -7866,7 +7533,7 @@ async function checkChatLimitAsync(userId) {
         }
         var remaining = backendData.remaining;
         if (remaining <= 0) {
-            return { limited: true, message: '今日免费陪练额度已用完（25轮/天），明天恢复。升级冲刺营即可无限对话+逐句批改～' };
+            return { limited: true, message: '今日免费额度已用完（10轮/天），明天恢复。升级冲刺营即可无限对话+逐句批改～' };
         }
         return { limited: false, remaining: remaining };
     }
@@ -7878,9 +7545,9 @@ async function checkChatLimitAsync(userId) {
         return { limited: false };
     }
     var usage = getChatUsage();
-    var limit = 25;
+    var limit = 10;
     if (usage.count >= limit) {
-        return { limited: true, message: '今日免费陪练额度已用完（25轮/天），明天恢复。升级冲刺营即可无限对话+逐句批改～' };
+        return { limited: true, message: '今日免费额度已用完（10轮/天），明天恢复。升级冲刺营即可无限对话+逐句批改～' };
     }
     return { limited: false, remaining: limit - usage.count };
 }
@@ -7899,16 +7566,16 @@ function checkChatLimit() {
     if (_cachedLimitInfo) {
         var remaining = _cachedLimitInfo.remaining;
         if (remaining <= 0) {
-            return { limited: true, message: '今日免费陪练额度已用完（25轮/天），明天恢复。升级冲刺营即可无限对话+逐句批改～' };
+            return { limited: true, message: '今日免费额度已用完（10轮/天），明天恢复。升级冲刺营即可无限对话+逐句批改～' };
         }
         return { limited: false, remaining: remaining };
     }
     
     // 无缓存，使用本地计算
     var usage = getChatUsage();
-    var limit = 25;
+    var limit = 10;
     if (usage.count >= limit) {
-        return { limited: true, message: '今日免费陪练额度已用完（25轮/天），明天恢复。升级冲刺营即可无限对话+逐句批改～' };
+        return { limited: true, message: '今日免费额度已用完（10轮/天），明天恢复。升级冲刺营即可无限对话+逐句批改～' };
     }
     return { limited: false, remaining: limit - usage.count };
 }
@@ -8532,60 +8199,6 @@ function drawReportShareImage() {
             <button class="quiz-next-btn" id="quiz-next-btn" onclick="quizNextQuestion()">下一题</button>
         </div>
     </div>
-
-
-
-        // ===== 错题本系统 =====
-        function getWrongQuestions() {
-            try { return JSON.parse(localStorage.getItem('cet4_wrong_questions') || '[]'); } catch(e) { return []; }
-        }
-        function saveWrongQuestion(q) {
-            var list = getWrongQuestions();
-            // dedup by id
-            for (var i = 0; i < list.length; i++) { if (list[i].id === q.id) return; }
-            q.wrongAt = Date.now();
-            q.reviewed = false;
-            list.unshift(q);
-            if (list.length > 200) list = list.slice(0, 200); // cap at 200
-            localStorage.setItem('cet4_wrong_questions', JSON.stringify(list));
-        }
-        function markReviewed(qId) {
-            var list = getWrongQuestions();
-            for (var i = 0; i < list.length; i++) { if (list[i].id === qId) { list[i].reviewed = true; break; } }
-            localStorage.setItem('cet4_wrong_questions', JSON.stringify(list));
-        }
-        function getWrongCount() { return getWrongQuestions().filter(function(q){return !q.reviewed}).length; }
-        
-        // Update wrong count badge on profile
-        function updateWrongCount() {
-            var badge = document.getElementById('wrong-count-badge');
-            if (badge) { var c = getWrongCount(); badge.textContent = c > 0 ? c : ''; badge.style.display = c > 0 ? '' : 'none'; }
-        }
-
-        function showWrongBook() {
-            var list = getWrongQuestions();
-            var overlay = document.createElement('div');
-            overlay.className = 'chat-clear-modal';
-            overlay.id = 'wrong-book-modal';
-            var html = '<div class="chat-clear-dialog" style="max-height:80vh;overflow-y:auto;width:90%;max-width:360px"><h4>错题本 (' + list.length + '题)</h4>';
-            if (list.length === 0) {
-                html += '<p style="text-align:center;color:#94A3B8;padding:30px 0">还没有错题，继续练习吧</p>';
-            } else {
-                for (var i = 0; i < Math.min(list.length, 30); i++) {
-                    var q = list[i];
-                    html += '<div style="padding:10px 0;border-bottom:1px solid #F0F0F5' + (q.reviewed ? ';opacity:0.5' : '') + '">';
-                    html += '<div style="font-size:12px;color:#94A3B8">' + (q.type||'') + ' · ' + (q.difficulty||'') + '</div>';
-                    html += '<div style="font-size:14px;color:#1a1a2e;margin:4px 0">' + (q.question||'').substring(0,80) + '</div>';
-                    html += '<div style="font-size:13px;color:#E17055">你的答案: ' + (q.userAnswer||'') + ' → 正确: ' + (q.answer||'') + '</div>';
-                    if (q.explanation) html += '<div style="font-size:12px;color:#64748B;margin-top:2px">' + q.explanation.substring(0,100) + '</div>';
-                    html += '</div>';
-                }
-            }
-            html += '<div class="btn-row"><button class="btn-cancel" onclick="closeWrongBook()">关闭</button></div></div>';
-            overlay.innerHTML = html;
-            document.body.appendChild(overlay);
-        }
-        function closeWrongBook() { var m = document.querySelector('#wrong-book-modal'); if(m) m.remove(); }
 
     <script>
     // ===== 作文批改系统 =====
