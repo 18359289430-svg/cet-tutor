@@ -25,6 +25,9 @@ const PORT = process.env.PORT || 8080;
 let ADMIN_KEY = process.env.ADMIN_KEY;
 if (!ADMIN_KEY) { console.error('FATAL: ADMIN_KEY not set. Set it in .env.local'); process.exit(1); }
 let SECRET_KEY = process.env.SECRET_KEY;
+
+// CORS配置：支持环境变量配置，默认使用当前部署URL
+const CORS_ORIGIN = process.env.CORS_ORIGIN || 'https://cet-tutor-production.up.railway.app';
 if (!SECRET_KEY) { console.error('FATAL: SECRET_KEY not set. Set it in .env.local'); process.exit(1); }
 
 // API 限流：每个IP每分钟最多60次请求
@@ -242,7 +245,7 @@ function parseBody(req) {
 function sendJson(res, statusCode, data) {
     res.writeHead(statusCode, {
         'Content-Type': 'application/json; charset=utf-8',
-        'Access-Control-Allow-Origin': 'https://cet-tutor-production.up.railway.app',
+        'Access-Control-Allow-Origin': CORS_ORIGIN,
         'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
         'Access-Control-Allow-Headers': 'Content-Type'
     });
@@ -1626,7 +1629,7 @@ async function handleChatSend(req, res) {
                 'Cache-Control': 'no-cache',
                 'Connection': 'keep-alive',
                 'X-Accel-Buffering': 'no',
-                'Access-Control-Allow-Origin': 'https://cet-tutor-production.up.railway.app'
+                'Access-Control-Allow-Origin': CORS_ORIGIN
             });
             // Node.js 18+ fetch returns Web ReadableStream
             const reader = resp.body.getReader();
