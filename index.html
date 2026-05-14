@@ -255,48 +255,88 @@
                     </div>
                     <!-- Messages -->
                     <div class="custom-chat-messages" id="chat-messages">
-                        <!-- AI welcome message - 引导式开场白 -->
-                        <div class="custom-chat-msg ai">
+                        <!-- AI welcome message - 卡片式开场白 -->
+                        <div class="custom-chat-msg ai welcome-msg">
                             <div class="custom-chat-avatar">
                                 <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                             </div>
-                            <div class="custom-chat-bubble">
+                            <div class="welcome-bubble-card">
                                 <p>嗨！我是小过学长 👋</p>
-                                <p style="margin-top:8px">我能帮你这些：</p>
-                                <p style="margin-top:4px">📋 做个诊断测水平</p>
-                                <p>💬 陪你刷真题练手</p>
-                                <p>❌ 复习之前的错题</p>
-                                <p>📝 批改你的作文</p>
-                                <p style="margin-top:8px;color:#6C5CE7;font-weight:600">直接说就行！</p>
-                                <div class="custom-chat-time">刚刚</div>
+                                <p>我能帮你这些：</p>
+                                <div class="welcome-features-list">
+                                    <div class="welcome-feature-row">
+                                        <span class="dot"></span>
+                                        <span>做个诊断测水平</span>
+                                    </div>
+                                    <div class="welcome-feature-row">
+                                        <span class="dot"></span>
+                                        <span>陪你刷真题练手</span>
+                                    </div>
+                                    <div class="welcome-feature-row">
+                                        <span class="dot"></span>
+                                        <span>复习之前的错题</span>
+                                    </div>
+                                    <div class="welcome-feature-row">
+                                        <span class="dot"></span>
+                                        <span>批改你的作文</span>
+                                    </div>
+                                </div>
+                                <p class="welcome-cta">直接说就行！</p>
                             </div>
                         </div>
-                        <!-- 快捷操作按钮 -->
-                        <div style="display:flex;gap:8px;margin:12px 0 0 38px;">
-                            <button class="custom-chat-chip" onclick="handleQuickAction('diagnosis')" style="background:linear-gradient(135deg,#6C5CE7,#8B7CF7);color:#fff;border:none;">
-                                📋 开始诊断
+                        <!-- 快捷操作按钮 - 大幅升级 -->
+                        <div class="welcome-quick-actions">
+                            <button class="welcome-quick-btn primary" onclick="handleQuickAction('diagnosis')">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                    <polyline points="14 2 14 8 20 8"/>
+                                    <line x1="16" y1="13" x2="8" y2="13"/>
+                                    <line x1="16" y1="17" x2="8" y2="17"/>
+                                </svg>
+                                开始诊断
                             </button>
-                            <button class="custom-chat-chip" onclick="handleQuickAction('companion')" style="background:#F0EEFF;color:#6C5CE7;border:none;">
-                                💬 继续陪练
+                            <button class="welcome-quick-btn secondary" onclick="handleQuickAction('companion')">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                                </svg>
+                                继续陪练
                             </button>
                         </div>
                     </div>
                     <!-- Input area -->
                     <div class="chat-quota-hint" id="chat-quota-hint" style="display:none"></div>
                     <div class="custom-chat-input-area" id="chat-input-area">
-                        <!-- 快捷标签 - 输入框上方 -->
-                        <div class="quick-mode-tags" id="quick-mode-tags" style="display:flex;gap:6px;margin-bottom:8px;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;">
+                        <!-- 快捷标签 - 输入框上方，毛玻璃风格 -->
+                        <div class="quick-mode-tags" id="quick-mode-tags">
                             <button class="quick-tag-pill" data-mode="diagnosis" onclick="handleModeTag('diagnosis')">
-                                <span>📋</span>诊断
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                    <polyline points="14 2 14 8 20 8"/>
+                                </svg>
+                                诊断
                             </button>
                             <button class="quick-tag-pill" data-mode="companion" onclick="handleModeTag('companion')">
-                                <span>💬</span>陪练
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                                </svg>
+                                陪练
                             </button>
                             <button class="quick-tag-pill" data-mode="wrongbook" onclick="handleModeTag('wrongbook')">
-                                <span>❌</span>错题
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <line x1="15" y1="9" x2="9" y2="15"/>
+                                    <line x1="9" y1="9" x2="15" y2="15"/>
+                                </svg>
+                                错题
                             </button>
                             <button class="quick-tag-pill" data-mode="essay" onclick="handleModeTag('essay')">
-                                <span>📝</span>作文
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px">
+                                    <path d="M12 19l7-7 3 3-7 7-3-3z"/>
+                                    <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/>
+                                    <path d="M2 2l7.586 7.586"/>
+                                    <circle cx="11" cy="11" r="2"/>
+                                </svg>
+                                作文
                             </button>
                         </div>
                         <!-- Input row -->
