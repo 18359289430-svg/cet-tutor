@@ -5730,7 +5730,7 @@
             var streak = getStreakData();
             var practiceHistory = getPracticeHistory();
             var abilityScores = getAbilityScores();
-            var userProfile = getUserProfile();
+            var userProfile = getUserProfile() || {};
             
             // 计算今日练习题数
             var today = getTodayStr();
