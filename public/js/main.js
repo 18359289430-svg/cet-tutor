@@ -103,6 +103,9 @@ function initApp() {
 
             // 恢复上次的tab和聊天状态
             restoreLastState();
+            
+            // 处理URL hash路由（不与?uid=&?code=冲突）
+            handleHashNavigation();
 
             // 领取链接自动激活：/claim?sprint&code=CET4S-XXXXX-YYYY
             checkClaimUrl();
@@ -128,6 +131,36 @@ function initApp() {
                 showChatList();
             }
         }
+
+        // ===== URL hash路由处理 =====
+        function handleHashNavigation() {
+            var hash = window.location.hash.slice(1); // 去掉#
+            if (!hash) return;
+            
+            var tabMap = {
+                'home': 'home',
+                'practice': 'diagnosis',
+                'data': 'data',
+                'profile': 'profile',
+                'chat': 'diagnosis'
+            };
+            
+            var targetTab = tabMap[hash];
+            if (targetTab) {
+                switchTab(targetTab);
+                if (hash === 'chat' || hash === 'practice') {
+                    showChatList();
+                    // 如果是chat，尝试打开上次聊天
+                    var lastChatMode = localStorage.getItem('cet_last_chat_mode');
+                    if (lastChatMode) {
+                        setTimeout(function() { openChat(lastChatMode); }, 100);
+                    }
+                }
+            }
+        }
+
+        // 监听hash变化
+        window.addEventListener('hashchange', handleHashNavigation);
 
         function checkClaimUrl() {
             var params = new URLSearchParams(window.location.search);
@@ -243,6 +276,10 @@ function initApp() {
             document.querySelectorAll('.tab-item').forEach(function(item) {
                 item.classList.toggle('active', item.dataset.tab === tab);
             });
+            // URL hash路由
+            var hashName = tab === 'diagnosis' ? 'practice' : tab;
+            window.location.hash = hashName;
+            localStorage.setItem('cet_current_tab', tab);
             if (tab === 'diagnosis') {
                 // Don't auto-init, let openChat handle it
             }
