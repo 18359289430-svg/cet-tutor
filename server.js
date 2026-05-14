@@ -1274,6 +1274,8 @@ function sendHtml(res, htmlContent, req) {
     const contentLength = Buffer.byteLength(htmlContent, 'utf-8');
     res.setHeader('X-Content-Type-Options', 'nosniff');
     res.setHeader('Cache-Control', 'no-cache'); // HTML不缓存，确保更新即时生效
+    // CSP安全头
+    res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://api.deepseek.com https://api.coze.cn; font-src 'self'; frame-src 'none'; object-src 'none'");
     
     if (shouldCompress(req, contentLength)) {
         res.setHeader('Content-Type', 'text/html; charset=utf-8');
