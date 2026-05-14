@@ -5443,8 +5443,6 @@
 
                 <div class="menu-group-label">学习</div>
                 <div class="menu-list">
-                    <div class="menu-item-new" onclick="showWrongBook()"
-                    ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg><span>错题本</span><span class="wrong-badge" id="wrong-count-badge" style="display:none;background:#E17055;color:white;font-size:10px;padding:1px 6px;border-radius:8px;margin-left:auto"></span></div>
                 <div class="menu-item-new" onclick="switchTab('personality')">
                         <div class="menu-icon-new pink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
                         <span class="menu-text-new">备考人格卡</span>
@@ -10467,7 +10465,7 @@ function drawReportShareImage() {
         
         // Update wrong count badge on profile
         function updateWrongCount() {
-            var badge = document.getElementById('wrong-count-badge');
+            var badge = document.getElementById('wrong-book-badge');
             if (badge) { var c = getWrongCount(); badge.textContent = c > 0 ? c : ''; badge.style.display = c > 0 ? '' : 'none'; }
         }
 
