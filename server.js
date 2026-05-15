@@ -1189,7 +1189,7 @@ async function handleApi(req, res, pathname) {
         if (pathname === '/api/deepseek/quiz-topics' && req.method === 'GET') {
             // 从quiz_questions.json筛选写作相关题目
             const quizFile = path.join(__dirname, 'data', 'quiz_questions.json');
-            let topics = [...ESSAY_TOPICS]; // 使用预定义的题目
+            let topics = []; // 从题库文件读取
             if (fs.existsSync(quizFile)) {
                 try {
                     const quizData = JSON.parse(fs.readFileSync(quizFile, 'utf8'));
@@ -1575,14 +1575,27 @@ async function handleDeepseekChat(req, res) {
             const contentType = resp.headers.get('content-type') || '';
             
             if (contentType.includes('text/event-stream')) {
-                // DeepSeek返回了SSE流，直接pipe
+                // DeepSeek返回了SSE流，用reader转发（Web ReadableStream无pipe方法）
                 res.writeHead(200, {
                     'Content-Type': 'text/event-stream',
                     'Cache-Control': 'no-cache',
                     'Connection': 'keep-alive',
                     'X-Accel-Buffering': 'no'
                 });
-                resp.body.pipe(res);
+                const reader = resp.body.getReader();
+                async function pump() {
+                    try {
+                        while (true) {
+                            const { done, value } = await reader.read();
+                            if (done) { res.end(); break; }
+                            res.write(value);
+                        }
+                    } catch (err) {
+                        console.error('[DeepSeek Stream pump error]', err.message);
+                        res.end();
+                    }
+                }
+                pump();
             } else {
                 // DeepSeek返回非流式JSON，手动转SSE格式
                 const data = await resp.json();
@@ -1615,8 +1628,10 @@ async function handleDeepseekChat(req, res) {
             sendJson(res, 200, { code: 0, data: { content: reply, usage: data.usage || {} } });
         }
     } catch(e) {
-        console.error('[DeepSeek Error]', e.message);
-        sendJson(res, 500, { error: 'AI服务暂时不可用，请稍后再试' });
+        console.error('[DeepSeek Error]', e.message, e.stack);
+        if (!res.headersSent) {
+            sendJson(res, 500, { error: 'AI服务暂时不可用: ' + e.message });
+        }
     }
 }
 
