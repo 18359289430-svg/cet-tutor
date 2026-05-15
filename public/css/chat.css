@@ -232,7 +232,7 @@
     top: 0; 
     left: 0; 
     right: 0; 
-    bottom: 0; 
+    bottom: calc(60px + var(--safe-bottom, 0px));
     background: linear-gradient(180deg, #FAFAFB 0%, #FFFFFF 100%);
     overflow: hidden; 
     z-index: 5;
@@ -1628,9 +1628,9 @@
     }
 }
 /* ===== 消息区底部留白 ===== */
-/* 消息区底部留白 - 给tab-bar留空间 */
+/* 消息区底部留白 - 输入区flex占位，只需少量间距 */
 .custom-chat-messages {
-    padding-bottom: calc(16px + 60px + var(--safe-bottom, 0px)) !important;
+    padding-bottom: 8px !important;
 }
 
 /* 输入区 - 极薄不挡字 */
