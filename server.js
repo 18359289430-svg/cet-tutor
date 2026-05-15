@@ -916,7 +916,7 @@ async function handleApi(req, res, pathname) {
 
                 // 调用DeepSeek API
                 var dsPayload = {
-                    model: 'deepseek-v4-flash',
+                    model: 'deepseek-chat',
                     messages: [
                         { role: 'system', content: '你是一位专业、幽默、温暖的四级备考AI教练。你的任务是根据用户的答题数据生成个性化的诊断报告。报告要既有专业性，又有趣味性，像朋友聊天一样自然。' },
                         { role: 'user', content: prompt }
@@ -1558,11 +1558,11 @@ async function handleDeepseekChat(req, res) {
         const systemContent = COMPANION_SYSTEM_PROMPT + (ragCtx || '');
         
         const payload = {
-            model: 'deepseek-v4-flash',
+            model: 'deepseek-chat',
             messages: [{ role: 'system', content: systemContent }, ...messages.slice(-10)],
             stream: stream !== false,
             temperature: 0.7,
-            max_tokens: 300
+            max_tokens: 800
         };
 
         if (payload.stream) {
@@ -1633,7 +1633,7 @@ async function handleDeepseekEssayGrade(req, res) {
         var systemPrompt = '你是四级作文批改专家。请对以下作文进行批改，返回JSON格式：{"total_score": 数字(15分制), "content_score": 数字(5分制), "organization_score": 数字(5分制), "language_score": 数字(5分制), "sentences": [{"original": "原句", "issue": "问题说明", "suggestion": "修改建议"}], "overall_comment": "总评"} 只返回JSON，不要其他文字。';
         
         const payload = {
-            model: 'deepseek-v4-flash',
+            model: 'deepseek-chat',
             messages: [
                 { role: 'system', content: systemPrompt },
                 { role: 'user', content: topicPrefix + '【我的作文】\n' + essay_text }
