@@ -129,7 +129,11 @@ function initApp() {
         }
 
         // ===== URL hash路由处理 =====
+        var _switchingTab = false; // 防止switchTab设hash触发hashchange循环
+
         function handleHashNavigation() {
+            // 如果是switchTab主动设的hash，不重复处理
+            if (_switchingTab) return;
             var hash = window.location.hash.slice(1); // 去掉#
             if (!hash) return;
             
@@ -144,13 +148,9 @@ function initApp() {
             var targetTab = tabMap[hash];
             if (targetTab) {
                 switchTab(targetTab);
+                // hash导航只切tab+显示列表，不自动打开聊天
                 if (hash === 'chat' || hash === 'practice') {
                     showChatList();
-                    // 如果是chat，尝试打开上次聊天
-                    var lastChatMode = localStorage.getItem('cet_last_chat_mode');
-                    if (lastChatMode) {
-                        setTimeout(function() { openChat(lastChatMode); }, 100);
-                    }
                 }
             }
         }
@@ -278,9 +278,11 @@ function initApp() {
             // 确保tab-bar可见（从聊天页返回时）
             var tabBar = document.querySelector('.tab-bar');
             if (tabBar) tabBar.style.display = '';
-            // URL hash路由
+            // URL hash路由（设置标志防止hashchange循环）
             var hashName = tab === 'diagnosis' ? 'practice' : tab;
+            _switchingTab = true;
             window.location.hash = hashName;
+            setTimeout(function() { _switchingTab = false; }, 50);
             localStorage.setItem('cet_current_tab', tab);
             if (tab === 'diagnosis') {
                 // 切换到练习tab时显示对话列表
