@@ -1139,6 +1139,8 @@ async function handleApi(req, res, pathname) {
                 plan: verifiedPlan,
                 limit: verifiedPlan === 'free' ? 25 : -1
             });
+        }
+
 
         // ===== 用户数据上云 API =====
         // POST /api/progress - 保存用户数据
@@ -1175,8 +1177,6 @@ async function handleApi(req, res, pathname) {
                 console.error('[Progress Load Error]', e.message);
                 return sendJson(res, 500, { error: '读取失败' });
             }
-        }
-
         }
 
         // POST /api/deepseek/chat - DeepSeek对话API（用于作文批改、学习计划生成等）
