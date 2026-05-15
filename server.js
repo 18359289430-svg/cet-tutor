@@ -1519,13 +1519,39 @@ async function handleDeepseekChat(req, res) {
                 headers: { 'Authorization': 'Bearer ' + DEEPSEEK_API_KEY, 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
-            res.writeHead(200, {
-                'Content-Type': 'text/event-stream',
-                'Cache-Control': 'no-cache',
-                'Connection': 'keep-alive',
-                'X-Accel-Buffering': 'no'
-            });
-            resp.body.pipe(res);
+            
+            const contentType = resp.headers.get('content-type') || '';
+            
+            if (contentType.includes('text/event-stream')) {
+                // DeepSeek返回了SSE流，直接pipe
+                res.writeHead(200, {
+                    'Content-Type': 'text/event-stream',
+                    'Cache-Control': 'no-cache',
+                    'Connection': 'keep-alive',
+                    'X-Accel-Buffering': 'no'
+                });
+                resp.body.pipe(res);
+            } else {
+                // DeepSeek返回非流式JSON，手动转SSE格式
+                const data = await resp.json();
+                const content = data.choices && data.choices[0] && data.choices[0].message ? data.choices[0].message.content : '';
+                
+                res.writeHead(200, {
+                    'Content-Type': 'text/event-stream',
+                    'Cache-Control': 'no-cache',
+                    'Connection': 'keep-alive',
+                    'X-Accel-Buffering': 'no'
+                });
+                
+                // 发送content作为单个delta
+                if (content) {
+                    res.write('data: ' + JSON.stringify({
+                        choices: [{ delta: { content: content } }]
+                    }) + '\n\n');
+                }
+                res.write('data: [DONE]\n\n');
+                res.end();
+            }
         } else {
             const resp = await fetch(DEEPSEEK_API_BASE + '/chat/completions', {
                 method: 'POST',
