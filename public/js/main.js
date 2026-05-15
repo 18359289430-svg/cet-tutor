@@ -2657,10 +2657,16 @@ function initApp() {
                             } catch(e) {}
                         }
                     }
+                    // 先push用户消息，再push AI回复，与Coze模式保持一致
+                    chatState.chatHistory.push({ role: 'user', content: contextPrefix + text, content_type: 'text' });
                     chatState.chatHistory.push({ role: 'assistant', content: fullText, content_type: 'text' });
+                    // 保留最近20条，避免token超限
+                    if (chatState.chatHistory.length > 20) {
+                        chatState.chatHistory = chatState.chatHistory.slice(-20);
+                    }
                     saveMessagesToLocal(chatState.conversationId);
                     chatState.chatRounds++;
-                    updateChatListMeta(fullText);
+                    updateConversationMeta(text, fullText);
                     savePracticeRecord();
                     checkStreakOnChat();
                     // 最后一条免费消息时追加轻提示
