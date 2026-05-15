@@ -1301,7 +1301,7 @@ async function handleApi(req, res, pathname) {
         }
 
         // 404
-        // GET /api/quiz/random - 随机获取真题（每日一练用）
+        // GET /api/quiz/random - 随机获取真题（每日一练用，支持自适应推题）
         if (pathname === '/api/quiz/random' && req.method === 'GET') {
             try {
                 const csvPath = path.join(__dirname, 'data', 'quiz_questions.json');
@@ -1310,8 +1310,62 @@ async function handleApi(req, res, pathname) {
                 }
                 const questions = JSON.parse(fs.readFileSync(csvPath, 'utf-8'));
                 const type = url.searchParams.get('type'); // 可选：按题型筛选
+                // 自适应推题：接收用户五维分数
+                const dimsParam = url.searchParams.get('dims'); // 格式: 细节定位:60,推理判断:50,同义替换:70,主旨归纳:55,态度判断:45
+                
                 let pool = questions;
-                if (type) pool = questions.filter(q => q.type === type);
+                
+                // 如果指定了type，优先按type筛选
+                if (type) {
+                    pool = questions.filter(q => q.type === type);
+                }
+                
+                // 自适应推题逻辑：根据薄弱维度优先抽题
+                if (dimsParam && !type) {
+                    try {
+                        const dimPairs = dimsParam.split(',');
+                        const dimScores = {};
+                        dimPairs.forEach(pair => {
+                            const [key, val] = pair.split(':');
+                            if (key && val) dimScores[key.trim()] = parseInt(val) || 50;
+                        });
+                        
+                        // 排序找出薄弱维度
+                        const sortedDims = Object.entries(dimScores)
+                            .sort((a, b) => a[1] - b[1])
+                            .map(([key]) => key);
+                        
+                        // 按薄弱程度尝试匹配题目
+                        let matchedPool = [];
+                        for (const weakDim of sortedDims) {
+                            // 根据薄弱维度映射到题目type
+                            const dimTypeMap = {
+                                '细节定位': ['阅读理解-仔细阅读'],
+                                '推理判断': ['阅读理解-仔细阅读'],
+                                '同义替换': ['阅读理解-仔细阅读'],
+                                '主旨归纳': ['阅读理解-仔细阅读'],
+                                '态度判断': ['听力理解-篇章', '阅读理解-仔细阅读']
+                            };
+                            const targetTypes = dimTypeMap[weakDim] || [];
+                            
+                            for (const t of targetTypes) {
+                                const found = questions.filter(q => q.type === t);
+                                if (found.length > 0) {
+                                    matchedPool = found;
+                                    break;
+                                }
+                            }
+                            if (matchedPool.length > 0) break;
+                        }
+                        
+                        if (matchedPool.length > 0) {
+                            pool = matchedPool;
+                        }
+                    } catch(e) {
+                        console.error('[自适应推题解析失败]', e);
+                    }
+                }
+                
                 if (pool.length === 0) pool = questions;
                 const idx = Math.floor(Math.random() * pool.length);
                 sendJson(res, 200, { code: 0, data: pool[idx] });

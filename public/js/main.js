@@ -326,16 +326,28 @@ function initApp() {
         }
 
         function initCountdown() {
-            var examDate = new Date('2026-06-13');
+            var examDate = new Date('2026-06-14T09:00:00');
             var now = new Date();
-            var diff = Math.ceil((examDate - now) / (1000 * 60 * 60 * 24));
+            var diffMs = examDate - now;
+            var diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+            var diffHours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            
             var text = document.getElementById('countdown-text');
-            if (text) text.textContent = diff > 0 ? '距考试 ' + diff + ' 天' : '考试季';
+            if (text) {
+                if (diffDays > 0) {
+                    text.textContent = diffHours > 0 ? diffDays + '天' + diffHours + '时' : diffDays + '天';
+                } else {
+                    text.textContent = diffHours > 0 ? diffHours + '小时' : '即将到来';
+                }
+            }
             var homeCd = document.getElementById('home-countdown');
-            if (homeCd) homeCd.textContent = '距考试' + diff + '天';
-            // 更新聊天页面倒计时药丸
+            if (homeCd) {
+                homeCd.textContent = diffDays > 0 ? diffHours > 0 ? '距四级 ' + diffDays + '天' + diffHours + '时' : '距四级 ' + diffDays + '天' : '四级加油';
+            }
             var chatCd = document.getElementById('chat-countdown');
-            if (chatCd) chatCd.textContent = diff > 0 ? '距考试' + diff + '天' : '考试季';
+            if (chatCd) {
+                chatCd.textContent = diffDays > 0 ? diffHours > 0 ? '距四级 ' + diffDays + '天' + diffHours + '时' : '距四级 ' + diffDays + '天' : '四级加油';
+            }
         }
 
         function initTabEvents() {
@@ -3738,8 +3750,24 @@ async function requestQuizQuestion() {
         randomType = unansweredTypes[Math.floor(Math.random() * unansweredTypes.length)];
     }
     
-    // 从真题库获取题目（不再用AI编题）
+    // 从真题库获取题目（不再用AI编题，支持自适应推题）
     var realQuizUrl = '/api/quiz/random?type=' + encodeURIComponent(randomType);
+    
+    // 传递用户五维分数用于自适应推题
+    var user = state.userData || {};
+    var diag = user.diagnosis || {};
+    if (diag['细节定位'] || diag['推理判断'] || diag['同义替换'] || diag['主旨归纳'] || diag['态度判断']) {
+        var dimsParts = [];
+        if (diag['细节定位']) dimsParts.push('细节定位:' + diag['细节定位']);
+        if (diag['推理判断']) dimsParts.push('推理判断:' + diag['推理判断']);
+        if (diag['同义替换']) dimsParts.push('同义替换:' + diag['同义替换']);
+        if (diag['主旨归纳']) dimsParts.push('主旨归纳:' + diag['主旨归纳']);
+        if (diag['态度判断']) dimsParts.push('态度判断:' + diag['态度判断']);
+        if (dimsParts.length > 0) {
+            realQuizUrl += '&dims=' + encodeURIComponent(dimsParts.join(','));
+        }
+    }
+    
     fetch(realQuizUrl).then(function(r){return r.json()}).then(function(resp){
         if(resp.code===0 && resp.data){
             var q = resp.data;
@@ -3869,12 +3897,31 @@ function renderQuizQuestion(question) {
     var progress = document.getElementById('quiz-progress-fill');
     var nextBtn = document.getElementById('quiz-next-btn');
     
-    var typeLabels = { '词汇': '💬 词汇', '语法': '📝 语法', '阅读': '📖 阅读', '听力': '🎧 听力' };
+    var typeLabels = { '词汇': '词汇', '语法': '语法', '阅读': '阅读', '听力': '听力' };
     subtitle.textContent = '第 ' + (quizState.currentIndex + 1) + ' / ' + quizState.totalQuestions + ' 题';
     progress.style.width = ((quizState.currentIndex / quizState.totalQuestions) * 100) + '%';
     nextBtn.classList.remove('show', 'finish');
     
-    var html = '<div class="quiz-type-badge">' + typeLabels[question.type] + '选择题</div>';
+    // 获取维度（从dimension_cn或dimension字段）
+    var dimension = question.dimension_cn || question.dimension || question.type || '';
+    // 获取难度（从level_cn或level字段）
+    var level = question.level_cn || question.level || 2;
+    var levelLabels = { 1: '基础', 2: '提高', 3: '冲刺' };
+    var levelDisplay = typeof level === 'number' ? levelLabels[level] || '提高' : level;
+    
+    // 维度标签颜色映射
+    var dimColors = { '听力': '#6C5CE7', '阅读': '#00B894', '写作': '#E17055', '翻译': '#FDCB6E', '词汇': '#74B9FF' };
+    var dimColor = dimColors[dimension] || '#6C5CE7';
+    var levelColors = { '基础': '#00B894', '提高': '#6C5CE7', '冲刺': '#E17055' };
+    var levelColor = levelColors[levelDisplay] || '#6C5CE7';
+    
+    // 构建标签HTML
+    var tagHtml = '<div class="quiz-tags">';
+    tagHtml += '<span class="quiz-dim-tag" style="background:' + dimColor + '1a;color:' + dimColor + '">' + dimension + '</span>';
+    tagHtml += '<span class="quiz-level-tag" style="background:' + levelColor + '1a;color:' + levelColor + '">' + levelDisplay + '</span>';
+    tagHtml += '</div>';
+    
+    var html = '<div class="quiz-type-badge">' + tagHtml + '</div>';
     html += '<div class="quiz-question">' + question.question + '</div>';
     html += '<div class="quiz-options">';
     
