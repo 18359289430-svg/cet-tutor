@@ -163,6 +163,9 @@ function initApp() {
             var claimCode = params.get('code');
             var orderId = params.get('order_id') || params.get('orderId');
 
+            // 没有激活参数就不检查，直接返回
+            if (!claimCode && !orderId) return;
+
             // 如果已经有套餐了就不重复激活
             if (state.userData && state.userData.plan && state.userData.plan !== 'free') {
                 showToast('您已开通' + (state.userData.plan === 'flagship' ? '全程营' : '冲刺营') + '，无需重复激活');
