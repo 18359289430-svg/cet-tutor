@@ -1,12 +1,12 @@
         var personalities = [
-                { type:'佛系随缘选手', color:'#F5C6AA', emoji:'😌', img:'imgs/foxi.webp', honor:'佛系陪跑员', comment:'你很佛系，但四级不佛', scores:{"细节定位":95,"推理判断":33,"同义替换":66,"主旨归纳":77,"态度判断":93} },
-                { type:'脑补大师', color:'#C4A8E0', emoji:'💭', img:'imgs/naobu.webp', honor:'四级白日梦家', comment:'笔在卷子上，魂在银河系', scores:{"细节定位":40,"推理判断":75,"同义替换":50,"主旨归纳":30,"态度判断":60} },
-                { type:'偏科大佬', color:'#FFB6C1', emoji:'📚', img:'imgs/pianke.webp', honor:'阅读王者·翻译菜鸡', comment:'一半封神，一半白给', scores:{"细节定位":98,"推理判断":20,"同义替换":95,"主旨归纳":99,"态度判断":25} },
-                { type:'摆烂冠军', color:'#A8C4D8', emoji:'🛋️', img:'imgs/bailan.webp', honor:'四级陪跑一级选手', comment:'重在参与，随缘就好', scores:{"细节定位":10,"推理判断":15,"同义替换":5,"主旨归纳":20,"态度判断":80} },
-                { type:'全对卷王', color:'#E8E8E8', emoji:'🏆', img:'imgs/juanzong.webp', honor:'四级人形标准答案', comment:'别人考四级，你考四级解析', scores:{"细节定位":100,"推理判断":98,"同义替换":100,"主旨归纳":100,"态度判断":95} },
-                { type:'吗喽型选手', color:'#C4956A', emoji:'🐒', img:'imgs/malou.webp', honor:'熬夜硬肝特种兵', comment:'咖啡续着命，单词记不住', scores:{"细节定位":35,"推理判断":40,"同义替换":25,"主旨归纳":30,"态度判断":20} },
-                { type:'临时抱佛脚选手', color:'#FFA500', emoji:'🙏', img:'imgs/linshi.webp', honor:'考前突击大师', comment:'平时不烧香，考前抱佛脚', scores:{"细节定位":60,"推理判断":55,"同义替换":70,"主旨归纳":65,"态度判断":50} },
-                { type:'资料囤积狂', color:'#4A7C8C', emoji:'📦', img:'imgs/tunji.webp', honor:'四级资料收藏家', comment:'收藏=学会，囤满=稳过', scores:{"细节定位":85,"推理判断":70,"同义替换":80,"主旨归纳":75,"态度判断":60} }
+                { type:'佛系随缘选手', color:'#F5C6AA', emoji:'😌', img:'/public/人格卡/人格卡-佛系随缘选手.png', honor:'佛系陪跑员', comment:'你很佛系，但四级不佛', scores:{"细节定位":95,"推理判断":33,"同义替换":66,"主旨归纳":77,"态度判断":93} },
+                { type:'脑补大师', color:'#C4A8E0', emoji:'💭', img:'/public/人格卡/人格卡-脑补大师.png', honor:'四级白日梦家', comment:'笔在卷子上，魂在银河系', scores:{"细节定位":40,"推理判断":75,"同义替换":50,"主旨归纳":30,"态度判断":60} },
+                { type:'偏科大佬', color:'#FFB6C1', emoji:'📚', img:'/public/人格卡/人格卡-偏科大佬.png', honor:'阅读王者·翻译菜鸡', comment:'一半封神，一半白给', scores:{"细节定位":98,"推理判断":20,"同义替换":95,"主旨归纳":99,"态度判断":25} },
+                { type:'摆烂冠军', color:'#A8C4D8', emoji:'🛋️', img:'/public/人格卡/人格卡-摆烂冠军.png', honor:'四级陪跑一级选手', comment:'重在参与，随缘就好', scores:{"细节定位":10,"推理判断":15,"同义替换":5,"主旨归纳":20,"态度判断":80} },
+                { type:'全对卷王', color:'#E8E8E8', emoji:'🏆', img:'/public/人格卡/人格卡-全对卷王.png', honor:'四级人形标准答案', comment:'别人考四级，你考四级解析', scores:{"细节定位":100,"推理判断":98,"同义替换":100,"主旨归纳":100,"态度判断":95} },
+                { type:'吗喽型选手', color:'#C4956A', emoji:'🐒', img:'/public/人格卡/人格卡-吗喽型选手.png', honor:'熬夜硬肝特种兵', comment:'咖啡续着命，单词记不住', scores:{"细节定位":35,"推理判断":40,"同义替换":25,"主旨归纳":30,"态度判断":20} },
+                { type:'临时抱佛脚选手', color:'#FFA500', emoji:'🙏', img:'/public/人格卡/人格卡-临时抱佛脚选手.png', honor:'考前突击大师', comment:'平时不烧香，考前抱佛脚', scores:{"细节定位":60,"推理判断":55,"同义替换":70,"主旨归纳":65,"态度判断":50} },
+                { type:'资料囤积狂', color:'#4A7C8C', emoji:'📦', img:'/public/人格卡/人格卡-资料囤积狂.png', honor:'四级资料收藏家', comment:'收藏=学会，囤满=稳过', scores:{"细节定位":85,"推理判断":70,"同义替换":80,"主旨归纳":75,"态度判断":60} }
             ];
 
         // ===== localStorage 安全读取辅助函数 =====
@@ -4401,7 +4401,7 @@ function preloadLimitInfo() {
         // 人格卡分享
         function showShareCard() {
             var ptype = (state.userData && state.userData.personality) || '偏科大佬';
-            document.getElementById('share-card-img').src = '/public/人格卡/人格卡-' + ptype + '.jpg';
+            document.getElementById('share-card-img').src = '/public/人格卡/人格卡-' + ptype + '.png';
             document.getElementById('share-card-modal').style.display = 'flex';
         }
         function closeShareCard() {
