@@ -4583,7 +4583,7 @@ async function startNewDiagnosis() {
     
     try {
         // 调用API获取题目
-        var resp = await fetchWithTimeout('/api/diagnosis/questions');
+        var resp = await fetchWithTimeout('/public/diagnosis_questions.json');
         var result = await resp.json();
         
         // 解析新版JSON格式（包含passages数组）
