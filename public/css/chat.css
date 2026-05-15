@@ -232,7 +232,7 @@
     top: 0; 
     left: 0; 
     right: 0; 
-    bottom: 60px;
+    bottom: calc(60px + var(--safe-bottom, 20px));
     background: linear-gradient(180deg, #FAFAFB 0%, #FFFFFF 100%);
     overflow: hidden; 
     z-index: 5;
@@ -687,7 +687,7 @@
 }
 .custom-chat-input-area {
     flex-shrink: 0; 
-    padding: 4px 12px calc(4px + env(safe-area-inset-bottom, 0px));
+    padding: 4px 12px 4px;
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
