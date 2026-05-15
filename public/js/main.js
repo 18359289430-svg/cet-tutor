@@ -407,6 +407,16 @@ function initApp() {
                 sendMessage();
             }
         }
+        
+        function handleEssayClick() {
+            openChat('companion');
+            setTimeout(function(){ sendSuggestion('帮我批改作文'); }, 300);
+        }
+        
+        function handleReviewClick() {
+            openChat('companion');
+            setTimeout(function(){ sendSuggestion('复习我之前的错题'); }, 300);
+        }
 
         function handleModeTag(mode) {
             // 快捷标签切换模式
@@ -1936,7 +1946,7 @@ function initApp() {
                 '<div class="chip-grid">' +
                 '<div class="custom-chip-card" onclick="sendSuggestion(this.dataset.msg)" data-msg="今天练什么好"><span class="chip-card-icon" style="background:linear-gradient(135deg,#6C5CE7,#A29BFE)">📋</span><span class="chip-card-text">今日练习</span></div>' +
                 '<div class="custom-chip-card" onclick="sendSuggestion(this.dataset.msg)" data-msg="帮我制定一个月的冲刺计划"><span class="chip-card-icon" style="background:linear-gradient(135deg,#0984E3,#74B9FF)">📅</span><span class="chip-card-text">冲刺计划</span></div>' +
-                '<div class="custom-chip-card" onclick="openEssayOverlay()"><span class="chip-card-icon" style="background:linear-gradient(135deg,#00B894,#55EFC4)">✍️</span><span class="chip-card-text">批改作文</span></div>' +
+                '<div class="custom-chip-card" onclick="handleEssayClick()"><span class="chip-card-icon" style="background:linear-gradient(135deg,#00B894,#55EFC4)">✍️</span><span class="chip-card-text">批改作文</span></div>' +
                 '<div class="custom-chip-card" onclick="sendSuggestion(this.dataset.msg)" data-msg="最近做了一套题，帮我分析"><span class="chip-card-icon" style="background:linear-gradient(135deg,#FDCB6E,#F39C12)">📊</span><span class="chip-card-text">错题分析</span></div>' +
                 '<div class="custom-chip-card" onclick="sendSuggestion(this.dataset.msg)" data-msg="高频词汇有哪些"><span class="chip-card-icon" style="background:linear-gradient(135deg,#E17055,#D63031)">📚</span><span class="chip-card-text">高频词汇</span></div>' +
                 '<div class="custom-chip-card" onclick="sendSuggestion(this.dataset.msg)" data-msg="有什么高效的备考技巧"><span class="chip-card-icon" style="background:linear-gradient(135deg,#A29BFE,#6C5CE7)">💡</span><span class="chip-card-text">备考技巧</span></div>' +
@@ -2656,7 +2666,7 @@ function initApp() {
                                     if (delta && delta.content) {
                                         fullText += delta.content;
                                         chatState.currentStreamText = fullText;
-                                        bubbleEl.innerHTML = formatBotMessage(fullText);
+                                        bubbleEl.innerHTML = formatBotText(fullText);
                                     }
                                 }
                             } catch(e) {}
