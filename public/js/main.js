@@ -1462,7 +1462,6 @@ function initApp() {
             // 显示聊天界面，隐藏对话列表
             document.getElementById('chat-list-view').classList.remove('active');
             document.getElementById('chat-page').style.display = 'flex';
-            document.querySelector('.tab-bar').style.display = 'none';
             
             // 隐藏/显示重新诊断按钮
             var rediagBtn = document.getElementById('btn-rediag');
@@ -1520,7 +1519,6 @@ function initApp() {
             // 显示聊天界面，隐藏对话列表
             document.getElementById('chat-list-view').classList.remove('active');
             document.getElementById('chat-page').style.display = 'flex';
-            document.querySelector('.tab-bar').style.display = 'none';
             
             // 隐藏/显示重新诊断按钮
             var rediagBtn = document.getElementById('btn-rediag');
@@ -1613,7 +1611,6 @@ function initApp() {
         function showChatList() {
             document.getElementById('chat-list-view').classList.add('active');
             document.getElementById('chat-page').style.display = 'none';
-            document.querySelector('.tab-bar').style.display = '';
             chatListView = true;
             currentConversationId = null;
             renderChatList();
@@ -1703,7 +1700,6 @@ function initApp() {
             // 切换到诊断tab，显示聊天界面
             document.getElementById('chat-list-view').classList.remove('active');
             document.getElementById('chat-page').style.display = 'flex';
-            document.querySelector('.tab-bar').style.display = 'none';
             switchTab('diagnosis');
             
             // 更新输入框placeholder（免费额度提示）
