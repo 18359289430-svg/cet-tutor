@@ -1187,9 +1187,10 @@ async function handleApi(req, res, pathname) {
                 if (!messages || !messages.length) {
                     return sendJson(res, 400, { error: '参数缺失' });
                 }
+                const systemPrompt = '你是"小过学长"的AI陪练模式，一个温暖又专业的四级备考私教。核心规则：1.根据用户薄弱维度重点辅导 2.每次回复控制在150字内 3.主动出题练习 4.用中文回复 5.鼓励为主但不说废话 6.非四级问题温和引导回备考。出题格式：【题目】题干 A.选项A B.选项B C.选项C D.选项D 请回答A/B/C/D。解析格式：✅/❌，正确答案是X。解析：简短说明+技巧';
                 const payload = {
                     model: 'deepseek-chat',
-                    messages: [{ role: 'system', content: COMPANION_SYSTEM_PROMPT }, ...messages.slice(-10)],
+                    messages: [{ role: 'system', content: systemPrompt }, ...messages.slice(-10)],
                     stream: stream !== false,
                     temperature: 0.7,
                     max_tokens: 800
