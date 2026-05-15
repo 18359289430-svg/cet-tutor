@@ -1894,11 +1894,10 @@ function initApp() {
         function updateChatPadding() {
             var container = document.getElementById('chat-messages');
             var inputArea = document.getElementById('chat-input-area');
-            var tabBar = document.querySelector('.tab-bar');
             if (!container || !inputArea) return;
+            // chat-page bottom已经停在tab-bar上方，不需要再给tab-bar留空间
             var inputHeight = inputArea.offsetHeight || 0;
-            var tabHeight = tabBar ? tabBar.offsetHeight : 60;
-            var paddingBottom = inputHeight + tabHeight + 16;
+            var paddingBottom = inputHeight + 8;
             container.style.paddingBottom = paddingBottom + 'px';
         }
 
