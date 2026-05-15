@@ -2455,12 +2455,11 @@ function initApp() {
 
                         try {
                             var evt = JSON.parse(dataStr);
-                            // Coze stream format: evt.type === 'conversation.message.delta' for text chunks
-                            if (evt.type === 'conversation.message.delta' && evt.data && evt.data.content && evt.data.type === 'answer') {
-                                fullText += evt.data.content;
+                            // Coze stream format: delta events have type='answer' and content directly
+                            if (evt.type === 'answer' && evt.content) {
+                                fullText += evt.content;
                                 chatState.currentStreamText = fullText;
                                 if (bubbleEl) {
-                                    // Remove time element temporarily during streaming
                                     if (timeEl && timeEl.parentNode === bubbleEl) bubbleEl.removeChild(timeEl);
                                     bubbleEl.innerHTML = formatBotText(fullText);
                                     if (timeEl) bubbleEl.appendChild(timeEl);
@@ -2468,13 +2467,13 @@ function initApp() {
                                 scrollChatToBottom();
             updateChatPadding();
                             }
-                            // Also capture conversation_id from conversation.chat.completed or message completed
-                            if (evt.type === 'conversation.chat.created' || evt.type === 'conversation.chat.in_progress') {
-                                if (evt.data && evt.data.conversation_id) {
-                                    chatState.conversationId = evt.data.conversation_id;
+                            // Also capture conversation_id from conversation.chat.created or message completed
+                            if (evt.type === 'conversation.chat.created' || evt.type === 'conversation.chat.in_progress' || evt.type === 'conversation.chat.completed') {
+                                if (evt.conversation_id) {
+                                    chatState.conversationId = evt.conversation_id;
                                 }
-                                if (evt.data && evt.data.id) {
-                                    chatState.chatId = evt.data.id;
+                                if (evt.id) {
+                                    chatState.chatId = evt.id;
                                 }
                             }
                         } catch(e) {
