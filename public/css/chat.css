@@ -1629,7 +1629,7 @@
 /* ===== 消息区底部留白 ===== */
 /* 消息区底部留白 - 输入区flex占位，只需少量间距 */
 .custom-chat-messages {
-    padding-bottom: 8px !important;
+    padding-bottom: 120px !important;
 }
 
 /* 快捷按钮 - 极小胶囊 */

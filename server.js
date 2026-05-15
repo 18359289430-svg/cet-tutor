@@ -1139,6 +1139,44 @@ async function handleApi(req, res, pathname) {
                 plan: verifiedPlan,
                 limit: verifiedPlan === 'free' ? 25 : -1
             });
+
+        // ===== 用户数据上云 API =====
+        // POST /api/progress - 保存用户数据
+        if (pathname === '/api/progress' && req.method === 'POST') {
+            const body = await parseBody(req);
+            const { user_id, data } = body;
+            
+            if (!user_id) {
+                return sendJson(res, 400, { error: '缺少user_id' });
+            }
+            
+            try {
+                const result = await saveUserProgress(user_id, data || {});
+                return sendJson(res, 200, { success: true, updated_at: result.updated_at });
+            } catch(e) {
+                console.error('[Progress Save Error]', e.message);
+                return sendJson(res, 500, { error: '保存失败' });
+            }
+        }
+        
+        // GET /api/progress - 获取用户数据
+        if (pathname === '/api/progress' && req.method === 'GET') {
+            const url = new URL(req.url, 'http://localhost');
+            const userId = url.searchParams.get('user_id');
+            
+            if (!userId) {
+                return sendJson(res, 400, { error: '缺少user_id' });
+            }
+            
+            try {
+                const progress = await getUserProgress(userId);
+                return sendJson(res, 200, { success: true, data: progress });
+            } catch(e) {
+                console.error('[Progress Load Error]', e.message);
+                return sendJson(res, 500, { error: '读取失败' });
+            }
+        }
+
         }
 
         // POST /api/deepseek/chat - DeepSeek对话API（用于作文批改、学习计划生成等）
@@ -1882,4 +1920,57 @@ async function handleChatRetrieve(req, res) {
         console.error('Retrieve chat error:', e);
         sendJson(res, 500, { error: '查询失败' });
     }
+}
+
+// ===== 用户数据持久化 =====
+const PROGRESS_FILE = path.join(__dirname, 'user-progress.json');
+
+// 加载用户数据
+function loadProgressData() {
+    try {
+        if (fs.existsSync(PROGRESS_FILE)) {
+            const data = fs.readFileSync(PROGRESS_FILE, 'utf8');
+            return JSON.parse(data);
+        }
+    } catch (e) {
+        console.error('[Progress] 加载用户数据失败:', e.message);
+    }
+    return {};
+}
+
+// 保存用户数据
+function saveProgressData(data) {
+    try {
+        fs.writeFileSync(PROGRESS_FILE, JSON.stringify(data, null, 2), 'utf8');
+    } catch (e) {
+        console.error('[Progress] 保存用户数据失败:', e.message);
+    }
+}
+
+// 初始化用户数据存储
+const progressStore = loadProgressData();
+console.log(`[Progress] 已加载 ${Object.keys(progressStore).length} 条用户数据`);
+
+// 获取用户进度
+async function getUserProgress(userId) {
+    return progressStore[userId] || null;
+}
+
+// 保存用户进度（合并更新）
+async function saveUserProgress(userId, data) {
+    const now = Date.now();
+    const existing = progressStore[userId] || {};
+    
+    // 深度合并数据
+    const merged = {
+        ...existing,
+        ...data,
+        updated_at: now,
+        created_at: existing.created_at || now
+    };
+    
+    progressStore[userId] = merged;
+    saveProgressData(progressStore);
+    
+    return { updated_at: now };
 }

@@ -87,6 +87,8 @@ function initApp() {
             setAppHeight();
             window.addEventListener('resize', setAppHeight);
             loadUserData();
+            // 从云端同步用户数据（异步，不阻塞页面加载）
+            setTimeout(function() { syncUserDataFromCloud(); }, 1000);
             // 预获取限流信息（页面加载时）
             setTimeout(preloadLimitInfo, 500);
             initGreeting();
@@ -120,6 +122,84 @@ function initApp() {
                 var data = localStorage.getItem('cet_user');
                 if (data) state.userData = JSON.parse(data);
             } catch(e) {}
+        }
+
+
+        // ===== 用户数据上云 =====
+        // 获取用户ID（优先使用已有的user_id，否则生成一个临时ID）
+        function getCloudUserId() {
+            var data = state.userData || {};
+            if (!data.cloudUserId) {
+                data.cloudUserId = 'u_' + Date.now() + '_' + Math.random().toString(36).substr(2, 8);
+                state.userData = data;
+                saveUserData(state.userData);
+            }
+            return data.cloudUserId;
+        }
+
+        // 从云端同步用户数据（优先API，失败降级localStorage）
+        async function syncUserDataFromCloud() {
+            var userId = getCloudUserId();
+            try {
+                var resp = await fetch('/api/progress?user_id=' + encodeURIComponent(userId), {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                var result = await resp.json();
+                if (result.success && result.data) {
+                    var cloudData = result.data;
+                    var localData = state.userData || {};
+                    if (cloudData.personality && !localData.personality) localData.personality = cloudData.personality;
+                    if (cloudData.diagnosis && !localData.diagnosis) localData.diagnosis = cloudData.diagnosis;
+                    if (cloudData.plan && !localData.plan) localData.plan = cloudData.plan;
+                    if (cloudData.planToken) localData.planToken = cloudData.planToken;
+                    if (cloudData.planOrderId) localData.planOrderId = cloudData.planOrderId;
+                    if (cloudData.streak !== undefined) localData.streak = cloudData.streak;
+                    if (cloudData.abilityScores && !localData.abilityScores) localData.abilityScores = cloudData.abilityScores;
+                    if (cloudData.chatList && cloudData.chatList.length > 0) {
+                        var localChat = localData.chatList || [];
+                        var mergedChat = [...cloudData.chatList];
+                        localChat.forEach(function(chat) {
+                            var exists = mergedChat.some(function(c) { return c.id === chat.id; });
+                            if (!exists) mergedChat.push(chat);
+                        });
+                        mergedChat.sort(function(a, b) { return (b.lastMsgTime || 0) - (a.lastMsgTime || 0); });
+                        localData.chatList = mergedChat;
+                    }
+                    state.userData = localData;
+                    saveUserData(state.userData);
+                    console.log('[Cloud] 数据同步成功');
+                    return true;
+                }
+            } catch(e) {
+                console.log('[Cloud] 从云端同步失败，使用本地数据:', e.message);
+            }
+            return false;
+        }
+
+        // 保存用户数据到云端
+        async function saveUserDataToCloud(data) {
+            var userId = getCloudUserId();
+            try {
+                var resp = await fetch('/api/progress', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user_id: userId, data: data })
+                });
+                var result = await resp.json();
+                if (result.success) console.log('[Cloud] 数据已保存到云端');
+                return result.success;
+            } catch(e) {
+                console.log('[Cloud] 保存到云端失败:', e.message);
+                return false;
+            }
+        }
+
+        // 统一保存函数：同时保存到localStorage和云端
+        function saveUserData(data) {
+            state.userData = data;
+            saveUserData(state.userData);
+            saveUserDataToCloud(data).catch(function() {});
         }
 
         function restoreLastState() {
@@ -232,7 +312,7 @@ function initApp() {
             state.userData.planToken = token;
             state.userData.planOrderId = orderId;
             state.userData.planActivatedAt = Date.now();
-            localStorage.setItem('cet_user', JSON.stringify(state.userData));
+            saveUserData(state.userData);
             updateProfileStats();
             updateHomeStatus();
         }
@@ -2072,7 +2152,7 @@ function initApp() {
                 data.lastStudyDay = today;
                 data.chatCount = (data.chatCount || 0) + 1;
                 state.userData = data;
-                localStorage.setItem('cet_user', JSON.stringify(data));
+                saveUserData(data);
                 
                 // 设置cet4_user_profile的startDate（如果还没有）
                 try {
@@ -3207,7 +3287,7 @@ function activateWithCode() {
             state.userData.planToken = resp.token;
             state.userData.planOrderId = resp.orderId;
             state.userData.planActivatedAt = Date.now();
-            localStorage.setItem('cet_user', JSON.stringify(state.userData));
+            saveUserData(state.userData);
             updateProfileStats();
             updateHomeStatus();
             showPaySuccess(resp.plan);
@@ -3246,7 +3326,7 @@ function activateWithMbdOrder(plan) {
             state.userData.planToken = resp.token;
             state.userData.planOrderId = resp.orderId;
             state.userData.planActivatedAt = Date.now();
-            localStorage.setItem('cet_user', JSON.stringify(state.userData));
+            saveUserData(state.userData);
             updateProfileStats();
             updateHomeStatus();
             if (resp.alreadyActivated) {
@@ -3317,7 +3397,7 @@ function parseDiagnosisResult(resultStr) {
         if (diagData.type) {
             state.userData.diagnosis = diagData;
             state.userData.personality = diagData.type;
-            localStorage.setItem('cet_user', JSON.stringify(state.userData));
+            saveUserData(state.userData);
             showToast('诊断完成！你是「' + diagData.type + '」');
         }
     } catch(e) { console.error('parseDiagnosisResult error', e); }
@@ -3333,7 +3413,7 @@ function parsePlanResult(planStr) {
         });
         state.userData.plan_data = planData;
         state.userData.plan_created = new Date().toISOString().split('T')[0];
-        localStorage.setItem('cet_user', JSON.stringify(state.userData));
+        saveUserData(state.userData);
         showToast('备考计划已生成！');
         // Update study page
         updatePlanDisplay();
@@ -3347,7 +3427,7 @@ function parseTaskDone(taskStr) {
         var todayKey = 'day' + getPlanDayIndex();
         if (state.userData.plan_data && state.userData.plan_data[todayKey]) {
             state.userData.plan_data[todayKey + '_done'] = true;
-            localStorage.setItem('cet_user', JSON.stringify(state.userData));
+            saveUserData(state.userData);
         }
         // Trigger check-in
         var streak = safeGetItem('cet_streak', {count:0,lastDate:""});
@@ -4334,7 +4414,7 @@ function showDiagnosisReport(text) {
             state.userData.personality = reportData.personality;
             state.userData.diagnosis.type = reportData.personality;
         }
-        localStorage.setItem('cet_user', JSON.stringify(state.userData));
+        saveUserData(state.userData);
         
         // 同时写入cet4_ability_scores（供仪表盘使用）
         try {
@@ -5453,7 +5533,7 @@ function activateWithMbdOrderFromPlans() {
             state.userData.planToken = resp.token;
             state.userData.planOrderId = resp.orderId;
             state.userData.planActivatedAt = Date.now();
-            localStorage.setItem('cet_user', JSON.stringify(state.userData));
+            saveUserData(state.userData);
             updateProfileStats();
             updateHomeStatus();
             if (msgEl) { msgEl.style.color = '#10B981'; msgEl.textContent = '激活成功！刷新页面即可使用'; }
