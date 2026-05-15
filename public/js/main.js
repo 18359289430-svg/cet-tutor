@@ -1465,6 +1465,11 @@ function initApp() {
             // 显示聊天界面，隐藏对话列表
             document.getElementById('chat-list-view').classList.remove('active');
             document.getElementById('chat-page').style.display = 'flex';
+            // 立即清空消息区域，显示加载中（避免闪现欢迎语）
+            var msgContainer = document.getElementById('chat-messages');
+            if (msgContainer) {
+                msgContainer.innerHTML = '<div style="text-align:center;padding:40px 20px;color:#94A3B8;font-size:14px;">加载中...</div>';
+            }
             
             // 更新tab状态
             state.currentTab = 'diagnosis';
@@ -1537,6 +1542,11 @@ function initApp() {
             // 显示聊天界面，隐藏对话列表
             document.getElementById('chat-list-view').classList.remove('active');
             document.getElementById('chat-page').style.display = 'flex';
+            // 立即清空消息区域，显示加载中（避免闪现欢迎语）
+            var msgContainer = document.getElementById('chat-messages');
+            if (msgContainer) {
+                msgContainer.innerHTML = '<div style="text-align:center;padding:40px 20px;color:#94A3B8;font-size:14px;">加载中...</div>';
+            }
             
             // 更新tab状态
             state.currentTab = 'diagnosis';
