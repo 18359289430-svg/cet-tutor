@@ -1543,8 +1543,25 @@ function initApp() {
             document.getElementById('chat-title').textContent = mode === 'diagnosis' ? '小过学长' : 'AI陪练';
             
             // 显示聊天界面，隐藏对话列表
+            console.log('[DEBUG] openConversation: 准备切换视图');
             document.getElementById('chat-list-view').classList.remove('active');
-            document.getElementById('chat-page').style.display = 'flex';
+            console.log('[DEBUG] openConversation: 已隐藏chat-list-view');
+            
+            // 确保tab-page正确显示
+            var tabPage = document.getElementById('tab-diagnosis');
+            if (tabPage) {
+                tabPage.classList.add('active');
+                console.log('[DEBUG] openConversation: tab-diagnosis已添加active');
+            }
+            
+            // 显示chat-page
+            var chatPage = document.getElementById('chat-page');
+            if (chatPage) {
+                chatPage.style.display = 'flex';
+                console.log('[DEBUG] openConversation: chat-page已设置为flex, offsetHeight:', chatPage.offsetHeight);
+            } else {
+                console.error('[DEBUG] openConversation: chat-page元素未找到!');
+            }
             // 立即清空消息区域，显示加载中（避免闪现欢迎语）
             var msgContainer = document.getElementById('chat-messages');
             if (msgContainer) {
@@ -1659,6 +1676,9 @@ function initApp() {
             
             // 加载历史消息
             loadChatHistory(convId);
+            
+            // 初始化聊天页面padding
+            setTimeout(initChatPadding, 100);
         }
 
         // 删除对话

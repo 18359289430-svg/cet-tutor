@@ -1627,9 +1627,9 @@
     }
 }
 /* ===== 消息区底部留白 ===== */
-/* 消息区底部留白 - 输入区flex占位，只需少量间距 */
+/* 消息区底部留白 - 由JS动态计算，不需要固定值 */
 .custom-chat-messages {
-    padding-bottom: 120px !important;
+    padding-bottom: 0;
 }
 
 /* 快捷按钮 - 极小胶囊 */
