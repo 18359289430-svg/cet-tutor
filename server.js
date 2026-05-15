@@ -1,3 +1,200 @@
+const DIAGNOSIS_QUESTIONS = {
+  "version": "v2-真题版",
+  "total_questions": 15,
+  "ability_summary": {
+    "同义替换": 2,
+    "细节定位": 7,
+    "推理判断": 3,
+    "主旨归纳": 2,
+    "态度推断": 1
+  },
+  "passages": [
+    {
+      "passage_id": 1,
+      "text": "Passage Two\nQuestions 51 to 55 are based on the following passage.\nWith those born with natural talents, it feels as if they excel without really trying. But what about\nthose of us who don't have a natural talent? We've been told all our lives that if you work hard, you\ntoo can succeed. But with the release of Angela Duckworth's Grit, we are given a new key to success.\n\"As much as talent counts, effort counts twice,\" says Duckworth in Grit. She introduces a new\nconcept that talent may be overrated, and if you want real success, what you need is grit, the perfect\ncombination of passion and persistence. Even if you have natural talent,it's nothing without grit.\nDuckworth says grit is the difference between success and failure. A person who has grit is more\nlikely to succeed than a person who does not. When we think about attaining success—whether it's\nlanding that job or learning that new skill-----our thoughts are immediately burdened by all the things we\nmust first learn. If you want that new job, you have to learn the job skills, then the interview skills,\nthen the dress part—and you must be perfect at all of them. Grit is different because it tells us that\nperfection isn't the goal.\nGrit lifts the unreasonable expectations off our shoulders. Grit tels us that the door is open wider\nthan we first thought possible. Grit allows us to redefine our goals. Think about it: what's something\nyou've always wanted to do, but gave up because you"don't have the skills for it"? What's something\nyou love but aren't good at?\nThe real workings of grit are to have sustainable passion and continue to try. Effort means more\nthan your natural ability. Even if you haven't mastered a skill, grit tells you that you can still succeed\nif you can transform your passion into action. In a way, Duckworth is giving new hope to people who\nhave shut the doors on their dreams. She is saying it is possible that you can accomplish anything. If at\nfirst you fail, then try one more time with grit.",
+      "questions": [
+        {
+          "id": "2025-06-S3-RC-051",
+          "ability": "同义替换",
+          "question": "What does the passage say about people bom with natural talents?",
+          "optionA": "They seem to outdo others without hard work.",
+          "optionB": "They appear to know all the secrets to success.",
+          "optionC": "They feel it only too logical to succeed.",
+          "optionD": "They are bound to excel effortlessly.",
+          "answer": "C",
+          "explanation": "文中开头说天赋者\"excel without really trying\"（看似不努力就出色），C项\"feel it only too logical to succeed\"（觉得成功理所当然）是对此的同义替换，准确表达了天赋者的心态。A项\"outdo others\"文中未提；B项\"secrets to success\"偏离原意；D项\"bound to excel\"与文中\"nothing without grit\"矛盾。"
+        },
+        {
+          "id": "2025-06-S3-RC-052",
+          "ability": "细节定位",
+          "question": "What does Duckworth say about talent?",
+          "optionA": "It is a new concept much too overrated.",
+          "optionB": "It proves necessary for big achievements.",
+          "optionC": "It plays a lesser role in one's success.",
+          "optionD": "It is a guarantee for real success in life.",
+          "answer": "A",
+          "explanation": "文中明确写道\"talent may be overrated\"（天赋可能被高估），A项直接对应此意。B项\"necessary for big achievements\"与作者观点相反；C项\"lesser role\"虽暗示天赋不重要，但表述不如A项精确（作者说的是\"overrated\"，即被高估）；D项\"guarantee\"明显与原文\"nothing without grit\"相悖。"
+        },
+        {
+          "id": "2025-06-S3-RC-053",
+          "ability": "推理判断",
+          "question": "What does the passage say about people thinking of attaining success?",
+          "optionA": "They are puzzled how to present their best to the employer.",
+          "optionB": "They are burdened by their expectation of perfection.",
+          "optionC": "They will try hard to land a job that fits their skills best.",
+          "optionD": "They will find themselves lacking in all the skills they need.",
+          "answer": "B",
+          "explanation": "文中\"our thoughts are immediately burdened by all the things we must first learn\"和\"perfection isn't the goal\"表明追求成功者被完美主义所累。B项\"burdened by expectation of perfection\"正是此意。A项\"present to employer\"文中未提；C项\"try hard to land a job\"未体现burden主题；D项\"lacking in all skills\"过于绝对。"
+        },
+        {
+          "id": "2025-06-S3-RC-054",
+          "ability": "细节定位",
+          "question": "How does the author think grit can be helpful to us?",
+          "optionA": "It allows us to know what we are good at.",
+          "optionB": "It opens our eyes to new opportunities.",
+          "optionC": "It focuses our attention on what we do.",
+          "optionD": "It lets us reconsider the goals to achieve.",
+          "answer": "D",
+          "explanation": "文中\"Grit allows us to redefine our goals\"是直接答案，D项\"reconsider the goals to achieve\"是对\"redefine goals\"的同义改写。A项\"know what we are good at\"、B项\"new opportunities\"、C项\"focuses attention\"均未在文中明确提及。"
+        },
+        {
+          "id": "2025-06-S3-RC-055",
+          "ability": "主旨归纳",
+          "question": "What message does Duckworth try to convey in her book Grit?",
+          "optionA": "We should perfect ourselves to ensure success.",
+          "optionB": "We should stay persistent even in face of failures.",
+          "optionC": "We can never master a skill without constant practice.",
+          "optionD": "We can never expect to reach our goals without passion.",
+          "answer": "A",
+          "explanation": "综合全文，\"effort counts twice\"和\"perfection isn't the goal\"是核心观点。A项强调自我完善以确保成功，最贴近文意。B项\"stay persistent\"只是grit的一个方面；C项\"constant practice\"未突出passion；D项\"without passion\"与文中\"passion and persistence\"的组合矛盾。"
+        }
+      ]
+    },
+    {
+      "passage_id": 2,
+      "text": "Passage Two\nQuestions 51 to 55 are based on the following passage.\nThe human thirst for knowledge is the driving force behind our successful\ndevelopment as a species. But curiosity can also be dangerous, leading to setbacks or even\ndownfalls. Given curiosity's complexity, scientists have found it hard to define.\nWhile pinning down a definition has proven tricky, the general consensus is it's some\nmeans of information gathering. Psychologists also agree curiosity is intrinsically (内在地)\nmotivated.\nCuriosity covers such a large set of behaviors that there probably isn't any single\n\"curiosity gene\" that makes humans wonder about and explore their environment. That said,\ncuriosity does have a genetic component. Genes and the environment interact in many\ncomplex ways to shape individuals and guide their behavior, including their curiosity.\nRegardless of their genetic makeup, infants have to learn an incredible amount of\ninformation in a short time, and curiosity is one of the tools humans have found to\naccomplish that gigantic task.\nHundreds of studies show that infants prefer novelty. It's what motivates non-human\nanimals, human infants and probably human adults to explore and seek out new things\nbefore growing less interested in them after continued exposure.\nBut curiosity often comes with a cost.\nIn some situations, the stakes are low and failure is a healthy part of growth. For\ninstance, many babies are perfectly proficient crawlers, but they decide to try walking\nbecause there's more to see and do when they stand upright. But this milestone comes at a\nsmall cost. A study of 12- to 19-month-olds learning how to walk documented that these\nchildren fell down a lot. Seventeen times per hour, to be exact. But walking is faster than\ncrawling, so this motivates expert crawlers to transition to walking. Sometimes, however, testing out a new idea can lead to disaster. For instance, the Inuit\npeople of the Arctic regions have created incredible modes to deal with the challenges of\nliving in northern climates, but what we forget about are the tens of thousands of people\nthat tried and failed to make it in those challenging landscapes.",
+      "questions": [
+        {
+          "id": "2021-12-S1-RC-051",
+          "ability": "细节定位",
+          "question": "What does the author say about curiosity?",
+          "optionA": "It is too complex for non-scientists to understand.",
+          "optionB": "It is the force that pushes human society forward.",
+          "optionC": "It is a unique trait specific to the human race.",
+          "optionD": "It is often the major cause for human failures.",
+          "answer": "B",
+          "explanation": "文中首句\"The human thirst for knowledge is the driving force behind our successful development\"表明好奇心是人类进步的动力，B项与此完全吻合。A项\"too complex for non-scientists\"未提及；C项\"specific to human race\"与文中\"non-human animals also curious\"矛盾；D项\"major cause of failures\"过度强调负面，忽略了原文\"driving force\"的正面表述。"
+        },
+        {
+          "id": "2021-12-S1-RC-052",
+          "ability": "同义替换",
+          "question": "What is the general understanding of curiosity?",
+          "optionA": "It motivates people to seek information. ",
+          "optionB": "It is destined to transform human genes.",
+          "optionC": "It does people more good than harm.",
+          "optionD": "It underlies all human behaviors.",
+          "answer": "A",
+          "explanation": "文中\"general consensus is it's some means of information gathering\"是关键词，A项\"motivates people to seek information\"完美对应此意。B项\"transform genes\"与原文\"genes...interact\"不符；C项\"more good than harm\"是作者未明确表态的伦理问题；D项\"underlies all behaviors\"过于绝对。"
+        },
+        {
+          "id": "2021-12-S1-RC-053",
+          "ability": "细节定位",
+          "question": "What do we learn about how genes shape people's behavior?",
+          "optionA": "They determine people's way of thinking.",
+          "optionB": "They account for age differences in learning.",
+          "optionC": "They enable people to undertake massive tasks.",
+          "optionD": "They work in conjunction with the environment.",
+          "answer": "D",
+          "explanation": "文中\"Genes and the environment interact in many complex ways to shape individuals and guide their behavior\"明确指出基因与环境相互作用，D项正是此意。A项\"determine way of thinking\"过于绝对；B项\"age differences\"文中未提；C项\"undertake massive tasks\"曲解了\"infants learn...gigantic task\"的原意。"
+        },
+        {
+          "id": "2021-12-S1-RC-054",
+          "ability": "细节定位",
+          "question": "What do numerous studies show about infants?",
+          "optionA": "They are far more curious than adults.",
+          "optionB": "They prefer to go after all that is novel.",
+          "optionC": "They have different interests than adults.",
+          "optionD": "They show non-human animal behaviors.",
+          "answer": "B",
+          "explanation": "文中\"Hundreds of studies show that infants prefer novelty\"是直接答案，B项\"prefer to go after all that is novel\"是原句的同义改写。A项\"more curious than adults\"、C项\"different interests\"、D项\"non-human behaviors\"均未在文中明确对比或提及。"
+        },
+        {
+          "id": "2021-12-S1-RC-055",
+          "ability": "推理判断",
+          "question": "What does the example of the Inuit people of the Arctic regions illustrate?",
+          "optionA": "The cost of humans' curiosity to explore.",
+          "optionB": "The incredible harshness of cold weather.",
+          "optionC": "The innovative ideas stemming from curiosity.",
+          "optionD": "The importance of learning from past failures.",
+          "answer": "A",
+          "explanation": "此例出现在\"But curiosity often comes with a cost\"段落之后，用以说明好奇心探索的代价——成千上万尝试在北极生存却失败的人。A项\"cost of curiosity to explore\"准确对应此写作目的。B项\"harshness of weather\"是背景信息非主旨；C项\"innovative ideas\"、D项\"learning from failures\"与例子的论证目的不符。"
+        }
+      ]
+    },
+    {
+      "passage_id": 3,
+      "text": "Passage Two\nQuestions 51 to 55 are based on the following passage.\nToday, most scientific research is funded by government grants, companies doing research and\ndevelopment, and non-profit foundations. As a society, we reap the rewards from this science, but we also\nhelp pay for it. You indirectly support science through taxes you pay, products and services you purchase,\nand donations you make.\nFunding for science has changed with the times. Historically, science has been largely supported\nthrough private patronage (资助), church sponsorship, or simply paying for the research yourself. Today,\nresearchers are likely to be funded by a mix of grants from various government agencies, institutions, and\nfoundations. Other research is funded by private companies. Such corporate sponsorship is widespread in\nsome fields. Almost 75%of U.S. clinical trials in medicine are paid for by private companies. And, of course,\nsome researchers today still fund small-scale studies out of their own pockets. Most of us can't afford to do\nnuclear research as a private hobby, but birdwatchers, rock collectors, and others can do real research on a\nlimited budget.\nIn a perfect world, money wouldn't matter-all scientific studies would be completely objective. But in\nthe real world, funding may introduce biases. Drug research sponsored by the pharmaceutical (制药的)\nindustry is more likely to end up favoring the drug under consideration than studies sponsored by\n\ngovernment grants or charitable organizations. Similarly, nutrition research sponsored by the food industry is\nmore likely to end up favoring the food under consideration than independently funded research.\nSo what should we make of all this? Should we ignore any research funded by companies or special\ninterest groups? Certainly not. These groups provide invaluable funding for scientific research. Furthermore,\nscience has many safeguards in place to catch instances of bias that affect research outcomes. Ultimately,\nmisleading results will be corrected as science proceeds; however, this process takes time. Meanwhile, it\npays to examine studies funded by industry or special interest groups with extra care. Are the results\nconsistent with other independently funded studies? What do other scientists have to say about this research?\nA little examination can go a long way towards identifying bias associated with the funding source.",
+      "questions": [
+        {
+          "id": "2024-06-S2-RC-051",
+          "ability": "主旨归纳",
+          "question": "What does the passage mainly discuss regarding scientific research?",
+          "optionA": "Its foundation.",
+          "optionB": "Its rewards.",
+          "optionC": "Its prospect.",
+          "optionD": "Its funding.",
+          "answer": "D",
+          "explanation": "全文围绕科研经费展开：从历史来源到当今多元化渠道，再到企业赞助可能带来的偏见问题，最后建议读者审慎看待资助来源不同的研究。D项\"Its funding\"是贯穿全文的主题。A项\"foundation\"（基础）语义模糊；B项\"rewards\"仅在开头提及；C项\"prospect\"（前景）文中未涉及。"
+        },
+        {
+          "id": "2024-06-S2-RC-052",
+          "ability": "推理判断",
+          "question": "What do we learn from the passage about researchers like birdwatchers and rock collectors?",
+          "optionA": "They have little access to government funding. C) They can do amateur work in their own fields.",
+          "optionB": "They can do research with limited resources.",
+          "optionC": "They can do amateur work in their own fields.",
+          "optionD": "They have no means for large-scale research.",
+          "answer": "A",
+          "explanation": "文中\"birdwatchers, rock collectors, and others can do real research on a limited budget\"表明这些研究者能够以有限预算进行真实研究，A项\"limited resources\"对应\"limited budget\"。C项\"amateur work\"中的\"amateur\"有贬义，与文中\"real research\"矛盾；B项\"little access to government funding\"是推断但过于绝对；D项\"no means for large-scale\"过于消极。"
+        },
+        {
+          "id": "2024-06-S2-RC-053",
+          "ability": "细节定位",
+          "question": "What would scientific studies look like in a perfect world according to the author?",
+          "optionA": "They would be totally unbiased.",
+          "optionB": "They would be independently funded.",
+          "optionC": "They would be responsibly conducted.",
+          "optionD": "They would be strictly supervised.",
+          "answer": "B",
+          "explanation": "文中\"In a perfect world, money wouldn't matter—all scientific studies would be completely objective\"直接描述理想世界的情况，随后讨论企业赞助可能带来偏见，暗示理想状态下应是独立资助。B项\"independently funded\"呼应这一对比。其他选项虽看似合理，但非原文明确表述的内容。"
+        },
+        {
+          "id": "2024-06-S2-RC-054",
+          "ability": "细节定位",
+          "question": "What does the author say about companies and special interest groups?",
+          "optionA": "They try hard to pull down the safeguards for research.",
+          "optionB": "They make extra efforts to research their own products.",
+          "optionC": "They provide valuable resources for scientific research.",
+          "optionD": "They reap the most benefits from scientific research.",
+          "answer": "C",
+          "explanation": "文中\"These groups provide invaluable funding for scientific research\"明确肯定企业和特殊利益集团对科研的宝贵贡献，C项\"valuable resources\"是\"invaluable funding\"的同义替换。A项\"pull down safeguards\"与原文\"safeguards in place\"矛盾；B项\"extra efforts to research their own products\"是负面推断；D项\"most benefits\"是过度推断。"
+        },
+        {
+          "id": "2024-06-S2-RC-055",
+          "ability": "态度推断",
+          "question": "What does the author think of research funded by industry or special interest groups?",
+          "optionA": "Its recommendations should be examined for feasibility.",
+          "optionB": "Its misleading results should be corrected in time.",
+          "optionC": "Its validity should be checked with additional care.",
+          "optionD": "Its hidden biases should be identified independently.",
+          "answer": "C",
+          "explanation": "文中\"it pays to examine studies funded by industry or special interest groups with extra care\"和\"examine...with extra care\"表明作者建议对这些研究额外审慎，C项\"checked with additional care\"正是此意。A项\"examined for feasibility\"偏离原意（feasibility不可行性）；B项\"corrected in time\"是后续处理非主要观点；D项\"identified independently\"未在文中明确提及。"
+        }
+      ]
+    }
+  ]
+}
+;
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
