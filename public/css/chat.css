@@ -232,10 +232,11 @@
     top: 0; 
     left: 0; 
     right: 0; 
-    bottom: calc(60px + var(--safe-bottom, 20px));
+    bottom: 0; 
     background: linear-gradient(180deg, #FAFAFB 0%, #FFFFFF 100%);
     overflow: hidden; 
     z-index: 5;
+    padding-bottom: 0 !important;
 }
 /* 顶部渐变光晕 */
 .custom-chat-page::before {
