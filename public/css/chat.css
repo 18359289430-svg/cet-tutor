@@ -1633,36 +1633,72 @@
     padding-bottom: 16px !important;
 }
 
-/* 输入区 - 更紧凑 */
+/* 输入区 - DeepSeek风格 */
 .custom-chat-input-area {
-    padding: 6px 12px 8px;
+    padding: 8px 12px 6px;
     background: rgba(255, 255, 255, 0.97);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-top: none;
-    box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.03);
+    box-shadow: 0 -1px 8px rgba(0, 0, 0, 0.03);
 }
 
-/* 快捷按钮更紧凑 */
-.quick-mode-tags {
-    gap: 6px;
-    margin-bottom: 4px;
-}
-.quick-tag-pill {
-    padding: 5px 10px;
-    font-size: 11px;
-    border-radius: 14px;
-}
-
-/* 输入框行更紧凑 */
+/* 输入框行 - DeepSeek风格 */
 .custom-chat-input-row {
-    border-radius: 22px;
-    padding: 2px 2px 2px 12px;
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    background: #F3F4F6;
+    border-radius: 24px;
+    padding: 6px 6px 6px 16px;
 }
 .custom-chat-input {
     padding: 6px 0;
-    font-size: 14px;
+    font-size: 15px;
     min-height: 20px;
+}
+
+/* DeepSeek风格底部功能栏 */
+.ds-action-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 0 2px;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+.ds-action-bar::-webkit-scrollbar { display: none; }
+
+.ds-action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    background: transparent;
+    border: none;
+    border-radius: 18px;
+    font-size: 12px;
+    color: #6B7280;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s;
+    flex-shrink: 0;
+}
+.ds-action-btn svg {
+    width: 14px;
+    height: 14px;
+}
+.ds-action-btn:active {
+    background: #F3F0FF;
+    color: #6C5CE7;
+}
+.ds-action-btn.voice {
+    padding: 6px;
+    margin-left: auto;
+}
+.ds-action-btn.voice svg {
+    width: 18px;
+    height: 18px;
 }
 
 /* 发送按钮 */
