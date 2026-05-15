@@ -41,7 +41,6 @@
     <link rel="stylesheet" href="/css/review.css?v=202605142349">
     <link rel="stylesheet" href="/css/plan.css?v=202605142349">
     <link rel="stylesheet" href="/css/plan-page.css?v=202605171800">
-    <link rel="stylesheet" href="/css/plan-page.css?v=202605171800">
     <!-- Clarity -->
     <script type="text/javascript">
         (function(c,l,a,r,i,t,y){ c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
@@ -392,6 +391,9 @@
             <div class="tab-page" id="tab-personality">
                 <div class="personality-page">
                     <div class="personality-page-header">
+                        <button class="personality-back-btn" onclick="switchTab('home')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+                        </button>
                         <h1 class="personality-page-title">备考人格卡</h1>
                         <p class="personality-page-sub">8种备考人格，你是哪一种？</p>
                     </div>
@@ -675,6 +677,8 @@
     <!-- Loading -->
     <div class="loading-overlay" id="loading">
         <div class="loading-spinner"></div>
+        <div class="loading-text">加载中...</div>
+    </div>
 
     <!-- 人格卡分享弹窗 -->
     <div class="share-card-modal" id="share-card-modal" style="display:none">
@@ -685,8 +689,6 @@
             <div class="detail-coupon-tip">限时5折：付款输入优惠码 <strong style="color:#6C5CE7">NGUPFC</strong>（冲刺营）/ <strong style="color:#6C5CE7">WPBWPS</strong>（全程营）</div>
             <button class="share-card-close" onclick="closeShareCard()">关闭</button>
         </div>
-    </div>
-        <div class="loading-text">加载中...</div>
     </div>
 
     <!-- 新诊断模式界面 -->

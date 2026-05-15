@@ -1850,11 +1850,11 @@ function initApp() {
             mode = mode || 'diagnosis';
             var data = state.userData || {};
             var hasDiagnosis = data.personality || (data.diagnosis && data.diagnosis.type);
-            // mode='chat' 表示默认模式：已诊断走陪练，未诊断走诊断
-            // mode='diagnosis' 表示明确要诊断，不自动跳转（重新诊断用）
-            // mode='companion' 表示明确要陪练
-            if (mode === 'chat') {
-                mode = hasDiagnosis ? 'companion' : 'diagnosis';
+            // mode='chat' 统一走companion（DeepSeek），不再走Coze诊断
+            // mode='diagnosis' 已废弃，也走companion
+            // mode='companion' 表示陪练
+            if (mode === 'chat' || mode === 'diagnosis') {
+                mode = 'companion';
             }
             var botMap = {
                 'diagnosis': '7636289658620215331',
@@ -2384,21 +2384,8 @@ function initApp() {
             // Create conversation if needed
             if (!chatState.conversationId) {
                 try {
-                    // 陪练模式用前端UUID，不走Coze创建对话
-                    if (chatState.currentMode === 'companion') {
-                        chatState.conversationId = 'ds_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-                    } else {
-                        // 诊断模式走Coze创建对话
-                        var createResp = await fetchWithTimeout('/api/chat/conversation', { method: 'POST' });
-                        var createData = await createResp.json();
-                        if (createData.data && createData.data.id) {
-                            chatState.conversationId = createData.data.id;
-                        } else {
-                            appendMessage('ai', '连接失败: ' + (createData.msg || '请刷新重试'));
-                            chatState.isStreaming = false;
-                            return;
-                        }
-                    }
+                    // 所有模式都用前端UUID，不走Coze创建对话
+                    chatState.conversationId = 'ds_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
                     
                     // 新会话创建后，添加到对话列表
                     var mode = chatState.currentMode || 'diagnosis';
@@ -2575,8 +2562,7 @@ function initApp() {
                 });
             }
 
-            // 五维分数详情
-                    var dimScores = {};
+            // 五维分数详情（复用上方dimScores）
                     if (ud.diagnosis && ud.diagnosis.dims) {
                         dimScores = ud.diagnosis.dims;
                     }
@@ -4626,10 +4612,10 @@ async function startNewDiagnosis() {
         if (questions.length === 0) {
             // fallback到旧模式
             closeDiagOverlay();
-            // 提示用户使用旧模式
+            // 提示用户使用AI对话诊断
             showToast('新诊断模式暂不可用，将使用AI对话诊断');
-            openChat('diagnosis');
-            sendSuggestion('开始AI诊断，帮我找出四级薄弱点');
+            openChat('chat');
+            setTimeout(function(){ sendSuggestion('开始AI诊断，帮我找出四级薄弱点'); }, 300);
             return;
         }
         
@@ -6090,8 +6076,7 @@ function regeneratePlan() {
     
     if (Object.keys(scores).length === 0) {
         showToast('请先完成诊断');
-        openChat('diagnosis');
-        sendSuggestion('帮我诊断四级薄弱点');
+        startNewDiagnosis();
         return;
     }
     

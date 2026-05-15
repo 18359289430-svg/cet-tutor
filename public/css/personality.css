@@ -126,3 +126,21 @@
         .pricing-features { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
         .pricing-feature { font-size: 13px; color: var(--text-secondary); display: flex; align-items: center; gap: 6px; }
         .pricing-feature::before { content: '✓'; color: var(--success); font-weight: 600; font-size: 12px; }
+
+.personality-back-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: rgba(108,92,231,0.08);
+    border-radius: 10px;
+    cursor: pointer;
+    margin-bottom: 8px;
+}
+.personality-back-btn svg {
+    width: 20px;
+    height: 20px;
+    stroke: #6C5CE7;
+}
