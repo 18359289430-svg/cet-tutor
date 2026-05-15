@@ -2512,7 +2512,31 @@ function initApp() {
                     var ud = state.userData || {};
                     var personality = ud.personality || (ud.diagnosis && ud.diagnosis.type) || '';
                     
-                    // 五维分数详情
+                    
+            // 五维分数（新增）
+            var dimScores = {};
+            if (ud.diagnosis && ud.diagnosis.dims) {
+                dimScores = ud.diagnosis.dims;
+            } else if (ud.diagnosis) {
+                dimScores = ud.diagnosis;
+            }
+            
+            if (Object.keys(dimScores).length > 0) {
+                var scoreParts = [];
+                for (var k in dimScores) {
+                    scoreParts.push(k + ':' + dimScores[k]);
+                }
+                var dimContext = '\n[用户五维能力] ' + scoreParts.join(', ') + '。\n';
+                // 添加到每条消息中
+                fetchPayload.messages = fetchPayload.messages.map(function(m) {
+                    if (m.role === 'user') {
+                        m.content = dimContext + m.content;
+                    }
+                    return m;
+                });
+            }
+
+            // 五维分数详情
                     var dimScores = {};
                     if (ud.diagnosis && ud.diagnosis.dims) {
                         dimScores = ud.diagnosis.dims;
@@ -5565,3 +5589,959 @@ function activateWithMbdOrderFromPlans() {
         if (msgEl) { msgEl.style.color = '#E17055'; msgEl.textContent = '网络错误，请重试'; }
     });
 }
+
+
+// ===== 学习计划生成系统 =====
+const PLAN_DURATION = 30;
+
+// 根据五维分数生成学习计划
+function generateStudyPlan(abilityScores) {
+    if (!abilityScores) return null;
+    
+    var dims = abilityScores.dims || abilityScores || {};
+    
+    // 计算薄弱维度（分数低于60的）
+    var weakDims = [];
+    var allDims = [];
+    
+    for (var key in dims) {
+        var score = parseInt(dims[key]) || 0;
+        allDims.push({ name: key, score: score });
+        if (score < 60) {
+            weakDims.push({ name: key, score: score });
+        }
+    }
+    
+    // 按分数从低到高排序，最弱的排前面
+    weakDims.sort(function(a, b) { return a.score - b.score; });
+    
+    // 计划数据结构
+    var plan = {
+        createdAt: new Date().toISOString(),
+        startDay: getTodayStr(),
+        dims: dims,
+        weakDims: weakDims.map(function(d) { return d.name; }),
+        days: []
+    };
+    
+    // 每天的任务模板
+    var taskTemplates = {
+        '细节定位': ['做5道细节定位题', '复习定位技巧', '练习扫读法'],
+        '推理判断': ['做5道推理判断题', '分析因果关系', '练习排除法'],
+        '同义替换': ['背20个同义替换词组', '做10道同义替换题', '整理易混词汇'],
+        '主旨归纳': ['做3篇主旨大意题', '练习段落结构分析', '总结文章框架'],
+        '态度判断': ['做5道态度判断题', '积累态度词库', '分析作者观点']
+    };
+    
+    // 听力任务模板
+    var listeningTasks = [
+        '听力练习：短篇新闻2篇',
+        '听力练习：长对话1篇',
+        '听力练习：短文理解2篇',
+        '听力练习：听力填空10题'
+    ];
+    
+    // 写作翻译任务
+    var writingTasks = [
+        '背诵1篇范文精彩句型',
+        '练习1篇应用文',
+        '翻译练习：中译英5句',
+        '翻译练习：段落翻译1篇'
+    ];
+    
+    // 生成30天计划
+    for (var day = 1; day <= PLAN_DURATION; day++) {
+        var dayPlan = {
+            day: day,
+            tasks: []
+        };
+        
+        // 第1-3天：打基础
+        if (day <= 3) {
+            dayPlan.tasks.push('背30个核心词汇');
+            dayPlan.tasks.push(listeningTasks[(day - 1) % listeningTasks.length]);
+            dayPlan.tasks.push('做3道阅读理解题');
+            dayPlan.tasks.push('抄写并背诵10个句子');
+        }
+        // 第4-7天：薄弱强化
+        else if (day <= 7) {
+            if (weakDims.length > 0) {
+                var dimIdx = (day - 4) % weakDims.length;
+                var dimName = weakDims[dimIdx].name;
+                dayPlan.tasks.push(taskTemplates[dimName][0]);
+                dayPlan.tasks.push(taskTemplates[dimName][1]);
+            } else {
+                dayPlan.tasks.push('词汇复习30个');
+            }
+            dayPlan.tasks.push(listeningTasks[day % listeningTasks.length]);
+            dayPlan.tasks.push('做5道阅读题');
+            dayPlan.tasks.push(writingTasks[(day - 4) % writingTasks.length]);
+        }
+        // 第8-15天：全面提升
+        else if (day <= 15) {
+            // 每天覆盖2个维度
+            var dim1 = weakDims[(day - 8) % weakDims.length].name;
+            var dim2 = weakDims[(day - 8 + 1) % weakDims.length].name;
+            dayPlan.tasks.push(taskTemplates[dim1][0]);
+            dayPlan.tasks.push(taskTemplates[dim2][0]);
+            dayPlan.tasks.push(listeningTasks[day % listeningTasks.length]);
+            dayPlan.tasks.push('做1篇仔细阅读');
+            if (day % 3 === 0) {
+                dayPlan.tasks.push(writingTasks[Math.floor(day / 3) % writingTasks.length]);
+            }
+        }
+        // 第16-22天：冲刺巩固
+        else if (day <= 22) {
+            // 轮转薄弱维度
+            var focusDim = weakDims[(day - 16) % weakDims.length].name;
+            dayPlan.tasks.push(taskTemplates[focusDim][2]); // 综合练习
+            dayPlan.tasks.push('做1套模拟阅读题');
+            dayPlan.tasks.push(listeningTasks[(day - 16) % listeningTasks.length]);
+            dayPlan.tasks.push('写作练习30分钟');
+            if (day % 4 === 0) {
+                dayPlan.tasks.push('翻译练习1篇');
+            }
+        }
+        // 第23-30天：考前冲刺
+        else {
+            dayPlan.tasks.push('全科模拟测试');
+            dayPlan.tasks.push('错题复习整理');
+            dayPlan.tasks.push('薄弱维度强化训练');
+            if (day % 2 === 0) {
+                dayPlan.tasks.push('听力强化练习');
+            } else {
+                dayPlan.tasks.push('写作模板背诵');
+            }
+        }
+        
+        plan.days.push(dayPlan);
+    }
+    
+    return plan;
+}
+
+// 获取当前计划第几天
+function getPlanDayIndex() {
+    var data = state.userData || {};
+    if (!data.plan_created_at) return 1;
+    
+    var start = new Date(data.plan_created_at);
+    var today = new Date();
+    var diff = Math.floor((today - start) / (1000 * 60 * 60 * 24)) + 1;
+    return Math.min(Math.max(diff, 1), PLAN_DURATION);
+}
+
+// 获取今天的日期字符串
+function getTodayStr() {
+    var now = new Date();
+    return now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+}
+
+// 渲染学习计划Tab
+function renderPlanTab() {
+    var data = state.userData || {};
+    var plan = data.study_plan;
+    var dayIdx = getPlanDayIndex();
+    
+    // 更新标题
+    var subEl = document.getElementById('plan-page-sub');
+    if (subEl) {
+        if (plan) {
+            subEl.textContent = '已生成' + PLAN_DURATION + '天冲刺计划';
+        } else {
+            subEl.textContent = '完成诊断后自动生成';
+        }
+    }
+    
+    // 渲染雷达图预览
+    renderPlanRadarPreview();
+    
+    // 渲染每日任务
+    renderDailyTaskCard();
+    
+    // 渲染计划列表
+    renderPlanList(plan, dayIdx);
+}
+
+// 渲染计划雷达图预览
+function renderPlanRadarPreview() {
+    var canvas = document.getElementById('plan-radar-canvas');
+    if (!canvas) return;
+    
+    var ctx = canvas.getContext('2d');
+    var dpr = window.devicePixelRatio || 1;
+    var size = 160;
+    
+    canvas.width = size * dpr;
+    canvas.height = size * dpr;
+    canvas.style.width = size + 'px';
+    canvas.style.height = size + 'px';
+    ctx.scale(dpr, dpr);
+    
+    var centerX = size / 2;
+    var centerY = size / 2;
+    var maxRadius = 55;
+    
+    var dims = Object.keys(DIM_CONFIGS);
+    var n = dims.length;
+    var angleStep = (Math.PI * 2) / n;
+    
+    // 获取数据
+    var data = state.userData || {};
+    var scores = data.diagnosis || data.abilityScores || {};
+    
+    // 背景网格
+    ctx.strokeStyle = '#F1F5F9';
+    ctx.lineWidth = 1;
+    for (var r = 1; r <= 5; r++) {
+        ctx.beginPath();
+        for (var i = 0; i <= n; i++) {
+            var angle = i * angleStep - Math.PI / 2;
+            var x = centerX + Math.cos(angle) * (r * maxRadius / 5);
+            var y = centerY + Math.sin(angle) * (r * maxRadius / 5);
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+        }
+        ctx.closePath();
+        ctx.stroke();
+    }
+    
+    // 数据区域
+    var gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, maxRadius);
+    gradient.addColorStop(0, 'rgba(108,92,231,0.3)');
+    gradient.addColorStop(1, 'rgba(108,92,231,0.1)');
+    
+    ctx.beginPath();
+    for (var i = 0; i <= n; i++) {
+        var idx = i % n;
+        var dimName = dims[idx];
+        var score = parseInt(scores[dimName]) || 0;
+        var r = (score / 100) * maxRadius;
+        var angle = i * angleStep - Math.PI / 2;
+        var x = centerX + Math.cos(angle) * r;
+        var y = centerY + Math.sin(angle) * r;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+    }
+    ctx.closePath();
+    ctx.fillStyle = gradient;
+    ctx.fill();
+    ctx.strokeStyle = '#6C5CE7';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    
+    // 标签
+    ctx.fillStyle = '#64748B';
+    ctx.font = '10px -apple-system, BlinkMacSystemFont, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    
+    for (var i = 0; i < n; i++) {
+        var dimName = dims[i];
+        var config = DIM_CONFIGS[dimName] || {};
+        var angle = i * angleStep - Math.PI / 2;
+        var labelR = maxRadius + 16;
+        var x = centerX + Math.cos(angle) * labelR;
+        var y = centerY + Math.sin(angle) * labelR;
+        
+        var score = parseInt(scores[dimName]) || 0;
+        ctx.fillText(dimName.substring(0, 3), x, y);
+        ctx.fillStyle = '#475569';
+        ctx.font = 'bold 11px -apple-system, BlinkMacSystemFont, sans-serif';
+        ctx.fillText(score, x, y + 12);
+        ctx.font = '10px -apple-system, BlinkMacSystemFont, sans-serif';
+        ctx.fillStyle = '#64748B';
+    }
+}
+
+// 渲染每日任务卡片
+function renderDailyTaskCard() {
+    var data = state.userData || {};
+    var todayDone = data.daily_task_done || false;
+    var todayDate = getTodayStr();
+    var lastDoneDate = data.daily_task_done_date || '';
+    
+    // 如果日期变了，重置
+    if (lastDoneDate !== todayDate) {
+        todayDone = false;
+        data.daily_task_done = false;
+        data.daily_task_done_date = todayDate;
+        state.userData = data;
+        saveUserData(data);
+    }
+    
+    // 更新徽章
+    var badgeEl = document.getElementById('daily-task-badge');
+    var progressEl = document.getElementById('daily-task-progress-bar');
+    
+    if (badgeEl) {
+        if (todayDone) {
+            badgeEl.textContent = '4/4';
+            badgeEl.style.background = '#D1FAE5';
+            badgeEl.style.color = '#059669';
+        } else {
+            badgeEl.textContent = '0/4';
+            badgeEl.style.background = '#F1F5F9';
+            badgeEl.style.color = '#475569';
+        }
+    }
+    
+    if (progressEl) {
+        progressEl.style.width = todayDone ? '100%' : '0%';
+    }
+    
+    // 更新描述
+    var descEl = document.getElementById('daily-task-desc');
+    if (descEl) {
+        if (todayDone) {
+            descEl.textContent = '已完成，明日继续加油';
+        } else {
+            var weakDims = getWeakDims();
+            if (weakDims.length > 0) {
+                descEl.textContent = weakDims[0] + '强化训练';
+            } else {
+                descEl.textContent = '综合能力提升训练';
+            }
+        }
+    }
+}
+
+// 获取薄弱维度
+function getWeakDims() {
+    var data = state.userData || {};
+    var dims = data.diagnosis || {};
+    
+    var arr = [];
+    for (var key in dims) {
+        arr.push({ name: key, score: parseInt(dims[key]) || 0 });
+    }
+    arr.sort(function(a, b) { return a.score - b.score; });
+    
+    return arr.filter(function(d) { return d.score < 60; }).map(function(d) { return d.name; });
+}
+
+// 渲染计划列表
+function renderPlanList(plan, dayIdx) {
+    var container = document.getElementById('plan-list');
+    if (!container) return;
+    
+    if (!plan || !plan.days || plan.days.length === 0) {
+        container.innerHTML = '<div class="plan-empty">' +
+            '<div class="plan-empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>' +
+            '<div class="plan-empty-text">完成诊断后自动生成学习计划</div>' +
+            '<button class="plan-empty-btn" onclick="openChat(\'diagnosis\'); sendSuggestion(\'帮我制定学习计划\');">立即诊断</button>' +
+            '</div>';
+        return;
+    }
+    
+    var html = '';
+    var today = getTodayStr();
+    var startDate = plan.startDay ? new Date(plan.startDay) : new Date();
+    
+    for (var i = 0; i < plan.days.length; i++) {
+        var dayPlan = plan.days[i];
+        var dayDate = new Date(startDate);
+        dayDate.setDate(dayDate.getDate() + i);
+        var dateStr = (dayDate.getMonth() + 1) + '月' + dayDate.getDate() + '日';
+        
+        var isCurrent = dayPlan.day === dayIdx;
+        var isDone = dayPlan.day < dayIdx;
+        
+        var statusClass = isDone ? 'done' : 'pending';
+        var statusText = isDone ? '已完成' : (isCurrent ? '进行中' : '待开始');
+        
+        var itemClass = '';
+        if (isCurrent) itemClass = 'current';
+        if (isDone) itemClass += ' done';
+        
+        var tasks = dayPlan.tasks.slice(0, 2).join(' · ');
+        if (dayPlan.tasks.length > 2) {
+            tasks += ' 等' + dayPlan.tasks.length + '项';
+        }
+        
+        html += '<div class="plan-day-item ' + itemClass + '" onclick="openDayPlan(' + dayPlan.day + ')">' +
+            '<div class="plan-day-header">' +
+            '<div>' +
+            '<div class="plan-day-num">Day ' + dayPlan.day + '</div>' +
+            '<div class="plan-day-date">' + dateStr + '</div>' +
+            '</div>' +
+            '<div class="plan-day-status ' + statusClass + '">' + statusText + '</div>' +
+            '</div>' +
+            '<div class="plan-day-tasks">' + tasks + '</div>' +
+            '</div>';
+    }
+    
+    container.innerHTML = html;
+}
+
+// 打开某一天的计划详情
+function openDayPlan(day) {
+    var data = state.userData || {};
+    var plan = data.study_plan;
+    
+    if (!plan || !plan.days) {
+        showToast('请先完成诊断获取学习计划');
+        return;
+    }
+    
+    var dayPlan = plan.days[day - 1];
+    if (!dayPlan) return;
+    
+    var html = '<div style="padding:20px">' +
+        '<div style="font-size:20px;font-weight:700;color:#1E293B;margin-bottom:16px">Day ' + dayPlan.day + ' 学习任务</div>';
+    
+    dayPlan.tasks.forEach(function(task, idx) {
+        html += '<div style="display:flex;align-items:flex-start;gap:10px;padding:12px 0;border-bottom:1px solid #F1F5F9">' +
+            '<div style="width:24px;height:24px;background:#F1F5F9;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#64748B;flex-shrink:0">' + (idx + 1) + '</div>' +
+            '<div style="font-size:15px;color:#475569;line-height:1.5">' + task + '</div>' +
+            '</div>';
+    });
+    
+    html += '<button onclick="closeModal()" style="width:100%;margin-top:20px;padding:14px;background:#6C5CE7;color:white;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer">关闭</button>';
+    
+    showModal(html);
+}
+
+// 重新生成学习计划
+function regeneratePlan() {
+    var data = state.userData || {};
+    var scores = data.diagnosis || {};
+    
+    if (Object.keys(scores).length === 0) {
+        showToast('请先完成诊断');
+        openChat('diagnosis');
+        sendSuggestion('帮我诊断四级薄弱点');
+        return;
+    }
+    
+    var plan = generateStudyPlan(scores);
+    data.study_plan = plan;
+    data.plan_created_at = new Date().toISOString();
+    state.userData = data;
+    saveUserData(data);
+    
+    showToast('学习计划已重新生成');
+    renderPlanTab();
+}
+
+// ===== 每日任务题库 =====
+const DAILY_TASK_QUESTIONS = [
+    // 细节定位
+    {
+        id: 1,
+        dim: '细节定位',
+        difficulty: 'easy',
+        question: 'According to the passage, what is the main cause of climate change?',
+        options: ['Natural variations', 'Human activities', 'Solar radiation', 'Volcanic eruptions'],
+        correct: 1,
+        analysis: '根据文章第二段..."Human activities"是正确答案。文章明确指出人类活动是气候变化的主要原因。'
+    },
+    {
+        id: 2,
+        dim: '细节定位',
+        difficulty: 'medium',
+        question: 'The author mentions all the following EXCEPT _____.',
+        options: ['Air pollution', 'Water contamination', 'Soil erosion', 'Deforestation'],
+        correct: 2,
+        analysis: '文章中提到了空气污染(A)、水污染(B)和森林砍伐(D)，但没有提到土壤侵蚀(C)。'
+    },
+    {
+        id: 3,
+        dim: '细节定位',
+        difficulty: 'medium',
+        question: 'When did the experiment begin?',
+        options: ['In 2015', 'In 2018', 'In 2020', 'In 2022'],
+        correct: 2,
+        analysis: '根据第三段第一句"The experiment began in 2020"，正确答案是在2020年。'
+    },
+    // 推理判断
+    {
+        id: 4,
+        dim: '推理判断',
+        difficulty: 'medium',
+        question: 'It can be inferred from the passage that _____.',
+        options: ['Young people are more affected by social media', 'Elderly people use less social media', 'Social media has no impact on mental health', 'All generations use social media equally'],
+        correct: 0,
+        analysis: '根据文章第三段，研究表明年轻人使用社交媒体的时间更长，受到的影响更大。这支持了A选项。'
+    },
+    {
+        id: 5,
+        dim: '推理判断',
+        difficulty: 'hard',
+        question: 'The author\'s attitude toward AI can be described as _____.',
+        options: ['Extremely negative', 'Cautiously optimistic', 'Completely indifferent', 'Overly enthusiastic'],
+        correct: 1,
+        analysis: '文章既提到了AI的优势也提到了潜在风险，最后建议合理使用。这表明作者态度是"谨慎乐观"的。'
+    },
+    {
+        id: 6,
+        dim: '推理判断',
+        difficulty: 'medium',
+        question: 'Which of the following can be concluded from the passage?',
+        options: ['Remote work will completely replace office work', 'Remote work has both advantages and disadvantages', 'All companies prefer remote work', 'Remote work reduces productivity'],
+        correct: 1,
+        analysis: '文章讨论了远程工作的利弊，包括灵活性和可能的沟通问题，因此B是最合适的结论。'
+    },
+    // 同义替换
+    {
+        id: 7,
+        dim: '同义替换',
+        difficulty: 'easy',
+        question: 'The phrase "come up with" in the passage is closest in meaning to _____.',
+        options: ['Discover', 'Invent', 'Create or think of', 'Find by chance'],
+        correct: 2,
+        analysis: '"Come up with"意为"想出、提出"，与"Create or think of"同义。'
+    },
+    {
+        id: 8,
+        dim: '同义替换',
+        difficulty: 'medium',
+        question: '"Substantial" in the passage is closest in meaning to _____.',
+        options: ['Small', 'Significant', 'Temporary', 'Obvious'],
+        correct: 1,
+        analysis: '"Substantial"意为"大量的、重要的"，与"Significant"同义。'
+    },
+    {
+        id: 9,
+        dim: '同义替换',
+        difficulty: 'hard',
+        question: 'The word "ubiquitous" in the passage means _____.',
+        options: ['Rare', 'Expensive', 'Everywhere', 'Advanced'],
+        correct: 2,
+        analysis: '"Ubiquitous"是一个高级词汇，意为"无处不在的"，与"Everywhere"同义。'
+    },
+    // 主旨归纳
+    {
+        id: 10,
+        dim: '主旨归纳',
+        difficulty: 'medium',
+        question: 'What is the main idea of the passage?',
+        options: ['The benefits of exercise', 'How to maintain a healthy lifestyle', 'The relationship between diet and health', 'Tips for improving work efficiency'],
+        correct: 2,
+        analysis: '文章主要讨论了饮食与健康的各个方面，包括营养、饮食习惯等，C选项最能概括主旨。'
+    },
+    {
+        id: 11,
+        dim: '主旨归纳',
+        difficulty: 'medium',
+        question: 'The passage is primarily about _____.',
+        options: ['The history of the internet', 'Cybersecurity threats and solutions', 'How to use social media', 'Online shopping trends'],
+        correct: 1,
+        analysis: '文章从多个角度讨论了网络安全问题及其解决方案，B选项准确概括了文章主旨。'
+    },
+    {
+        id: 12,
+        dim: '主旨归纳',
+        difficulty: 'hard',
+        question: 'The best title for this passage would be _____.',
+        options: ['The Future of Technology', 'Balancing Screen Time in the Digital Age', 'The Benefits of Digital Devices', 'Children and the Internet'],
+        correct: 1,
+        analysis: '文章讨论了如何在数字时代平衡屏幕使用时间，既有正面也有负面影响，B选项最合适。'
+    },
+    // 态度判断
+    {
+        id: 13,
+        dim: '态度判断',
+        difficulty: 'easy',
+        question: 'The author\'s tone in the passage is _____.',
+        options: ['Humorous', 'Serious', 'Indifferent', 'Sarcastic'],
+        correct: 1,
+        analysis: '文章讨论的是严肃的教育话题，使用了正式的语言风格，因此语气是"严肃的"。'
+    },
+    {
+        id: 14,
+        dim: '态度判断',
+        difficulty: 'medium',
+        question: 'How does the author feel about the new policy?',
+        options: ['Strongly supportive', 'Critical', 'Neutral and objective', 'Confused'],
+        correct: 2,
+        analysis: '文章客观地分析了新政策的利弊，没有明显偏向任何一方，体现了中立客观的态度。'
+    },
+    {
+        id: 15,
+        dim: '态度判断',
+        difficulty: 'hard',
+        question: 'The word "advocates" in the passage carries a _____ connotation.',
+        options: ['Negative', 'Neutral', 'Positive', 'Sarcastic'],
+        correct: 2,
+        analysis: '"Advocates"意为"倡导者、支持者"，是一个褒义词，带有积极色彩。'
+    },
+    // 听力相关（模拟选择题）
+    {
+        id: 16,
+        dim: '听力',
+        difficulty: 'easy',
+        question: 'Where does this conversation most likely take place?',
+        options: ['At a restaurant', 'At a library', 'At a hospital', 'At an airport'],
+        correct: 3,
+        analysis: '从关键词"flight"、"boarding"、"departure"等可以推断对话发生在机场。'
+    },
+    {
+        id: 17,
+        dim: '听力',
+        difficulty: 'medium',
+        question: 'What is the woman\'s problem?',
+        options: ['She lost her wallet', 'She missed her train', 'She forgot her password', 'She can\'t find her phone'],
+        correct: 1,
+        analysis: '女生提到她错过了火车，要等下一班，这是她的问题所在。'
+    },
+    {
+        id: 18,
+        dim: '听力',
+        difficulty: 'medium',
+        question: 'What does the professor mainly talk about?',
+        options: ['The causes of WWI', 'The Treaty of Versailles', 'The economic impact of war', 'Post-war reconstruction'],
+        correct: 1,
+        analysis: '讲座主要讨论了凡尔赛条约的内容及其对德国的影响，B选项最准确。'
+    },
+    // 综合练习
+    {
+        id: 19,
+        dim: '细节定位',
+        difficulty: 'hard',
+        question: 'According to the passage, which country has the highest renewable energy usage?',
+        options: ['China', 'Germany', 'United States', 'Japan'],
+        correct: 1,
+        analysis: '根据第五段，德国的可再生能源使用率最高，达到46%，领先于其他国家。'
+    },
+    {
+        id: 20,
+        dim: '推理判断',
+        difficulty: 'hard',
+        question: 'The author implies that traditional education methods _____.',
+        options: ['Are completely outdated', 'Need to be combined with technology', 'Are more effective than online learning', 'Should be abolished'],
+        correct: 1,
+        analysis: '文章最后一段指出传统教育需要与技术结合，而非完全取代或废除，B选项最符合。'
+    }
+];
+
+// 每日任务状态
+var dailyTaskState = {
+    questions: [],
+    answers: {},
+    submitted: false
+};
+
+// 打开每日任务
+function openDailyTask() {
+    var data = state.userData || {};
+    var todayDate = getTodayStr();
+    
+    // 检查是否已完成
+    if (data.daily_task_done && data.daily_task_done_date === todayDate) {
+        showToast('今日任务已完成');
+        return;
+    }
+    
+    // 根据薄弱维度筛选题目
+    var weakDims = getWeakDims();
+    var selectedQuestions = [];
+    
+    if (weakDims.length >= 3) {
+        // 选3个薄弱维度的题 + 1个听力
+        weakDims.slice(0, 3).forEach(function(dim) {
+            var dimQuestions = DAILY_TASK_QUESTIONS.filter(function(q) { return q.dim === dim; });
+            if (dimQuestions.length > 0) {
+                selectedQuestions.push(dimQuestions[Math.floor(Math.random() * dimQuestions.length)]);
+            }
+        });
+        
+        // 添加1道听力
+        var listeningQuestions = DAILY_TASK_QUESTIONS.filter(function(q) { return q.dim === '听力'; });
+        if (listeningQuestions.length > 0) {
+            selectedQuestions.push(listeningQuestions[Math.floor(Math.random() * listeningQuestions.length)]);
+        }
+    } else {
+        // 不足3个薄弱维度，随机选4道
+        var shuffled = DAILY_TASK_QUESTIONS.slice().sort(function() { return 0.5 - Math.random(); });
+        selectedQuestions = shuffled.slice(0, 4);
+    }
+    
+    dailyTaskState = {
+        questions: selectedQuestions,
+        answers: {},
+        submitted: false
+    };
+    
+    renderDailyTaskModal();
+    
+    // 显示modal
+    var modal = document.getElementById('daily-task-modal');
+    if (modal) modal.classList.add('show');
+}
+
+// 关闭每日任务Modal
+function closeDailyTaskModal() {
+    var modal = document.getElementById('daily-task-modal');
+    if (modal) modal.classList.remove('show');
+}
+
+// 渲染每日任务Modal内容
+function renderDailyTaskModal() {
+    var questionsEl = document.getElementById('daily-task-questions');
+    var actionsEl = document.getElementById('daily-task-actions');
+    var doneEl = document.getElementById('daily-task-done');
+    
+    if (!questionsEl) return;
+    
+    var html = '';
+    
+    dailyTaskState.questions.forEach(function(q, idx) {
+        var selectedAnswer = dailyTaskState.answers[q.id];
+        var letters = ['A', 'B', 'C', 'D'];
+        
+        var optionClass = function(optIdx) {
+            var cls = 'daily-task-option';
+            if (dailyTaskState.submitted) {
+                if (optIdx === q.correct) cls += ' correct';
+                else if (optIdx === selectedAnswer) cls += ' wrong';
+            } else if (selectedAnswer === optIdx) {
+                cls += ' selected';
+            }
+            return cls;
+        };
+        
+        html += '<div class="daily-task-question">' +
+            '<div class="daily-task-question-num">第' + (idx + 1) + '题 · ' + q.dim + '</div>' +
+            '<div class="daily-task-question-text">' + q.question + '</div>' +
+            '<div class="daily-task-options">';
+        
+        q.options.forEach(function(opt, optIdx) {
+            html += '<div class="' + optionClass(optIdx) + '" onclick="selectDailyTaskAnswer(' + q.id + ', ' + optIdx + ')">' +
+                '<div class="daily-task-option-letter">' + letters[optIdx] + '</div>' +
+                '<div class="daily-task-option-text">' + opt + '</div>' +
+                '</div>';
+        });
+        
+        html += '</div>';
+        
+        // 显示解析（如果已提交）
+        if (dailyTaskState.submitted && selectedAnswer !== undefined) {
+            var isCorrect = selectedAnswer === q.correct;
+            html += '<div class="daily-task-analysis">' +
+                '<strong>' + (isCorrect ? '✓ 回答正确' : '✗ 回答错误') + '</strong><br>' +
+                q.analysis +
+                '</div>';
+        }
+        
+        html += '</div>';
+    });
+    
+    questionsEl.innerHTML = html;
+    
+    // 显示/隐藏按钮
+    if (actionsEl) actionsEl.style.display = dailyTaskState.submitted ? 'none' : 'block';
+    if (doneEl) doneEl.style.display = 'none';
+}
+
+// 选择答案
+function selectDailyTaskAnswer(questionId, answerIdx) {
+    if (dailyTaskState.submitted) return;
+    
+    dailyTaskState.answers[questionId] = answerIdx;
+    renderDailyTaskModal();
+    
+    // 检查是否可以提交（至少回答了1题）
+    var answeredCount = Object.keys(dailyTaskState.answers).length;
+    var actionsEl = document.getElementById('daily-task-actions');
+    if (actionsEl) {
+        actionsEl.style.display = answeredCount > 0 ? 'block' : 'none';
+    }
+}
+
+// 提交每日任务
+function submitDailyTask() {
+    if (dailyTaskState.submitted) return;
+    
+    var answeredCount = Object.keys(dailyTaskState.answers).length;
+    if (answeredCount === 0) {
+        showToast('请至少回答一题');
+        return;
+    }
+    
+    dailyTaskState.submitted = true;
+    renderDailyTaskModal();
+    
+    // 计算正确数并更新分数
+    var correctCount = 0;
+    var dimCorrect = {};
+    
+    dailyTaskState.questions.forEach(function(q) {
+        var userAnswer = dailyTaskState.answers[q.id];
+        if (userAnswer === q.correct) {
+            correctCount++;
+            dimCorrect[q.dim] = (dimCorrect[q.dim] || 0) + 1;
+        }
+    });
+    
+    // 更新五维分数
+    var data = state.userData || {};
+    var dims = data.diagnosis || {};
+    
+    // 答对的维度+4分（满分100，封顶）
+    for (var dim in dimCorrect) {
+        if (dim !== '听力') { // 听力单独处理
+            dims[dim] = Math.min(100, (parseInt(dims[dim]) || 50) + dimCorrect[dim] * 4);
+        }
+    }
+    
+    // 听力
+    if (dimCorrect['听力']) {
+        dims['听力'] = Math.min(100, (parseInt(dims['听力']) || 50) + dimCorrect['听力'] * 4);
+    }
+    
+    data.diagnosis = dims;
+    data.daily_task_done = true;
+    data.daily_task_done_date = getTodayStr();
+    data.daily_task_correct = correctCount;
+    
+    state.userData = data;
+    saveUserData(data);
+    
+    // 更新任务状态
+    var badgeEl = document.getElementById('daily-task-badge');
+    var progressEl = document.getElementById('daily-task-progress-bar');
+    if (badgeEl) {
+        badgeEl.textContent = answeredCount + '/' + dailyTaskState.questions.length;
+    }
+    if (progressEl) {
+        var pct = Math.round((correctCount / dailyTaskState.questions.length) * 100);
+        progressEl.style.width = pct + '%';
+    }
+    
+    // 更新描述
+    var descEl = document.getElementById('daily-task-desc');
+    if (descEl) {
+        descEl.textContent = '今日正确率' + Math.round((correctCount / dailyTaskState.questions.length) * 100) + '%';
+    }
+    
+    // 显示完成状态
+    var actionsEl = document.getElementById('daily-task-actions');
+    var doneEl = document.getElementById('daily-task-done');
+    if (actionsEl) actionsEl.style.display = 'none';
+    if (doneEl) {
+        var descEl2 = document.getElementById('daily-task-done-desc');
+        if (descEl2) {
+            descEl2.textContent = '答对' + correctCount + '题，' + getWeakDims()[0] + '+4分';
+        }
+        doneEl.style.display = 'block';
+    }
+    
+    // 刷新雷达图
+    setTimeout(function() {
+        if (typeof drawDashboardRadar === 'function') {
+            var scores = data.diagnosis || {};
+            drawDashboardRadar(scores);
+        }
+        renderPlanTab();
+    }, 500);
+    
+    showToast('分数已更新，继续加油！');
+}
+
+// ===== Bot注入历史分数 =====
+function getUserScoresForBot() {
+    var data = state.userData || {};
+    var dims = data.diagnosis || {};
+    
+    if (Object.keys(dims).length === 0) {
+        return '';
+    }
+    
+    var scores = [];
+    for (var key in dims) {
+        scores.push(key + dims[key]);
+    }
+    
+    return '当前用户五维分数：' + scores.join('、') + '，请根据这些数据个性化指导。';
+}
+
+// 修改sendMessage中的contextPrefix
+var originalSendMessage = sendMessage;
+
+// 已有的sendMessage中已经有了用户上下文注入，让我添加五维分数
+
+// ===== 学习计划Tab初始化 =====
+function initPlanTab() {
+    renderPlanTab();
+    
+    // 如果没有计划，自动生成
+    var data = state.userData || {};
+    var scores = data.diagnosis || {};
+    
+    if (Object.keys(scores).length > 0 && !data.study_plan) {
+        var plan = generateStudyPlan(scores);
+        data.study_plan = plan;
+        data.plan_created_at = new Date().toISOString();
+        state.userData = data;
+        saveUserData(data);
+    }
+}
+
+// showLearningPlan函数（从菜单触发）
+function showLearningPlan() {
+    switchTab('plan');
+}
+
+// 确保switchTab支持plan tab
+var originalSwitchTab = switchTab;
+switchTab = function(tab) {
+    originalSwitchTab(tab);
+    
+    if (tab === 'plan') {
+        initPlanTab();
+    }
+};
+
+// 每日任务样式注入
+var styleInjected = false;
+function injectDailyTaskStyles() {
+    if (styleInjected) return;
+    styleInjected = true;
+    
+    var style = document.createElement('style');
+    style.textContent = `
+        .plan-empty {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        .plan-empty-icon {
+            width: 60px;
+            height: 60px;
+            background: #F1F5F9;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+        }
+        .plan-empty-icon svg {
+            width: 28px;
+            height: 28px;
+            stroke: #94A3B8;
+        }
+        .plan-empty-text {
+            font-size: 14px;
+            color: #64748B;
+            margin-bottom: 16px;
+        }
+        .plan-empty-btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #6C5CE7 0%, #A29BFE 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+    `;
+    document.head.appendChild(style);
+}
+
+// 在initApp中调用
+var originalInitApp = initApp;
+initApp = function() {
+    originalInitApp();
+    injectDailyTaskStyles();
+};
