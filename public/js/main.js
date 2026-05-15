@@ -1667,11 +1667,13 @@ function initApp() {
             if (!convId) return;
             try {
                 var key = 'cet_msg_' + convId;
-                var msgs = chatState.messages.map(function(m) {
+                // 优先使用chatHistory（流式消息存这里），fallback到messages
+                var source = chatState.chatHistory.length > 0 ? chatState.chatHistory : chatState.messages;
+                var msgs = source.map(function(m) {
                     return { role: m.role, content: m.content || '', type: m.type || '' };
                 });
                 localStorage.setItem(key, JSON.stringify(msgs));
-            } catch(e) {}
+            } catch(e) { console.error('[saveMessagesToLocal]', e); }
         }
         
         // 从本地localStorage读取消息（Coze API返回空时的fallback）
