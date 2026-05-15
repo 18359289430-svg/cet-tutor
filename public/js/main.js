@@ -2669,7 +2669,7 @@ function initApp() {
                     console.log('[Stream] Already has content, skipping error message');
                     chatState.chatHistory.push({ role: 'user', content: contextPrefix + text, content_type: 'text' });
                     chatState.chatHistory.push({ role: 'assistant', content: fullText, content_type: 'text' });
-                    onBotReply();
+                    try { onBotReply(); } catch(e2) { console.error('[Stream] onBotReply error in catch:', e2.message); }
                 } else {
                     removeTypingIndicator();
                     appendMessage('ai', '网络异常，请重试');
@@ -2685,6 +2685,7 @@ function initApp() {
         }
 
         function onBotReply() {
+            try {
             // 标记已回复（用于对话元数据更新）
             if (!chatState.hasReplied) {
                 chatState.hasReplied = true;
@@ -2697,9 +2698,9 @@ function initApp() {
             var todayChecked = streak.todayChecked && streak.lastDate === today;
             if (todayChecked) return;
 
-            var planTask = getPlanTodayTask();
+            var planTask = getPlanTodayTaskText();
             var userData = state.userData || {};
-            var hasPlan = planTask && planTask.task && userData.plan && userData.plan !== 'free';
+            var hasPlan = planTask && userData.plan && userData.plan !== 'free';
 
             if (hasPlan) {
                 if (chatState.chatRounds >= 2) {
@@ -2730,6 +2731,11 @@ function initApp() {
                     var remaining = 2 - chatState.chatRounds;
                     showToast('再聊' + remaining + '轮即可打卡');
                 }
+            }
+        }
+
+            } catch(e) {
+                console.error('[onBotReply] Error (non-fatal):', e.message);
             }
         }
 
