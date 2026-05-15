@@ -2367,45 +2367,50 @@ function initApp() {
             // Create conversation if needed
             if (!chatState.conversationId) {
                 try {
-                    var createResp = await fetchWithTimeout('/api/chat/conversation', { method: 'POST' });
-                    var createData = await createResp.json();
-                    if (createData.data && createData.data.id) {
-                        chatState.conversationId = createData.data.id;
-                        // 新会话创建后，添加到对话列表
-                        var mode = chatState.currentMode || 'diagnosis';
-                        var botMap = {
-                            'diagnosis': '7636289658620215331',
-                            'companion': '7637702903679631395'
-                        };
-                        var list = getChatList();
-                        // 检查是否已存在
-                        var exists = false;
-                        for (var i = 0; i < list.length; i++) {
-                            if (list[i].id === chatState.conversationId) {
-                                exists = true;
-                                break;
-                            }
-                        }
-                        if (!exists) {
-                            // 获取用户的第一条消息作为标题
-                            var firstMsg = text.substring(0, 20);
-                            var newItem = {
-                                id: chatState.conversationId,
-                                title: firstMsg,
-                                mode: mode,
-                                botId: botMap[mode],
-                                lastMsg: text,
-                                lastMsgTime: Date.now(),
-                                createdAt: Date.now()
-                            };
-                            list.unshift(newItem);
-                            saveChatList(list);
-                            renderChatList();
-                        }
+                    // 陪练模式用前端UUID，不走Coze创建对话
+                    if (chatState.currentMode === 'companion') {
+                        chatState.conversationId = 'ds_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
                     } else {
-                        appendMessage('ai', '连接失败: ' + (createData.msg || '请刷新重试'));
-                        chatState.isStreaming = false;
-                        return;
+                        // 诊断模式走Coze创建对话
+                        var createResp = await fetchWithTimeout('/api/chat/conversation', { method: 'POST' });
+                        var createData = await createResp.json();
+                        if (createData.data && createData.data.id) {
+                            chatState.conversationId = createData.data.id;
+                        } else {
+                            appendMessage('ai', '连接失败: ' + (createData.msg || '请刷新重试'));
+                            chatState.isStreaming = false;
+                            return;
+                        }
+                    }
+                    
+                    // 新会话创建后，添加到对话列表
+                    var mode = chatState.currentMode || 'diagnosis';
+                    var botMap = {
+                        'diagnosis': '7636289658620215331',
+                        'companion': '7637702903679631395'
+                    };
+                    var list = getChatList();
+                    var exists = false;
+                    for (var i = 0; i < list.length; i++) {
+                        if (list[i].id === chatState.conversationId) {
+                            exists = true;
+                            break;
+                        }
+                    }
+                    if (!exists) {
+                        var firstMsg = text.substring(0, 20);
+                        var newItem = {
+                            id: chatState.conversationId,
+                            title: firstMsg,
+                            mode: mode,
+                            botId: botMap[mode],
+                            lastMsg: text,
+                            lastMsgTime: Date.now(),
+                            createdAt: Date.now()
+                        };
+                        list.unshift(newItem);
+                        saveChatList(list);
+                        renderChatList();
                     }
                 } catch (e) {
                     appendMessage('ai', '网络错误，请检查网络');
