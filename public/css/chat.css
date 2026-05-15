@@ -1635,7 +1635,7 @@
 
 /* 输入区 - 极薄不挡字 */
 .custom-chat-input-area {
-    padding: 4px 12px 6px;
+    padding: 4px 12px calc(4px + env(safe-area-inset-bottom, 0px));
     background: rgba(255, 255, 255, 0.97);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
