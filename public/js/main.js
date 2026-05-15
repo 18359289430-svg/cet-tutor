@@ -1,3 +1,12 @@
+
+// Fix: move tab-bar to be direct child of .app (HTML nesting workaround)
+(function() {
+    var tabBar = document.querySelector('.tab-bar');
+    var app = document.querySelector('.app');
+    if (tabBar && app && tabBar.parentElement !== app) {
+        app.appendChild(tabBar);
+    }
+})();
         var personalities = [
                 { type:'佛系随缘选手', color:'#F5C6AA', emoji:'😌', img:'imgs/foxi.webp', honor:'佛系陪跑员', comment:'你很佛系，但四级不佛', scores:{"细节定位":95,"推理判断":33,"同义替换":66,"主旨归纳":77,"态度判断":93} },
                 { type:'脑补大师', color:'#C4A8E0', emoji:'💭', img:'imgs/naobu.webp', honor:'四级白日梦家', comment:'笔在卷子上，魂在银河系', scores:{"细节定位":40,"推理判断":75,"同义替换":50,"主旨归纳":30,"态度判断":60} },
