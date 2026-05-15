@@ -1439,6 +1439,7 @@ function initApp() {
             chatState.isStreaming = false;
             chatState.currentStreamText = '';
             chatState.currentMode = mode; // 保存当前模式
+            chatState.hasReplied = false; // 重置回复状态，确保AI回复后能更新对话元数据
             
             // 清空消息显示 - 引导式开场白
             var container = document.getElementById('chat-messages');
@@ -1462,6 +1463,20 @@ function initApp() {
             // 显示聊天界面，隐藏对话列表
             document.getElementById('chat-list-view').classList.remove('active');
             document.getElementById('chat-page').style.display = 'flex';
+            
+            // 更新tab状态
+            state.currentTab = 'diagnosis';
+            document.querySelectorAll('.tab-page').forEach(function(page) {
+                page.classList.toggle('active', page.id === 'tab-diagnosis');
+            });
+            document.querySelectorAll('.tab-item').forEach(function(item) {
+                item.classList.toggle('active', item.dataset.tab === 'diagnosis');
+            });
+            // 确保tab-bar可见
+            var tabBar = document.querySelector('.tab-bar');
+            if (tabBar) tabBar.style.display = '';
+            window.location.hash = 'practice';
+            localStorage.setItem('cet_current_tab', 'diagnosis');
             
             // 隐藏/显示重新诊断按钮
             var rediagBtn = document.getElementById('btn-rediag');
@@ -1512,6 +1527,7 @@ function initApp() {
             chatState.isStreaming = false;
             chatState.currentStreamText = '';
             chatState.currentMode = mode;
+            chatState.hasReplied = false; // 重置回复状态，确保继续对话时能更新元数据
             
             // 更新标题
             document.getElementById('chat-title').textContent = mode === 'diagnosis' ? '小过学长' : 'AI陪练';
@@ -1519,6 +1535,20 @@ function initApp() {
             // 显示聊天界面，隐藏对话列表
             document.getElementById('chat-list-view').classList.remove('active');
             document.getElementById('chat-page').style.display = 'flex';
+            
+            // 更新tab状态
+            state.currentTab = 'diagnosis';
+            document.querySelectorAll('.tab-page').forEach(function(page) {
+                page.classList.toggle('active', page.id === 'tab-diagnosis');
+            });
+            document.querySelectorAll('.tab-item').forEach(function(item) {
+                item.classList.toggle('active', item.dataset.tab === 'diagnosis');
+            });
+            // 确保tab-bar可见
+            var tabBar = document.querySelector('.tab-bar');
+            if (tabBar) tabBar.style.display = '';
+            window.location.hash = 'practice';
+            localStorage.setItem('cet_current_tab', 'diagnosis');
             
             // 隐藏/显示重新诊断按钮
             var rediagBtn = document.getElementById('btn-rediag');
@@ -1570,11 +1600,13 @@ function initApp() {
             for (var i = 0; i < list.length; i++) {
                 if (list[i].id === chatState.conversationId) {
                     found = true;
-                    // 更新最后一条消息
+                    // 更新最后一条消息（优先使用AI回复作为预览）
                     list[i].lastMsg = botMsg || userMsg;
                     list[i].lastMsgTime = Date.now();
-                    // 自动生成标题（只在第一轮对话时）
-                    if (chatState.chatRounds === 1 && userMsg) {
+                    // 自动生成标题（第一轮对话时，userMsg是用户消息，botMsg是AI回复）
+                    // chatRounds在onBotReply被调用时是2（sendMessage开始++后=1，AI回复完成++后=2）
+                    // 所以条件用 <= 2 来判断是第一轮对话
+                    if (chatState.chatRounds <= 2 && userMsg && !list[i].title) {
                         list[i].title = truncateText(userMsg, 20);
                     }
                     // 移到列表头部
@@ -1698,9 +1730,22 @@ function initApp() {
             initChatChips(mode);
             
             // 切换到诊断tab，显示聊天界面
+            // 注意：直接操作DOM而不是调用switchTab，避免showChatList覆盖聊天页面显示
             document.getElementById('chat-list-view').classList.remove('active');
             document.getElementById('chat-page').style.display = 'flex';
-            switchTab('diagnosis');
+            // 更新tab状态
+            state.currentTab = 'diagnosis';
+            document.querySelectorAll('.tab-page').forEach(function(page) {
+                page.classList.toggle('active', page.id === 'tab-diagnosis');
+            });
+            document.querySelectorAll('.tab-item').forEach(function(item) {
+                item.classList.toggle('active', item.dataset.tab === 'diagnosis');
+            });
+            // 确保tab-bar可见
+            var tabBar = document.querySelector('.tab-bar');
+            if (tabBar) tabBar.style.display = '';
+            window.location.hash = 'practice';
+            localStorage.setItem('cet_current_tab', 'diagnosis');
             
             // 更新输入框placeholder（免费额度提示）
             updateChatInputPlaceholder();
