@@ -792,6 +792,60 @@ function initApp() {
             html += '</div>'; // end timeline
             html += '</div>';
             
+            // ===== 30天冲刺计划列表 =====
+            var plan = userData.study_plan;
+            html += '<div class="dashboard-plan-list-section glass-card">';
+            html += '<div class="dashboard-plan-list-header">';
+            html += '<div class="dashboard-plan-list-title">' + icons.calendar + '30天冲刺计划</div>';
+            html += '<button class="dashboard-plan-regen-btn" onclick="regeneratePlan()">' + icons.arrow + '重新生成</button>';
+            html += '</div>';
+            
+            if (!plan || !plan.days || plan.days.length === 0) {
+                html += '<div class="dashboard-plan-empty">';
+                html += '<div class="dashboard-plan-empty-text">完成诊断后自动生成学习计划</div>';
+                html += '<button class="dashboard-plan-empty-btn" onclick="openChat(\'diagnosis\'); sendSuggestion(\'帮我制定学习计划\');">立即诊断</button>';
+                html += '</div>';
+            } else {
+                var planStartDate = plan.startDay ? new Date(plan.startDay) : new Date();
+                for (var pi = 0; pi < Math.min(plan.days.length, 7); pi++) {
+                    var dayPlan = plan.days[pi];
+                    var dayDate = new Date(planStartDate);
+                    dayDate.setDate(dayDate.getDate() + pi);
+                    var dateStr = (dayDate.getMonth() + 1) + '月' + dayDate.getDate() + '日';
+                    
+                    var isCurrentDay = dayPlan.day === currentDay;
+                    var isDoneDay = dayPlan.day < currentDay;
+                    
+                    var itemClass = 'dashboard-plan-day-item';
+                    if (isCurrentDay) itemClass += ' current';
+                    if (isDoneDay) itemClass += ' done';
+                    
+                    var statusClass = isDoneDay ? 'done' : 'pending';
+                    var statusText = isDoneDay ? '已完成' : (isCurrentDay ? '进行中' : '待开始');
+                    
+                    var tasks = dayPlan.tasks.slice(0, 2).join(' · ');
+                    if (dayPlan.tasks.length > 2) {
+                        tasks += ' 等' + dayPlan.tasks.length + '项';
+                    }
+                    
+                    html += '<div class="' + itemClass + '" onclick="openDayPlan(' + dayPlan.day + ')">';
+                    html += '<div class="dashboard-plan-day-header">';
+                    html += '<div>';
+                    html += '<div class="dashboard-plan-day-num">Day ' + dayPlan.day + '</div>';
+                    html += '<div class="dashboard-plan-day-date">' + dateStr + '</div>';
+                    html += '</div>';
+                    html += '<div class="dashboard-plan-day-status ' + statusClass + '">' + statusText + '</div>';
+                    html += '</div>';
+                    html += '<div class="dashboard-plan-day-tasks">' + tasks + '</div>';
+                    html += '</div>';
+                }
+                
+                if (plan.days.length > 7) {
+                    html += '<div class="dashboard-plan-more" onclick="openChat(\'companion\'); sendSuggestion(\'查看完整30天计划\');">查看全部' + plan.days.length + '天计划 →</div>';
+                }
+            }
+            html += '</div>';
+            
             // ===== 底部安全区域 =====
             html += '<div class="dashboard-bottom-spacer"></div>';
             
