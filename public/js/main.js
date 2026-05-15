@@ -2593,6 +2593,7 @@ function initApp() {
                     if (chatState.chatHistory.length > 20) {
                         chatState.chatHistory = chatState.chatHistory.slice(-20);
                     }
+                    saveMessagesToLocal(chatState.conversationId);
                     // Parse markers
                     var resultMatch = fullText.match(/\[RESULT:(.+?)\]/);
                     if (resultMatch) {
@@ -2640,6 +2641,7 @@ function initApp() {
                         chatState.chatHistory.push({ role: 'user', content: contextPrefix + text, content_type: 'text' });
                         chatState.chatHistory.push({ role: 'assistant', content: fullText, content_type: 'text' });
                         if (chatState.chatHistory.length > 20) chatState.chatHistory = chatState.chatHistory.slice(-20);
+                        saveMessagesToLocal(chatState.conversationId);
                         var resultMatch2 = fullText.match(/\[RESULT:(.+?)\]/);
                         if (resultMatch2) {
                             parseDiagnosisResult(resultMatch2[1]);
@@ -2669,6 +2671,7 @@ function initApp() {
                     console.log('[Stream] Already has content, skipping error message');
                     chatState.chatHistory.push({ role: 'user', content: contextPrefix + text, content_type: 'text' });
                     chatState.chatHistory.push({ role: 'assistant', content: fullText, content_type: 'text' });
+                    saveMessagesToLocal(chatState.conversationId);
                     try { onBotReply(); } catch(e2) { console.error('[Stream] onBotReply error in catch:', e2.message); }
                 } else {
                     removeTypingIndicator();
@@ -2886,10 +2889,16 @@ function initApp() {
                         chatState.chatRounds = localMsgs.filter(function(m) { return m.role === 'user'; }).length;
                         container.scrollTop = container.scrollHeight;
                     } else {
-                        // 本地也没有消息，显示提示
+                        // 本地也没有消息，说明对话已过期，从列表中移除
+                        var list = getChatList();
+                        var newList = list.filter(function(item) { return item.id !== conversationId; });
+                        if (newList.length < list.length) {
+                            saveChatList(newList);
+                            renderChatList();
+                        }
                         var container2 = document.getElementById('chat-messages');
                         if (container2 && container2.innerHTML.trim() === '') {
-                            container2.innerHTML = '<div style="text-align:center;padding:40px 20px;color:#94A3B8;font-size:14px;">暂无历史消息</div>';
+                            container2.innerHTML = '<div style="text-align:center;padding:40px 20px;color:#94A3B8;font-size:14px;">对话已过期，请开始新对话</div>';
                         }
                     }
                 }
