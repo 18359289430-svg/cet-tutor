@@ -1181,7 +1181,8 @@ async function handleApi(req, res, pathname) {
 
         // POST /api/deepseek/chat - DeepSeek陪练对话（SSE流式+RAG+限流）
         if (pathname === '/api/deepseek/chat' && req.method === 'POST') {
-            return handleDeepseekChat(req, res);
+            try { await handleDeepseekChat(req, res); } catch(e) { console.error('[handleDeepseekChat]', e); sendJson(res, 500, { error: 'AI服务暂时不可用' }); }
+            return;
         }
 
         // GET /api/deepseek/quiz-topics - 获取写作题目列表
@@ -1528,6 +1529,9 @@ function buildRagContext(userMessage, personality, weakDims, dimScores, wrongSum
 
 // POST /api/deepseek/chat - DeepSeek陪练对话
 async function handleDeepseekChat(req, res) {
+    if (!DEEPSEEK_API_KEY) {
+        return sendJson(res, 500, { error: 'DeepSeek API未配置' });
+    }
     try {
         const body = await parseBody(req);
         const { messages, stream } = body;
