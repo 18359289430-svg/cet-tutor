@@ -41,6 +41,7 @@
     <link rel="stylesheet" href="/css/review.css?v=202605142349">
     <link rel="stylesheet" href="/css/plan.css?v=202605142349">
     <link rel="stylesheet" href="/css/plan-page.css?v=202605171800">
+    <link rel="stylesheet" href="/css/plan-page.css?v=202605171800">
     <!-- Clarity -->
     <script type="text/javascript">
         (function(c,l,a,r,i,t,y){ c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
@@ -215,6 +216,41 @@
                                 <div class="daily-task-desc" id="daily-task-desc">今日薄弱点强化训练</div>
                             </div>
                             <div class="daily-task-badge" id="daily-task-badge">0/4</div>
+                        </div>
+                        <div class="daily-task-progress">
+                            <div class="daily-task-progress-bar" id="daily-task-progress-bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- 雷达图预览 -->
+                    <div class="plan-radar-preview" id="plan-radar-preview" onclick="switchTab('progress')">
+                        <div class="plan-radar-title">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+                            五维能力
+                        </div>
+                        <div class="plan-radar-canvas-wrap">
+                            <canvas id="plan-radar-canvas" width="160" height="160"></canvas>
+                        </div>
+                        <div class="plan-radar-tip">点击查看详情 →</div>
+                    </div>
+                    
+                    <!-- 学习计划列表 -->
+                    <div class="plan-list-section">
+                        <div class="plan-list-header">
+                            <span class="plan-list-title">30天冲刺计划</span>
+                            <button class="plan-regen-btn" onclick="regeneratePlan()">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                                重新生成
+                            </button>
+                        </div>
+                        <div class="plan-list" id="plan-list">
+                            <!-- Plan days will be rendered here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="daily-task-badge" id="daily-task-badge">0/4</div>
                         </div>
                         <div class="daily-task-progress">
                             <div class="daily-task-progress-bar" id="daily-task-progress-bar" style="width: 0%"></div>
@@ -654,6 +690,29 @@
         <div class="modal-sheet" style="max-height: 85vh">
             <div class="modal-handle"></div>
             <div class="daily-task-modal-content" id="daily-task-modal-content">
+                <div class="daily-task-modal-header">
+                    <div class="daily-task-modal-title">每日任务</div>
+                    <div class="daily-task-modal-sub" id="daily-task-modal-sub">薄弱点强化训练</div>
+                </div>
+                <div class="daily-task-questions" id="daily-task-questions">
+                    <!-- Questions will be rendered here -->
+                </div>
+                <div class="daily-task-actions" id="daily-task-actions" style="display:none">
+                    <button class="btn-primary" onclick="submitDailyTask()">提交答案</button>
+                </div>
+                <div class="daily-task-done" id="daily-task-done" style="display:none">
+                    <div class="daily-task-done-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    </div>
+                    <div class="daily-task-done-title">已完成今日任务</div>
+                    <div class="daily-task-done-desc" id="daily-task-done-desc"></div>
+                    <button class="btn-secondary" onclick="closeDailyTaskModal()">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="daily-task-modal-content" id="daily-task-modal-content">
                 <div class="daily-task-modal-header">
                     <div class="daily-task-modal-title">每日任务</div>
                     <div class="daily-task-modal-sub" id="daily-task-modal-sub">薄弱点强化训练</div>
