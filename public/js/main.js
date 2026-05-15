@@ -1661,6 +1661,29 @@ function initApp() {
             }
         }
 
+
+        // 保存消息到本地localStorage（作为Coze API的fallback）
+        function saveMessagesToLocal(convId) {
+            if (!convId) return;
+            try {
+                var key = 'cet_msg_' + convId;
+                var msgs = chatState.messages.map(function(m) {
+                    return { role: m.role, content: m.content || '', type: m.type || '' };
+                });
+                localStorage.setItem(key, JSON.stringify(msgs));
+            } catch(e) {}
+        }
+        
+        // 从本地localStorage读取消息（Coze API返回空时的fallback）
+        function loadMessagesFromLocal(convId) {
+            if (!convId) return [];
+            try {
+                var key = 'cet_msg_' + convId;
+                var data = localStorage.getItem(key);
+                return data ? JSON.parse(data) : [];
+            } catch(e) { return []; }
+        }
+
         // 对话列表在用户进入diagnosis tab时由openChat/showChatList初始化
 
         // ===== Custom Chat UI Logic =====
@@ -2464,6 +2487,7 @@ function initApp() {
                         }
                     }
                     chatState.chatHistory.push({ role: 'assistant', content: fullText, content_type: 'text' });
+                    saveMessagesToLocal(chatState.conversationId);
                     chatState.chatRounds++;
                     updateChatListMeta(fullText);
                     savePracticeRecord();
@@ -2806,6 +2830,8 @@ function initApp() {
                     }
                     // 设置conversationId并保存到localStorage
                     chatState.conversationId = conversationId;
+                    // 保存消息到本地localStorage
+                    saveMessagesToLocal(conversationId);
                     // 获取最后一条用户消息和AI回复，用于更新对话列表
                     var userMsgs = msgs.filter(function(m) { return m.role === 'user'; });
                     var lastUserMsg = userMsgs.length > 0 ? userMsgs[userMsgs.length - 1].content : '';
@@ -2816,10 +2842,33 @@ function initApp() {
                     // 滚动到底部
                     container.scrollTop = container.scrollHeight;
                 } else {
-                    // API返回但code不为0或data为空，显示提示
-                    var container2 = document.getElementById('chat-messages');
-                    if (container2 && container2.innerHTML.trim() === '') {
-                        container2.innerHTML = '<div style="text-align:center;padding:40px 20px;color:#94A3B8;font-size:14px;">暂无历史消息</div>';
+                    // Coze API返回空数据，尝试从本地localStorage读取
+                    var localMsgs = loadMessagesFromLocal(conversationId);
+                    if (localMsgs.length > 0) {
+                        var container = document.getElementById('chat-messages');
+                        container.innerHTML = '';
+                        var chips = document.getElementById('input-chips');
+                        if (chips) chips.style.display = 'none';
+                        localMsgs.forEach(function(m) {
+                            var c = m.content || '';
+                            if (m.role === 'user') {
+                                c = c.replace(/^\[系统信息\].*?\n\n/s, '').replace(/^\[进度\].*?\n\n/s, '');
+                            }
+                            if (m.role === 'assistant' && c.trim()) {
+                                appendMessage('ai', c);
+                            } else if (m.role === 'user' && c.trim()) {
+                                appendMessage('user', c);
+                            }
+                        });
+                        chatState.chatHistory = localMsgs;
+                        chatState.chatRounds = localMsgs.filter(function(m) { return m.role === 'user'; }).length;
+                        container.scrollTop = container.scrollHeight;
+                    } else {
+                        // 本地也没有消息，显示提示
+                        var container2 = document.getElementById('chat-messages');
+                        if (container2 && container2.innerHTML.trim() === '') {
+                            container2.innerHTML = '<div style="text-align:center;padding:40px 20px;color:#94A3B8;font-size:14px;">暂无历史消息</div>';
+                        }
                     }
                 }
             }).catch(function(e) {
