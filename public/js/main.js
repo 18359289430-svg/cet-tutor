@@ -2686,54 +2686,52 @@ function initApp() {
 
         function onBotReply() {
             try {
-            // 标记已回复（用于对话元数据更新）
-            if (!chatState.hasReplied) {
-                chatState.hasReplied = true;
-                var lastBotMsg = chatState.currentStreamText || '';
-                updateConversationMeta('', lastBotMsg);
-            }
-            
-            var streak = getStreakData();
-            var today = getTodayStr();
-            var todayChecked = streak.todayChecked && streak.lastDate === today;
-            if (todayChecked) return;
-
-            var planTask = getPlanTodayTaskText();
-            var userData = state.userData || {};
-            var hasPlan = planTask && userData.plan && userData.plan !== 'free';
-
-            if (hasPlan) {
-                if (chatState.chatRounds >= 2) {
-                    showToast('继续完成今日任务，Bot确认后自动打卡');
+                // 标记已回复（用于对话元数据更新）
+                if (!chatState.hasReplied) {
+                    chatState.hasReplied = true;
+                    var lastBotMsg = chatState.currentStreamText || '';
+                    updateConversationMeta('', lastBotMsg);
                 }
-            } else {
-                if (chatState.chatRounds >= 2) {
-                    var daily = getDailyTaskInfo();
-                    if (daily.completed.length === 0) {
-                        var task = dailyTasks[daily.taskIndex];
-                        daily.completed.push(task.type);
-                        saveDailyTaskData(daily);
+                
+                var streak = getStreakData();
+                var today = getTodayStr();
+                var todayChecked = streak.todayChecked && streak.lastDate === today;
+                if (todayChecked) return;
+
+                var planTask = getPlanTodayTaskText();
+                var userData = state.userData || {};
+                var hasPlan = planTask && userData.plan && userData.plan !== 'free';
+
+                if (hasPlan) {
+                    if (chatState.chatRounds >= 2) {
+                        showToast('继续完成今日任务，Bot确认后自动打卡');
                     }
-                    var justCheckedIn = doCheckIn();
-                    if (justCheckedIn) {
-                        showToast('学习完成！连续打卡' + getStreakData().count + '天');
-                        renderStreakCalendar();
-                        var streakNumBig = document.getElementById('streak-num-big');
-                        var studyEnStreak = document.getElementById('study-en-streak');
-                        var s = getStreakData();
-                        if (streakNumBig) streakNumBig.textContent = s.count;
-                        if (studyEnStreak) studyEnStreak.textContent = s.count;
-                    }
-                    updateDailyTask();
-                    updateHomeStatus();
-            updatePlanDisplay();
                 } else {
-                    var remaining = 2 - chatState.chatRounds;
-                    showToast('再聊' + remaining + '轮即可打卡');
+                    if (chatState.chatRounds >= 2) {
+                        var daily = getDailyTaskInfo();
+                        if (daily.completed.length === 0) {
+                            var task = dailyTasks[daily.taskIndex];
+                            daily.completed.push(task.type);
+                            saveDailyTaskData(daily);
+                        }
+                        var justCheckedIn = doCheckIn();
+                        if (justCheckedIn) {
+                            showToast('学习完成！连续打卡' + getStreakData().count + '天');
+                            renderStreakCalendar();
+                            var streakNumBig = document.getElementById('streak-num-big');
+                            var studyEnStreak = document.getElementById('study-en-streak');
+                            var s = getStreakData();
+                            if (streakNumBig) streakNumBig.textContent = s.count;
+                            if (studyEnStreak) studyEnStreak.textContent = s.count;
+                        }
+                        updateDailyTask();
+                        updateHomeStatus();
+                        updatePlanDisplay();
+                    } else {
+                        var remaining = 2 - chatState.chatRounds;
+                        showToast('再聊' + remaining + '轮即可打卡');
+                    }
                 }
-            }
-        }
-
             } catch(e) {
                 console.error('[onBotReply] Error (non-fatal):', e.message);
             }
