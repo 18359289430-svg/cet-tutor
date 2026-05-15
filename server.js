@@ -304,6 +304,126 @@ function sendJson(res, statusCode, data) {
 }
 
 // 处理API请求
+// ===== 真题RAG检索引擎 =====
+let quizQuestions = [];
+try {
+    const quizPath = path.join(__dirname, 'data', 'quiz_questions.json');
+    if (fs.existsSync(quizPath)) {
+        quizQuestions = JSON.parse(fs.readFileSync(quizPath, 'utf-8'));
+        console.log(`[RAG] 已加载 ${quizQuestions.length} 道真题`);
+    }
+} catch(e) { console.error('[RAG] 加载题库失败:', e.message); }
+
+function searchQuiz(keyword, type, limit) {
+    limit = limit || 5;
+    var pool = quizQuestions;
+    if (type) pool = pool.filter(q => q.type === type);
+    if (keyword && keyword.length > 0) {
+        var kw = keyword.toLowerCase();
+        pool = pool.filter(q => 
+            (q.question || '').toLowerCase().includes(kw) ||
+            (q.explanation || '').toLowerCase().includes(kw) ||
+            (q.optionA || '').toLowerCase().includes(kw) ||
+            (q.ability || '').toLowerCase().includes(kw)
+        );
+    }
+    return pool.slice(0, limit);
+}
+
+function buildRagContext(userMessage, personality, weakDims, dimScores, wrongSummary, studyDays) {
+    var context = '';
+    var searchType = '';
+    var weakDimsList = weakDims || [];
+    if (weakDimsList.length > 0) {
+        var firstWeak = weakDimsList[0].replace(/\(.*?\)/, '').trim();
+        var dimTypeMap = {
+            '细节定位': '阅读理解-仔细阅读',
+            '推理判断': '阅读理解-仔细阅读',
+            '同义替换': '阅读理解-仔细阅读',
+            '主旨归纳': '阅读理解-仔细阅读',
+            '态度判断': '听力理解-篇章',
+            '听力理解': '听力理解-篇章',
+            '长对话': '听力理解-长对话',
+            '新闻报道': '听力理解-新闻报道',
+            '阅读理解': '阅读理解-仔细阅读',
+            '信息匹配': '阅读理解-仔细阅读'
+        };
+        searchType = dimTypeMap[firstWeak] || '';
+    }
+    var keyword = '';
+    var keywords = userMessage.match(/[\u4e00-\u9fa5a-zA-Z]{2,}/g);
+    if (keywords) keyword = keywords.slice(0, 3).join(' ');
+    var results = searchQuiz(keyword, searchType, 2);
+    if (results.length > 0) {
+        context += '\n\n[真题参考-请基于这些出题或讲解]\n';
+        results.forEach(function(q, i) {
+            context += (i+1) + '. (' + q.type + ') ' + q.question + '\n';
+            context += '   A.' + q.optionA + ' B.' + q.optionB + ' C.' + q.optionC + ' D.' + q.optionD + '\n';
+            context += '   答案:' + q.answer + ' 解析:' + (q.explanation || '').substring(0,50) + '\n';
+        });
+    }
+    context += '\n\n[用户画像]';
+    if (personality) context += '\n- 备考人格: ' + personality;
+    if (dimScores) {
+        try {
+            var scores = JSON.parse(dimScores);
+            context += '\n- 五维能力: ';
+            for (var k in scores) context += k + '=' + scores[k] + ' ';
+        } catch(e) {}
+    }
+    if (weakDimsList.length > 0) {
+        context += '\n- 薄弱维度(按严重程度排序): ' + weakDimsList.join(', ');
+        context += '\n→ 出题要求: 优先出最弱维度的题';
+    }
+    if (wrongSummary) {
+        context += '\n- 近期错题: ' + wrongSummary;
+    }
+    if (studyDays > 0) {
+        context += '\n- 已学习: ' + studyDays + '天';
+    }
+    return context;
+}
+
+// ===== 陪练系统提示词 =====
+const COMPANION_SYSTEM_PROMPT = `你是"小过学长"的AI陪练模式，一个温暖又专业的四级备考私教。
+
+## 铁律：真题优先，绝不编题
+- 如果系统给你[真题参考]，你必须直接使用这些真题出题
+- 绝不自己编造题目
+- 可以用不同角度讲解同一道真题，但题干和选项必须与[真题参考]一致
+- 解析时引用原文线索，让用户知道答案出处
+
+## 出题策略
+- 系统会给你[用户画像]和[真题参考]，严格按画像选最合适的真题
+- 分数规则：<60分=严重薄弱必须重点练，60-80分=一般需巩固，>80分=已掌握偶尔练
+- 出题优先级：最弱维度 > 次弱维度 > 近期错题类型 > 已掌握维度（不主动出）
+- 开场第一句话必须出一道最薄弱维度的真题，不要闲聊
+- 用户连续答对2题同一维度 → 切换到次弱维度
+- 用户答错 → 同维度再出1题巩固，解析要讲透
+
+## 对话节奏
+- 出题 → 等用户回答 → 解析 → 立即出下一题（不要问"要不要继续"）
+- 用户主动提问 → 先回答问题，然后自然引回出题
+- 每次回复控制在150字内，简洁有力
+
+## 出题格式（严格）
+【题目】题干内容
+A. 选项A
+B. 选项B
+C. 选项C
+D. 选项D
+请回答A/B/C/D
+
+## 解析格式
+✅正确/❌错误，正确答案是X。
+解析：简短说明+解题技巧
+
+## 其他规则
+- 用中文回复，题目可以用英文
+- 鼓励为主但不说废话，答对简洁夸，答错重点讲
+- 非四级问题温和引导回备考
+- 你是陪练不是老师，像学长一样聊天`;
+
 async function handleApi(req, res, pathname) {
     const url = new URL(req.url, `http://localhost:${PORT}`);
     // 统一设置CSP
@@ -1187,10 +1307,16 @@ async function handleApi(req, res, pathname) {
                 if (!messages || !messages.length) {
                     return sendJson(res, 400, { error: '参数缺失' });
                 }
-                const systemPrompt = '你是"小过学长"的AI陪练模式，一个温暖又专业的四级备考私教。核心规则：1.根据用户薄弱维度重点辅导 2.每次回复控制在150字内 3.主动出题练习 4.用中文回复 5.鼓励为主但不说废话 6.非四级问题温和引导回备考。出题格式：【题目】题干 A.选项A B.选项B C.选项C D.选项D 请回答A/B/C/D。解析格式：✅/❌，正确答案是X。解析：简短说明+技巧';
+                // 构建RAG上下文
+                const userPersonality = body.personality || '';
+                const weakDims = body.weak_dims || [];
+                const userId = body.user_id || 'anonymous';
+                let ragCtx = '';
+                try { ragCtx = buildRagContext(messages[messages.length-1].content || '', userPersonality, weakDims, body.dim_scores, body.wrong_summary, body.study_days || 0); } catch(e) {}
+                const systemContent = COMPANION_SYSTEM_PROMPT + (ragCtx || '');
                 const payload = {
                     model: 'deepseek-chat',
-                    messages: [{ role: 'system', content: systemPrompt }, ...messages.slice(-10)],
+                    messages: [{ role: 'system', content: systemContent }, ...messages.slice(-10)],
                     stream: stream !== false,
                     temperature: 0.7,
                     max_tokens: 800
@@ -1448,73 +1574,7 @@ const server = http.createServer((req, res) => {
 
 
 
-// ===== 真题RAG检索引擎 =====
-let quizQuestions = [];
-try {
-    const quizPath = path.join(__dirname, 'data', 'quiz_questions.json');
-    if (fs.existsSync(quizPath)) {
-        quizQuestions = JSON.parse(fs.readFileSync(quizPath, 'utf-8'));
-        console.log(`[RAG] 已加载 ${quizQuestions.length} 道真题`);
-    }
-} catch(e) { console.error('[RAG] 加载题库失败:', e.message); }
 
-function searchQuiz(keyword, type, limit) {
-    limit = limit || 5;
-    var pool = quizQuestions;
-    if (type) pool = pool.filter(q => q.type === type);
-    if (keyword && keyword.length > 0) {
-        var kw = keyword.toLowerCase();
-        pool = pool.filter(q => 
-            (q.question || '').toLowerCase().includes(kw) ||
-            (q.explanation || '').toLowerCase().includes(kw) ||
-            (q.optionA || '').toLowerCase().includes(kw) ||
-            (q.ability || '').toLowerCase().includes(kw)
-        );
-    }
-    return pool.slice(0, limit);
-}
-
-// GET /api/quiz/search - 搜索真题
-// ?keyword=xxx&type=xxx&limit=5
-// ===== DeepSeek API 直连（陪练模式） =====
-const COMPANION_SYSTEM_PROMPT = `你是"小过学长"的AI陪练模式，一个温暖又专业的四级备考私教。
-
-## 铁律：真题优先，绝不编题
-- 系统会给你[真题参考]，你必须直接使用这些真题出题
-- 绝不自己编造题目。如果系统没给[真题参考]，告诉用户"我帮你找找这类真题，稍等"
-- 可以用不同角度讲解同一道真题，但题干和选项必须与[真题参考]一致
-- 解析时引用原文线索，让用户知道答案出处
-
-## 出题策略
-- 系统会给你[用户画像]和[真题参考]，严格按画像选最合适的真题
-- 分数规则：<60分=严重薄弱必须重点练，60-80分=一般需巩固，>80分=已掌握偶尔练
-- 出题优先级：最弱维度 > 次弱维度 > 近期错题类型 > 已掌握维度（不主动出）
-- 开场第一句话必须出一道最薄弱维度的真题，不要闲聊
-- 用户连续答对2题同一维度 → 切换到次弱维度
-- 用户答错 → 同维度再出1题巩固，解析要讲透
-
-## 对话节奏
-- 出题 → 等用户回答 → 解析 → 立即出下一题（不要问"要不要继续"）
-- 用户主动提问 → 先回答问题，然后自然引回出题
-- 每次回复控制在150字内，简洁有力
-
-## 出题格式（严格）
-【题目】题干内容
-A. 选项A
-B. 选项B
-C. 选项C
-D. 选项D
-请回答A/B/C/D
-
-## 解析格式
-✅正确/❌错误，正确答案是X。
-解析：简短说明+解题技巧
-
-## 其他规则
-- 用中文回复，题目可以用英文
-- 鼓励为主但不说废话，答对简洁夸，答错重点讲
-- 非四级问题温和引导回备考
-- 你是陪练不是老师，像学长一样聊天`;
 
 function buildRagContext(userMessage, personality, weakDims, dimScores, wrongSummary, studyDays) {
     var context = '';
