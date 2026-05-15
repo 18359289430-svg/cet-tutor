@@ -283,7 +283,8 @@ function initApp() {
             window.location.hash = hashName;
             localStorage.setItem('cet_current_tab', tab);
             if (tab === 'diagnosis') {
-                // Don't auto-init, let openChat handle it
+                // 切换到练习tab时显示对话列表
+                showChatList();
             }
             if (tab === 'plans') {
                 renderBenefits();
