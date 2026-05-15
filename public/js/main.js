@@ -2436,7 +2436,9 @@ function initApp() {
                         firstChunkReceived = true;
                         console.log('[Stream] First chunk received in', Date.now() - streamStartTime, 'ms');
                     }
-                    buffer += decoder.decode(result.value, { stream: true });
+                    var chunkText = decoder.decode(result.value, { stream: true });
+                    console.log('[Stream] chunk length:', chunkText.length, 'preview:', chunkText.substring(0, 200));
+                    buffer += chunkText;
 
                     // Parse SSE events
                     var lines = buffer.split('\n');
