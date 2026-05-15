@@ -1179,9 +1179,58 @@ async function handleApi(req, res, pathname) {
             }
         }
 
-        // POST /api/deepseek/chat - DeepSeek陪练对话（SSE流式+RAG+限流）
+        // POST /api/deepseek/chat - DeepSeek陪练对话
         if (pathname === '/api/deepseek/chat' && req.method === 'POST') {
-            try { await handleDeepseekChat(req, res); } catch(e) { console.error('[handleDeepseekChat]', e); sendJson(res, 500, { error: 'AI服务暂时不可用' }); }
+            try {
+                const body = await parseBody(req);
+                const { messages, stream } = body;
+                if (!messages || !messages.length) {
+                    return sendJson(res, 400, { error: '参数缺失' });
+                }
+                const payload = {
+                    model: 'deepseek-chat',
+                    messages: [{ role: 'system', content: COMPANION_SYSTEM_PROMPT }, ...messages.slice(-10)],
+                    stream: stream !== false,
+                    temperature: 0.7,
+                    max_tokens: 800
+                };
+                if (payload.stream) {
+                    const resp = await fetch(DEEPSEEK_API_BASE + '/chat/completions', {
+                        method: 'POST',
+                        headers: { 'Authorization': 'Bearer ' + DEEPSEEK_API_KEY, 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    const contentType = resp.headers.get('content-type') || '';
+                    if (contentType.includes('text/event-stream')) {
+                        res.writeHead(200, { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache', 'Connection': 'keep-alive', 'X-Accel-Buffering': 'no' });
+                        const reader = resp.body.getReader();
+                        async function pump() {
+                            try { while (true) { const { done, value } = await reader.read(); if (done) { res.end(); break; } res.write(value); } }
+                            catch (err) { console.error('[DS pump]', err.message); res.end(); }
+                        }
+                        pump();
+                    } else {
+                        const data = await resp.json();
+                        const content = data.choices && data.choices[0] && data.choices[0].message ? data.choices[0].message.content : '';
+                        res.writeHead(200, { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache', 'Connection': 'keep-alive', 'X-Accel-Buffering': 'no' });
+                        if (content) { res.write('data: ' + JSON.stringify({ choices: [{ delta: { content: content } }] }) + '\n\n'); }
+                        res.write('data: [DONE]\n\n');
+                        res.end();
+                    }
+                } else {
+                    const resp = await fetch(DEEPSEEK_API_BASE + '/chat/completions', {
+                        method: 'POST',
+                        headers: { 'Authorization': 'Bearer ' + DEEPSEEK_API_KEY, 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    const data = await resp.json();
+                    const reply = data.choices && data.choices[0] && data.choices[0].message ? data.choices[0].message.content : '';
+                    sendJson(res, 200, { code: 0, data: { content: reply, usage: data.usage || {} } });
+                }
+            } catch(e) {
+                console.error('[DS Chat Error]', e.message, e.stack);
+                if (!res.headersSent) sendJson(res, 500, { error: 'AI服务暂时不可用: ' + e.message });
+            }
             return;
         }
 
