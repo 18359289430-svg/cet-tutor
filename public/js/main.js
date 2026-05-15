@@ -400,10 +400,17 @@ function initApp() {
 
         function handleCapsuleClick(text) {
             // 快捷胶囊按钮点击处理
+            if (text === '练题' || text === '做真题') {
+                openQuiz();
+                return;
+            }
+            if (text === '批改作文') {
+                handleEssayClick();
+                return;
+            }
             var input = document.getElementById('chat-input');
             if (input) {
                 input.value = text;
-                // 自动发送
                 sendMessage();
             }
         }

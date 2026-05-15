@@ -77,7 +77,7 @@
                     </div>
                         <div class="home-hero-top">
                             <div class="home-greeting" id="greeting-text">早上好</div>
-                            <div class="home-streak-pill" id="home-streak" onclick="doCheckIn()">
+                            <div class="home-streak-pill" id="home-streak" onclick="openDailyTask()">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c.5 4-2 7-4 9.5C6 14 5.5 16 6 18c.7 3 3.5 4 6 4s5.3-1 6-4c.5-2 0-4-2-6.5C14 9 11.5 6 12 2z"/></svg>
                                 <span id="streak-num">0</span>天
                             </div>
@@ -89,7 +89,7 @@
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
                                 <span id="home-cta-text">开始AI诊断</span>
                             </button>
-                            <button class="home-cta-secondary" onclick="doCheckIn()">
+                            <button class="home-cta-secondary" onclick="openDailyTask()">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
                                 一练
                             </button>
@@ -144,7 +144,7 @@
                                 <div class="ai-cap-sub">5分钟定位短板</div>
                             </div>
                         </div>
-                        <div class="ai-cap-item" onclick="openChat('companion');setTimeout(()=>sendSuggestion('帮我制定冲刺计划'),300)">
+                        <div class="ai-cap-item" onclick="switchTab('progress')">
                             <div class="ai-cap-icon green">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                             </div>
@@ -162,7 +162,7 @@
                                 <div class="ai-cap-sub">逐句精准优化</div>
                             </div>
                         </div>
-                        <div class="ai-cap-item" onclick="doCheckIn()">
+                        <div class="ai-cap-item" onclick="openDailyTask()">
                             <div class="ai-cap-icon pink">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                             </div>
