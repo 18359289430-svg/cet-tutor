@@ -1899,7 +1899,12 @@ function initApp() {
             el.style.height = 'auto';
             el.style.height = Math.min(el.scrollHeight, 100) + 'px';
             var btn = document.getElementById('chat-send-btn');
-            btn.disabled = !el.value.trim();
+            if (btn) btn.disabled = !el.value.trim();
+            // 安全检查：如果isStreaming卡住了（超过30秒），强制重置
+            if (chatState.isStreaming && chatState._streamStart && Date.now() - chatState._streamStart > 30000) {
+                console.log('[Safety] isStreaming stuck for 30s, force resetting');
+                chatState.isStreaming = false;
+            }
         }
 
         function handleInputKeydown(e) {
@@ -1908,6 +1913,15 @@ function initApp() {
                 if (document.getElementById('chat-input').value.trim()) {
                     sendMessage();
                 }
+            }
+        }
+        
+        // 确保发送按钮状态同步（移动端兼容）
+        function ensureSendButtonState() {
+            var input = document.getElementById('chat-input');
+            var btn = document.getElementById('chat-send-btn');
+            if (input && btn) {
+                btn.disabled = !input.value.trim();
             }
         }
 
@@ -2181,7 +2195,10 @@ function initApp() {
     if (welcomeEl) welcomeEl.style.display = 'none';
             var input = document.getElementById('chat-input');
             var text = input.value.trim();
-            if (!text || chatState.isStreaming) return;
+            if (!text || chatState.isStreaming) {
+                console.log('[sendMessage] blocked: empty=' + !text + ' streaming=' + chatState.isStreaming);
+                return;
+            }
 
             // GPT风格免费限额检查（本地检查，优先于后端检查）
             var plan = (state.userData && state.userData.plan) || 'free';
@@ -2208,6 +2225,7 @@ function initApp() {
             var chips = document.getElementById('input-chips');
             if (chips) chips.style.display = 'none';
             chatState.isStreaming = true;
+            chatState._streamStart = Date.now();
             chatState.chatRounds++;
             
             // 付费用户使用原有计数，免费用户使用新的本地计数
