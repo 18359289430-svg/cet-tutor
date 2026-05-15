@@ -1628,15 +1628,9 @@
     }
 }
 /* ===== 消息区底部留白 ===== */
-/* flex布局下input-area自然占位，padding-bottom只需留视觉间距 */
-/* 但因为tab-bar在chat-page外部覆盖底部，需要额外留出tab-bar高度 */
+/* 进入聊天时tab-bar隐藏，只需为输入区留空间 */
 .custom-chat-messages {
-    padding-bottom: calc(80px + 60px + var(--safe-bottom, 0px)) !important;
-}
-@media (max-width: 480px) {
-    .custom-chat-messages {
-        padding-bottom: calc(70px + 55px + var(--safe-bottom, 0px)) !important;
-    }
+    padding-bottom: 16px !important;
 }
 
 /* 输入区 - 更紧凑 */
