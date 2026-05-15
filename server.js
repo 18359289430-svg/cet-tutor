@@ -764,7 +764,7 @@ async function handleApi(req, res, pathname) {
 
         // GET /api/diagnosis/questions - 获取诊断题库（真题版v2）
         if (pathname === '/api/diagnosis/questions' && req.method === 'GET') {
-            const diagnosisFile = path.join(__dirname, 'data/diagnosis_questions.json');
+            const diagnosisFile = path.join(__dirname, 'data/diagnosis_questions.json'); console.log('[DIAG] Looking for:', diagnosisFile, 'exists:', fs.existsSync(diagnosisFile));
             try {
                 if (fs.existsSync(diagnosisFile)) {
                     const data = fs.readFileSync(diagnosisFile, 'utf8');
