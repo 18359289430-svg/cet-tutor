@@ -2437,7 +2437,6 @@ function initApp() {
                         console.log('[Stream] First chunk received in', Date.now() - streamStartTime, 'ms');
                     }
                     var chunkText = decoder.decode(result.value, { stream: true });
-                    console.log('[Stream] chunk length:', chunkText.length, 'preview:', chunkText.substring(0, 200));
                     buffer += chunkText;
 
                     // Parse SSE events
@@ -2758,6 +2757,15 @@ function initApp() {
                     if (chatState.chatHistory.length > 20) {
                         chatState.chatHistory = chatState.chatHistory.slice(-20);
                     }
+                    // 设置conversationId并保存到localStorage
+                    chatState.conversationId = conversationId;
+                    // 获取最后一条用户消息和AI回复，用于更新对话列表
+                    var userMsgs = msgs.filter(function(m) { return m.role === 'user'; });
+                    var lastUserMsg = userMsgs.length > 0 ? userMsgs[userMsgs.length - 1].content : '';
+                    var aiMsgs = msgs.filter(function(m) { return m.role === 'assistant'; });
+                    var lastBotMsg = aiMsgs.length > 0 ? aiMsgs[aiMsgs.length - 1].content : '';
+                    // 如果对话列表中已有此conversationId，更新它；如果没有（历史对话），则添加
+                    updateConversationMeta(lastUserMsg, lastBotMsg);
                     // 滚动到底部
                     container.scrollTop = container.scrollHeight;
                 } else {
