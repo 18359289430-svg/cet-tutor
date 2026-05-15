@@ -1549,13 +1549,8 @@ async function handleDeepseekChat(req, res) {
             }
         }
 
-        // 注入RAG上下文
-        const lastMsg = messages[messages.length - 1];
-        const userPersonality = body.personality || '';
-        const weakDims = body.weak_dims || [];
-        const ragCtx = buildRagContext(lastMsg.content || '', userPersonality, weakDims, body.dim_scores, body.wrong_summary, body.study_days || 0);
-        // RAG上下文注入system消息，避免历史消息重复携带
-        const systemContent = COMPANION_SYSTEM_PROMPT + (ragCtx || '');
+        // 简化：只用system prompt，不做RAG
+        const systemContent = COMPANION_SYSTEM_PROMPT;
         
         const payload = {
             model: 'deepseek-chat',
