@@ -2571,8 +2571,17 @@ function initApp() {
                     }
                 }
             } catch (e) {
-                removeTypingIndicator();
-                appendMessage('ai', '网络异常，请重试');
+                console.error('[Stream] Exception:', e.message, e.stack);
+                // 如果流式已经有内容显示，不再添加错误消息
+                if (fullText && bubbleEl && bubbleEl.textContent.trim()) {
+                    console.log('[Stream] Already has content, skipping error message');
+                    chatState.chatHistory.push({ role: 'user', content: contextPrefix + text, content_type: 'text' });
+                    chatState.chatHistory.push({ role: 'assistant', content: fullText, content_type: 'text' });
+                    onBotReply();
+                } else {
+                    removeTypingIndicator();
+                    appendMessage('ai', '网络异常，请重试');
+                }
             }
             
             // 最后一条免费消息时追加轻提示
