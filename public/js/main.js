@@ -123,13 +123,9 @@ function initApp() {
         }
 
         function restoreLastState() {
-            var lastTab = localStorage.getItem('cet_current_tab');
-            var lastChatMode = localStorage.getItem('cet_last_chat_mode');
-            // On refresh: always show chat list first, let user pick conversation
-            if (lastTab === 'diagnosis') {
-                switchTab('diagnosis');
-                showChatList();
-            }
+            // 每次打开都回到首页，不自动跳转到聊天页
+            localStorage.removeItem('cet_current_tab');
+            switchTab('home');
         }
 
         // ===== URL hash路由处理 =====
