@@ -5996,7 +5996,7 @@ function renderPlanList(plan, dayIdx) {
         container.innerHTML = '<div class="plan-empty">' +
             '<div class="plan-empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>' +
             '<div class="plan-empty-text">完成诊断后自动生成学习计划</div>' +
-            '<button class="plan-empty-btn" onclick="openChat(\'diagnosis\'); sendSuggestion(\'帮我制定学习计划\');">立即诊断</button>' +
+            '<button class="plan-empty-btn" onclick="startNewDiagnosis();">立即诊断</button>' +
             '</div>';
         return;
     }
