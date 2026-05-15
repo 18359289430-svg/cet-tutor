@@ -2976,6 +2976,31 @@ function initApp() {
         
         function loadChatHistory(conversationId) {
             console.log('[loadChatHistory] loading for convId:', conversationId);
+            
+            // 优先从本地localStorage读取（更可靠，不依赖Coze API）
+            var localMsgs = loadMessagesFromLocal(conversationId);
+            if (localMsgs.length > 0) {
+                console.log('[loadChatHistory] found local msgs:', localMsgs.length);
+                var container = document.getElementById('chat-messages');
+                container.innerHTML = '';
+                var chips = document.getElementById('input-chips');
+                if (chips) chips.style.display = 'none';
+                localMsgs.forEach(function(m) {
+                    var c = cleanUserPrefix(m.content || '');
+                    if (m.role === 'assistant' && c.trim()) {
+                        appendMessage('ai', c);
+                    } else if (m.role === 'user' && c.trim()) {
+                        appendMessage('user', c);
+                    }
+                });
+                chatState.chatHistory = localMsgs;
+                chatState.chatRounds = localMsgs.filter(function(m) { return m.role === 'user'; }).length;
+                chatState.conversationId = conversationId;
+                container.scrollTop = container.scrollHeight;
+                return;
+            }
+            
+            // 本地没有数据，尝试从Coze API获取
             fetch('/api/chat/messages?conversation_id=' + conversationId, {
                 headers: { 'Content-Type': 'application/json' }
             }).then(function(r) { return r.json(); }).then(function(resp) {
@@ -2994,7 +3019,7 @@ function initApp() {
                         var content = m.content || '';
                         // 去掉注入的系统前缀，只显示用户真实消息
                         if (m.role === 'user') {
-                            content = content.replace(/^\[系统信息\].*?\n\n/s, '').replace(/^\[进度\].*?\n\n/s, '');
+                            content = cleanUserPrefix(content);
                         }
                         if (m.role === 'assistant') {
                             appendMessage('ai', content);
@@ -3026,39 +3051,10 @@ function initApp() {
                     // 滚动到底部
                     container.scrollTop = container.scrollHeight;
                 } else {
-                    // Coze API返回空数据，尝试从本地localStorage读取
-                    var localMsgs = loadMessagesFromLocal(conversationId);
-                    if (localMsgs.length > 0) {
-                        var container = document.getElementById('chat-messages');
-                        container.innerHTML = '';
-                        var chips = document.getElementById('input-chips');
-                        if (chips) chips.style.display = 'none';
-                        localMsgs.forEach(function(m) {
-                            var c = m.content || '';
-                            if (m.role === 'user') {
-                                c = c.replace(/^\[系统信息\].*?\n\n/s, '').replace(/^\[进度\].*?\n\n/s, '');
-                            }
-                            if (m.role === 'assistant' && c.trim()) {
-                                appendMessage('ai', c);
-                            } else if (m.role === 'user' && c.trim()) {
-                                appendMessage('user', c);
-                            }
-                        });
-                        chatState.chatHistory = localMsgs;
-                        chatState.chatRounds = localMsgs.filter(function(m) { return m.role === 'user'; }).length;
-                        container.scrollTop = container.scrollHeight;
-                    } else {
-                        // 本地也没有消息，说明对话已过期，从列表中移除
-                        var list = getChatList();
-                        var newList = list.filter(function(item) { return item.id !== conversationId; });
-                        if (newList.length < list.length) {
-                            saveChatList(newList);
-                            renderChatList();
-                        }
-                        var container2 = document.getElementById('chat-messages');
-                        if (container2 && container2.innerHTML.trim() === '') {
-                            container2.innerHTML = '<div style="text-align:center;padding:40px 20px;color:#94A3B8;font-size:14px;">对话已过期，请开始新对话</div>';
-                        }
+                    // API也没有数据，本地也没有（前面已检查过）
+                    var container2 = document.getElementById('chat-messages');
+                    if (container2 && container2.innerHTML.trim() === '') {
+                        container2.innerHTML = '<div style="text-align:center;padding:40px 20px;color:#94A3B8;font-size:14px;">对话已过期，请开始新对话</div>';
                     }
                 }
             }).catch(function(e) {
@@ -3069,6 +3065,11 @@ function initApp() {
                     container.innerHTML = '<div style="text-align:center;padding:40px 20px;color:#94A3B8;font-size:14px;">消息加载失败，请重新开始对话</div>';
                 }
             });
+        }
+        
+        // 清理用户消息中的系统前缀（兼容所有浏览器，不用/s flag）
+        function cleanUserPrefix(content) {
+            return content.replace(/^\[系统信息\][\s\S]*?\n\n/, '').replace(/^\[进度\][\s\S]*?\n\n/, '');
         }
 
 function showRediagModal() {
