@@ -145,6 +145,379 @@
             return stats;
         }
 
+        // ===== 诊断历史记录函数 =====
+        var DIAGNOSIS_HISTORY_KEY = 'cet_diagnosis_history';
+        var MAX_DIAGNOSIS_HISTORY = 50;
+
+        function getDiagnosisHistory() {
+            return safeGetItem(DIAGNOSIS_HISTORY_KEY, []);
+        }
+
+        function saveDiagnosisRecord(diagnosisData) {
+            if (!diagnosisData || !diagnosisData.dims || Object.keys(diagnosisData.dims).length === 0) return;
+
+            var history = getDiagnosisHistory();
+            var now = Date.now();
+
+            // 获取当前套餐
+            var currentPlan = '免费版';
+            if (state.userData && state.userData.plan) {
+                var planNames = { sprint: '冲刺版', flagship: '旗舰版' };
+                currentPlan = planNames[state.userData.plan] || '免费版';
+            }
+
+            var record = {
+                id: 'diag_' + now + '_' + Math.random().toString(36).substr(2, 6),
+                date: now,
+                dateStr: formatDateTime(now),
+                scores: JSON.parse(JSON.stringify(diagnosisData.dims)),
+                personality: diagnosisData.personality || '',
+                riskLevel: diagnosisData.riskLevel || 'mid',
+                totalScore: diagnosisData.totalScore || 0,
+                plan: currentPlan,
+                weakDims: diagnosisData.weakDims || []
+            };
+
+            // 添加到历史记录开头
+            history.unshift(record);
+
+            // 限制最大记录数
+            while (history.length > MAX_DIAGNOSIS_HISTORY) {
+                history.pop();
+            }
+
+            safeSetItem(DIAGNOSIS_HISTORY_KEY, history);
+        }
+
+        function formatDateTime(timestamp) {
+            var d = new Date(timestamp);
+            var year = d.getFullYear();
+            var month = (d.getMonth() + 1).toString().padStart(2, '0');
+            var day = d.getDate().toString().padStart(2, '0');
+            var hour = d.getHours().toString().padStart(2, '0');
+            var minute = d.getMinutes().toString().padStart(2, '0');
+            return year + '-' + month + '-' + day + ' ' + hour + ':' + minute;
+        }
+
+        function getDiagnosisHistoryStats() {
+            var history = getDiagnosisHistory();
+            if (history.length === 0) {
+                return { total: 0, lastDate: null };
+            }
+            return {
+                total: history.length,
+                lastDate: history[0].date
+            };
+        }
+
+        // 渲染诊断记录页面
+        function renderDiagnosisHistoryPage() {
+            var history = getDiagnosisHistory();
+            var stats = getDiagnosisHistoryStats();
+            var container = document.getElementById('diag-history-content');
+            if (!container) return;
+
+            var html = '';
+
+            // 统计区域
+            html += '<div class="diag-history-stats">';
+            html += '<div class="diag-history-stat-item primary">';
+            html += '<div class="stat-number">' + stats.total + '</div>';
+            html += '<div class="stat-label">诊断次数</div>';
+            html += '</div>';
+            html += '<div class="diag-history-stat-item secondary">';
+            html += '<div class="stat-number">' + (stats.lastDate ? formatDateTime(stats.lastDate).split(' ')[0] : '--') + '</div>';
+            html += '<div class="stat-label">最近诊断</div>';
+            html += '</div>';
+            html += '</div>';
+
+            // 人格类型分布
+            if (history.length > 0) {
+                var personalityCount = {};
+                history.forEach(function(r) {
+                    if (r.personality) {
+                        personalityCount[r.personality] = (personalityCount[r.personality] || 0) + 1;
+                    }
+                });
+                var personalities = Object.keys(personalityCount);
+                if (personalities.length > 0) {
+                    html += '<div class="diag-history-personalities">';
+                    html += '<div class="diag-history-section-title">人格类型分布</div>';
+                    html += '<div class="diag-personality-tags">';
+                    personalities.forEach(function(p) {
+                        html += '<span class="diag-personality-tag">' + p + ' x' + personalityCount[p] + '</span>';
+                    });
+                    html += '</div>';
+                    html += '</div>';
+                }
+            }
+
+            // 空状态
+            if (history.length === 0) {
+                html += '<div class="diag-history-empty">';
+                html += '<div class="empty-icon">📋</div>';
+                html += '<div class="empty-title">还没有诊断记录</div>';
+                html += '<div class="empty-desc">完成AI诊断后可查看诊断历史</div>';
+                html += '<button class="empty-btn" onclick="closeDiagHistory(); switchTab(\'diagnosis\'); setTimeout(startNewDiagnosis, 300)">去诊断</button>';
+                html += '</div>';
+            } else {
+                // 记录列表
+                html += '<div class="diag-history-section-title">诊断历史</div>';
+                html += '<div class="diag-history-list">';
+
+                history.forEach(function(record, index) {
+                    html += '<div class="diag-history-card" onclick="toggleDiagRecordDetail(this)">';
+                    html += '<div class="diag-card-header">';
+                    html += '<div class="diag-card-left">';
+                    if (record.personality) {
+                        html += '<span class="diag-personality-badge">' + record.personality + '</span>';
+                    }
+                    html += '<span class="diag-risk-badge risk-' + record.riskLevel + '">' + getRiskLabel(record.riskLevel) + '</span>';
+                    html += '</div>';
+                    html += '<span class="diag-card-date">' + formatDateTime(record.date) + '</span>';
+                    html += '</div>';
+
+                    // 简览分数
+                    html += '<div class="diag-card-scores-preview">';
+                    var dims = Object.keys(record.scores);
+                    var previewDims = dims.slice(0, 3);
+                    previewDims.forEach(function(dim) {
+                        var config = DIM_CONFIGS[dim] || { color: '#6C5CE7' };
+                        html += '<div class="diag-score-mini">';
+                        html += '<span class="mini-score">' + record.scores[dim] + '</span>';
+                        html += '<span class="mini-label">' + dim + '</span>';
+                        html += '</div>';
+                    });
+                    if (dims.length > 3) {
+                        html += '<span class="diag-more-scores">+' + (dims.length - 3) + '项</span>';
+                    }
+                    html += '</div>';
+
+                    html += '<div class="diag-card-arrow">▼</div>';
+
+                    // 展开详情
+                    html += '<div class="diag-card-detail">';
+                    html += '<div class="diag-detail-section">';
+                    html += '<div class="diag-detail-title">完整五维分析</div>';
+                    html += '<div class="diag-detail-radar-wrap">';
+                    html += '<canvas class="diag-detail-radar" width="200" height="200" data-record-id="' + record.id + '"></canvas>';
+                    html += '</div>';
+                    html += '<div class="diag-detail-scores">';
+                    dims.forEach(function(dim) {
+                        var config = DIM_CONFIGS[dim] || { color: '#6C5CE7', icon: '📊' };
+                        var isWeak = record.weakDims && record.weakDims.some(function(w) { return w.name === dim; });
+                        html += '<div class="diag-detail-score-item' + (isWeak ? ' weak' : '') + '">';
+                        html += '<span class="detail-icon">' + config.icon + '</span>';
+                        html += '<span class="detail-name">' + dim + '</span>';
+                        html += '<span class="detail-score">' + record.scores[dim] + '</span>';
+                        html += '<div class="detail-bar"><div class="detail-fill" style="width:' + record.scores[dim] + '%;background:' + config.color + '"></div></div>';
+                        if (isWeak) html += '<span class="weak-tag">弱项</span>';
+                        html += '</div>';
+                    });
+                    html += '</div>';
+                    html += '</div>';
+
+                    // 弱项分析
+                    if (record.weakDims && record.weakDims.length > 0) {
+                        html += '<div class="diag-detail-section">';
+                        html += '<div class="diag-detail-title">弱项分析</div>';
+                        record.weakDims.forEach(function(weak) {
+                            var config = DIM_CONFIGS[weak.name] || { icon: '📊', desc: '' };
+                            html += '<div class="diag-weak-item">';
+                            html += '<div class="diag-weak-header">';
+                            html += '<span>' + config.icon + '</span>';
+                            html += '<span class="diag-weak-name">' + weak.name + '</span>';
+                            html += '<span class="diag-weak-score">' + weak.score + '分</span>';
+                            html += '</div>';
+                            html += '<div class="diag-weak-desc">' + config.desc + '</div>';
+                            html += '</div>';
+                        });
+                        html += '</div>';
+                    }
+
+                    // 诊断信息
+                    html += '<div class="diag-detail-section diag-info">';
+                    html += '<div class="diag-info-item"><span>诊断时间</span><span>' + formatDateTime(record.date) + '</span></div>';
+                    html += '<div class="diag-info-item"><span>综合评分</span><span>' + record.totalScore + '分</span></div>';
+                    html += '<div class="diag-info-item"><span>当前套餐</span><span>' + record.plan + '</span></div>';
+                    html += '</div>';
+
+                    html += '</div>'; // end diag-card-detail
+                    html += '</div>'; // end diag-history-card
+                });
+
+                html += '</div>'; // end diag-history-list
+            }
+
+            container.innerHTML = html;
+
+            // 渲染雷达图
+            setTimeout(function() {
+                history.forEach(function(record) {
+                    var canvas = document.querySelector('canvas[data-record-id="' + record.id + '"]');
+                    if (canvas) {
+                        renderDiagRadarChart(canvas, record.scores);
+                    }
+                });
+            }, 100);
+        }
+
+        function getRiskLabel(level) {
+            var labels = { high: '高风险', mid: '中风险', low: '低风险' };
+            return labels[level] || '中风险';
+        }
+
+        function toggleDiagRecordDetail(card) {
+            var detail = card.querySelector('.diag-card-detail');
+            var arrow = card.querySelector('.diag-card-arrow');
+            if (!detail) return;
+
+            var isOpen = card.classList.contains('expanded');
+            if (isOpen) {
+                card.classList.remove('expanded');
+                detail.style.display = 'none';
+                arrow.textContent = '▼';
+            } else {
+                card.classList.add('expanded');
+                detail.style.display = 'block';
+                arrow.textContent = '▲';
+            }
+        }
+
+        function renderDiagRadarChart(canvas, scores) {
+            var ctx = canvas.getContext('2d');
+            var w = canvas.width;
+            var h = canvas.height;
+            var centerX = w / 2;
+            var centerY = h / 2;
+            var radius = Math.min(w, h) / 2 - 30;
+
+            var dims = Object.keys(scores);
+            var n = dims.length;
+            var angleStep = (Math.PI * 2) / n;
+
+            ctx.clearRect(0, 0, w, h);
+
+            // 绘制背景多边形
+            for (var level = 1; level <= 5; level++) {
+                var r = radius * (level / 5);
+                ctx.beginPath();
+                for (var i = 0; i <= n; i++) {
+                    var angle = i * angleStep - Math.PI / 2;
+                    var x = centerX + r * Math.cos(angle);
+                    var y = centerY + r * Math.sin(angle);
+                    if (i === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.closePath();
+                ctx.strokeStyle = '#E2E8F0';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            }
+
+            // 绘制轴线
+            for (var i = 0; i < n; i++) {
+                var angle = i * angleStep - Math.PI / 2;
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.lineTo(centerX + radius * Math.cos(angle), centerY + radius * Math.sin(angle));
+                ctx.strokeStyle = '#E2E8F0';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            }
+
+            // 绘制数据区域
+            ctx.beginPath();
+            for (var i = 0; i < n; i++) {
+                var dim = dims[i];
+                var score = scores[dim] || 0;
+                var r = radius * (score / 100);
+                var angle = i * angleStep - Math.PI / 2;
+                var x = centerX + r * Math.cos(angle);
+                var y = centerY + r * Math.sin(angle);
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.closePath();
+            ctx.fillStyle = 'rgba(108, 92, 231, 0.3)';
+            ctx.fill();
+            ctx.strokeStyle = '#6C5CE7';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // 绘制数据点
+            for (var i = 0; i < n; i++) {
+                var dim = dims[i];
+                var score = scores[dim] || 0;
+                var r = radius * (score / 100);
+                var angle = i * angleStep - Math.PI / 2;
+                var x = centerX + r * Math.cos(angle);
+                var y = centerY + r * Math.sin(angle);
+
+                ctx.beginPath();
+                ctx.arc(x, y, 4, 0, Math.PI * 2);
+                ctx.fillStyle = '#6C5CE7';
+                ctx.fill();
+            }
+
+            // 绘制标签
+            ctx.font = '11px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.fillStyle = '#64748B';
+            ctx.textAlign = 'center';
+            for (var i = 0; i < n; i++) {
+                var dim = dims[i];
+                var score = scores[dim] || 0;
+                var angle = i * angleStep - Math.PI / 2;
+                var labelR = radius + 18;
+                var x = centerX + labelR * Math.cos(angle);
+                var y = centerY + labelR * Math.sin(angle);
+                ctx.fillText(dim, x, y);
+                ctx.fillStyle = '#1E293B';
+                ctx.fillText(score, x, y + 14);
+                ctx.fillStyle = '#64748B';
+            }
+        }
+
+        function showDiagHistory() {
+            var overlay = document.getElementById('diag-history-overlay');
+            if (!overlay) {
+                // 创建诊断记录页面
+                createDiagHistoryOverlay();
+                overlay = document.getElementById('diag-history-overlay');
+            }
+            renderDiagnosisHistoryPage();
+            overlay.style.display = 'flex';
+            overlay.style.opacity = '0';
+            overlay.style.transition = 'opacity 0.3s';
+            requestAnimationFrame(function() {
+                overlay.style.opacity = '1';
+            });
+        }
+
+        function closeDiagHistory() {
+            var overlay = document.getElementById('diag-history-overlay');
+            if (overlay) {
+                overlay.style.opacity = '0';
+                setTimeout(function() {
+                    overlay.style.display = 'none';
+                }, 300);
+            }
+        }
+
+        function createDiagHistoryOverlay() {
+            var overlay = document.createElement('div');
+            overlay.id = 'diag-history-overlay';
+            overlay.className = 'diag-history-overlay';
+            overlay.innerHTML = '<div class="diag-history-header">' +
+                '<button class="diag-history-back" onclick="closeDiagHistory()">' +
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>' +
+                '</button>' +
+                '<div class="diag-history-title">诊断记录</div>' +
+                '<div style="width:36px"></div>' +
+                '</div>' +
+                '<div class="diag-history-content" id="diag-history-content"></div>';
+            document.body.appendChild(overlay);
+        }
 
 
         // ===== fetch超时处理 =====
@@ -3624,7 +3997,6 @@ function initPlanScrollSync() {
 }
 
 function showStudyHistory() { switchTab('dashboard'); }
-function showDiagHistory() { showToast('诊断记录功能开发中'); }
 
 function closeModal(id) { 
     var modal = document.getElementById(id);
@@ -4911,6 +5283,9 @@ function showDiagnosisReport(text) {
             }
         } catch(e) {}
     }
+    
+    // 保存到诊断历史记录
+    saveDiagnosisRecord(reportData);
     
     renderReportPage();
     

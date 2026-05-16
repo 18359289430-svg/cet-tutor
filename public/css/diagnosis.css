@@ -637,3 +637,453 @@
     text-align: center;
     margin-bottom: 10px;
 }
+
+/* ========== 诊断记录页面 ========== */
+.diag-history-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #F8F9FA;
+    z-index: 1100;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.diag-history-header {
+    padding: 16px 20px;
+    padding-top: calc(16px + var(--safe-top));
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: white;
+    flex-shrink: 0;
+    border-bottom: 1px solid #F1F5F9;
+}
+
+.diag-history-back {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #F1F5F9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: none;
+    transition: background 0.2s;
+}
+
+.diag-history-back:active {
+    background: #E2E8F0;
+}
+
+.diag-history-back svg {
+    width: 20px;
+    height: 20px;
+    stroke: #475569;
+    stroke-width: 2;
+}
+
+.diag-history-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #1E293B;
+    letter-spacing: -0.3px;
+}
+
+.diag-history-content {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 16px;
+    padding-bottom: calc(40px + var(--safe-bottom));
+}
+
+/* 统计区域 */
+.diag-history-stats {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.diag-history-stat-item {
+    flex: 1;
+    background: white;
+    border-radius: 14px;
+    padding: 16px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.diag-history-stat-item.primary {
+    background: linear-gradient(135deg, #6C5CE7 0%, #A29BFE 100%);
+    color: white;
+}
+
+.diag-history-stat-item.secondary {
+    background: linear-gradient(135deg, #F39C12 0%, #F1C40F 100%);
+    color: white;
+}
+
+.diag-history-stat-item .stat-number {
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 4px;
+}
+
+.diag-history-stat-item .stat-label {
+    font-size: 12px;
+    opacity: 0.9;
+}
+
+/* 人格类型分布 */
+.diag-history-personalities {
+    margin-bottom: 16px;
+}
+
+.diag-history-section-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1E293B;
+    margin-bottom: 12px;
+}
+
+.diag-personality-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.diag-personality-tag {
+    padding: 6px 14px;
+    background: #EDE9FE;
+    color: #6C5CE7;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+/* 空状态 */
+.diag-history-empty {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.diag-history-empty .empty-icon {
+    font-size: 64px;
+    margin-bottom: 16px;
+}
+
+.diag-history-empty .empty-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1E293B;
+    margin-bottom: 8px;
+}
+
+.diag-history-empty .empty-desc {
+    font-size: 14px;
+    color: #64748B;
+    margin-bottom: 24px;
+}
+
+.diag-history-empty .empty-btn {
+    padding: 12px 32px;
+    background: linear-gradient(135deg, #6C5CE7 0%, #A29BFE 100%);
+    color: white;
+    border: none;
+    border-radius: 24px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.diag-history-empty .empty-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(108, 92, 231, 0.4);
+}
+
+/* 记录列表 */
+.diag-history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* 记录卡片 */
+.diag-history-card {
+    background: white;
+    border-radius: 14px;
+    padding: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.diag-history-card:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+}
+
+.diag-history-card:active {
+    transform: scale(0.99);
+}
+
+.diag-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.diag-card-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.diag-personality-badge {
+    padding: 4px 12px;
+    background: linear-gradient(135deg, #6C5CE7 0%, #A29BFE 100%);
+    color: white;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.diag-risk-badge {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.diag-risk-badge.risk-high {
+    background: #FEE2E2;
+    color: #DC2626;
+}
+
+.diag-risk-badge.risk-mid {
+    background: #FEF3C7;
+    color: #D97706;
+}
+
+.diag-risk-badge.risk-low {
+    background: #D1FAE5;
+    color: #059669;
+}
+
+.diag-card-date {
+    font-size: 12px;
+    color: #94A3B8;
+}
+
+/* 简览分数 */
+.diag-card-scores-preview {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.diag-score-mini {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.mini-score {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1E293B;
+    line-height: 1;
+}
+
+.mini-label {
+    font-size: 11px;
+    color: #94A3B8;
+    margin-top: 2px;
+}
+
+.diag-more-scores {
+    font-size: 12px;
+    color: #6C5CE7;
+    font-weight: 500;
+    margin-left: auto;
+}
+
+.diag-card-arrow {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 10px;
+    color: #94A3B8;
+    transition: transform 0.2s;
+}
+
+.diag-history-card {
+    position: relative;
+}
+
+/* 展开详情 */
+.diag-card-detail {
+    display: none;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #E2E8F0;
+}
+
+.diag-detail-section {
+    margin-bottom: 16px;
+}
+
+.diag-detail-section:last-child {
+    margin-bottom: 0;
+}
+
+.diag-detail-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1E293B;
+    margin-bottom: 12px;
+}
+
+.diag-detail-radar-wrap {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 16px;
+}
+
+.diag-detail-radar {
+    max-width: 200px;
+}
+
+/* 详细分数 */
+.diag-detail-scores {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.diag-detail-score-item {
+    display: grid;
+    grid-template-columns: auto 1fr auto auto auto;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: #F8FAFC;
+    border-radius: 10px;
+}
+
+.diag-detail-score-item.weak {
+    background: #FEF2F2;
+}
+
+.detail-icon {
+    font-size: 14px;
+}
+
+.detail-name {
+    font-size: 13px;
+    color: #64748B;
+}
+
+.detail-score {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1E293B;
+    min-width: 32px;
+    text-align: right;
+}
+
+.detail-bar {
+    width: 60px;
+    height: 6px;
+    background: #E2E8F0;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.detail-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.6s ease;
+}
+
+.weak-tag {
+    padding: 2px 8px;
+    background: #FEE2E2;
+    color: #DC2626;
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+/* 弱项分析 */
+.diag-weak-item {
+    background: #FEF2F2;
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 8px;
+}
+
+.diag-weak-item:last-child {
+    margin-bottom: 0;
+}
+
+.diag-weak-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.diag-weak-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1E293B;
+}
+
+.diag-weak-score {
+    font-size: 12px;
+    color: #DC2626;
+    font-weight: 600;
+    margin-left: auto;
+}
+
+.diag-weak-desc {
+    font-size: 12px;
+    color: #64748B;
+    line-height: 1.5;
+}
+
+/* 诊断信息 */
+.diag-info {
+    background: #F8FAFC;
+    border-radius: 10px;
+    padding: 12px;
+}
+
+.diag-info-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    padding: 6px 0;
+}
+
+.diag-info-item:not(:last-child) {
+    border-bottom: 1px solid #E2E8F0;
+}
+
+.diag-info-item span:first-child {
+    color: #64748B;
+}
+
+.diag-info-item span:last-child {
+    color: #1E293B;
+    font-weight: 500;
+}
