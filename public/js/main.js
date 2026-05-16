@@ -25,6 +25,123 @@
                 localStorage.setItem(key, JSON.stringify(value));
             } catch(e) {}
         }
+        // ===== 错题本函数 =====
+        var WRONG_QUESTIONS_KEY = 'cet_wrong_questions';
+        var MAX_WRONG_QUESTIONS = 200;
+        
+        function getWrongQuestions() {
+            var questions = safeGetItem(WRONG_QUESTIONS_KEY, []);
+            questions.sort(function(a, b) {
+                return (b.createdAt || 0) - (a.createdAt || 0);
+            });
+            return questions;
+        }
+        
+        function saveWrongQuestion(data) {
+            if (!data || !data.id) return;
+            var questions = getWrongQuestions();
+            var existingIndex = -1;
+            for (var i = 0; i < questions.length; i++) {
+                if (questions[i].id === data.id) {
+                    existingIndex = i;
+                    break;
+                }
+            }
+            var now = Date.now();
+            var questionData = {
+                id: data.id,
+                type: data.type || '词汇',
+                question: data.question || '',
+                optionA: data.optionA || '',
+                optionB: data.optionB || '',
+                optionC: data.optionC || '',
+                optionD: data.optionD || '',
+                answer: data.answer || '',
+                userAnswer: data.userAnswer || '',
+                explanation: data.explanation || '',
+                difficulty: data.difficulty || 'Medium',
+                createdAt: existingIndex >= 0 ? questions[existingIndex].createdAt : now,
+                updatedAt: now,
+                reviewedAt: existingIndex >= 0 ? questions[existingIndex].reviewedAt : null,
+                reviewCount: existingIndex >= 0 ? questions[existingIndex].reviewCount : 0
+            };
+            if (existingIndex >= 0) {
+                questions[existingIndex] = questionData;
+            } else {
+                questions.unshift(questionData);
+            }
+            while (questions.length > MAX_WRONG_QUESTIONS) {
+                questions.pop();
+            }
+            safeSetItem(WRONG_QUESTIONS_KEY, questions);
+            updateWrongCount();
+        }
+        
+        function deleteWrongQuestion(id) {
+            var questions = getWrongQuestions();
+            var filtered = questions.filter(function(q) { return q.id !== id; });
+            safeSetItem(WRONG_QUESTIONS_KEY, filtered);
+            updateWrongCount();
+        }
+        
+        function markQuestionReviewed(id) {
+            var questions = getWrongQuestions();
+            for (var i = 0; i < questions.length; i++) {
+                if (questions[i].id === id) {
+                    questions[i].reviewedAt = Date.now();
+                    questions[i].reviewCount = (questions[i].reviewCount || 0) + 1;
+                    break;
+                }
+            }
+            safeSetItem(WRONG_QUESTIONS_KEY, questions);
+        }
+        
+        function updateWrongCount() {
+            var questions = getWrongQuestions();
+            var unreviewedCount = questions.filter(function(q) {
+                return !q.reviewedAt || q.reviewedAt < q.updatedAt;
+            }).length;
+            var badge = document.getElementById('wrong-book-badge');
+            if (badge) {
+                if (unreviewedCount > 0) {
+                    badge.textContent = unreviewedCount > 99 ? '99+' : unreviewedCount;
+                    badge.style.display = 'inline-block';
+                } else {
+                    badge.textContent = '';
+                    badge.style.display = 'none';
+                }
+            }
+        }
+        
+        function getWrongQuestionStats() {
+            var questions = getWrongQuestions();
+            var today = new Date();
+            today.setHours(0, 0, 0, 0);
+            var todayStart = today.getTime();
+            var stats = {
+                total: questions.length,
+                vocabulary: 0,
+                grammar: 0,
+                reading: 0,
+                listening: 0,
+                todayNew: 0
+            };
+            questions.forEach(function(q) {
+                switch(q.type) {
+                    case '词汇': stats.vocabulary++; break;
+                    case '语法': stats.grammar++; break;
+                    case '阅读': stats.reading++; break;
+                    case '听力': stats.listening++; break;
+                    default: stats.vocabulary++;
+                }
+                if (q.createdAt >= todayStart) {
+                    stats.todayNew++;
+                }
+            });
+            return stats;
+        }
+
+
 
         // ===== fetch超时处理 =====
         function fetchWithTimeout(url, options, timeout) {
@@ -387,6 +504,9 @@ function initApp() {
             if (tab === 'progress') {
                 renderDashboard();
             }
+            if (tab === 'wrongbook') {
+                renderWrongBook();
+            }
         }
 
         // ===== 快捷操作函数 =====
@@ -423,16 +543,8 @@ function initApp() {
         
         var _reviewClickLock = false;
         function handleReviewClick() {
-            if (_reviewClickLock) return;
-            if (chatState.isStreaming) return;
-            _reviewClickLock = true;
-            setTimeout(function(){ _reviewClickLock = false; }, 2000);
-            // 如果已在陪练对话页面，不重复发送，直接返回
-            if (state.currentTab === 'diagnosis' && chatState.currentMode === 'companion') {
-                return;
-            }
-            openChat('companion');
-            setTimeout(function(){ sendSuggestion('复习我之前的错题'); }, 300);
+            switchTab('wrongbook');
+            renderWrongBook();
         }
 
         function handleModeTag(mode) {
@@ -471,6 +583,172 @@ function initApp() {
         }
 
         // ===== 进度仪表盘函数 =====
+
+        // ===== 错题本渲染函数 =====
+        var wrongbookFilterType = '全部';
+        
+        function renderWrongBook() {
+            var container = document.getElementById('wrongbook-content');
+            if (!container) return;
+            
+            var questions = getWrongQuestions();
+            var stats = getWrongQuestionStats();
+            
+            if (wrongbookFilterType !== '全部') {
+                questions = questions.filter(function(q) { return q.type === wrongbookFilterType; });
+            }
+            
+            var html = '';
+            
+            // 统计区
+            html += '<div class="wrongbook-stats">';
+            html += '<div class="wrongbook-stat-item total">';
+            html += '<div class="stat-number">' + stats.total + '</div>';
+            html += '<div class="stat-label">错题总数</div>';
+            html += '</div>';
+            html += '<div class="wrongbook-stat-item today">';
+            html += '<div class="stat-number">' + stats.todayNew + '</div>';
+            html += '<div class="stat-label">今日新增</div>';
+            html += '</div>';
+            html += '</div>';
+            
+            // 分布统计
+            html += '<div class="wrongbook-distribution">';
+            html += '<div class="dist-item vocab" onclick="filterWrongbook(\'词汇\')"><span class="dist-label">词汇</span><span class="dist-count">' + stats.vocabulary + '</span></div>';
+            html += '<div class="dist-item grammar" onclick="filterWrongbook(\'语法\')"><span class="dist-label">语法</span><span class="dist-count">' + stats.grammar + '</span></div>';
+            html += '<div class="dist-item reading" onclick="filterWrongbook(\'阅读\')"><span class="dist-label">阅读</span><span class="dist-count">' + stats.reading + '</span></div>';
+            html += '<div class="dist-item listening" onclick="filterWrongbook(\'听力\')"><span class="dist-label">听力</span><span class="dist-count">' + stats.listening + '</span></div>';
+            html += '</div>';
+            
+            // 筛选标签
+            html += '<div class="wrongbook-filter-bar">';
+            var filterTypes = ['全部', '词汇', '语法', '阅读', '听力'];
+            filterTypes.forEach(function(type) {
+                var active = wrongbookFilterType === type ? 'active' : '';
+                html += '<div class="filter-tag ' + active + '" onclick="filterWrongbook(\'' + type + '\')">' + type + '</div>';
+            });
+            html += '</div>';
+            
+            // 错题列表
+            if (questions.length === 0) {
+                html += '<div class="wrongbook-empty">';
+                html += '<div class="empty-icon">📚</div>';
+                html += '<div class="empty-title">还没有错题</div>';
+                html += '<div class="empty-desc">继续保持，做题全对的感觉太棒了！</div>';
+                html += '<button class="empty-btn" onclick="switchTab(\'diagnosis\'); setTimeout(openQuiz, 300)">去练题</button>';
+                html += '</div>';
+            } else {
+                html += '<div class="wrongbook-list">';
+                questions.forEach(function(q, index) {
+                    html += renderWrongQuestionCard(q, index);
+                });
+                html += '</div>';
+            }
+            
+            container.innerHTML = html;
+        }
+        
+        function filterWrongbook(type) {
+            wrongbookFilterType = type;
+            renderWrongBook();
+        }
+        
+        function renderWrongQuestionCard(q, index) {
+            var typeColors = {
+                '词汇': '#5B9BD5',
+                '语法': '#F39C12',
+                '阅读': '#10B981',
+                '听力': '#8B5CF6'
+            };
+            var typeColor = typeColors[q.type] || '#5B9BD5';
+            var date = new Date(q.createdAt);
+            var dateStr = (date.getMonth() + 1) + '月' + date.getDate() + '日 ' + date.getHours().toString().padStart(2, '0') + ':' + date.getMinutes().toString().padStart(2, '0');
+            var isReviewed = q.reviewedAt && q.reviewedAt >= q.updatedAt;
+            
+            var html = '<div class="wrong-card" onclick="toggleWrongDetail(this)">';
+            html += '<div class="wrong-card-header">';
+            html += '<span class="wrong-type-tag" style="background:' + typeColor + '">' + (q.type || '词汇') + '</span>';
+            if (isReviewed) {
+                html += '<span class="wrong-reviewed-badge">已复习</span>';
+            }
+            html += '<span class="wrong-date">' + dateStr + '</span>';
+            html += '</div>';
+            html += '<div class="wrong-question">' + escapeHtml(q.question || '') + '</div>';
+            html += '<div class="wrong-answer-compare">';
+            html += '<span class="your-answer wrong">你的答案: ' + (q.userAnswer || '-') + '</span>';
+            html += '<span class="correct-answer right">正确答案: ' + (q.answer || '-') + '</span>';
+            html += '</div>';
+            html += '<div class="wrong-detail" style="display:none">';
+            html += '<div class="wrong-options">';
+            var options = [
+                {key: 'A', val: q.optionA},
+                {key: 'B', val: q.optionB},
+                {key: 'C', val: q.optionC},
+                {key: 'D', val: q.optionD}
+            ];
+            options.forEach(function(opt) {
+                if (opt.val) {
+                    var optClass = opt.key === q.answer ? 'option-correct' : (opt.key === q.userAnswer ? 'option-wrong' : '');
+                    html += '<div class="wrong-option ' + optClass + '"><span class="opt-key">' + opt.key + '. </span>' + escapeHtml(opt.val) + '</div>';
+                }
+            });
+            html += '</div>';
+            html += '<div class="wrong-explanation">';
+            html += '<div class="exp-label">解析</div>';
+            html += '<div class="exp-content">' + escapeHtml(q.explanation || '暂无解析') + '</div>';
+            html += '</div>';
+            html += '<div class="wrong-actions">';
+            html += '<button class="action-btn ai-btn" onclick="event.stopPropagation(); explainWithAI(\'' + q.id + '\')">';
+            html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>';
+            html += 'AI讲解</button>';
+            html += '<button class="action-btn master-btn" onclick="event.stopPropagation(); markAsMastered(\'' + q.id + '\')">';
+            html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>';
+            html += '已掌握</button>';
+            html += '</div>';
+            html += '</div>';
+            html += '</div>';
+            return html;
+        }
+        
+        function toggleWrongDetail(card) {
+            var detail = card.querySelector('.wrong-detail');
+            if (detail) {
+                detail.style.display = detail.style.display === 'none' ? 'block' : 'none';
+            }
+        }
+        
+        function escapeHtml(text) {
+            if (!text) return '';
+            var div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        function explainWithAI(id) {
+            var questions = getWrongQuestions();
+            var q = questions.find(function(item) { return item.id === id; });
+            if (!q) return;
+            markQuestionReviewed(id);
+            switchTab('diagnosis');
+            setTimeout(function() {
+                var context = '请帮我讲解这道' + (q.type || '词汇') + '题：\n\n' + 
+                    '题目：' + q.question + '\n\n' +
+                    'A. ' + q.optionA + '\n' +
+                    'B. ' + q.optionB + '\n' +
+                    'C. ' + q.optionC + '\n' +
+                    'D. ' + q.optionD + '\n\n' +
+                    '正确答案：' + q.answer + '\n' +
+                    '解析：' + q.explanation;
+                sendSuggestion(context);
+            }, 300);
+        }
+        
+        function markAsMastered(id) {
+            deleteWrongQuestion(id);
+            renderWrongBook();
+            showToast('已从错题本移除');
+        }
+
         function renderDashboard() {
             try {
             var container = document.getElementById('dashboard-content');
@@ -6686,6 +6964,7 @@ var originalInitApp = initApp;
 initApp = function() {
     originalInitApp();
     injectDailyTaskStyles();
+    updateWrongCount();
 };
 
 
