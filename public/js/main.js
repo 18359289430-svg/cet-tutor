@@ -8459,3 +8459,538 @@ renderWrongBook = function() {
         statsEl.parentNode.insertBefore(variantCard, statsEl.nextSibling);
     }
 };
+
+// ===== 学习路径可视化 =====
+
+// 考点树数据结构
+var CET_PATH_TREE = {
+    name: '四级备考',
+    icon: '📚',
+    children: [
+        {
+            name: '阅读',
+            icon: '📖',
+            children: [
+                {
+                    name: '细节定位',
+                    scoreKey: '细节定位',
+                    desc: '在原文中准确定位题目所对应的信息点，包括时间、地点、人物、数字等具体细节',
+                    tips: ['先读题干划关键词', '回原文定位同义替换', '注意时间顺序和因果关系', '排除绝对化表述'],
+                    children: [
+                        { name: '关键词定位', desc: '通过题干关键词快速定位原文' },
+                        { name: '同义替换定位', desc: '识别题干与原文的同义改写' },
+                        { name: '数字时间定位', desc: '关注数字、年份等时间信息' }
+                    ]
+                },
+                {
+                    name: '推理判断',
+                    scoreKey: '推理判断',
+                    desc: '根据文章内容进行合理推断，包括因果推理、态度推断和主旨推理',
+                    tips: ['区分事实与观点', '注意作者的言外之意', '警惕过度推理', '紧扣原文信息'],
+                    children: [
+                        { name: '因果推理', desc: '根据原因推断结果或根据结果推断原因' },
+                        { name: '态度推断', desc: '推断文中人物或作者的态度倾向' },
+                        { name: '主旨推理', desc: '通过细节推断段落或文章主旨' }
+                    ]
+                },
+                {
+                    name: '同义替换',
+                    scoreKey: '同义替换',
+                    desc: '识别题目与原文在表达上的同义改写，包括词汇替换和句式转换',
+                    tips: ['积累高频同义替换词', '注意词性转换', '关注句式结构变化', '练习快速识别能力'],
+                    children: [
+                        { name: '词汇替换', desc: '同义词、近义词的替换' },
+                        { name: '句式转换', desc: '主动被动、肯定否定等句式变化' }
+                    ]
+                },
+                {
+                    name: '主旨归纳',
+                    scoreKey: '主旨归纳',
+                    desc: '概括段落或文章的主要意思，包括段落主旨和全文主旨',
+                    tips: ['关注首尾句', '注意高频出现的词', '排除细节干扰', '把握文章整体结构'],
+                    children: [
+                        { name: '段落主旨', desc: '概括单个段落的核心内容' },
+                        { name: '全文主旨', desc: '把握整篇文章的中心思想' }
+                    ]
+                },
+                {
+                    name: '态度判断',
+                    scoreKey: '态度判断',
+                    desc: '判断作者或文中人物的态度倾向，包括积极、消极、中立等',
+                    tips: ['关注情感词', '注意语气强度', '识别观点引用', '区分主观与客观'],
+                    children: [
+                        { name: '作者态度', desc: '判断文章作者对事件的态度' },
+                        { name: '观点倾向', desc: '识别文中人物的观点和立场' }
+                    ]
+                }
+            ]
+        },
+        {
+            name: '听力',
+            icon: '🎧',
+            children: [
+                {
+                    name: '关键信息捕捉',
+                    desc: '在听力过程中快速捕捉关键信息，包括数字、时间、地点、人物等',
+                    tips: ['提前预览选项', '做好笔记符号', '注意转折词后信息', '数字要格外留意'],
+                    children: [
+                        { name: '数字信息捕捉', desc: '练习快速记录数字和日期' },
+                        { name: '地点场景识别', desc: '根据对话场景判断地点' },
+                        { name: '人物关系推断', desc: '通过对话内容判断人物关系' }
+                    ]
+                },
+                {
+                    name: '对话理解',
+                    desc: '理解短对话和长对话的含义，把握对话的主旨和细节',
+                    tips: ['注意问答对应', '关注建议和请求', '警惕语音陷阱', '培养预判能力'],
+                    children: [
+                        { name: '短对话技巧', desc: '简短对话的快速理解策略' },
+                        { name: '长对话技巧', desc: '长对话的信息整合方法' }
+                    ]
+                },
+                {
+                    name: '短文理解',
+                    desc: '理解听力短文的主要内容，把握文章结构和重要细节',
+                    tips: ['首尾句很关键', '注意重复出现的词', '把握文章逻辑', '做好速记'],
+                    children: [
+                        { name: '主旨把握', desc: '快速抓住短文中心思想' },
+                        { name: '细节记忆', desc: '有效记录关键细节信息' }
+                    ]
+                }
+            ]
+        },
+        {
+            name: '写作',
+            icon: '✍️',
+            children: [
+                {
+                    name: '结构框架',
+                    desc: '掌握各类作文的基本结构，包括引言、主体和结尾',
+                    tips: ['熟记模板句型', '段落要分明', '开头要吸引人', '结尾要有力'],
+                    children: [
+                        { name: '引言段写法', desc: '如何开头引出主题' },
+                        { name: '主体段展开', desc: '主体段落的组织方法' },
+                        { name: '结尾段总结', desc: '如何有力收尾' }
+                    ]
+                },
+                {
+                    name: '论点展开',
+                    desc: '学习如何展开和支撑论点，使文章论证充分',
+                    tips: ['论点要明确', '论据要充分', '逻辑要清晰', '例子要贴切'],
+                    children: [
+                        { name: '因果论证', desc: '通过原因结果展开论述' },
+                        { name: '举例论证', desc: '通过具体例子支撑观点' },
+                        { name: '对比论证', desc: '通过对比突出论点' }
+                    ]
+                },
+                {
+                    name: '语言表达',
+                    desc: '提升语言的准确性和多样性，使用恰当的词汇和句式',
+                    tips: ['避免重复用词', '使用高级词汇', '句式要多样', '注意语法正确'],
+                    children: [
+                        { name: '词汇升级', desc: '使用更高级的词汇替换' },
+                        { name: '句式多样', desc: '长短句结合，避免单一' },
+                        { name: '衔接词使用', desc: '恰当使用过渡连接词' }
+                    ]
+                }
+            ]
+        },
+        {
+            name: '翻译',
+            icon: '🌐',
+            children: [
+                {
+                    name: '词汇翻译',
+                    desc: '掌握中英文词汇的对应翻译，特别是中国特色词汇',
+                    tips: ['积累中国特色词汇', '注意词性转换', '避免生硬翻译', '联系上下文'],
+                    children: [
+                        { name: '中国文化词汇', desc: '传统文化词汇的英文表达' },
+                        { name: '时事热词', desc: '当代热点话题词汇' }
+                    ]
+                },
+                {
+                    name: '句式转换',
+                    desc: '进行中英文句式的灵活转换',
+                    tips: ['注意语序调整', '拆合句子', '注意主被动', '增删要得当'],
+                    children: [
+                        { name: '主动转被动', desc: '中英文被动表达差异' },
+                        { name: '合并拆分句', desc: '长句的处理技巧' }
+                    ]
+                },
+                {
+                    name: '文化表达',
+                    desc: '准确表达中国文化特色内容',
+                    tips: ['理解文化内涵', '意译为主', '必要时加注', '保持简洁'],
+                    children: [
+                        { name: '传统节日', desc: '传统节日相关翻译' },
+                        { name: '文化特色', desc: '中国特有文化表达' }
+                    ]
+                }
+            ]
+        },
+        {
+            name: '词汇',
+            icon: '📝',
+            children: [
+                {
+                    name: '核心词汇',
+                    desc: '掌握四级考试必备的核心词汇',
+                    tips: ['每天定量背诵', '结合例句记忆', '复习艾宾浩斯', '多场景运用'],
+                    children: [
+                        { name: '高频词汇', desc: '考试中出现频率最高的词汇' },
+                        { name: '一词多义', desc: '常见词的不同含义' }
+                    ]
+                },
+                {
+                    name: '固定搭配',
+                    desc: '掌握常用短语和固定搭配',
+                    tips: ['注意介词搭配', '积累词组短语', '区分相似搭配', '语境中记忆'],
+                    children: [
+                        { name: '动词短语', desc: '常见动词搭配' },
+                        { name: '介词短语', desc: '常用介词词组' }
+                    ]
+                },
+                {
+                    name: '词根词缀',
+                    desc: '通过词根词缀记忆法扩大词汇量',
+                    tips: ['认识常见词根', '了解常见词缀', '举一反三', '构建词汇网络'],
+                    children: [
+                        { name: '常见词根', desc: '高频词根汇总' },
+                        { name: '词缀记忆', desc: '前缀后缀的用法' }
+                    ]
+                }
+            ]
+        }
+    ]
+};
+
+// 获取用户能力分数
+function getPathAbilityScores() {
+    try {
+        var data = localStorage.getItem('cet4_ability_scores');
+        if (data) {
+            var parsed = JSON.parse(data);
+            return parsed.dims || {};
+        }
+    } catch(e) {}
+    return {};
+}
+
+// 判断用户是否为付费用户
+function isPathVipUser() {
+    var userData = state.userData || {};
+    var plan = userData.plan;
+    return plan && plan !== 'free';
+}
+
+// 获取节点状态
+function getNodeLevel(score) {
+    if (score === null || score === undefined || isNaN(score)) return 'none';
+    if (score >= 75) return 'master';
+    if (score >= 40) return 'weak';
+    return 'urgent';
+}
+
+// 获取分数显示
+function getScoreDisplay(score) {
+    if (score === null || score === undefined || isNaN(score)) return '--';
+    return Math.round(score);
+}
+
+// 渲染学习路径页面
+function renderLearningPath() {
+    var container = document.getElementById('learning-path-content');
+    if (!container) return;
+    
+    var dims = getPathAbilityScores();
+    var isVip = isPathVipUser();
+    var tree = CET_PATH_TREE;
+    
+    // 计算统计数据
+    var totalNodes = 0;
+    var masteredNodes = 0;
+    var treeNodes = tree.children || [];
+    
+    treeNodes.forEach(function(module) {
+        var moduleScore = dims[module.name] !== undefined ? dims[module.name] : null;
+        if (moduleScore !== null) {
+            totalNodes++;
+            if (moduleScore >= 75) masteredNodes++;
+        }
+        var children = module.children || [];
+        children.forEach(function(child) {
+            if (child.scoreKey && dims[child.scoreKey] !== undefined) {
+                totalNodes++;
+                if (dims[child.scoreKey] >= 75) masteredNodes++;
+            }
+        });
+    });
+    
+    var masterRate = totalNodes > 0 ? Math.round((masteredNodes / totalNodes) * 100) : 0;
+    
+    // 生成HTML
+    var html = '';
+    
+    // 顶部统计卡片
+    html += '<div class="path-stats-card">';
+    html += '<div class="path-stats-header">';
+    html += '<div class="path-stats-title">📍 学习路径</div>';
+    html += '<div class="path-stats-badge">' + (isVip ? '⭐ Pro会员' : '免费版') + '</div>';
+    html += '</div>';
+    html += '<div class="path-stats-body">';
+    html += '<div class="path-stats-main">';
+    html += '<div class="path-stats-num">' + masteredNodes + '/' + totalNodes + '</div>';
+    html += '<div class="path-stats-label">已掌握考点 / 总考点数</div>';
+    html += '</div>';
+    html += '<div class="path-stats-ring">';
+    html += '<svg viewBox="0 0 100 100">';
+    html += '<circle class="path-stats-ring-circle" cx="50" cy="50" r="42" stroke-dasharray="' + (2 * Math.PI * 42) + '" stroke-dashoffset="0"/>';
+    html += '<circle class="path-stats-ring-progress" cx="50" cy="50" r="42" stroke-dasharray="' + (2 * Math.PI * 42) + '" stroke-dashoffset="' + (2 * Math.PI * 42 * (1 - masterRate / 100)) + '"/>';
+    html += '</svg>';
+    html += '<div class="path-stats-percent">' + masterRate + '%</div>';
+    html += '</div>';
+    html += '</div>';
+    html += '</div>';
+    
+    // 考点树
+    html += '<div class="path-tree-container">';
+    
+    if (Object.keys(dims).length === 0) {
+        // 空状态
+        html += '<div class="path-empty">';
+        html += '<div class="path-empty-icon">🗺️</div>';
+        html += '<div class="path-empty-title">还没有学习数据</div>';
+        html += '<div class="path-empty-desc">完成能力诊断后，你的学习路径将会生成</div>';
+        html += '<button class="path-action-btn" onclick="startNewDiagnosis()">';
+        html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>';
+        html += '开始能力诊断';
+        html += '</button>';
+        html += '</div>';
+    } else {
+        // 渲染考点树
+        treeNodes.forEach(function(module, moduleIdx) {
+            var moduleScore = dims[module.name] !== undefined ? dims[module.name] : null;
+            var moduleLevel = getNodeLevel(moduleScore);
+            
+            // 找到最需要提升的子节点
+            var weakestChild = null;
+            var weakestScore = 100;
+            var children = module.children || [];
+            children.forEach(function(child) {
+                if (child.scoreKey && dims[child.scoreKey] !== undefined && dims[child.scoreKey] < weakestScore) {
+                    weakestScore = dims[child.scoreKey];
+                    weakestChild = child;
+                }
+            });
+            
+            html += '<div class="path-module" data-level="' + moduleLevel + '">';
+            html += '<div class="path-module-header" onclick="toggleModule(this)">';
+            html += '<div class="path-module-icon">' + module.icon + '</div>';
+            html += '<div class="path-module-info">';
+            html += '<div class="path-module-name">' + module.name + '</div>';
+            html += '<div class="path-module-sub">' + (children.length) + '个考点</div>';
+            html += '</div>';
+            html += '<div class="path-module-score">';
+            html += '<div class="path-module-score-num">' + getScoreDisplay(moduleScore) + '</div>';
+            html += '<div class="path-module-score-label">掌握度</div>';
+            html += '</div>';
+            html += '<div class="path-module-toggle">';
+            html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>';
+            html += '</div>';
+            html += '</div>';
+            
+            html += '<div class="path-children">';
+            children.forEach(function(child, childIdx) {
+                var childScore = child.scoreKey ? dims[child.scoreKey] : moduleScore;
+                var childLevel = getNodeLevel(childScore);
+                var isRecommended = weakestChild && child.name === weakestChild.name;
+                
+                html += '<div class="path-node' + (isRecommended ? ' recommended' : '') + '">';
+                html += '<div class="path-node-header" onclick="showNodeDetail(\'' + escapeHtml(module.name) + '\', \'' + escapeHtml(child.name) + '\')">';
+                html += '<div class="path-node-dot ' + childLevel + '"></div>';
+                html += '<div class="path-node-name">' + child.name + '</div>';
+                html += '<div class="path-node-score ' + childLevel + '">' + getScoreDisplay(childScore) + '</div>';
+                html += '<div class="path-node-arrow">';
+                html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>';
+                html += '</div>';
+                html += '</div>';
+                
+                // 三级节点
+                var subChildren = child.children || [];
+                if (subChildren.length > 0) {
+                    html += '<div class="path-subnodes">';
+                    subChildren.forEach(function(sub) {
+                        var isLocked = !isVip;
+                        html += '<div class="path-subnode' + (isLocked ? ' locked' : '') + '" onclick="event.stopPropagation();' + (isLocked ? 'showVipTip()' : 'showNodeDetail(\'' + escapeHtml(module.name) + '\', \'' + escapeHtml(child.name) + '\', \'' + escapeHtml(sub.name) + '\')') + '">';
+                        html += '<div class="path-subnode-dot ' + childLevel + '"></div>';
+                        html += '<div class="path-subnode-name">' + sub.name + '</div>';
+                        html += '<div class="path-subnode-score ' + childLevel + '">' + getScoreDisplay(childScore) + '</div>';
+                        html += '</div>';
+                    });
+                    html += '</div>';
+                }
+                
+                html += '</div>';
+            });
+            html += '</div>';
+            html += '</div>';
+        });
+    }
+    
+    html += '</div>';
+    
+    // VIP提示（免费用户）
+    if (!isVip && Object.keys(dims).length > 0) {
+        html += '<div class="path-vip-tip">';
+        html += '<div class="path-vip-tip-icon">👑</div>';
+        html += '<div class="path-vip-tip-text">解锁全部考点详情</div>';
+        html += '<div class="path-vip-tip-sub">升级Pro会员查看所有考点并跳转练习</div>';
+        html += '</div>';
+    }
+    
+    // 底部提示
+    html += '<div class="path-footer-tip">';
+    html += '数据来源于你的诊断和练习记录 · ';
+    html += '<a href="javascript:void(0)" onclick="switchTab(\"progress\")">查看详情</a>';
+    html += '</div>';
+    
+    container.innerHTML = html;
+    
+    // 默认展开第一个模块
+    setTimeout(function() {
+        var firstModule = document.querySelector('.path-module-header');
+        if (firstModule) toggleModule(firstModule);
+    }, 100);
+}
+
+// 展开/折叠模块
+function toggleModule(header) {
+    var module = header.closest('.path-module');
+    module.classList.toggle('expanded');
+}
+
+// 显示节点详情弹窗
+function showNodeDetail(moduleName, nodeName, subName) {
+    var dims = getPathAbilityScores();
+    var isVip = isPathVipUser();
+    
+    // 查找节点数据
+    var module = null;
+    var node = null;
+    var sub = null;
+    
+    var tree = CET_PATH_TREE;
+    for (var i = 0; i < tree.children.length; i++) {
+        if (tree.children[i].name === moduleName) {
+            module = tree.children[i];
+            for (var j = 0; j < module.children.length; j++) {
+                if (module.children[j].name === nodeName) {
+                    node = module.children[j];
+                    if (subName) {
+                        for (var k = 0; k < node.children.length; k++) {
+                            if (node.children[k].name === subName) {
+                                sub = node.children[k];
+                                break;
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
+            break;
+        }
+    }
+    
+    if (!node) return;
+    
+    var targetDesc = sub ? sub.desc : node.desc;
+    var targetTips = node.tips || [];
+    var targetScore = node.scoreKey ? dims[node.scoreKey] : dims[moduleName];
+    var targetLevel = getNodeLevel(targetScore);
+    
+    // 创建弹窗
+    var modal = document.createElement('div');
+    modal.className = 'path-node-modal active';
+    modal.id = 'path-node-modal';
+    modal.onclick = function(e) {
+        if (e.target === modal) closeNodeModal();
+    };
+    
+    var levelText = { master: '已掌握', weak: '薄弱', urgent: '亟需提升', none: '未测评' };
+    var levelColor = { master: '#00B894', weak: '#F39C12', urgent: '#D63031', none: '#94A3B8' };
+    
+    modal.innerHTML = '<div class="path-node-sheet">' +
+        '<div class="path-node-sheet-handle"></div>' +
+        '<div class="path-node-sheet-header">' +
+            '<div class="path-node-sheet-title">' + (sub ? subName + ' · ' : '') + nodeName + '</div>' +
+            '<div class="path-node-sheet-desc">' + targetDesc + '</div>' +
+        '</div>' +
+        '<div class="path-node-sheet-content">' +
+            '<div class="path-node-sheet-section">' +
+                '<div class="path-node-sheet-section-title">掌握度</div>' +
+                '<div class="path-mastery-bar">' +
+                    '<div class="path-mastery-progress ' + targetLevel + '" style="width: ' + (targetScore || 0) + '%"></div>' +
+                '</div>' +
+                '<div class="path-mastery-labels">' +
+                    '<span style="color:' + levelColor[targetLevel] + '">' + levelText[targetLevel] + '</span>' +
+                    '<span>' + getScoreDisplay(targetScore) + '分</span>' +
+                '</div>' +
+            '</div>' +
+            '<div class="path-node-sheet-section">' +
+                '<div class="path-node-sheet-section-title">练习建议</div>' +
+                '<div class="path-tips">' +
+                    targetTips.map(function(tip) {
+                        return '<div class="path-tip-item">' +
+                            '<div class="path-tip-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div>' +
+                            '<div class="path-tip-text">' + tip + '</div>' +
+                        '</div>';
+                    }).join('') +
+                '</div>' +
+            '</div>';
+    
+    if (isVip) {
+        modal.innerHTML += '<button class="path-action-btn" onclick="startPathPractice(\'' + escapeHtml(moduleName) + '\', \'' + escapeHtml(nodeName) + '\')">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>' +
+            '开始练习' +
+        '</button>';
+    } else {
+        modal.innerHTML += '<div class="path-vip-tip">' +
+            '<div class="path-vip-tip-icon">👑</div>' +
+            '<div class="path-vip-tip-text">升级Pro解锁练习功能</div>' +
+            '<div class="path-vip-tip-sub">专属练习+详细解析</div>' +
+        '</div>';
+    }
+    
+    modal.innerHTML += '</div></div>';
+    
+    document.body.appendChild(modal);
+}
+
+// 关闭节点详情弹窗
+function closeNodeModal() {
+    var modal = document.getElementById('path-node-modal');
+    if (modal) modal.remove();
+}
+
+// 显示VIP提示
+function showVipTip() {
+    showToast('👑 升级Pro会员解锁全部考点');
+}
+
+// 开始路径练习
+function startPathPractice(moduleName, nodeName) {
+    closeNodeModal();
+    // 切换到练习tab并开始相关练习
+    switchTab('diagnosis');
+    setTimeout(function() {
+        showNewChatModal();
+    }, 300);
+}
+
+// 辅助函数：转义HTML
+function escapeHtml(text) {
+    if (!text) return '';
+    var div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}

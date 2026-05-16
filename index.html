@@ -42,6 +42,7 @@
     <link rel="stylesheet" href="/css/plan.css?v=202605162000">
     <link rel="stylesheet" href="/css/plan-page.css?v=202605162000">
     <link rel="stylesheet" href="/css/wrongbook.css?v=202605162100">
+    <link rel="stylesheet" href="/css/learning-path.css?v=202605170000">
     <!-- Clarity -->
     <script type="text/javascript">
         (function(c,l,a,r,i,t,y){ c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
@@ -253,6 +254,12 @@
             <!-- 进度仪表盘页 -->
             <div class="tab-page" id="tab-progress">
                 <div class="dashboard-page" id="dashboard-content">
+                    <!-- 内容由JS动态渲染 -->
+                </div>
+            </div>
+            <!-- 学习路径页 -->
+            <div class="tab-page" id="tab-path">
+                <div class="learning-path-page" id="learning-path-content">
                     <!-- 内容由JS动态渲染 -->
                 </div>
             </div>
@@ -579,6 +586,10 @@
             <div class="tab-item" data-tab="diagnosis" onclick="switchTab('diagnosis')">
                 <div class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
                 <span class="tab-label">练习</span>
+            </div>
+            <div class="tab-item" data-tab="path" onclick="switchTab('path')">
+                <div class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+                <span class="tab-label">路径</span>
             </div>
 <div class="tab-item" data-tab="progress" onclick="switchTab('progress')">
                 <div class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg></div>
