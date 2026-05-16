@@ -3623,7 +3623,7 @@ function initPlanScrollSync() {
     });
 }
 
-function showStudyHistory() { showToast('学习记录功能开发中'); }
+function showStudyHistory() { switchTab('dashboard'); }
 function showDiagHistory() { showToast('诊断记录功能开发中'); }
 
 function closeModal(id) { 
