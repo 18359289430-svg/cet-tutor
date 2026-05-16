@@ -423,17 +423,16 @@ function initApp() {
         
         var _reviewClickLock = false;
         function handleReviewClick() {
-            if (_reviewClickLock) return; // 防止重复点击
+            if (_reviewClickLock) return;
             if (chatState.isStreaming) return;
             _reviewClickLock = true;
-            setTimeout(function(){ _reviewClickLock = false; }, 2000); // 2秒后解锁
-            // 如果已在陪练对话页面，直接发送，不重置对话
+            setTimeout(function(){ _reviewClickLock = false; }, 2000);
+            // 如果已在陪练对话页面，不重复发送，直接返回
             if (state.currentTab === 'diagnosis' && chatState.currentMode === 'companion') {
-                sendSuggestion('复习我之前的错题');
-            } else {
-                openChat('companion');
-                setTimeout(function(){ sendSuggestion('复习我之前的错题'); }, 300);
+                return;
             }
+            openChat('companion');
+            setTimeout(function(){ sendSuggestion('复习我之前的错题'); }, 300);
         }
 
         function handleModeTag(mode) {
