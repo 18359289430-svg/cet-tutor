@@ -6018,6 +6018,10 @@ function renderReportPage() {
         
         '<div style="text-align:center;padding:16px 0;">' +
             '<button style="padding:10px 20px;background:#F8F9FA;border:1px solid #E2E8F0;border-radius:8px;font-size:13px;color:#64748B;cursor:pointer" onclick="showReportShare()">📱 分享报告</button>' +
+        '</div>' +
+        
+        '<div style="margin-top:16px">' +
+            '<button style="padding:12px 20px;background:linear-gradient(135deg,#6C5CE7,#A29BFE);border:none;border-radius:10px;font-size:14px;color:white;cursor:pointer;width:100%;font-weight:600;box-shadow:0 4px 12px rgba(108,92,231,0.3)" onclick="showSpecialPlan()">📋 生成我的专项计划</button>' +
         '</div>';
     
     // 简洁CTA提示：一行文字点一下弱项
@@ -7361,3 +7365,288 @@ initApp = function() {
 
 
 
+
+
+// ====== 专项突破计划系统 ======
+var specialPlanState = {
+    data: null,
+    weakDims: []
+};
+
+// 薄弱点对应的学习内容模板
+var PLAN_TEMPLATES = {
+    '细节定位': {
+        'key_points': ['关键词定位技巧', '时间/数字信号词识别', '排除法解题'],
+        'practice': ['15道细节定位专项练习', '真题细节题精讲', '信号词速记'],
+        'daily_goal': '完成10道细节题，正确率达80%'
+    },
+    '推理判断': {
+        'key_points': ['因果关系推理', '转折词信号识别', '隐含信息提取'],
+        'practice': ['10道推理判断练习', '转折词专项训练', '推断题技巧课'],
+        'daily_goal': '完成8道推理题，学会从原文推导'
+    },
+    '同义替换': {
+        'key_points': ['高频同义替换词组', '词性变换规律', '意译与直译'],
+        'practice': ['20组同义替换速记', '真题替换题专项', '词汇积累法'],
+        'daily_goal': '背诵30组核心替换词'
+    },
+    '主旨归纳': {
+        'key_points': ['首尾句法则', '高频词抓取', '文章结构分析'],
+        'practice': ['8道主旨大意练习', '段落结构分析', '主题词归纳训练'],
+        'daily_goal': '完成6道主旨题，掌握三段式结构'
+    },
+    '态度判断': {
+        'key_points': ['态度词分类汇总', '作者观点识别', '引用vs观点区分'],
+        'practice': ['10道态度题专项', '常见态度词表', '观点判断技巧'],
+        'daily_goal': '背诵20个态度词，正确率达75%'
+    }
+};
+
+// 显示专项计划
+function showSpecialPlan() {
+    if (!reportData || !reportData.weakDims || reportData.weakDims.length === 0) {
+        showToast('请先完成诊断测试');
+        return;
+    }
+    
+    // 获取薄弱点
+    specialPlanState.weakDims = reportData.weakDims.map(function(w) { return w.name; });
+    
+    // 生成计划
+    specialPlanState.data = generateSpecialPlanData();
+    
+    // 保存到localStorage
+    try {
+        localStorage.setItem('cet_special_plan', JSON.stringify({
+            dims: specialPlanState.weakDims,
+            data: specialPlanState.data,
+            createdAt: Date.now()
+        }));
+    } catch(e) {}
+    
+    // 渲染并显示
+    renderSpecialPlanOverlay();
+    
+    var overlay = document.getElementById('special-plan-overlay');
+    if (overlay) {
+        overlay.style.display = 'flex';
+        overlay.style.opacity = '0';
+        overlay.style.transition = 'opacity 0.3s';
+        requestAnimationFrame(function() {
+            overlay.style.opacity = '1';
+        });
+    }
+}
+
+// 生成专项计划数据
+function generateSpecialPlanData() {
+    var weakDims = specialPlanState.weakDims;
+    var plan = {
+        title: '你的3日专项突破计划',
+        subtitle: '针对薄弱点定制的短期冲刺方案',
+        days: []
+    };
+    
+    // 获取每个薄弱点的学习内容
+    var dimContents = weakDims.map(function(dim) {
+        return PLAN_TEMPLATES[dim] || {
+            'key_points': [dim + '技巧训练', '真题专项练习'],
+            'practice': ['10道练习', dim + '方法课'],
+            'daily_goal': '完成基础训练'
+        };
+    });
+    
+    // 分配到3天
+    for (var day = 1; day <= 3; day++) {
+        var dayPlan = {
+            day: day,
+            title: 'Day' + day,
+            focus: [],
+            tasks: [],
+            goal: ''
+        };
+        
+        if (day === 1) {
+            // Day1: 理论入门
+            dimContents.forEach(function(content, i) {
+                if (content.key_points && content.key_points[0]) {
+                    dayPlan.focus.push({
+                        name: weakDims[i],
+                        point: content.key_points[0],
+                        icon: getDimIcon(weakDims[i])
+                    });
+                }
+            });
+            dayPlan.tasks = [
+                { type: 'video', text: '各薄弱项入门技巧课（各15分钟）', icon: '🎬' },
+                { type: 'practice', text: '每个薄弱项完成3道入门练习', icon: '✏️' },
+                { type: 'note', text: '整理个人薄弱点笔记', icon: '📝' }
+            ];
+            dayPlan.goal = dimContents[0].daily_goal || '完成入门训练';
+        } else if (day === 2) {
+            // Day2: 强化训练
+            dimContents.forEach(function(content, i) {
+                if (content.key_points && content.key_points[1]) {
+                    dayPlan.focus.push({
+                        name: weakDims[i],
+                        point: content.key_points[1],
+                        icon: getDimIcon(weakDims[i])
+                    });
+                }
+            });
+            dayPlan.tasks = [
+                { type: 'practice', text: '各薄弱项10道强化练习', icon: '✏️' },
+                { type: 'review', text: 'Day1错题复习', icon: '🔄' },
+                { type: 'summary', text: '整理技巧要点', icon: '📋' }
+            ];
+            dayPlan.goal = dimContents[1] ? dimContents[1].daily_goal : '强化薄弱环节';
+        } else {
+            // Day3: 综合冲刺
+            dimContents.forEach(function(content, i) {
+                if (content.key_points && content.key_points[2]) {
+                    dayPlan.focus.push({
+                        name: weakDims[i],
+                        point: content.key_points[2],
+                        icon: getDimIcon(weakDims[i])
+                    });
+                }
+            });
+            dayPlan.tasks = [
+                { type: 'test', text: '综合测试（20道）', icon: '📊' },
+                { type: 'review', text: '全题型错题回顾', icon: '🔍' },
+                { type: 'plan', text: '制定后续学习计划', icon: '🎯' }
+            ];
+            dayPlan.goal = '综合正确率达到75%以上';
+        }
+        
+        plan.days.push(dayPlan);
+    }
+    
+    return plan;
+}
+
+// 获取维度图标
+function getDimIcon(dim) {
+    var icons = {
+        '细节定位': '🔍',
+        '推理判断': '🧠',
+        '同义替换': '🔄',
+        '主旨归纳': '📌',
+        '态度判断': '💭'
+    };
+    return icons[dim] || '📚';
+}
+
+// 关闭专项计划
+function closeSpecialPlan() {
+    var overlay = document.getElementById('special-plan-overlay');
+    if (overlay) {
+        overlay.style.opacity = '0';
+        setTimeout(function() {
+            overlay.style.display = 'none';
+            overlay.style.opacity = '';
+        }, 300);
+    }
+}
+
+// 渲染专项计划overlay
+function renderSpecialPlanOverlay() {
+    var container = document.getElementById('special-plan-content');
+    if (!container) return;
+    
+    var plan = specialPlanState.data;
+    if (!plan) return;
+    
+    // 检测付费用户
+    var isPaid = (state.userData && state.userData.plan && state.userData.plan !== 'free');
+    
+    var html = '<div class="sp-plan-header">';
+    html += '<div class="sp-plan-title">' + plan.title + '</div>';
+    html += '<div class="sp-plan-subtitle">' + plan.subtitle + '</div>';
+    html += '</div>';
+    
+    // 渲染每天的计划
+    plan.days.forEach(function(day, index) {
+        var isLocked = !isPaid && index > 0;
+        
+        html += '<div class="sp-day-card' + (isLocked ? ' sp-locked' : '') + '">';
+        html += '<div class="sp-day-header">';
+        html += '<span class="sp-day-badge">' + day.title + '</span>';
+        html += '</div>';
+        
+        if (!isLocked) {
+            // 可见的Day
+            html += '<div class="sp-day-content">';
+            
+            // 重点攻克
+            html += '<div class="sp-section-title">🎯 重点攻克</div>';
+            html += '<div class="sp-focus-list">';
+            day.focus.forEach(function(f) {
+                html += '<div class="sp-focus-item">';
+                html += '<span class="sp-focus-icon">' + f.icon + '</span>';
+                html += '<span class="sp-focus-dim">' + f.name + '</span>';
+                html += '<span class="sp-focus-point">' + f.point + '</span>';
+                html += '</div>';
+            });
+            html += '</div>';
+            
+            // 推荐练习
+            html += '<div class="sp-section-title">📚 推荐练习</div>';
+            html += '<div class="sp-task-list">';
+            day.tasks.forEach(function(t) {
+                html += '<div class="sp-task-item">';
+                html += '<span class="sp-task-icon">' + t.icon + '</span>';
+                html += '<span class="sp-task-text">' + t.text + '</span>';
+                html += '</div>';
+            });
+            html += '</div>';
+            
+            // 今日目标
+            html += '<div class="sp-goal-section">';
+            html += '<span class="sp-goal-label">🎯 今日目标</span>';
+            html += '<span class="sp-goal-text">' + day.goal + '</span>';
+            html += '</div>';
+            
+            html += '</div>';
+        } else {
+            // 锁定的Day
+            html += '<div class="sp-locked-content">';
+            html += '<div class="sp-locked-icon">🔒</div>';
+            html += '<div class="sp-locked-title">Day' + (index + 1) + ' 已锁定</div>';
+            html += '<div class="sp-locked-hint">升级解锁完整计划</div>';
+            html += '</div>';
+        }
+        
+        html += '</div>';
+    });
+    
+    // 底部CTA
+    if (!isPaid) {
+        html += '<div class="sp-upgrade-cta">';
+        html += '<div class="sp-upgrade-hint">💡 解锁完整3日计划，获取更多练习</div>';
+        html += '<button class="sp-upgrade-btn" onclick="upgradeToUnlockPlan()">';
+        html += '升级冲刺营解锁全部 →';
+        html += '</button>';
+        html += '</div>';
+    } else {
+        html += '<div class="sp-paid-tip">';
+        html += '✅ 您已解锁完整计划，加油冲刺！';
+        html += '</div>';
+    }
+    
+    container.innerHTML = html;
+}
+
+// 升级解锁计划
+function upgradeToUnlockPlan() {
+    closeSpecialPlan();
+    switchTab('plans');
+    setTimeout(function() {
+        var sprintCard = document.querySelector('[data-plan="sprint"]');
+        if (sprintCard) {
+            sprintCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            sprintCard.classList.add('highlight');
+            setTimeout(function() { sprintCard.classList.remove('highlight'); }, 2000);
+        }
+    }, 300);
+}

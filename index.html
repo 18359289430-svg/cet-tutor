@@ -714,6 +714,23 @@
     </div>
 
     <!-- 报告分享弹窗 -->
+    <!-- 专项突破计划 Overlay -->
+    <div class="sp-overlay" id="special-plan-overlay" style="display:none">
+        <div class="sp-container">
+            <div class="sp-header">
+                <button class="sp-close" onclick="closeSpecialPlan()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="sp-content" id="special-plan-content">
+                <!-- 动态内容由JS填充 -->
+            </div>
+        </div>
+    </div>
+
     <div class="report-share-modal" id="report-share-modal" style="display:none" onclick="if(event.target===this)closeReportShare()">
         <div class="report-share-box">
             <div class="report-share-canvas-wrap" id="report-share-canvas-wrap">
