@@ -884,6 +884,9 @@ function initApp() {
             if (tab === 'wrongbook') {
                 renderWrongBook();
             }
+            if (tab === 'path') {
+                renderLearningPath();
+            }
         }
 
         // ===== 快捷操作函数 =====
@@ -7759,3 +7762,700 @@ function upgradeToUnlockPlan() {
         }
     }, 300);
 }
+
+
+// ==================== 变式训练功能 ====================
+
+var CET4_VARIANT_KEY = 'cet4_variant_history';
+var CET4_VARIANT_DAILY_KEY = 'cet4_variant_daily_count';
+
+// 获取变式训练历史
+function getVariantHistory() {
+    return safeGetItem(CET4_VARIANT_KEY, []);
+}
+
+// 获取今日变式训练次数
+function getTodayVariantCount() {
+    var today = getTodayStr();
+    var counts = safeGetItem(CET4_VARIANT_DAILY_KEY, {});
+    return counts[today] || 0;
+}
+
+// 增加今日变式训练次数
+function incrementTodayVariantCount() {
+    var today = getTodayStr();
+    var counts = safeGetItem(CET4_VARIANT_DAILY_KEY, {});
+    counts[today] = (counts[today] || 0) + 1;
+    // 只保留最近7天的记录
+    var weekAgo = new Date(Date.now() - 7 * 86400000).toISOString().slice(0, 10);
+    for (var k in counts) {
+        if (k < weekAgo) delete counts[k];
+    }
+    safeSetItem(CET4_VARIANT_DAILY_KEY, counts);
+}
+
+// 检查是否可以进行变式训练
+function canDoVariantTraining() {
+    var plan = (state.userData && state.userData.plan) || 'free';
+    if (plan !== 'free') return { allowed: true, remaining: -1 }; // 付费用户不限
+    var todayCount = getTodayVariantCount();
+    var remaining = Math.max(0, 2 - todayCount);
+    return { allowed: remaining > 0, remaining: remaining };
+}
+
+// 保存变式训练历史
+function saveVariantRecord(questions, originalQuestion) {
+    var history = getVariantHistory();
+    history.unshift({
+        id: 'var_' + Date.now(),
+        date: getTodayStr(),
+        originalId: originalQuestion.id,
+        originalQuestion: originalQuestion.question,
+        variants: questions,
+        createdAt: Date.now()
+    });
+    // 只保留最近50条
+    while (history.length > 50) history.pop();
+    safeSetItem(CET4_VARIANT_KEY, history);
+}
+
+// 显示变式训练入口（在错题本页面调用）
+function showVariantTrainingButton() {
+    var check = canDoVariantTraining();
+    var questions = getWrongQuestions();
+    
+    if (questions.length === 0) {
+        showToast('暂无错题可训练');
+        return;
+    }
+    
+    if (!check.allowed) {
+        showToast('今日变式训练次数已用完，明天恢复');
+        return;
+    }
+    
+    // 生成变式题
+    generateVariants();
+}
+
+// 变式训练核心函数：调用AI生成同考点变式题
+async function generateVariants() {
+    var questions = getWrongQuestions();
+    if (questions.length === 0) {
+        showToast('暂无错题');
+        return;
+    }
+    
+    // 选择最近3道错题作为变式训练素材
+    var recentWrong = questions.slice(0, Math.min(3, questions.length));
+    
+    // 显示加载状态
+    showVariantLoading();
+    
+    // 构建AI prompt
+    var dimLabels = {
+        '细节定位': '细节定位（能在原文中找到明确答案的题目）',
+        '推理判断': '推理判断（需要根据原文信息进行逻辑推理的题目）',
+        '同义替换': '同义替换（考察近义词、反义词、同义表达的题目）',
+        '主旨归纳': '主旨归纳（需要概括文章大意或段落主旨的题目）',
+        '态度判断': '态度判断（判断作者或文中人物态度、观点的题目）'
+    };
+    
+    var dim = recentWrong[0].type || '阅读';
+    var dimDesc = dimLabels[dim] || dim;
+    
+    var prompt = '【变式训练生成器】\n\n请根据以下错题，生成2道同考点但不同语境的变式题。\n\n【考点类型】' + dimDesc + '\n\n【原题示例】\n' + recentWrong.map(function(q, i) {
+        return (i+1) + '. ' + q.question + '\n   A. ' + q.optionA + '\n   B. ' + q.optionB + '\n   C. ' + q.optionC + '\n   D. ' + q.optionD + '\n   正确答案：' + q.answer;
+    }).join('\n\n') + '\n\n【生成要求】\n1. 保持相同考点类型' + dimDesc + '\n2. 难度与原题一致\n3. 换用不同的语境和话题（避免与原题过于相似）\n4. 选项设置要有区分度\n\n【输出格式】严格按以下JSON格式输出，不要添加任何解释：\n[{"question":"题干内容","options":["A选项","B选项","C选项","D选项"],"answer":"B","explanation":"解析内容","difficulty":"Medium"}]\n\n只输出JSON，不要任何其他文字。';
+    
+    try {
+        var userId = (state.userData && state.userData.uid) || 'user_' + Date.now();
+        var plan = (state.userData && state.userData.plan) || 'free';
+        
+        // 使用DeepSeek API
+        var response = await fetch('/api/deepseek/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                user_id: userId,
+                messages: [{ role: 'user', content: prompt }],
+                stream: false,
+                plan_token: (state.userData && state.userData.planToken) || '',
+                plan_order_id: (state.userData && state.userData.planOrderId) || ''
+            })
+        });
+        
+        var result = await response.json();
+        var content = '';
+        
+        if (result.data && result.data.content) {
+            content = result.data.content;
+        } else if (result.choices && result.choices[0] && result.choices[0].message) {
+            content = result.choices[0].message.content;
+        } else if (result.content) {
+            content = result.content;
+        } else if (typeof result === 'string') {
+            content = result;
+        }
+        
+        // 解析JSON
+        var variants = parseVariantResponse(content);
+        
+        if (variants && variants.length > 0) {
+            // 保存记录
+            saveVariantRecord(variants, recentWrong[0]);
+            incrementTodayVariantCount();
+            
+            // 显示变式训练界面
+            showVariantTrainingUI(variants, recentWrong[0]);
+        } else {
+            showToast('生成变式题失败，请重试');
+            hideVariantLoading();
+        }
+    } catch(e) {
+        console.error('生成变式题失败:', e);
+        showToast('生成变式题失败，请重试');
+        hideVariantLoading();
+    }
+}
+
+// 解析AI返回的JSON
+function parseVariantResponse(content) {
+    try {
+        // 尝试提取JSON数组
+        var jsonMatch = content.match(/\[[\s\S]*\]/);
+        if (jsonMatch) {
+            var parsed = JSON.parse(jsonMatch[0]);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+                return parsed.map(function(item) {
+                    return {
+                        question: item.question || '',
+                        optionA: item.options && item.options[0] || '',
+                        optionB: item.options && item.options[1] || '',
+                        optionC: item.options && item.options[2] || '',
+                        optionD: item.options && item.options[3] || '',
+                        answer: item.answer || '',
+                        explanation: item.explanation || '暂无解析',
+                        difficulty: item.difficulty || 'Medium'
+                    };
+                });
+            }
+        }
+    } catch(e) {
+        console.error('解析变式题JSON失败:', e);
+    }
+    return null;
+}
+
+// 显示加载状态
+function showVariantLoading() {
+    var overlay = document.getElementById('variant-overlay');
+    if (!overlay) {
+        createVariantOverlay();
+        overlay = document.getElementById('variant-overlay');
+    }
+    
+    overlay.innerHTML = '<div class="variant-loading">' +
+        '<div class="variant-loading-icon">🔄</div>' +
+        '<div class="variant-loading-text">AI正在生成变式题...</div>' +
+        '<div class="variant-loading-dots"><span></span><span></span><span></span></div>' +
+        '</div>';
+    overlay.style.display = 'flex';
+}
+
+function hideVariantLoading() {
+    var overlay = document.getElementById('variant-overlay');
+    if (overlay) {
+        overlay.style.display = 'none';
+    }
+}
+
+// 创建变式训练弹窗DOM
+function createVariantOverlay() {
+    var overlay = document.createElement('div');
+    overlay.id = 'variant-overlay';
+    overlay.className = 'variant-overlay';
+    document.body.appendChild(overlay);
+}
+
+// 显示变式训练界面
+function showVariantTrainingUI(variants, originalQuestion) {
+    var overlay = document.getElementById('variant-overlay');
+    if (!overlay) {
+        createVariantOverlay();
+        overlay = document.getElementById('variant-overlay');
+    }
+    
+    var currentIndex = 0;
+    var userAnswers = {};
+    var completed = false;
+    
+    renderVariantQuestion();
+    
+    function renderVariantQuestion() {
+        var q = variants[currentIndex];
+        var answered = userAnswers[currentIndex] !== undefined;
+        
+        var html = '<div class="variant-modal">' +
+            '<div class="variant-header">' +
+            '<div class="variant-title">📝 变式训练</div>' +
+            '<div class="variant-progress">' +
+            '<span class="variant-current">' + (currentIndex + 1) + '</span>/' + variants.length +
+            '</div>' +
+            '<button class="variant-close" onclick="closeVariantTraining()">✕</button>' +
+            '</div>' +
+            
+            '<div class="variant-origin">' +
+            '<div class="variant-origin-label">同考点训练 · ' + (originalQuestion.type || '阅读') + '</div>' +
+            '<div class="variant-origin-text">' + escapeHtml(originalQuestion.question.substring(0, 50)) + '...</div>' +
+            '</div>' +
+            
+            '<div class="variant-question">' +
+            '<div class="variant-q-text">' + escapeHtml(q.question) + '</div>' +
+            
+            '<div class="variant-options">' +
+            ['A', 'B', 'C', 'D'].map(function(key, i) {
+                var opt = q['option' + key];
+                if (!opt) return '';
+                var selected = userAnswers[currentIndex] === key;
+                var correct = answered && key === q.answer;
+                var wrong = answered && selected && key !== q.answer;
+                var cls = selected ? 'selected' : (answered ? '' : '');
+                if (correct) cls = 'correct';
+                if (wrong) cls = 'wrong';
+                return '<div class="variant-option ' + cls + '" onclick="selectVariantOption(\'' + key + '\')">' +
+                    '<span class="variant-opt-key">' + key + '</span>' +
+                    '<span class="variant-opt-text">' + escapeHtml(opt) + '</span>' +
+                    '</div>';
+            }).join('') +
+            '</div>' +
+            '</div>';
+        
+        if (answered) {
+            html += '<div class="variant-explanation">' +
+                '<div class="variant-exp-label">💡 解析</div>' +
+                '<div class="variant-exp-content">' + escapeHtml(q.explanation) + '</div>' +
+                '</div>';
+        }
+        
+        // 底部按钮
+        html += '<div class="variant-footer">';
+        if (!answered) {
+            html += '<button class="variant-btn primary" onclick="confirmVariantAnswer()">确认答案</button>';
+        } else {
+            if (currentIndex < variants.length - 1) {
+                html += '<button class="variant-btn primary" onclick="nextVariantQuestion()">下一题 →</button>';
+            } else {
+                html += '<button class="variant-btn primary" onclick="finishVariantTraining()">查看结果</button>';
+            }
+        }
+        html += '</div>';
+        
+        html += '</div>';
+        
+        overlay.innerHTML = html;
+        overlay.style.display = 'flex';
+        
+        // 动画
+        overlay.style.opacity = '0';
+        setTimeout(function() { overlay.style.opacity = '1'; }, 10);
+    }
+    
+    // 暴露给全局
+    window.selectVariantOption = function(key) {
+        if (completed) return;
+        userAnswers[currentIndex] = key;
+        renderVariantQuestion();
+    };
+    
+    window.confirmVariantAnswer = function() {
+        if (completed) return;
+        // 触发动态评分
+        var q = variants[currentIndex];
+        var isCorrect = userAnswers[currentIndex] === q.answer;
+        var dim = mapTypeToDim(originalQuestion.type || '阅读');
+        updateDynamicScore(dim, isCorrect, getDifficultyScore(q.difficulty));
+        renderVariantQuestion();
+    };
+    
+    window.nextVariantQuestion = function() {
+        currentIndex++;
+        renderVariantQuestion();
+    };
+    
+    window.finishVariantTraining = function() {
+        completed = true;
+        var correct = 0;
+        variants.forEach(function(q, i) {
+            if (userAnswers[i] === q.answer) correct++;
+        });
+        
+        overlay.innerHTML = '<div class="variant-modal variant-result">' +
+            '<div class="variant-result-icon">' + (correct === variants.length ? '🎉' : '📚') + '</div>' +
+            '<div class="variant-result-title">变式训练完成</div>' +
+            '<div class="variant-result-score">' + correct + '/' + variants.length + ' 正确</div>' +
+            '<div class="variant-result-rate">' + Math.round(correct / variants.length * 100) + '%正确率</div>' +
+            '<div class="variant-result-tip">五维分数已更新，继续加油！</div>' +
+            '<button class="variant-btn primary" onclick="closeVariantTraining()">完成</button>' +
+            '</div>';
+    };
+    
+    window.closeVariantTraining = function() {
+        overlay.style.opacity = '0';
+        setTimeout(function() {
+            overlay.style.display = 'none';
+            // 刷新雷达图
+            if (typeof drawDashboardRadar === 'function') {
+                var scores = getAbilityScores();
+                if (scores && scores.dims) {
+                    drawDashboardRadar(scores.dims);
+                }
+            }
+        }, 300);
+    };
+}
+
+// 将题型映射到维度
+function mapTypeToDim(type) {
+    var map = {
+        '词汇': '同义替换',
+        '语法': '推理判断',
+        '阅读': '细节定位',
+        '听力': '推理判断'
+    };
+    return map[type] || '细节定位';
+}
+
+
+// ==================== 动态测评功能 ====================
+
+var CET4_DYNAMIC_SCORES_KEY = 'cet4_dynamic_scores';
+
+// 获取动态分数
+function getDynamicScores() {
+    try {
+        var data = localStorage.getItem(CET4_DYNAMIC_SCORES_KEY);
+        if (data) {
+            return JSON.parse(data);
+        }
+    } catch(e) {}
+    return null;
+}
+
+// 保存动态分数
+function saveDynamicScores(scores) {
+    try {
+        localStorage.setItem(CET4_DYNAMIC_SCORES_KEY, JSON.stringify(scores));
+    } catch(e) {}
+}
+
+// 初始化动态分数（如果不存在）
+function initDynamicScores() {
+    var existing = getDynamicScores();
+    if (existing) return existing;
+    
+    // 从诊断分数初始化
+    var data = state.userData || {};
+    var dims = data.diagnosis || {};
+    
+    var scores = {};
+    var defaultDims = ['细节定位', '推理判断', '同义替换', '主旨归纳', '态度判断'];
+    
+    defaultDims.forEach(function(dim) {
+        scores[dim] = {
+            value: dims[dim] || 50,
+            history: []
+        };
+    });
+    
+    saveDynamicScores(scores);
+    return scores;
+}
+
+// 核心动态评分函数（简化ELO算法）
+function updateDynamicScore(dimension, isCorrect, difficulty) {
+    // 难度系数：Easy=0.5, Medium=1.0, Hard=1.5
+    var diffCoef = difficulty || 1.0;
+    
+    var scores = getDynamicScores() || initDynamicScores();
+    
+    if (!scores[dimension]) {
+        scores[dimension] = { value: 50, history: [] };
+    }
+    
+    var current = scores[dimension].value;
+    var change = 0;
+    
+    if (isCorrect) {
+        // 答对：加分，越接近100加分越少
+        // 基础分5-10，难度系数加成
+        var maxBonus = 10 * diffCoef;
+        var proximityFactor = 1 - (current / 100);
+        change = Math.round(maxBonus * proximityFactor);
+        change = Math.max(1, Math.min(10, change)); // 最小1，最大10
+    } else {
+        // 答错：扣分，越接近0扣分越少
+        // 基础分8-15，难度系数加成
+        var maxPenalty = 15 * diffCoef;
+        var proximityFactor = current / 100;
+        change = Math.round(maxPenalty * proximityFactor);
+        change = Math.max(2, Math.min(15, change)); // 最小2，最大15
+        change = -change;
+    }
+    
+    // 更新分数
+    var newValue = Math.max(0, Math.min(100, current + change));
+    scores[dimension].value = newValue;
+    
+    // 记录历史
+    scores[dimension].history.push({
+        date: Date.now(),
+        isCorrect: isCorrect,
+        change: change,
+        newValue: newValue
+    });
+    
+    // 只保留最近100条历史
+    if (scores[dimension].history.length > 100) {
+        scores[dimension].history = scores[dimension].history.slice(-100);
+    }
+    
+    // 保存
+    saveDynamicScores(scores);
+    
+    // 同步到userData（保持兼容）
+    syncToUserData(scores);
+    
+    // 更新localStorage的cet4_ability_scores
+    var abilityScores = {};
+    for (var dim in scores) {
+        abilityScores[dim] = scores[dim].value;
+    }
+    try {
+        localStorage.setItem('cet4_ability_scores', JSON.stringify({ dims: abilityScores }));
+    } catch(e) {}
+    
+    // 触发雷达图更新（如果函数存在）
+    if (typeof drawDashboardRadar === 'function') {
+        setTimeout(function() {
+            drawDashboardRadar(abilityScores);
+        }, 100);
+    }
+    
+    return { dimension: dimension, change: change, newValue: newValue };
+}
+
+// 同步到userData
+function syncToUserData(scores) {
+    var data = state.userData || {};
+    if (!data.diagnosis) data.diagnosis = {};
+    
+    for (var dim in scores) {
+        data.diagnosis[dim] = scores[dim].value;
+    }
+    
+    state.userData = data;
+    saveUserData(data);
+}
+
+// 获取难度分数
+function getDifficultyScore(difficulty) {
+    var map = { 'Easy': 0.5, 'Medium': 1.0, 'Hard': 1.5 };
+    return map[difficulty] || 1.0;
+}
+
+// 获取薄弱维度（用于推荐练习）
+function getWeakDimensions(threshold) {
+    threshold = threshold || 60;
+    var scores = getDynamicScores() || initDynamicScores();
+    var weakDims = [];
+    
+    for (var dim in scores) {
+        if (scores[dim].value < threshold) {
+            weakDims.push({
+                name: dim,
+                value: scores[dim].value,
+                priority: threshold - scores[dim].value // 越低优先级越高
+            });
+        }
+    }
+    
+    // 按优先级排序
+    weakDims.sort(function(a, b) { return b.priority - a.priority; });
+    
+    return weakDims;
+}
+
+// 获取练习推荐（优先推荐薄弱维度）
+function getRecommendedPractice() {
+    var weakDims = getWeakDimensions(60);
+    
+    if (weakDims.length === 0) {
+        return { type: 'balanced', message: '各维度表现均衡，可全面提升' };
+    }
+    
+    var topWeak = weakDims.slice(0, 2);
+    var typeMap = {
+        '细节定位': '阅读细节题',
+        '推理判断': '推理判断题',
+        '同义替换': '词汇替换题',
+        '主旨归纳': '主旨大意题',
+        '态度判断': '态度观点题'
+    };
+    
+    return {
+        type: 'focus',
+        dims: topWeak,
+        message: '建议优先练习：' + topWeak.map(function(d) {
+            return typeMap[d.name] || d.name;
+        }).join('、')
+    };
+}
+
+
+// ==================== 每日任务使用动态评分 ====================
+
+// 重写submitDailyTask函数使用动态评分
+var originalSubmitDailyTask = submitDailyTask;
+
+submitDailyTask = function() {
+    if (dailyTaskState.submitted) return;
+    
+    var answeredCount = Object.keys(dailyTaskState.answers).length;
+    if (answeredCount === 0) {
+        showToast('请至少回答一题');
+        return;
+    }
+    
+    dailyTaskState.submitted = true;
+    renderDailyTaskModal();
+    
+    var correctCount = 0;
+    var dimResults = {};
+    
+    dailyTaskState.questions.forEach(function(q) {
+        var userAnswer = dailyTaskState.answers[q.id];
+        var isCorrect = userAnswer === q.correct;
+        if (isCorrect) correctCount++;
+        
+        // 使用动态评分
+        var dim = mapTypeToDim(q.type || '阅读');
+        var result = updateDynamicScore(dim, isCorrect, getDifficultyScore(q.difficulty || 'Medium'));
+        
+        dimResults[dim] = dimResults[dim] || { correct: 0, total: 0, improved: false };
+        dimResults[dim].total++;
+        if (isCorrect) dimResults[dim].correct++;
+    });
+    
+    // 更新任务状态
+    var badgeEl = document.getElementById('daily-task-badge');
+    var progressEl = document.getElementById('daily-task-progress-bar');
+    if (badgeEl) {
+        badgeEl.textContent = answeredCount + '/' + dailyTaskState.questions.length;
+    }
+    if (progressEl) {
+        var pct = Math.round((correctCount / dailyTaskState.questions.length) * 100);
+        progressEl.style.width = pct + '%';
+    }
+    
+    // 更新描述
+    var descEl = document.getElementById('daily-task-desc');
+    if (descEl) {
+        descEl.textContent = '今日正确率' + Math.round((correctCount / dailyTaskState.questions.length) * 100) + '%';
+    }
+    
+    // 显示完成状态
+    var actionsEl = document.getElementById('daily-task-actions');
+    var doneEl = document.getElementById('daily-task-done');
+    if (actionsEl) actionsEl.style.display = 'none';
+    if (doneEl) {
+        var descEl2 = document.getElementById('daily-task-done-desc');
+        if (descEl2) {
+            // 找出提升最大的维度
+            var bestDim = '';
+            var bestChange = 0;
+            for (var dim in dimResults) {
+                if (dim !== '听力') {
+                    var ds = getDynamicScores();
+                    if (ds && ds[dim] && ds[dim].history.length > 0) {
+                        var last = ds[dim].history[ds[dim].history.length - 1];
+                        if (last && last.change > bestChange) {
+                            bestChange = last.change;
+                            bestDim = dim;
+                        }
+                    }
+                }
+            }
+            if (bestDim && bestChange > 0) {
+                descEl2.textContent = '答对' + correctCount + '题，' + bestDim + '+' + bestChange + '分';
+            } else {
+                descEl2.textContent = '答对' + correctCount + '题，继续加油！';
+            }
+        }
+        doneEl.style.display = 'block';
+    }
+    
+    // 刷新雷达图
+    setTimeout(function() {
+        if (typeof drawDashboardRadar === 'function') {
+            var ds = getDynamicScores();
+            if (ds) {
+                var dims = {};
+                for (var k in ds) dims[k] = ds[k].value;
+                drawDashboardRadar(dims);
+            }
+        }
+        renderPlanTab();
+    }, 500);
+    
+    showToast('分数已更新，继续加油！');
+};
+
+
+// ==================== 在错题本页面添加变式训练按钮 ====================
+
+// 在错题本统计区后添加变式训练入口
+var originalRenderWrongBook = renderWrongBook;
+
+renderWrongBook = function() {
+    originalRenderWrongBook();
+    
+    // 添加变式训练按钮
+    var container = document.getElementById('wrongbook-content');
+    if (!container) return;
+    
+    var questions = getWrongQuestions();
+    if (questions.length === 0) return;
+    
+    var check = canDoVariantTraining();
+    var remaining = check.remaining;
+    
+    // 创建变式训练入口卡片
+    var variantCard = document.createElement('div');
+    variantCard.className = 'variant-entrance-card';
+    variantCard.onclick = function() { showVariantTrainingButton(); };
+    
+    var html = '<div class="variant-entrance-icon">🔄</div>' +
+        '<div class="variant-entrance-content">' +
+        '<div class="variant-entrance-title">变式训练</div>' +
+        '<div class="variant-entrance-desc">AI生成同考点变式题，举一反三</div>' +
+        '</div>' +
+        '<div class="variant-entrance-count">';
+    
+    if (remaining > 0) {
+        html += '<span class="variant-count-badge">今日' + remaining + '次</span>';
+    } else if (check.allowed) {
+        html += '<span class="variant-count-badge unlimited">不限次数</span>';
+    } else {
+        html += '<span class="variant-count-badge used">已用完</span>';
+    }
+    
+    html += ' →</div></div>';
+    variantCard.innerHTML = html;
+    
+    // 插入到统计区后
+    var statsEl = container.querySelector('.wrongbook-stats');
+    if (statsEl) {
+        statsEl.parentNode.insertBefore(variantCard, statsEl.nextSibling);
+    }
+};
