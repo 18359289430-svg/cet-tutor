@@ -115,6 +115,7 @@ function initApp() {
             // 初始化输入框placeholder（免费额度提示）
             updateChatInputPlaceholder();
             setTimeout(initChatPadding, 200);
+            setTimeout(initPlanScrollSync, 100);
         }
 
         function loadUserData() {
@@ -1921,6 +1922,7 @@ function initApp() {
             // 更新输入框placeholder（免费额度提示）
             updateChatInputPlaceholder();
             setTimeout(initChatPadding, 200);
+            setTimeout(initPlanScrollSync, 100);
             // 如果有初始消息，延迟发送
             if (arguments[1]) {
                 setTimeout(function() { sendSuggestion(arguments[1]); }, 300);
@@ -3246,15 +3248,75 @@ function handleHomeCta() {
 }
 
 function selectPlan(plan) {
-    var cards = document.querySelectorAll('.coze-card');
+    // 支持新旧两种卡片选择
+    var cards = document.querySelectorAll('.coze-card, .coze-plan-card');
     cards.forEach(function(c) { c.classList.remove('selected'); });
-    var target = document.querySelector('.coze-card[data-plan="' + plan + '"]');
+    var target = document.querySelector('.coze-card[data-plan="' + plan + '"], .coze-plan-card[data-plan="' + plan + '"]');
     if (target) target.classList.add('selected');
     var ctaBtn = document.getElementById('plan-cta-btn');
     if (ctaBtn) {
         var prices = { free: '当前方案', sprint: '¥44.5 开始冲刺', flagship: '¥149.5 全程陪伴' };
         ctaBtn.textContent = prices[plan] || '选择方案';
     }
+}
+
+// 切换套餐标签
+function switchPlanTab(plan) {
+    var tabs = document.querySelectorAll('.coze-plan-tab');
+    var indicator = document.querySelector('.coze-plan-tab-indicator');
+    
+    tabs.forEach(function(tab) {
+        tab.classList.remove('active');
+        if (tab.dataset.plan === plan) {
+            tab.classList.add('active');
+        }
+    });
+    
+    // 移动指示器
+    if (indicator && tabs.length > 0) {
+        var activeIndex = 0;
+        tabs.forEach(function(tab, i) {
+            if (tab.dataset.plan === plan) activeIndex = i;
+        });
+        var tabWidth = tabs[0].offsetWidth;
+        indicator.style.transform = 'translateX(' + (activeIndex * tabWidth) + 'px)';
+    }
+    
+    // 滚动到对应卡片
+    var scrollContainer = document.getElementById('coze-card-scroll');
+    var targetCard = document.querySelector('.coze-plan-card[data-plan="' + plan + '"]');
+    if (scrollContainer && targetCard) {
+        var scrollLeft = targetCard.offsetLeft - (scrollContainer.offsetWidth - targetCard.offsetWidth) / 2;
+        scrollContainer.scrollTo({ left: scrollLeft, behavior: 'smooth' });
+    }
+    
+    // 选中卡片
+    selectPlan(plan);
+}
+
+// 初始化套餐卡片滚动监听
+function initPlanScrollSync() {
+    var scrollContainer = document.getElementById('coze-card-scroll');
+    if (!scrollContainer) return;
+    
+    var tabs = document.querySelectorAll('.coze-plan-tab');
+    var indicator = document.querySelector('.coze-plan-tab-indicator');
+    var cardWidth = 180 + 12; // 卡片宽度 + gap
+    
+    scrollContainer.addEventListener('scroll', function() {
+        var scrollLeft = scrollContainer.scrollLeft;
+        var index = Math.round(scrollLeft / cardWidth);
+        index = Math.max(0, Math.min(index, tabs.length - 1));
+        
+        tabs.forEach(function(tab, i) {
+            tab.classList.toggle('active', i === index);
+        });
+        
+        if (indicator && tabs.length > 0) {
+            var tabWidth = tabs[0].offsetWidth;
+            indicator.style.transform = 'translateX(' + (index * tabWidth) + 'px)';
+        }
+    });
 }
 
 function showStudyHistory() { showToast('学习记录功能开发中'); }
@@ -5580,6 +5642,7 @@ function appendLimitHintToMessage(aiDiv) {
     // 同时更新输入框placeholder
     updateChatInputPlaceholder();
             setTimeout(initChatPadding, 200);
+            setTimeout(initPlanScrollSync, 100);
 }
 
 // 渲染限额系统消息卡片
