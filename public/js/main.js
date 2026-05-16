@@ -1240,6 +1240,18 @@ function initApp() {
             html += '<div class="dashboard-hero-countdown">';
             html += '<span class="dashboard-hero-countdown-dot"></span>';
             html += '距考试 ' + daysToExam + ' 天</div>';
+            // 无数据时的引导CTA
+            var hasNoData = (!practiceHistory || practiceHistory.length === 0) && !hasDimData;
+            if (hasNoData) {
+                html += '<div class="dashboard-no-data-cta" onclick="switchTab(\'diagnosis\')">';
+                html += '<div class="dashboard-cta-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>';
+                html += '<div class="dashboard-cta-text">';
+                html += '<div class="dashboard-cta-title">开始你的四级之旅</div>';
+                html += '<div class="dashboard-cta-desc">5分钟AI诊断，找到你的备考短板</div>';
+                html += '</div>';
+                html += '<div class="dashboard-cta-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>';
+                html += '</div>';
+            }
             html += '</div>';
             
             // ===== 概览卡片 - 2大+2小布局 =====
@@ -1254,7 +1266,7 @@ function initApp() {
             html += '<div class="dashboard-overview-card large score-card shimmer-card">';
             html += '<div class="overview-icon" style="background:rgba(255,255,255,0.2)">' + icons.target + '</div>';
             html += '<div class="overview-num">' + (hasDimData ? estimatedScore : '--') + '</div>';
-            html += '<div class="overview-label">预估分数</div>';
+            html += '<div class="overview-label">预估分数' + (hasDimData ? '' : '<span class="overview-label-hint">完成诊断后解锁</span>') + '</div>';
             html += '</div>';
             // 小卡片1: 今日练习
             html += '<div class="dashboard-overview-card small practice">';
@@ -1335,8 +1347,10 @@ function initApp() {
             html += '<div class="dashboard-heatmap-title">' + icons.trending + '近7天练习热力图</div>';
             html += '<div class="dashboard-heatmap-grid">';
             var dayLabels = ['一', '二', '三', '四', '五', '六', '日'];
+            var hasHeatmapData = false;
             for (var i = 0; i < 7; i++) {
                 var dayData = heatmapData[i] || { count: 0, label: '' };
+                if (dayData.count > 0) hasHeatmapData = true;
                 var level = dayData.count === 0 ? '' : (dayData.count <= 3 ? 'level-1' : (dayData.count <= 7 ? 'level-2' : (dayData.count <= 12 ? 'level-3' : 'level-4')));
                 html += '<div class="dashboard-heatmap-cell ' + level + '">';
                 html += '<div class="dashboard-heatmap-tooltip">' + dayData.label + '<br>' + dayData.count + ' 题</div>';
@@ -1348,6 +1362,10 @@ function initApp() {
                 html += '<div class="dashboard-heatmap-label">' + dayLabels[j] + '</div>';
             }
             html += '</div>';
+            // 全0时显示提示
+            if (!hasHeatmapData) {
+                html += '<div class="dashboard-heatmap-empty-tip">开始练习后记录你的学习轨迹</div>';
+            }
             html += '</div>';
             
             // ===== 薄弱项卡片 - 左侧彩色竖条 =====
@@ -1426,13 +1444,21 @@ function initApp() {
             html += '</div>';
             
             // ===== 正确率趋势图 =====
+            var hasTrendData = totalPractice > 0;
             html += '<div class="dashboard-trend-section glass-card">';
             html += '<div class="dashboard-trend-header">';
             html += '<div class="dashboard-trend-title">' + icons.trending + '正确率趋势</div>';
             html += '<div class="dashboard-trend-period"><button class="active">近7天</button></div>';
             html += '</div>';
             html += '<div class="dashboard-trend-canvas-wrap">';
-            html += '<canvas id="dashboard-trend-canvas"></canvas>';
+            if (hasTrendData) {
+                html += '<canvas id="dashboard-trend-canvas"></canvas>';
+            } else {
+                html += '<div class="dashboard-trend-empty">';
+                html += '<div class="dashboard-trend-empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>';
+                html += '<div class="dashboard-trend-empty-text">完成练习后查看正确率趋势</div>';
+                html += '</div>';
+            }
             html += '</div>';
             html += '</div>';
             
@@ -6559,6 +6585,7 @@ function renderPlanTab() {
     var data = state.userData || {};
     var plan = data.study_plan;
     var dayIdx = getPlanDayIndex();
+    var hasDiagnosis = data.diagnosis && Object.keys(data.diagnosis).length > 0;
     
     // 更新标题
     var subEl = document.getElementById('plan-page-sub');
@@ -6570,6 +6597,88 @@ function renderPlanTab() {
         }
     }
     
+    // 获取plan-page-content容器
+    var pageContent = document.getElementById('plan-page-content');
+    
+    // 无诊断数据时显示空状态引导
+    if (!hasDiagnosis) {
+        if (pageContent) {
+            pageContent.innerHTML = \`<div class="plan-page-header">
+                <h1 class="plan-page-title">学习计划</h1>
+                <p class="plan-page-sub">完成诊断后自动生成</p>
+            </div>
+            
+            <div class="plan-guide-card" onclick="switchTab('diagnosis')">
+                <div class="plan-guide-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="4" width="18" height="18" rx="2"/>
+                        <line x1="16" y1="2" x2="16" y2="6"/>
+                        <line x1="8" y1="2" x2="8" y2="6"/>
+                        <line x1="3" y1="10" x2="21" y2="10"/>
+                    </svg>
+                    <svg class="plan-guide-pencil" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17 3a2.828 2.828 0 114 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
+                    </svg>
+                </div>
+                <div class="plan-guide-title">开始你的备考计划</div>
+                <div class="plan-guide-desc">完成5分钟AI诊断，系统将为你量身定制30天冲刺计划</div>
+                <div class="plan-guide-cta">
+                    <span>开始诊断</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="9 18 15 12 9 6"/>
+                    </svg>
+                </div>
+                <div class="plan-guide-features">
+                    <div class="plan-guide-feature">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span>AI精准诊断薄弱点</span>
+                    </div>
+                    <div class="plan-guide-feature">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span>个性化学习方案</span>
+                    </div>
+                    <div class="plan-guide-feature">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span>每日任务智能推送</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="plan-guide-disabled-hint">
+                <div class="plan-guide-disabled-card">
+                    <div class="plan-guide-disabled-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    </div>
+                    <div class="plan-guide-disabled-text">
+                        <div class="plan-guide-disabled-title">每日任务</div>
+                        <div class="plan-guide-disabled-desc">完成诊断后解锁</div>
+                    </div>
+                </div>
+                <div class="plan-guide-disabled-card">
+                    <div class="plan-guide-disabled-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+                    </div>
+                    <div class="plan-guide-disabled-text">
+                        <div class="plan-guide-disabled-title">五维能力分析</div>
+                        <div class="plan-guide-disabled-desc">完成诊断后解锁</div>
+                    </div>
+                </div>
+                <div class="plan-guide-disabled-card">
+                    <div class="plan-guide-disabled-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    </div>
+                    <div class="plan-guide-disabled-text">
+                        <div class="plan-guide-disabled-title">30天冲刺计划</div>
+                        <div class="plan-guide-disabled-desc">完成诊断后解锁</div>
+                    </div>
+                </div>
+            </div>
+            \`;
+        }
+        return;
+    }
+    
+    // 有诊断数据时，渲染正常内容
     // 渲染雷达图预览
     renderPlanRadarPreview();
     
