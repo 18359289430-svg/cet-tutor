@@ -421,10 +421,14 @@ function initApp() {
             setTimeout(function(){ sendSuggestion('帮我批改作文'); }, 300);
         }
         
+        var _reviewClickLock = false;
         function handleReviewClick() {
-            if (chatState.isStreaming) return; // 防止流式回复中重复点击
+            if (_reviewClickLock) return; // 防止重复点击
+            if (chatState.isStreaming) return;
+            _reviewClickLock = true;
+            setTimeout(function(){ _reviewClickLock = false; }, 2000); // 2秒后解锁
             // 如果已在陪练对话页面，直接发送，不重置对话
-            if (state.currentTab === 'diagnosis' && chatState.currentMode === 'companion' && chatState.conversationId) {
+            if (state.currentTab === 'diagnosis' && chatState.currentMode === 'companion') {
                 sendSuggestion('复习我之前的错题');
             } else {
                 openChat('companion');
