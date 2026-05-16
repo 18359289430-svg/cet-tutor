@@ -1,3 +1,5 @@
+// @version 1.0.1 - 2026-05-16 17:36
+
         var personalities = [
                 { type:'佛系随缘选手', color:'#F5C6AA', emoji:'😌', img:'/public/人格卡/人格卡-佛系随缘选手.png', honor:'佛系陪跑员', comment:'你很佛系，但四级不佛', scores:{"细节定位":95,"推理判断":33,"同义替换":66,"主旨归纳":77,"态度判断":93} },
                 { type:'脑补大师', color:'#C4A8E0', emoji:'💭', img:'/public/人格卡/人格卡-脑补大师.png', honor:'四级白日梦家', comment:'笔在卷子上，魂在银河系', scores:{"细节定位":40,"推理判断":75,"同义替换":50,"主旨归纳":30,"态度判断":60} },
@@ -1728,7 +1730,20 @@ function initApp() {
 
         // 删除对话
         function deleteConversation(convId) {
+            // 【修复】添加确认对话框
             var list = getChatList();
+            var convTitle = '';
+            for (var i = 0; i < list.length; i++) {
+                if (list[i].id === convId) {
+                    convTitle = list[i].title || '此对话';
+                    break;
+                }
+            }
+            
+            if (!confirm('确定要删除「' + convTitle + '」吗？删除后无法恢复。')) {
+                return;
+            }
+            
             var newList = [];
             for (var i = 0; i < list.length; i++) {
                 if (list[i].id !== convId) {
@@ -1857,6 +1872,45 @@ function initApp() {
             hasReplied: false
         };
 
+        // 查找符合条件的历史对话（用于复用已有对话而非重复创建）
+        function findExistingConversation(mode, hint) {
+            var list = getChatList();
+            var hintLower = (hint || '').toLowerCase();
+            
+            // 优先匹配：模式相同 + 关键词匹配
+            for (var i = 0; i < list.length; i++) {
+                var item = list[i];
+                if (item.mode !== mode) continue;
+                
+                // wrongbook 模式：查找包含"错题"、"复习"等关键词的对话
+                if (hintLower === 'wrongbook') {
+                    var titleLower = (item.title || '').toLowerCase();
+                    var lastMsgLower = (item.lastMsg || '').toLowerCase();
+                    if (titleLower.indexOf('错题') !== -1 || 
+                        titleLower.indexOf('复习') !== -1 ||
+                        lastMsgLower.indexOf('错题') !== -1 ||
+                        lastMsgLower.indexOf('复习') !== -1 ||
+                        titleLower.indexOf('wrongbook') !== -1) {
+                        return item.id;
+                    }
+                }
+                // essay 模式：查找包含"作文"、"批改"等关键词的对话
+                else if (hintLower === 'essay') {
+                    var titleLower = (item.title || '').toLowerCase();
+                    if (titleLower.indexOf('作文') !== -1 || 
+                        titleLower.indexOf('批改') !== -1 ||
+                        titleLower.indexOf('essay') !== -1) {
+                        return item.id;
+                    }
+                }
+                // companion 模式：返回最近的companion对话
+                else if (mode === 'companion') {
+                    return item.id; // 返回第一个匹配的companion对话
+                }
+            }
+            return null;
+        }
+
         function openChat(mode) {
             mode = mode || 'diagnosis';
             var data = state.userData || {};
@@ -1871,6 +1925,20 @@ function initApp() {
                 'diagnosis': '7636289658620215331',
                 'companion': '7637702903679631395'
             };
+            
+            // 【修复】如果有hint参数（第二个参数），先检查是否有符合条件的历史对话
+            var hint = arguments[1];
+            if (hint) {
+                var existingConvId = findExistingConversation(mode, hint);
+                if (existingConvId) {
+                    console.log('[openChat] Found existing conversation, reusing:', existingConvId);
+                    // 直接加载已有对话，不新建
+                    openConversation(existingConvId);
+                    // 延迟发送hint消息
+                    setTimeout(function() { sendSuggestion(hint); }, 300);
+                    return;
+                }
+            }
             
             chatState.botId = botMap[mode];
             chatState.conversationId = null;
