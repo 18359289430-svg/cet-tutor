@@ -74,12 +74,9 @@ html, body {
         /* 确保内容不被Tab栏遮挡 */
         .tab-page > *:last-child { padding-bottom: calc(80px + var(--safe-bottom)); }
         
-        /* 底部Tab - 固定定位 */
+        /* 底部Tab - flex布局固定底部 */
         .tab-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
+            flex-shrink: 0;
             height: 56px;
             padding-bottom: env(safe-area-inset-bottom, 0px);
             background: #FFFFFF;
