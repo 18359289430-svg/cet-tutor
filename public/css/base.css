@@ -59,7 +59,6 @@ html, body {
             bottom: 0;
             overflow-y: auto;
             overflow-x: hidden;
-            overflow-y: hidden;
             overscroll-behavior: none;
             -webkit-overflow-scrolling: touch;
             opacity: 0;
