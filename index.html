@@ -33,7 +33,7 @@
     <link rel="stylesheet" href="/css/personality.css?v=202605142349">
     <link rel="stylesheet" href="/css/components.css?v=202605142349">
     <link rel="stylesheet" href="/css/quiz.css?v=202605142349">
-    <link rel="stylesheet" href="/css/payment.css?v=202605142349">
+    <link rel="stylesheet" href="/css/payment.css?v=20260516v3">
     <link rel="stylesheet" href="/css/profile.css?v=202605142349">
     <link rel="stylesheet" href="/css/dashboard.css?v=202605142349">
     <link rel="stylesheet" href="/css/diagnosis.css?v=202605142349">
@@ -402,97 +402,382 @@
                 </div>
             </div>
 
-                        <!-- 套餐页 - Coze风格 -->
-            <div class="tab-page" id="tab-plans">
-                <!-- Coze风格套餐页 -->
-                <div class="coze-plans-current" id="coze-current-plan">
-                    <div class="coze-current-info">
-                        <div class="coze-current-left">
-                            <span class="coze-current-dot"></span>
-                            <span class="coze-current-name" id="coze-plan-name">免费版</span>
-                        </div>
-                        <span class="coze-current-renew">体验完整功能 →</span>
-                    </div>
+                                    <div class="tab-page" id="tab-plans">
+                <div class="plans-header">
+                    <h1 class="plans-title">选择方案</h1>
+                    <p class="plans-subtitle">解锁更多能力，提升备考效率</p>
                 </div>
-                <!-- 套餐选择标签 -->
-                <div class="coze-tabs">
-                    <div class="coze-tab active" onclick="switchCozeTab(this, 'trial')">体验版</div>
-                    <div class="coze-tab" onclick="switchCozeTab(this, 'sprint')">冲刺版</div>
-                    <div class="coze-tab" onclick="switchCozeTab(this, 'flagship')">旗舰版</div>
+                <div class="current-plan-bar" id="current-plan-bar">
+                    <span class="current-plan-label">当前套餐</span>
+                    <span class="current-plan-name" id="current-plan-name">免费版</span>
                 </div>
-                <!-- 横向滑动卡片 -->
-                <div class="coze-cards">
-                    <!-- 体验版 -->
-                    <div class="coze-card" data-plan="trial" onclick="selectPlan('free')">
+                <div class="coze-cards" id="coze-cards">
+                    <div class="coze-card" data-plan="free" onclick="selectPlan('free')">
                         <div class="coze-card-top">
-                            <div class="coze-card-name">体验版</div>
-                            <div class="coze-card-price"><span class="coze-price-symbol"></span><span class="coze-price-num">免费</span></div>
+                            <span class="coze-card-name">免费版</span>
+                            <div class="coze-card-price"><span class="coze-price-num">免费</span></div>
                         </div>
                         <div class="coze-card-tag">诊断+基础答疑</div>
                         <ul class="coze-card-features">
                             <li>✓ AI诊断+人格卡</li>
+                            <li>✓ AI诊断不限次+陪练25轮/天</li>
                             <li>✓ 每日一练+打卡</li>
-                            <li>✓ 作文/翻译 评分</li>
+                            <li>✓ 作文/翻译 评分+问题标注</li>
                         </ul>
-                        <button class="coze-card-btn outline">开始诊断</button>
+                        <button class="coze-card-btn outline" onclick="event.stopPropagation();openChat('chat')">开始诊断</button>
                     </div>
-                    <!-- 冲刺版 -->
                     <div class="coze-card recommended" data-plan="sprint" onclick="selectPlan('sprint')">
                         <div class="coze-card-badge">推荐</div>
                         <div class="coze-card-top">
-                            <div class="coze-card-name">冲刺版</div>
-                            <div class="coze-card-price"><span class="coze-price-symbol">¥</span><span class="coze-price-num">44.5</span><span class="coze-price-original">¥89</span></div>
+                            <span class="coze-card-name">冲刺营</span>
+                            <div class="coze-card-price"><span class="coze-price-sign">¥</span><span class="coze-price-num">44.5</span><span class="coze-price-original">¥89</span></div>
                         </div>
-                        <div class="coze-card-tag">诊断+基础答疑</div>
+                        <div class="coze-card-tag">限时5折 · 45天高效冲刺</div>
                         <ul class="coze-card-features">
                             <li>✓ AI对话 无限</li>
                             <li>✓ 45天个性化学习计划</li>
-                            <li>✓ 作文批改 每日1次</li>
-                            <li>✓ 翻译批改 每日1次</li>
+                            <li>✓ 作文批改 每日1次（逐句改写）</li>
+                            <li>✓ 翻译批改 每日1次（参考译文）</li>
                             <li>✓ 针对短板的每日一练</li>
                         </ul>
-                        <button class="coze-card-btn primary">立即购买</button>
+                        <button class="coze-card-btn primary" onclick="event.stopPropagation();window.open('https://mbd.pub/o/bread/YZaTk5tsbA==?discount_code=NGUPFC')">立即购买</button>
                     </div>
-                    <!-- 旗舰版 -->
                     <div class="coze-card" data-plan="flagship" onclick="selectPlan('flagship')">
                         <div class="coze-card-top">
-                            <div class="coze-card-name">旗舰版</div>
-                            <div class="coze-card-price"><span class="coze-price-symbol">¥</span><span class="coze-price-num">149.5</span></div>
+                            <span class="coze-card-name">全程营</span>
+                            <div class="coze-card-price"><span class="coze-price-sign">¥</span><span class="coze-price-num">149.5</span><span class="coze-price-original">¥299</span></div>
                         </div>
                         <div class="coze-card-tag">限时5折 · 45天全程陪伴</div>
                         <ul class="coze-card-features">
                             <li>✓ AI对话 无限</li>
                             <li>✓ 45天个性化学习计划</li>
-                            <li>✓ 作文/翻译批改 无限</li>
+                            <li>✓ 作文/翻译批改 无限（逐句改写+精讲）</li>
                             <li>✓ 针对短板的每日一练</li>
-                            <li>✓ 深度精讲</li>
+                            <li>✓ 深度精讲（为什么错+怎么避坑）</li>
                             <li>✓ 六级衔接指导</li>
                         </ul>
-                        <button class="coze-card-btn outline">立即购买</button>
+                        <button class="coze-card-btn primary" onclick="event.stopPropagation();window.open('https://mbd.pub/o/bread/YZaTk5ttbQ==?discount_code=WPBWPS')">立即购买</button>
                     </div>
                 </div>
-                <!-- 会员权益 -->
-                <div class="coze-benefits">
-                    <div class="coze-benefits-header">
-                        <span class="coze-benefits-title">会员尊享权益</span>
+                <div class="coze-benefits" id="coze-benefits">
+                    <div class="coze-benefits-title">权益对比</div>
+                    <div id="benefits-content"></div>
+                </div>
+                <div class="faq-section">
+                    <div class="faq-title">常见问题</div>
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            购买后可以退款吗？
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                        </div>
+                        <div class="faq-answer"><p>7天内可协商退款。已使用超过3天或批改超过5次的服务不支持退款。请联系面包多订单页客服。有效期从开通之日起计算。</p></div>
                     </div>
-                    <div class="coze-benefits-list">
-                        <div class="coze-benefit-item"><span class="coze-benefit-check">✓</span> AI智能诊断，精准定位弱项</div>
-                        <div class="coze-benefit-item"><span class="coze-benefit-check">✓</span> 个性化备考计划，每日推送</div>
-                        <div class="coze-benefit-item"><span class="coze-benefit-check">✓</span> 作文精批，逐句修改建议</div>
-                        <div class="coze-benefit-item"><span class="coze-benefit-check">✓</span> 弱项专项训练，针对提升</div>
-                        <div class="coze-benefit-item"><span class="coze-benefit-check">✓</span> 考前7天冲刺，最后提分</div>
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            到考试前可以一直用吗？
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                        </div>
+                        <div class="faq-answer"><p>冲刺营和全程营均为45天，从开通之日起计算。</p></div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            AI评分准确吗？
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                        </div>
+                        <div class="faq-answer"><p>AI评分仅供参考，可能与实际考试评分存在差异。本产品为辅助学习工具，不保证考试结果。请以官方评分标准为准。</p></div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            隐私安全吗？
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                        </div>
+                        <div class="faq-answer"><p>你的学习数据仅保存在本地浏览器中，我们不会收集或上传你的个人信息。对话内容仅用于提供AI辅导服务。</p></div>
                     </div>
                 </div>
-                <!-- FAQ -->
-                <div class="coze-faq">
-                    <h3 class="coze-faq-title">常见问题</h3>
-                    <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span>购买后可以退款吗？</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-answer"><p>7天内可协商退款。已使用超过3天或批改超过5次的服务不支持退款。</p></div></div>
-                    <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span>到考试前可以一直用吗？</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-answer"><p>冲刺营和全程营均为45天，从开通之日起计算。</p></div></div>
-                    <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span>AI评分准确吗？</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-answer"><p>AI评分仅供参考，可能与实际考试评分存在差异。请以官方评分标准为准。</p></div></div>
-                    <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span>隐私安全吗？</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-answer"><p>你的学习数据仅保存在本地浏览器中，我们不会收集或上传你的个人信息。</p></div></div>
+                <div style="margin:20px 16px;padding:20px;background:#fff;border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,0.04)">
+                    <div style="font-size:15px;font-weight:600;color:#1E293B;margin-bottom:8px">激活订单</div>
+                    <div style="font-size:13px;color:#64748B;margin-bottom:12px">购买后粘贴面包多订单号，自动开通</div>
+                    <div style="display:flex;gap:10px">
+                        <input type="text" id="plan-mbd-order-input" placeholder="粘贴面包多订单号" style="flex:1;padding:12px 14px;border:1.5px solid #E2E8F0;border-radius:10px;font-size:15px;outline:none;letter-spacing:1px" autocomplete="off" spellcheck="false">
+                        <button onclick="activateWithMbdOrderFromPlans()" style="padding:12px 20px;background:#6C5CE7;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;white-space:nowrap;cursor:pointer">验证激活</button>
+                    </div>
+                    <div id="plan-mbd-activate-msg" style="font-size:12px;margin-top:8px;min-height:18px"></div>
                 </div>
             </div>
+            <div class="tab-page" id="tab-profile">
+                <div class="profile-header-trust">
+                    <div class="profile-row">
+                        <div class="profile-avatar-lg">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        </div>
+                        <div class="profile-info">
+                            <div class="profile-name-lg" id="profile-name">四级萌新</div>
+                            <div class="profile-plan-tag free" id="profile-plan-tag">免费版</div>
+                        </div>
+                        <div style="flex-shrink:0">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C0C8D4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="profile-stats-bar">
+                    <div class="profile-stat-item">
+                        <div class="profile-stat-num" id="stat-days">0</div>
+                        <div class="profile-stat-label">学习天数</div>
+                    </div>
+                    <div class="profile-stat-item">
+                        <div class="profile-stat-num" id="stat-chats">0</div>
+                        <div class="profile-stat-label">对话次数</div>
+                    </div>
+                    <div class="profile-stat-item">
+                        <div class="profile-stat-num" id="stat-personality">—</div>
+                        <div class="profile-stat-label">备考人格</div>
+                    </div>
+                </div>
+
+                <div class="menu-group-label">学习</div>
+                <div class="menu-list">
+                <div class="menu-item-new" onclick="switchTab('personality')">
+                        <div class="menu-icon-new pink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+                        <span class="menu-text-new">备考人格卡</span>
+                        <span class="menu-arrow-new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+                    </div>
+                    <div class="menu-item-new" onclick="showStudyHistory()">
+                        <div class="menu-icon-new purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+                        <span class="menu-text-new">学习数据</span>
+                        <span class="menu-arrow-new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+                    </div>
+                    <div class="menu-item-new" onclick="showDiagHistory()">
+                        <div class="menu-icon-new green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+                        <span class="menu-text-new">诊断记录</span>
+                        <span class="menu-arrow-new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+                    </div>
+                    <div class="menu-item-new wrong-book" onclick="handleReviewClick()">
+                        <div class="menu-icon-new orange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div>
+                        <span class="menu-text-new">错题本</span>
+                        <span class="wrong-book-badge" id="wrong-book-badge"></span>
+                        <span class="menu-arrow-new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+                    </div>
+                    <div class="menu-item-new" onclick="showLearningPlan()">
+                        <div class="menu-icon-new purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+                        <span class="menu-text-new">学习计划</span>
+                        <span class="menu-arrow-new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+                    </div>
+                </div>
+
+                <div class="menu-group-label">账户</div>
+                <div class="menu-list">
+                    <div class="menu-item-new" onclick="switchTab('plans')">
+                        <div class="menu-icon-new purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
+                        <span class="menu-text-new">套餐管理</span>
+                        <span class="menu-arrow-new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"/></svg></span>
+                    </div>
+                    <div class="menu-item-new" onclick="openActivateCodeModal()">
+                        <div class="menu-icon-new gray"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
+                        <span class="menu-text-new">兑换码</span>
+                        <span class="menu-arrow-new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"/></svg></span>
+                    </div>
+                    <div class="menu-item-new" onclick="showToast('客服微信：cet4fanyi')">
+                        <div class="menu-icon-new gray"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></div>
+                        <span class="menu-text-new">联系客服</span>
+                        <span class="menu-arrow-new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"/></svg></span>
+                    </div>
+                </div>
+
+                <div class="profile-footer">
+                    <div class="profile-footer-text">四级备考搭子 v1.0 · AI评分仅供参考，不保证考试结果</div>
+                    <div class="profile-footer-links">
+                        <a href="javascript:void(0)" onclick="showPrivacyModal()">隐私政策</a>
+                        <a href="javascript:void(0)" onclick="showTermsModal()">用户协议</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部Tab - 4个Tab -->
+        <div class="tab-bar">
+            <div class="tab-item active" data-tab="home" onclick="switchTab('home')">
+                <div class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+                <span class="tab-label">首页</span>
+            </div>
+            <div class="tab-item" data-tab="diagnosis" onclick="switchTab('diagnosis')">
+                <div class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+                <span class="tab-label">练习</span>
+            </div>
+<div class="tab-item" data-tab="progress" onclick="switchTab('progress')">
+                <div class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg></div>
+                <span class="tab-label">数据</span>
+            </div>
+            <div class="tab-item" data-tab="profile" onclick="switchTab('profile')">
+                <div class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+                <span class="tab-label">我的</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 人格详情弹窗 -->
+    <div class="modal-overlay" id="personality-modal">
+        <div class="modal-sheet">
+            <div class="modal-handle"></div>
+            <div class="modal-content">
+                <div class="personality-detail" id="detail-card"></div>
+                <div class="detail-advice">
+                    <div class="detail-advice-title">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                        备考建议
+                    </div>
+                    <p id="detail-advice-text"></p>
+                </div>
+                <div class="detail-actions">
+                    <button class="btn-close-detail" onclick="closePersonalityModal()">关闭</button>
+                    <button class="btn-start-detail" onclick="startPractice()">开始练习</button>
+                    <button class="btn-share-card" onclick="showShareCard()">📱 保存人格卡</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 通用弹窗 -->
+    <div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeModal()">
+        <div class="modal-sheet">
+            <div class="modal-handle"></div>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <!-- 每日任务Modal -->
+    <div class="modal-overlay" id="daily-task-modal">
+        <div class="modal-sheet" style="max-height: 85vh">
+            <div class="modal-handle"></div>
+            <div class="daily-task-modal-content" id="daily-task-modal-content">
+                <div class="daily-task-modal-header">
+                    <div class="daily-task-modal-title">每日任务</div>
+                    <div class="daily-task-modal-sub" id="daily-task-modal-sub">薄弱点强化训练</div>
+                </div>
+                <div class="daily-task-questions" id="daily-task-questions">
+                    <!-- Questions will be rendered here -->
+                </div>
+                <div class="daily-task-actions" id="daily-task-actions" style="display:none">
+                    <button class="btn-primary" onclick="submitDailyTask()">提交答案</button>
+                </div>
+                <div class="daily-task-done" id="daily-task-done" style="display:none">
+                    <div class="daily-task-done-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    </div>
+                    <div class="daily-task-done-title">已完成今日任务</div>
+                    <div class="daily-task-done-desc" id="daily-task-done-desc"></div>
+                    <button class="btn-secondary" onclick="closeDailyTaskModal()">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Loading -->
+    <div class="loading-overlay" id="loading">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">加载中...</div>
+    </div>
+
+    <!-- 人格卡分享弹窗 -->
+    <div class="share-card-modal" id="share-card-modal" style="display:none">
+        <div class="share-card-box">
+            <img id="share-card-img" src="" alt="人格卡" style="width:100%;border-radius:16px;">
+            <div class="share-card-hint">长按保存图片</div>
+            <div class="share-card-tip">分享给朋友测测 👇</div>
+            <div class="detail-coupon-tip">限时5折：付款输入优惠码 <strong style="color:#6C5CE7">NGUPFC</strong>（冲刺营）/ <strong style="color:#6C5CE7">WPBWPS</strong>（全程营）</div>
+            <button class="share-card-close" onclick="closeShareCard()">关闭</button>
+        </div>
+    </div>
+
+    <!-- 新诊断模式界面 -->
+    <div class="diag-overlay" id="diag-overlay">
+        <div class="diag-header">
+            <button class="diag-back-btn" id="diag-back-btn" onclick="exitDiagnosis()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="15 18 9 12 15 6"/>
+                </svg>
+            </button>
+            <div class="diag-title" id="diag-title">四级诊断</div>
+            <div style="width:36px"></div>
+        </div>
+        <div class="diag-progress-wrap" id="diag-progress-wrap" style="display:none">
+            <div class="diag-progress-info">
+                <span id="diag-progress-text">第1题/共15题</span>
+                <span id="diag-self-eval-hint" style="display:none;color:#6C5CE7;font-size:12px">自评问卷</span>
+            </div>
+            <div class="diag-progress-bar">
+                <div class="diag-progress-fill" id="diag-progress-fill" style="width:0%"></div>
+            </div>
+        </div>
+        <div class="diag-body" id="diag-body">
+            <!-- 动态内容 -->
+        </div>
+    </div>
+
+    <!-- 诊断报告页 -->
+    <div class="report-overlay" id="report-overlay" style="display:none">
+        <div class="report-header">
+            <button class="report-back" onclick="closeReportPage()">
+                <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="15 18 9 12 15 6"/>
+                </svg>
+            </button>
+            <div class="report-header-title">诊断报告</div>
+        </div>
+        <div class="report-content" id="report-content">
+            <!-- 动态内容由JS填充 -->
+        </div>
+        <div class="report-cta-section" id="report-cta-section">
+            <div class="report-cta-hint" id="report-cta-hint"></div>
+            <button class="report-cta-btn" onclick="openReportPayModal()">
+                <span id="report-cta-text">升级冲刺营</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- 报告分享弹窗 -->
+    <div class="report-share-modal" id="report-share-modal" style="display:none" onclick="if(event.target===this)closeReportShare()">
+        <div class="report-share-box">
+            <div class="report-share-canvas-wrap" id="report-share-canvas-wrap">
+                <canvas id="report-share-canvas" width="280" height="400"></canvas>
+            </div>
+            <div class="report-share-hint">长按保存图片到相册</div>
+            <button class="report-share-close" onclick="closeReportShare()">关闭</button>
+        </div>
+    </div>
+
+    <!-- 每日一练 Quiz Overlay -->
+    <div class="quiz-overlay" id="quiz-overlay">
+        <div class="quiz-header">
+            <button class="quiz-close-btn" onclick="closeQuiz()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            </button>
+            <div class="quiz-header-center">
+                <div class="quiz-title" id="quiz-title">每日一练</div>
+                <div class="quiz-subtitle" id="quiz-subtitle">正在出题...</div>
+            </div>
+            <div style="width:36px"></div>
+        </div>
+        <div class="quiz-progress-bar">
+            <div class="quiz-progress-fill" id="quiz-progress-fill" style="width:0%"></div>
+        </div>
+        <div class="quiz-body" id="quiz-body">
+            <!-- Quiz content loaded dynamically -->
+        </div>
+        <div class="quiz-footer">
+            <button class="quiz-next-btn" id="quiz-next-btn" onclick="quizNextQuestion()">下一题</button>
+        </div>
+    </div>
+
+
+    <!-- JS -->
+    <script src="/js/main.js?v=20260516v3"></script>
+    <script src="/js/essay.js?v=202605142349"></script>
+</body>
             <div class="tab-page" id="tab-profile">
                 <div class="profile-section">
                     <div class="profile-avatar" id="profile-avatar">👤</div>
@@ -1133,7 +1418,7 @@
 
 
     <!-- JS -->
-    <script src="/js/main.js?v=20260516p"></script>
+    <script src="/js/main.js?v=20260516v3"></script>
     <script src="/js/essay.js?v=202605142349"></script>
 </body>
 </html>
