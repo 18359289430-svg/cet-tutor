@@ -422,8 +422,14 @@ function initApp() {
         }
         
         function handleReviewClick() {
-            openChat('companion');
-            setTimeout(function(){ sendSuggestion('复习我之前的错题'); }, 300);
+            if (chatState.isStreaming) return; // 防止流式回复中重复点击
+            // 如果已在陪练对话页面，直接发送，不重置对话
+            if (state.currentTab === 'diagnosis' && chatState.currentMode === 'companion' && chatState.conversationId) {
+                sendSuggestion('复习我之前的错题');
+            } else {
+                openChat('companion');
+                setTimeout(function(){ sendSuggestion('复习我之前的错题'); }, 300);
+            }
         }
 
         function handleModeTag(mode) {
