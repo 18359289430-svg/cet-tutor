@@ -1,14 +1,12 @@
-// @version 1.0.1 - 2026-05-16 17:36
-
         var personalities = [
-                { type:'佛系随缘选手', color:'#F5C6AA', emoji:'😌', img:'/public/人格卡/人格卡-佛系随缘选手.png', honor:'佛系陪跑员', comment:'你很佛系，但四级不佛', scores:{"细节定位":95,"推理判断":33,"同义替换":66,"主旨归纳":77,"态度判断":93} },
-                { type:'脑补大师', color:'#C4A8E0', emoji:'💭', img:'/public/人格卡/人格卡-脑补大师.png', honor:'四级白日梦家', comment:'笔在卷子上，魂在银河系', scores:{"细节定位":40,"推理判断":75,"同义替换":50,"主旨归纳":30,"态度判断":60} },
-                { type:'偏科大佬', color:'#FFB6C1', emoji:'📚', img:'/public/人格卡/人格卡-偏科大佬.png', honor:'阅读王者·翻译菜鸡', comment:'一半封神，一半白给', scores:{"细节定位":98,"推理判断":20,"同义替换":95,"主旨归纳":99,"态度判断":25} },
-                { type:'摆烂冠军', color:'#A8C4D8', emoji:'🛋️', img:'/public/人格卡/人格卡-摆烂冠军.png', honor:'四级陪跑一级选手', comment:'重在参与，随缘就好', scores:{"细节定位":10,"推理判断":15,"同义替换":5,"主旨归纳":20,"态度判断":80} },
-                { type:'全对卷王', color:'#E8E8E8', emoji:'🏆', img:'/public/人格卡/人格卡-全对卷王.png', honor:'四级人形标准答案', comment:'别人考四级，你考四级解析', scores:{"细节定位":100,"推理判断":98,"同义替换":100,"主旨归纳":100,"态度判断":95} },
-                { type:'吗喽型选手', color:'#C4956A', emoji:'🐒', img:'/public/人格卡/人格卡-吗喽型选手.png', honor:'熬夜硬肝特种兵', comment:'咖啡续着命，单词记不住', scores:{"细节定位":35,"推理判断":40,"同义替换":25,"主旨归纳":30,"态度判断":20} },
-                { type:'临时抱佛脚选手', color:'#FFA500', emoji:'🙏', img:'/public/人格卡/人格卡-临时抱佛脚选手.png', honor:'考前突击大师', comment:'平时不烧香，考前抱佛脚', scores:{"细节定位":60,"推理判断":55,"同义替换":70,"主旨归纳":65,"态度判断":50} },
-                { type:'资料囤积狂', color:'#4A7C8C', emoji:'📦', img:'/public/人格卡/人格卡-资料囤积狂.png', honor:'四级资料收藏家', comment:'收藏=学会，囤满=稳过', scores:{"细节定位":85,"推理判断":70,"同义替换":80,"主旨归纳":75,"态度判断":60} }
+                { type:'佛系随缘选手', color:'#F5C6AA', emoji:'😌', img:'/public/cards/foxisuiyuan.png', honor:'佛系陪跑员', comment:'你很佛系，但四级不佛', scores:{"细节定位":95,"推理判断":33,"同义替换":66,"主旨归纳":77,"态度判断":93} },
+                { type:'脑补大师', color:'#C4A8E0', emoji:'💭', img:'/public/cards/naobudashi.png', honor:'四级白日梦家', comment:'笔在卷子上，魂在银河系', scores:{"细节定位":40,"推理判断":75,"同义替换":50,"主旨归纳":30,"态度判断":60} },
+                { type:'偏科大佬', color:'#FFB6C1', emoji:'📚', img:'/public/cards/piankedalao.png', honor:'阅读王者·翻译菜鸡', comment:'一半封神，一半白给', scores:{"细节定位":98,"推理判断":20,"同义替换":95,"主旨归纳":99,"态度判断":25} },
+                { type:'摆烂冠军', color:'#A8C4D8', emoji:'🛋️', img:'/public/cards/bailanguanjun.png', honor:'四级陪跑一级选手', comment:'重在参与，随缘就好', scores:{"细节定位":10,"推理判断":15,"同义替换":5,"主旨归纳":20,"态度判断":80} },
+                { type:'全对卷王', color:'#E8E8E8', emoji:'🏆', img:'/public/cards/quandaowang.png', honor:'四级人形标准答案', comment:'别人考四级，你考四级解析', scores:{"细节定位":100,"推理判断":98,"同义替换":100,"主旨归纳":100,"态度判断":95} },
+                { type:'吗喽型选手', color:'#C4956A', emoji:'🐒', img:'/public/cards/malouxuanshou.png', honor:'熬夜硬肝特种兵', comment:'咖啡续着命，单词记不住', scores:{"细节定位":35,"推理判断":40,"同义替换":25,"主旨归纳":30,"态度判断":20} },
+                { type:'临时抱佛脚选手', color:'#FFA500', emoji:'🙏', img:'/public/cards/linshibaifofojiao.png', honor:'考前突击大师', comment:'平时不烧香，考前抱佛脚', scores:{"细节定位":60,"推理判断":55,"同义替换":70,"主旨归纳":65,"态度判断":50} },
+                { type:'资料囤积狂', color:'#4A7C8C', emoji:'📦', img:'/public/cards/ziliaodunjikuang.png', honor:'四级资料收藏家', comment:'收藏=学会，囤满=稳过', scores:{"细节定位":85,"推理判断":70,"同义替换":80,"主旨归纳":75,"态度判断":60} }
             ];
 
         // ===== localStorage 安全读取辅助函数 =====
@@ -143,7 +141,7 @@ function initApp() {
         async function syncUserDataFromCloud() {
             var userId = getCloudUserId();
             try {
-                var resp = await fetch('/api/progress?user_id=' + encodeURIComponent(userId), {
+                var resp = await fetch('https://guocet.top/api/progress?user_id=' + encodeURIComponent(userId), {
                     method: 'GET',
                     headers: { 'Content-Type': 'application/json' }
                 });
@@ -183,7 +181,7 @@ function initApp() {
         async function saveUserDataToCloud(data) {
             var userId = getCloudUserId();
             try {
-                var resp = await fetch('/api/progress', {
+                var resp = await fetch('https://guocet.top/api/progress', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ user_id: userId, data: data })
@@ -263,7 +261,7 @@ function initApp() {
 
             // 处理激活码
             if (!claimCode) return;
-            fetch('/api/activate-with-code', {
+            fetch('https://guocet.top/api/activate-with-code', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ code: claimCode.trim() })
@@ -286,7 +284,7 @@ function initApp() {
             var plan = 'sprint';
             var msgEl = document.getElementById('activate-msg') || document.createElement('div');
             
-            fetch('/api/activate-with-mbd-order', {
+            fetch('https://guocet.top/api/activate-with-mbd-order', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ order_id: orderId, plan: plan })
@@ -423,19 +421,8 @@ function initApp() {
         }
         
         function handleReviewClick() {
-            if (chatState.isStreaming) return;
-            if (handleReviewClick._lock) return;
-            handleReviewClick._lock = true;
-            setTimeout(function(){ handleReviewClick._lock = false; }, 5000);
-            var questions = getWrongQuestions().filter(function(q) { return !q.reviewed; });
-            if (questions.length === 0) {
-                // 没有未复习的错题，直接打开AI陪练
-                openChat("companion", "wrongbook");
-                setTimeout(function(){ sendSuggestion("复习我之前的错题"); }, 300);
-            } else {
-                // 有错题，先逐题重做
-                openReview();
-            }
+            openChat('companion');
+            setTimeout(function(){ sendSuggestion('复习我之前的错题'); }, 300);
         }
 
         function handleModeTag(mode) {
@@ -1730,20 +1717,7 @@ function initApp() {
 
         // 删除对话
         function deleteConversation(convId) {
-            // 【修复】添加确认对话框
             var list = getChatList();
-            var convTitle = '';
-            for (var i = 0; i < list.length; i++) {
-                if (list[i].id === convId) {
-                    convTitle = list[i].title || '此对话';
-                    break;
-                }
-            }
-            
-            if (!confirm('确定要删除「' + convTitle + '」吗？删除后无法恢复。')) {
-                return;
-            }
-            
             var newList = [];
             for (var i = 0; i < list.length; i++) {
                 if (list[i].id !== convId) {
@@ -1872,45 +1846,6 @@ function initApp() {
             hasReplied: false
         };
 
-        // 查找符合条件的历史对话（用于复用已有对话而非重复创建）
-        function findExistingConversation(mode, hint) {
-            var list = getChatList();
-            var hintLower = (hint || '').toLowerCase();
-            
-            // 优先匹配：模式相同 + 关键词匹配
-            for (var i = 0; i < list.length; i++) {
-                var item = list[i];
-                if (item.mode !== mode) continue;
-                
-                // wrongbook 模式：查找包含"错题"、"复习"等关键词的对话
-                if (hintLower === 'wrongbook') {
-                    var titleLower = (item.title || '').toLowerCase();
-                    var lastMsgLower = (item.lastMsg || '').toLowerCase();
-                    if (titleLower.indexOf('错题') !== -1 || 
-                        titleLower.indexOf('复习') !== -1 ||
-                        lastMsgLower.indexOf('错题') !== -1 ||
-                        lastMsgLower.indexOf('复习') !== -1 ||
-                        titleLower.indexOf('wrongbook') !== -1) {
-                        return item.id;
-                    }
-                }
-                // essay 模式：查找包含"作文"、"批改"等关键词的对话
-                else if (hintLower === 'essay') {
-                    var titleLower = (item.title || '').toLowerCase();
-                    if (titleLower.indexOf('作文') !== -1 || 
-                        titleLower.indexOf('批改') !== -1 ||
-                        titleLower.indexOf('essay') !== -1) {
-                        return item.id;
-                    }
-                }
-                // companion 模式：返回最近的companion对话
-                else if (mode === 'companion') {
-                    return item.id; // 返回第一个匹配的companion对话
-                }
-            }
-            return null;
-        }
-
         function openChat(mode) {
             mode = mode || 'diagnosis';
             var data = state.userData || {};
@@ -1925,20 +1860,6 @@ function initApp() {
                 'diagnosis': '7636289658620215331',
                 'companion': '7637702903679631395'
             };
-            
-            // 【修复】如果有hint参数（第二个参数），先检查是否有符合条件的历史对话
-            var hint = arguments[1];
-            if (hint) {
-                var existingConvId = findExistingConversation(mode, hint);
-                if (existingConvId) {
-                    console.log('[openChat] Found existing conversation, reusing:', existingConvId);
-                    // 直接加载已有对话，不新建
-                    openConversation(existingConvId);
-                    // 延迟发送hint消息
-                    setTimeout(function() { sendSuggestion(hint); }, 300);
-                    return;
-                }
-            }
             
             chatState.botId = botMap[mode];
             chatState.conversationId = null;
@@ -3088,7 +3009,7 @@ function initApp() {
             }
             
             // 本地没有数据，尝试从Coze API获取
-            fetch('/api/chat/messages?conversation_id=' + conversationId, {
+            fetch('https://guocet.top/api/chat/messages?conversation_id=' + conversationId, {
                 headers: { 'Content-Type': 'application/json' }
             }).then(function(r) { return r.json(); }).then(function(resp) {
                 console.log('[loadChatHistory] API response:', JSON.stringify(resp).substring(0, 500));
@@ -3429,7 +3350,7 @@ function activateWithCode() {
     btn.textContent = '激活中...';
     if (msgEl) { msgEl.style.color = '#64748B'; msgEl.textContent = ''; }
 
-    fetch('/api/activate-with-code', {
+    fetch('https://guocet.top/api/activate-with-code', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ code: input.value.trim() })
@@ -3468,7 +3389,7 @@ function activateWithMbdOrder(plan) {
     btn.textContent = '验证中...';
     if (msgEl) { msgEl.style.color = '#64748B'; msgEl.textContent = '正在验证订单...'; }
 
-    fetch('/api/activate-with-mbd-order', {
+    fetch('https://guocet.top/api/activate-with-mbd-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ order_id: input.value.trim(), plan: plan })
@@ -3850,7 +3771,7 @@ async function requestQuizQuestion() {
     }
     
     // 从真题库获取题目（不再用AI编题，支持自适应推题）
-    var realQuizUrl = '/api/quiz/random?type=' + encodeURIComponent(randomType);
+    var realQuizUrl = 'https://guocet.top/api/quiz/random?type=' + encodeURIComponent(randomType);
     
     // 传递用户五维分数用于自适应推题
     var user = state.userData || {};
@@ -5135,7 +5056,7 @@ function generateLearningPlan() {
     var systemPrompt = '你是四级备考规划专家。用户已完成能力诊断，五维分数如下：' + 
         JSON.stringify(dims) + '。请根据这些分数生成4周学习计划，返回JSON格式：{"weeks":[{"week":1,"focus":"本周重点","tasks":["任务1","任务2"]},{"week":2,"focus":"本周重点","tasks":["任务1","任务2"]},{"week":3,"focus":"本周重点","tasks":["任务1","任务2"]},{"week":4,"focus":"本周重点","tasks":["任务1","任务2"]}]} 只返回JSON。';
     
-    fetch('/api/deepseek/chat', {
+    fetch('https://guocet.top/api/deepseek/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -5712,7 +5633,7 @@ function activateWithMbdOrderFromPlans() {
     }
     if (msgEl) { msgEl.style.color = '#64748B'; msgEl.textContent = '正在验证订单...'; }
 
-    fetch('/api/activate-with-mbd-order', {
+    fetch('https://guocet.top/api/activate-with-mbd-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ order_id: input.value.trim() })
