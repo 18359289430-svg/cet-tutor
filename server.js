@@ -1434,7 +1434,36 @@ async function handleApi(req, res, pathname) {
             }
         }
 
-        // 404
+        // ===== GitHub Webhook Auto-Deploy =====
+    if (req.url === '/webhook/deploy' && req.method === 'POST') {
+        let body = '';
+        req.on('data', chunk => { body += chunk.toString(); });
+        req.on('end', () => {
+            const WEBHOOK_SECRET = 'cet_deploy_2026_secret';
+            try {
+                const payload = JSON.parse(body);
+                // 只处理 main 分支的 push
+                if (payload.ref === 'refs/heads/main') {
+                    console.log('[Webhook] 收到push事件，开始自动部署...');
+                    const { execSync } = require('child_process');
+                    try {
+                        execSync('cd /opt/cet-tutor && git fetch --all && git reset --hard origin/main && pm2 restart all', { timeout: 30000 });
+                        console.log('[Webhook] 部署完成');
+                    } catch (e) {
+                        console.error('[Webhook] 部署失败:', e.message);
+                    }
+                }
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ ok: true, message: payload.ref ? 'processed' : 'ping' }));
+            } catch (e) {
+                res.writeHead(400);
+                res.end('Bad Request');
+            }
+        });
+        return;
+    }
+
+    // 404
         // GET /api/quiz/random - 随机获取真题（每日一练用，支持自适应推题）
         if (pathname === '/api/quiz/random' && req.method === 'GET') {
             try {
@@ -1509,7 +1538,36 @@ async function handleApi(req, res, pathname) {
             return;
         }
 
-        // 404
+        // ===== GitHub Webhook Auto-Deploy =====
+    if (req.url === '/webhook/deploy' && req.method === 'POST') {
+        let body = '';
+        req.on('data', chunk => { body += chunk.toString(); });
+        req.on('end', () => {
+            const WEBHOOK_SECRET = 'cet_deploy_2026_secret';
+            try {
+                const payload = JSON.parse(body);
+                // 只处理 main 分支的 push
+                if (payload.ref === 'refs/heads/main') {
+                    console.log('[Webhook] 收到push事件，开始自动部署...');
+                    const { execSync } = require('child_process');
+                    try {
+                        execSync('cd /opt/cet-tutor && git fetch --all && git reset --hard origin/main && pm2 restart all', { timeout: 30000 });
+                        console.log('[Webhook] 部署完成');
+                    } catch (e) {
+                        console.error('[Webhook] 部署失败:', e.message);
+                    }
+                }
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ ok: true, message: payload.ref ? 'processed' : 'ping' }));
+            } catch (e) {
+                res.writeHead(400);
+                res.end('Bad Request');
+            }
+        });
+        return;
+    }
+
+    // 404
         sendJson(res, 404, { error: 'API不存在' });
 
     } catch (error) {
@@ -1897,6 +1955,35 @@ async function handleDeepseekEssayGrade(req, res) {
             res.end(fs.readFileSync(filePath));
             return;
         }
+    }
+
+    // ===== GitHub Webhook Auto-Deploy =====
+    if (req.url === '/webhook/deploy' && req.method === 'POST') {
+        let body = '';
+        req.on('data', chunk => { body += chunk.toString(); });
+        req.on('end', () => {
+            const WEBHOOK_SECRET = 'cet_deploy_2026_secret';
+            try {
+                const payload = JSON.parse(body);
+                // 只处理 main 分支的 push
+                if (payload.ref === 'refs/heads/main') {
+                    console.log('[Webhook] 收到push事件，开始自动部署...');
+                    const { execSync } = require('child_process');
+                    try {
+                        execSync('cd /opt/cet-tutor && git fetch --all && git reset --hard origin/main && pm2 restart all', { timeout: 30000 });
+                        console.log('[Webhook] 部署完成');
+                    } catch (e) {
+                        console.error('[Webhook] 部署失败:', e.message);
+                    }
+                }
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ ok: true, message: payload.ref ? 'processed' : 'ping' }));
+            } catch (e) {
+                res.writeHead(400);
+                res.end('Bad Request');
+            }
+        });
+        return;
     }
 
     // 404
