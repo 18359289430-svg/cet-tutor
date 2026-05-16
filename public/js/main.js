@@ -421,8 +421,19 @@ function initApp() {
         }
         
         function handleReviewClick() {
-            openChat('companion');
-            setTimeout(function(){ sendSuggestion('复习我之前的错题'); }, 300);
+            if (chatState.isStreaming) return;
+            if (handleReviewClick._lock) return;
+            handleReviewClick._lock = true;
+            setTimeout(function(){ handleReviewClick._lock = false; }, 5000);
+            var questions = getWrongQuestions().filter(function(q) { return !q.reviewed; });
+            if (questions.length === 0) {
+                // 没有未复习的错题，直接打开AI陪练
+                openChat("companion", "wrongbook");
+                setTimeout(function(){ sendSuggestion("复习我之前的错题"); }, 300);
+            } else {
+                // 有错题，先逐题重做
+                openReview();
+            }
         }
 
         function handleModeTag(mode) {
