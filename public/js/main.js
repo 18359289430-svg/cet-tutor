@@ -3552,6 +3552,19 @@ function selectPlan(plan) {
 }
 
 // 切换套餐标签
+
+
+// 切换Coze风格套餐标签
+function switchCozeTab(el, plan) {
+    document.querySelectorAll('.coze-tab').forEach(function(t) { t.classList.remove('active'); });
+    el.classList.add('active');
+    var targetCard = document.querySelector('.coze-card[data-plan="' + plan + '"]');
+    if (targetCard) {
+        targetCard.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    }
+    selectPlan(plan);
+}
+
 function switchPlanTab(plan) {
     var tabs = document.querySelectorAll('.coze-plan-tab');
     var indicator = document.querySelector('.coze-plan-tab-indicator');

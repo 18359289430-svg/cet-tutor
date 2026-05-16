@@ -512,3 +512,44 @@
         width: calc(400px / 3 - 32px / 3);
     }
 }
+
+/* ===== 原版Coze风格套餐卡片样式 ===== */
+.coze-plans-current { margin: 0; padding: 16px 20px; background: #1a1a2e; }
+.coze-current-info { display: flex; justify-content: space-between; align-items: center; }
+.coze-current-left { display: flex; align-items: center; gap: 8px; }
+.coze-current-dot { width: 8px; height: 8px; border-radius: 50%; background: #00B894; flex-shrink: 0; }
+.coze-current-name { font-size: 15px; font-weight: 600; color: white; }
+.coze-current-renew { font-size: 12px; color: rgba(255,255,255,0.5); }
+.coze-tabs { display: flex; padding: 16px 16px 0; gap: 0; background: var(--bg); }
+.coze-tab { flex: 1; text-align: center; padding: 10px 0; font-size: 14px; font-weight: 500; color: var(--text-tertiary); border-bottom: 2px solid transparent; cursor: pointer; transition: all 0.2s; }
+.coze-tab.active { color: var(--primary); border-bottom-color: var(--primary); font-weight: 600; }
+.coze-cards { padding: 16px 0 16px 16px; display: flex; gap: 10px; overflow-x: auto; -webkit-overflow-scrolling: touch; scroll-snap-type: x mandatory; scrollbar-width: none; padding-right: 16px; }
+.coze-cards::-webkit-scrollbar { display: none; }
+.coze-card { flex-shrink: 0; width: 180px; background: var(--card-bg); border-radius: 14px; padding: 14px; box-shadow: var(--card-shadow); cursor: pointer; transition: all 0.2s; border: 1.5px solid transparent; scroll-snap-align: start; display: flex; flex-direction: column; position: relative; }
+.coze-card:active { transform: scale(0.98); }
+.coze-card.recommended { border-color: var(--primary); }
+.coze-card-badge { position: absolute; top: -1px; right: 12px; background: var(--primary); color: white; font-size: 10px; font-weight: 600; padding: 2px 8px 4px; border-radius: 0 0 6px 6px; }
+.coze-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; }
+.coze-card-name { font-size: 14px; font-weight: 700; color: var(--text-primary); }
+.coze-card-price { display: flex; align-items: baseline; gap: 1px; }
+.coze-price-symbol { font-size: 12px; font-weight: 600; color: var(--text-primary); }
+.coze-price-num { font-size: 22px; font-weight: 700; color: var(--text-primary); letter-spacing: -1px; line-height: 1; }
+.coze-price-original { font-size: 11px; color: var(--text-tertiary); text-decoration: line-through; margin-left: 4px; }
+.coze-card-tag { font-size: 10px; color: #E17055; font-weight: 600; margin-bottom: 8px; }
+.coze-card.recommended .coze-card-tag { color: var(--primary); }
+.coze-card-features { list-style: none; padding: 0; margin: 0 0 10px; flex: 1; }
+.coze-card-features li { font-size: 11px; color: var(--text-secondary); padding: 2px 0; line-height: 1.5; }
+.coze-card-btn { width: 100%; padding: 8px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.15s; border: none; margin-top: auto; }
+.coze-card-btn:active { transform: scale(0.98); }
+.coze-card-btn.primary { background: var(--primary); color: white; }
+.coze-card-btn.outline { background: rgba(108,92,231,0.06); color: var(--primary); }
+.coze-benefits { margin: 0 16px 16px; padding: 16px; background: var(--card-bg); border-radius: 14px; box-shadow: var(--card-shadow); }
+.coze-benefits-header { margin-bottom: 10px; }
+.coze-benefits-title { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+.coze-benefits-list { display: flex; flex-direction: column; gap: 6px; }
+.coze-benefit-item { font-size: 12px; color: var(--text-secondary); display: flex; align-items: center; gap: 6px; }
+.coze-benefit-check { color: var(--primary); font-weight: 600; font-size: 11px; }
+.coze-faq { padding: 0 16px 24px; }
+.coze-faq-title { font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 10px; }
+
+    </style>
