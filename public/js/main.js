@@ -113,6 +113,10 @@
             }
         }
         
+        function updateWrongBookBadge() {
+            updateWrongCount();
+        }
+
         function getWrongQuestionStats() {
             var questions = getWrongQuestions();
             var today = new Date();
