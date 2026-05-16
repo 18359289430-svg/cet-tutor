@@ -275,6 +275,7 @@
 .coze-card { flex-shrink: 0; width: 180px; background: var(--card-bg); border-radius: 14px; padding: 14px; box-shadow: var(--card-shadow); cursor: pointer; transition: all 0.2s; border: 1.5px solid transparent; scroll-snap-align: start; display: flex; flex-direction: column; position: relative; }
 .coze-card:active { transform: scale(0.98); }
 .coze-card.recommended { border-color: var(--primary); }
+.coze-card.selected { border-color: var(--primary); background: rgba(108,92,231,0.04); box-shadow: 0 0 0 3px rgba(108,92,231,0.15); }
 .coze-card-badge { position: absolute; top: -1px; right: 12px; background: var(--primary); color: white; font-size: 10px; font-weight: 600; padding: 2px 8px 4px; border-radius: 0 0 6px 6px; }
 .coze-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; }
 .coze-card-name { font-size: 14px; font-weight: 700; color: var(--text-primary); }
