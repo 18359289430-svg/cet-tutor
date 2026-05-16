@@ -1858,6 +1858,18 @@ async function handleDeepseekEssayGrade(req, res) {
         }
     }
 
+    // /cards/ 路径映射到 public/cards/（兼容CloudBase路径）
+    if (pathname.startsWith('/cards/')) {
+        const filePath = path.join(__dirname, 'public', pathname.slice(1));
+        if (fs.existsSync(filePath)) {
+            const ext = path.extname(filePath).toLowerCase();
+            res.setHeader('Cache-Control', 'public, max-age=604800');
+            res.setHeader('Content-Type', ext === '.jpg' || ext === '.jpeg' ? 'image/jpeg' : 'image/' + ext.slice(1));
+            res.end(fs.readFileSync(filePath));
+            return;
+        }
+    }
+
     // public目录静态文件服务
     const publicDir = path.join(__dirname, 'public');
     if (fs.existsSync(publicDir) && pathname.startsWith('/public/')) {
