@@ -994,6 +994,11 @@ function initApp() {
 
         // ===== 错题本渲染函数 =====
         var wrongbookFilterType = '全部';
+
+        function filterWrongbook(type) {
+            wrongbookFilterType = type;
+            renderWrongBook();
+        }
         
         function renderWrongBook() {
             var container = document.getElementById('wrongbook-content');
