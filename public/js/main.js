@@ -1377,7 +1377,42 @@ function initApp() {
             html += '</div>';
             html += '</div>';
             html += '</div>';
+            // 问AI小按钮 - 放在卡片右下角
+            html += '<button class="wrong-ask-ai-btn" onclick="event.stopPropagation(); askAIAboutQuestion(\'' + q.id + '\')">';
+            html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>';
+            html += '问AI</button>';
             return html;
+        }
+        
+        // ===== 错题本问AI功能 =====
+        function askAIAboutQuestion(id) {
+            var questions = getWrongQuestions();
+            var q = questions.find(function(item) { return item.id === id; });
+            if (!q) return;
+            
+            // 标记已复习
+            markQuestionReviewed(id);
+            
+            // 构建错题内容用于发送给AI
+            var questionContent = '请帮我分析并出变式题巩固这道' + (q.type || '词汇') + '题：\n\n' + 
+                '【原题】' + q.question + '\n\n' +
+                'A. ' + q.optionA + '\n' +
+                'B. ' + q.optionB + '\n' +
+                'C. ' + q.optionC + '\n' +
+                'D. ' + q.optionD + '\n\n' +
+                '【正确答案】' + q.answer + '\n' +
+                '【解析】' + (q.explanation || '暂无');
+            
+            // 存入localStorage
+            localStorage.setItem('cet_ask_ai_question', questionContent);
+            
+            // 切换到陪练tab
+            switchTab('diagnosis');
+            
+            // 切换到陪练模式
+            setTimeout(function() {
+                handleModeTag('companion');
+            }, 200);
         }
         
         // 跳转到错题本
@@ -2655,6 +2690,23 @@ function toggleWrongDetail(card) {
             var chips = document.getElementById('input-chips');
             if (chips) chips.style.display = '';
             
+            // 初始化陪练答题记录（用于画像回写）
+            chatState.practiceResults = [];
+            chatState.lastProfileUpdate = 0;
+            
+            // 检查是否有从错题本跳转来的待发送题目
+            if (mode === 'companion') {
+                var pendingQuestion = localStorage.getItem('cet_ask_ai_question');
+                if (pendingQuestion) {
+                    // 清空待发送题目
+                    localStorage.removeItem('cet_ask_ai_question');
+                    // 延迟发送，让UI先完成切换
+                    setTimeout(function() {
+                        sendSuggestion(pendingQuestion);
+                    }, 500);
+                }
+            }
+            
             chatListView = false;
             currentConversationId = null;
         }
@@ -3710,6 +3762,12 @@ function toggleWrongDetail(card) {
                     updateConversationMeta(text, fullText);
                     savePracticeRecord();
                     checkStreakOnChat();
+                    
+                    // 陪练模式：解析答题结果并回写画像
+                    if (chatState.currentMode === 'companion') {
+                        updateProfileFromPractice(fullText);
+                    }
+                    
                     // 最后一条免费消息时追加轻提示
                     if (willUseLastFree && aiDiv) {
                         appendLimitHintToMessage(aiDiv);
@@ -10984,6 +11042,163 @@ function escapeHtml(text) {
     div.textContent = text;
     return div.innerHTML;
 }
+
+// ===== 陪练画像回写功能 =====
+        // 题目类型到能力维度的映射
+        var DIM_TYPE_MAP = {
+            '词汇': '同义替换',
+            '单词': '同义替换',
+            '语法': '细节定位',
+            '阅读': '阅读',
+            '听力': '细节定位',
+            '写作': '主旨归纳',
+            '翻译': '推理判断'
+        };
+        
+        // 解析AI回复中的答题结果并更新画像
+        function updateProfileFromPractice(aiResponse) {
+            if (!aiResponse || chatState.currentMode !== 'companion') return;
+            
+            // 初始化 practiceResults 数组
+            if (!chatState.practiceResults) {
+                chatState.practiceResults = [];
+            }
+            
+            // 解析AI回复中的✅和❌标记
+            // 格式1: ✅ 正确 / ❌ 错误
+            // 格式2: [答对] / [答错]
+            // 格式3: 正确: ✅ / 错误: ❌
+            
+            var responseText = aiResponse;
+            
+            // 提取所有答对/答错的记录
+            var correctMatches = responseText.match(/✅[^，。！？.,\x00-\x1f]{0,50}/g) || [];
+            var wrongMatches = responseText.match(/❌[^，。！？.,\x00-\x1f]{0,50}/g) || [];
+            
+            // 提取题目类型（通过上下文判断）
+            var detectedTypes = [];
+            var typeKeywords = ['词汇', '单词', '语法', '阅读', '听力', '写作', '翻译'];
+            typeKeywords.forEach(function(type) {
+                if (responseText.indexOf(type) !== -1) {
+                    detectedTypes.push(type);
+                }
+            });
+            
+            // 如果没有明确类型，默认推断
+            var defaultType = '词汇';
+            if (detectedTypes.length > 0) {
+                defaultType = detectedTypes[0];
+            }
+            
+            // 记录本次解析的结果
+            var results = [];
+            correctMatches.forEach(function() {
+                results.push({ correct: true, type: defaultType });
+            });
+            wrongMatches.forEach(function() {
+                results.push({ correct: false, type: defaultType });
+            });
+            
+            // 添加到累计结果
+            chatState.practiceResults = chatState.practiceResults.concat(results);
+            
+            // 每5题更新一次画像
+            if (chatState.practiceResults.length >= 5) {
+                updateAbilityScoresFromPractice();
+                chatState.practiceResults = []; // 清空已处理的结果
+            }
+        }
+        
+        // 根据答题结果更新能力分数
+        function updateAbilityScoresFromPractice() {
+            if (!chatState.practiceResults || chatState.practiceResults.length === 0) return;
+            
+            var results = chatState.practiceResults;
+            var stats = { correct: 0, wrong: 0, types: {} };
+            
+            results.forEach(function(r) {
+                if (r.correct) {
+                    stats.correct++;
+                } else {
+                    stats.wrong++;
+                }
+                
+                var dim = DIM_TYPE_MAP[r.type] || '细节定位';
+                if (!stats.types[dim]) {
+                    stats.types[dim] = { correct: 0, wrong: 0 };
+                }
+                if (r.correct) {
+                    stats.types[dim].correct++;
+                } else {
+                    stats.types[dim].wrong++;
+                }
+            });
+            
+            // 获取当前分数
+            var abilityScores = getAbilityScores();
+            if (!abilityScores || !abilityScores.dims) {
+                // 如果没有诊断数据，初始化一个
+                abilityScores = {
+                    dims: {
+                        '细节定位': 50,
+                        '推理判断': 50,
+                        '同义替换': 50,
+                        '主旨归纳': 50,
+                        '态度判断': 50
+                    }
+                };
+            }
+            
+            // 更新各维度分数
+            for (var dim in stats.types) {
+                var dimStats = stats.types[dim];
+                var currentScore = abilityScores.dims[dim] || 50;
+                var total = dimStats.correct + dimStats.wrong;
+                var correctRate = total > 0 ? (dimStats.correct / total) : 0;
+                
+                // 计算分数变化
+                var scoreChange = 0;
+                if (correctRate >= 0.8) {
+                    scoreChange = 5; // 大部分正确，加5分
+                } else if (correctRate >= 0.6) {
+                    scoreChange = 3; // 较好，加3分
+                } else if (correctRate >= 0.4) {
+                    scoreChange = 1; // 一般，加1分
+                } else {
+                    scoreChange = -2; // 大部分错误，减2分
+                }
+                
+                // 应用变化（限制在0-100范围）
+                var newScore = Math.max(0, Math.min(100, currentScore + scoreChange));
+                abilityScores.dims[dim] = newScore;
+            }
+            
+            // 保存到 localStorage
+            var currentType = (state.userData && state.userData.examType) || 'cet4';
+            var storageKey = currentType + '_ability_scores';
+            localStorage.setItem(storageKey, JSON.stringify(abilityScores));
+            
+            // 更新 state 中的数据
+            if (state.userData) {
+                state.userData.diagnosis = state.userData.diagnosis || {};
+                state.userData.diagnosis.dims = abilityScores.dims;
+            }
+            
+            // 刷新雷达图显示（如果有的话）
+            setTimeout(function() {
+                try {
+                    // 仪表盘雷达图
+                    var dashRadar = document.getElementById('dashboard-radar-canvas');
+                    if (dashRadar && abilityScores.dims) {
+                        drawRadarChart(dashRadar, abilityScores.dims);
+                    }
+                } catch(e) {
+                    console.log('[Profile] 刷新雷达图失败:', e.message);
+                }
+            }, 100);
+            
+            console.log('[Profile] 已更新画像:', abilityScores.dims);
+        }
 
 // ===== 用户ID数据恢复功能 =====
 // 复制用户ID到剪贴板

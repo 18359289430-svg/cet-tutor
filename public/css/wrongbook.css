@@ -516,3 +516,45 @@
 .wrongbook-bottom-spacer {
     height: 24px;
 }
+
+/* ===== 问AI小按钮样式 ===== */
+.wrong-ask-ai-btn {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 10px;
+    background: #6C5CE7;
+    color: white;
+    border: none;
+    border-radius: 14px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(108, 92, 231, 0.3);
+    z-index: 10;
+}
+
+.wrong-ask-ai-btn svg {
+    width: 14px;
+    height: 14px;
+}
+
+.wrong-ask-ai-btn:hover {
+    background: #5B4BD5;
+    transform: scale(1.02);
+    box-shadow: 0 3px 12px rgba(108, 92, 231, 0.4);
+}
+
+.wrong-ask-ai-btn:active {
+    transform: scale(0.97);
+    background: #4A3BC5;
+}
+
+/* 卡片展开时隐藏按钮（避免遮挡） */
+.wrong-card.expanded .wrong-ask-ai-btn {
+    display: none;
+}
