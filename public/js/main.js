@@ -317,7 +317,20 @@ function calculateScoreDiff(current, previous, dimName) {
 function generateCompareSummary(current, previous) {
     if (!previous) return null;
     
-    var totalDiff = current.totalScore - previous.totalScore;
+    // 确保totalScore有值（兜底计算）
+    var currentTotal = current.totalScore || 0;
+    if (currentTotal === 0 && current.dims && Object.keys(current.dims).length > 0) {
+        var sum = 0, cnt = 0;
+        Object.keys(current.dims).forEach(function(k) { sum += (current.dims[k] || 0); cnt++; });
+        if (cnt > 0) currentTotal = Math.round(sum / cnt);
+    }
+    var previousTotal = previous.totalScore || 0;
+    if (previousTotal === 0 && previous.scores && Object.keys(previous.scores).length > 0) {
+        var sum2 = 0, cnt2 = 0;
+        Object.keys(previous.scores).forEach(function(k) { sum2 += (previous.scores[k] || 0); cnt2++; });
+        if (cnt2 > 0) previousTotal = Math.round(sum2 / cnt2);
+    }
+    var totalDiff = currentTotal - previousTotal;
     var improvements = [];
     var declines = [];
     
@@ -865,7 +878,7 @@ function initApp() {
                 userId = getCloudUserId();
             }
             try {
-                var resp = await fetch('http://8.218.88.15:8080/api/progress?user_id=' + encodeURIComponent(userId), {
+                var resp = await fetch('/api/progress?user_id=' + encodeURIComponent(userId), {
                     method: 'GET',
                     headers: { 'Content-Type': 'application/json' }
                 });
@@ -907,7 +920,7 @@ function initApp() {
         async function saveUserDataToCloud(data) {
             var userId = getCloudUserId();
             try {
-                var resp = await fetch('http://8.218.88.15:8080/api/progress', {
+                var resp = await fetch('/api/progress', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ user_id: userId, data: data })
@@ -987,7 +1000,7 @@ function initApp() {
 
             // 处理激活码
             if (!claimCode) return;
-            fetch('http://8.218.88.15:8080/api/activate-with-code', {
+            fetch('/api/activate-with-code', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ code: claimCode.trim() })
@@ -1010,7 +1023,7 @@ function initApp() {
             var plan = 'sprint';
             var msgEl = document.getElementById('activate-msg') || document.createElement('div');
             
-            fetch('http://8.218.88.15:8080/api/activate-with-mbd-order', {
+            fetch('/api/activate-with-mbd-order', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ order_id: orderId, plan: plan })
@@ -1385,13 +1398,6 @@ function toggleWrongDetail(card) {
                     card.classList.remove('expanded');
                 }
             }
-        }
-        
-        function escapeHtml(text) {
-            if (!text) return '';
-            var div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
         }
         
         function explainWithAI(id) {
@@ -3181,12 +3187,6 @@ function toggleWrongDetail(card) {
             return html;
         }
 
-        function escapeHtml(text) {
-            var div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
         // ===== 打卡/Streak 系统 =====
         function getStreakData() {
             try {
@@ -3199,11 +3199,6 @@ function toggleWrongDetail(card) {
 
         function saveStreakData(d) {
             localStorage.setItem('cet_streak', JSON.stringify(d));
-        }
-
-        function getTodayStr() {
-            var now = new Date();
-            return now.getFullYear() + '-' + (now.getMonth()+1) + '-' + now.getDate();
         }
 
         function doCheckIn() {
@@ -4047,7 +4042,7 @@ function toggleWrongDetail(card) {
             }
             
             // 本地没有数据，尝试从Coze API获取
-            fetch('http://8.218.88.15:8080/api/chat/messages?conversation_id=' + conversationId, {
+            fetch('/api/chat/messages?conversation_id=' + conversationId, {
                 headers: { 'Content-Type': 'application/json' }
             }).then(function(r) { return r.json(); }).then(function(resp) {
                 console.log('[loadChatHistory] API response:', JSON.stringify(resp).substring(0, 500));
@@ -4485,7 +4480,7 @@ function activateWithCode() {
     btn.textContent = '激活中...';
     if (msgEl) { msgEl.style.color = '#64748B'; msgEl.textContent = ''; }
 
-    fetch('http://8.218.88.15:8080/api/activate-with-code', {
+    fetch('/api/activate-with-code', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ code: input.value.trim() })
@@ -4525,7 +4520,7 @@ function activateWithMbdOrder(plan) {
     btn.textContent = '验证中...';
     if (msgEl) { msgEl.style.color = '#64748B'; msgEl.textContent = '正在验证订单...'; }
 
-    fetch('http://8.218.88.15:8080/api/activate-with-mbd-order', {
+    fetch('/api/activate-with-mbd-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ order_id: input.value.trim(), plan: plan })
@@ -4908,7 +4903,7 @@ async function requestQuizQuestion() {
     }
     
     // 从真题库获取题目（不再用AI编题，支持自适应推题）
-    var realQuizUrl = 'http://8.218.88.15:8080/api/quiz/random?type=' + encodeURIComponent(randomType);
+    var realQuizUrl = '/api/quiz/random?type=' + encodeURIComponent(randomType);
     
     // 传递用户五维分数用于自适应推题
     var user = state.userData || {};
@@ -7514,7 +7509,7 @@ function generateLearningPlan() {
     var systemPrompt = '你是四级备考规划专家。用户已完成能力诊断，五维分数如下：' + 
         JSON.stringify(dims) + '。请根据这些分数生成4周学习计划，返回JSON格式：{"weeks":[{"week":1,"focus":"本周重点","tasks":["任务1","任务2"]},{"week":2,"focus":"本周重点","tasks":["任务1","任务2"]},{"week":3,"focus":"本周重点","tasks":["任务1","任务2"]},{"week":4,"focus":"本周重点","tasks":["任务1","任务2"]}]} 只返回JSON。';
     
-    fetch('http://8.218.88.15:8080/api/deepseek/chat', {
+    fetch('/api/deepseek/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -8317,7 +8312,7 @@ function activateWithMbdOrderFromPlans() {
     }
     if (msgEl) { msgEl.style.color = '#64748B'; msgEl.textContent = '正在验证订单...'; }
 
-    fetch('http://8.218.88.15:8080/api/activate-with-mbd-order', {
+    fetch('/api/activate-with-mbd-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ order_id: input.value.trim() })
