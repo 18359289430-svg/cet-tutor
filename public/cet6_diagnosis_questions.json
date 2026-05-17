@@ -1,0 +1,196 @@
+{
+  "version": "v1-真题版",
+  "total_questions": 15,
+  "ability_summary": {
+    "同义替换": 2,
+    "细节定位": 7,
+    "推理判断": 3,
+    "主旨归纳": 2,
+    "态度推断": 1
+  },
+  "passages": [
+    {
+      "passage_id": 1,
+      "text": "Passage Two\nQuestions 51 to 55 are based on the following passage.\nNowhere do the twin forces of climate change and urbanization converge quite like in cities, where concrete and asphalt absorb and radiate heat, worsening temperatures even as the global average climbs. Urban areas can be 1 to 7 degrees Celsius hotter than surrounding rural areas—a phenomenon known as the urban heat island effect. For many city dwellers, air conditioning offers relief, but the energy demand contributes to climate change, creating a vicious cycle.\nCities worldwide are testing nature-based solutions to beat the heat. Urban forests, green roofs, and street trees can lower surface and air temperatures through shading and evapotranspiration. In Mexico City, a massive voluntary demolition program has cleared nearly 60,000 square meters of impermeable surfaces since 2020, replacing them with parks and green areas. Singapore's "City in a Garden" vision has transformed the island nation, with green spaces covering over 40% of its land area. These initiatives not only reduce temperatures but also improve air quality, reduce storm water runoff, and enhance residents' mental health.\nYet green infrastructure faces significant challenges in dense urban environments. Green roofs require structural modifications and ongoing maintenance. Street trees need space for roots and suffer from pollution and limited soil volume. Water scarcity in many cities limits the potential for water-intensive greenery. Moreover, the benefits of urban green spaces often accrue to wealthier neighborhoods, raising questions of environmental justice.",
+      "questions": [
+        {
+          "id": "2025-06-S1-RC-051",
+          "ability": "细节定位",
+          "question": "What does the passage say about urban heat island effect?",
+          "optionA": "It makes cities 1 to 7 degrees hotter than rural areas.",
+          "optionB": "It primarily affects rural areas surrounding cities.",
+          "optionC": "It can be completely eliminated by air conditioning.",
+          "optionD": "It only occurs in developing countries.",
+          "answer": "A",
+          "explanation": "文中第二句明确指出城市地区比周边农村地区温度高1到7摄氏度，即城市热岛效应。A项正确。"
+        },
+        {
+          "id": "2025-06-S1-RC-052",
+          "ability": "同义替换",
+          "question": "What does the author mean by 'evapotranspiration' in the context of green solutions?",
+          "optionA": "Heat absorption by concrete surfaces.",
+          "optionB": "Water release from plants into the air.",
+          "optionC": "Reflection of sunlight by green leaves.",
+          "optionD": "Soil moisture retention by tree roots.",
+          "answer": "B",
+          "explanation": "evapotranspiration是植物通过蒸腾作用释放水分的过程，这是绿色植物降温的原理之一。"
+        },
+        {
+          "id": "2025-06-S1-RC-053",
+          "ability": "细节定位",
+          "question": "What is Singapore's 'City in a Garden' vision according to the passage?",
+          "optionA": "A massive demolition program to clear urban structures.",
+          "optionB": "A green transformation covering over 40% of land area.",
+          "optionC": "A solution to replace all concrete with green roofs.",
+          "optionD": "A method to import plants from rural areas.",
+          "answer": "B",
+          "explanation": "文中提到新加坡的\"Garden City\"愿景使绿地覆盖了国土面积的40%以上。"
+        },
+        {
+          "id": "2025-06-S1-RC-054",
+          "ability": "推理判断",
+          "question": "What can be inferred about the benefits of urban green spaces?",
+          "optionA": "They only help wealthy residents.",
+          "optionB": "They require no maintenance at all.",
+          "optionC": "They provide multiple benefits beyond temperature reduction.",
+          "optionD": "They are too expensive for most cities.",
+          "answer": "C",
+          "explanation": "文中明确提到绿色空间不仅能降低温度，还能改善空气质量、减少雨水径流、改善居民心理健康。"
+        },
+        {
+          "id": "2025-06-S1-RC-055",
+          "ability": "主旨归纳",
+          "question": "What is the main purpose of the passage?",
+          "optionA": "To criticize air conditioning as a solution to urban heat.",
+          "optionB": "To introduce nature-based solutions to urban heat and their challenges.",
+          "optionC": "To compare different climate policies in various cities.",
+          "optionD": "To explain the urban heat island effect in detail.",
+          "answer": "B",
+          "explanation": "文章首先介绍城市热岛效应，然后引入绿色解决方案及其面临的挑战，主要目的是介绍基于自然的解决方案。"
+        }
+      ]
+    },
+    {
+      "passage_id": 2,
+      "text": "Passage Two\nQuestions 51 to 55 are based on the following passage.\nWhen a person tries to access a memory, their brain quickly examines everything stored in it to find the relevant information. But as we age, many of us have difficulty retrieving memories. In a review published in the journal Trends in Cognitive Sciences on February 11th, researchers propose an explanation for why this might happen: the brains of older adults allocate more cognitive resources to accumulated knowledge and have more material to navigate when attempting to access memories.\nWhile this wealth of prior knowledge can make memory retrieval challenging, the researchers say it has its upsides—this life experience can aid with creativity and decision-making. Researchers Tarek Amer, Jordana Wynn and Lynn Hasher looked at several behavioral and brain imaging studies, which show that older adults have difficulty suppressing information that is no longer relevant and that when searching for a specific memory, they often retrieve other, irrelevant memories along with it. The studies also showed that when given a cognitive task, older adults rely more heavily on previous knowledge than younger adults do.\nEvidence suggests that older adults show preserved, and at times enhanced, creativity as a function of enriched memories. The researchers further hypothesize that older adults may be well served by their prior knowledge when it comes to decision-making, where they can pull on their accumulated wisdom.",
+      "questions": [
+        {
+          "id": "2025-06-S1-RC-046",
+          "ability": "细节定位",
+          "question": "What do the researchers propose about older adults' memory retrieval difficulty?",
+          "optionA": "It is caused by a decline in brain cells.",
+          "optionB": "It results from accumulated knowledge creating more navigation material.",
+          "optionC": "It can be cured by constant mental exercises.",
+          "optionD": "It is a sign of early-stage dementia.",
+          "answer": "B",
+          "explanation": "研究人员提出，认知资源的积累导致老年人在记忆检索时需要处理更多材料。"
+        },
+        {
+          "id": "2025-06-S1-RC-047",
+          "ability": "推理判断",
+          "question": "What can be inferred about the positive side of older adults' memory challenges?",
+          "optionA": "They can remember more details about the past.",
+          "optionB": "They may have enhanced creativity due to enriched memories.",
+          "optionC": "They are better at learning new languages.",
+          "optionD": "They experience less stress in daily life.",
+          "answer": "B",
+          "explanation": "文中明确提到\"older adults show preserved, and at times enhanced, creativity as a function of enriched memories\"。"
+        },
+        {
+          "id": "2025-06-S1-RC-048",
+          "ability": "细节定位",
+          "question": "What do the studies show about older adults when given cognitive tasks?",
+          "optionA": "They perform better than younger adults in all tasks.",
+          "optionB": "They rely more heavily on previous knowledge than younger adults.",
+          "optionC": "They have difficulty forming new memories.",
+          "optionD": "They show no difference from younger adults.",
+          "answer": "B",
+          "explanation": "研究表明，老年人在认知任务中比年轻人更依赖已有知识。"
+        },
+        {
+          "id": "2025-06-S1-RC-049",
+          "ability": "态度推断",
+          "question": "What is the researchers' attitude toward older adults' accumulated knowledge?",
+          "optionA": "It is entirely negative.",
+          "optionB": "It has both advantages and disadvantages.",
+          "optionC": "It should be erased through training.",
+          "optionD": "It is only useful for creative tasks.",
+          "answer": "B",
+          "explanation": "研究者认为累积知识虽然使记忆检索更具挑战性，但也有其优势——有助于创造力和决策。"
+        },
+        {
+          "id": "2025-06-S1-RC-050",
+          "ability": "主旨归纳",
+          "question": "What is the passage mainly about?",
+          "optionA": "The decline of memory in older adults.",
+          "optionB": "Why memory retrieval becomes harder with age.",
+          "optionC": "How to improve memory in older adults.",
+          "optionD": "The difference between young and old brains.",
+          "answer": "B",
+          "explanation": "文章主要讨论为什么老年人记忆检索变得更加困难，以及这种困难的利弊。"
+        }
+      ]
+    },
+    {
+      "passage_id": 3,
+      "text": "Passage Two\nQuestions 51 to 55 are based on the following passage.\nThere are at least four major problems with work in America today.\nFirst, work can be alienating. Workers are often not in control of how they work, when they work, what is done with the goods and services they produce, and what is done with the profits made from their work.\nSecond, workers are not paid the full value of their labor. Real wages have not kept pace with productivity, driving economic inequality and a decline in labor's share of income.\nThird, people are time poor. In the U.S., full-time employees work an average of 8.72 hours per day despite productivity increases. Long working hours contribute to the feeling of 'time poverty', which has an adverse effect on psychological well-being.\nFourth, automation puts jobs and wages at risk. Technological innovation could in theory liberate people from the 40-hour work week. But unless changes are made to the structure of work, automation will simply exert downward pressure on wages and further diminish work opportunities.\nSo, what can be done to alleviate these problems? One vision is the 'post-work' position. The post-work theorists believe that work should not hold a central position in our lives or take up so much of our time.",
+      "questions": [
+        {
+          "id": "2025-06-S1-RC-056",
+          "ability": "细节定位",
+          "question": "What is the first problem with work in America mentioned in the passage?",
+          "optionA": "Low wages.",
+          "optionB": "Work can be alienating.",
+          "optionC": "Long working hours.",
+          "optionD": "Automation threats.",
+          "answer": "B",
+          "explanation": "文中第一点指出工作是异化的，工人往往无法控制工作的方式、时间以及产品和利润的分配。"
+        },
+        {
+          "id": "2025-06-S1-RC-057",
+          "ability": "同义替换",
+          "question": "What does 'time poor' in the passage mean?",
+          "optionA": "Having no time for work.",
+          "optionB": "Feeling that there is not enough time for personal life.",
+          "optionC": "Being paid less for time worked.",
+          "optionD": "Working fewer hours than before.",
+          "answer": "B",
+          "explanation": "\"time poor\"指的是感觉没有足够时间过个人生活，与工作时间长、缺乏休闲时间相关。"
+        },
+        {
+          "id": "2025-06-S1-RC-058",
+          "ability": "推理判断",
+          "question": "What can be inferred about automation according to the passage?",
+          "optionA": "It will definitely create more jobs.",
+          "optionB": "It may increase economic inequality without policy changes.",
+          "optionC": "It has already replaced most American workers.",
+          "optionD": "It will reduce working hours to 40 per week.",
+          "answer": "B",
+          "explanation": "文中指出除非改变工作结构，否则自动化只会给工资带来下行压力，进一步减少工作机会，意味着可能加剧不平等。"
+        },
+        {
+          "id": "2025-06-S1-RC-059",
+          "ability": "细节定位",
+          "question": "What do post-work theorists believe?",
+          "optionA": "Work should be the center of our lives.",
+          "optionB": "Work should not take up too much of our time.",
+          "optionC": "Automation should be stopped completely.",
+          "optionD": "Wages should be doubled.",
+          "answer": "B",
+          "explanation": "后工作理论家认为工作不应在我们的生活中占据核心位置，也不应占用太多时间。"
+        },
+        {
+          "id": "2025-06-S1-RC-060",
+          "ability": "主旨归纳",
+          "question": "What is the main topic of the passage?",
+          "optionA": "The history of labor movements in America.",
+          "optionB": "Problems with work in America and potential solutions.",
+          "optionC": "How to increase worker productivity.",
+          "optionD": "The benefits of automation technology.",
+          "answer": "B",
+          "explanation": "文章介绍了美国工作的四大问题，并提出了后工作理论作为可能的解决方向。"
+        }
+      ]
+    }
+  ]
+}

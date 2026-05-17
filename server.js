@@ -67,11 +67,16 @@ const MBD_DEVELOPER_KEY = process.env.MBD_DEVELOPER_KEY || '';  // 需在Railway
 const BOT_ID_DIAGNOSIS = '7636289658620215331';
 const BOT_ID_COMPANION = '7637702903679631395';
 
-// 套餐配置（3层定价）
+// 套餐配置（3层定价）- 支持CET4和CET6
 const PLANS = {
     free: { name: '免费版', price: 0, uidPrefix: 'CET4D', needPay: false },
     sprint: { name: '冲刺营', price: 38, uidPrefix: 'CET4S', needPay: true },
     flagship: { name: '全程营', price: 88, uidPrefix: 'CET4F', needPay: true }
+};
+const PLANS_CET6 = {
+    free: { name: '免费版', price: 0, uidPrefix: 'CET6D', needPay: false },
+    sprint: { name: '冲刺营', price: 38, uidPrefix: 'CET6S', needPay: true },
+    flagship: { name: '全程营', price: 88, uidPrefix: 'CET6F', needPay: true }
 };
 
 // 内存订单存储
@@ -997,9 +1002,13 @@ async function handleApi(req, res, pathname) {
             });
         }
 
-        // GET /api/diagnosis/questions - 获取诊断题库（真题版v2）
+        // GET /api/diagnosis/questions - 获取诊断题库（真题版v2，支持CET4/CET6）
         if (pathname === '/api/diagnosis/questions' && req.method === 'GET') {
-            const diagnosisFile = path.join(process.cwd(), 'public/diagnosis_questions.json');
+            const url = new URL(req.url, `http://${req.headers.host}`);
+            const examType = url.searchParams.get('type') || 'cet4';
+            const diagnosisFile = examType === 'cet6' 
+                ? path.join(process.cwd(), 'public/cet6_diagnosis_questions.json')
+                : path.join(process.cwd(), 'public/diagnosis_questions.json');
             try {
                 if (fs.existsSync(diagnosisFile)) { console.log('[DIAG] Found at:', diagnosisFile);
                     const data = fs.readFileSync(diagnosisFile, 'utf8');

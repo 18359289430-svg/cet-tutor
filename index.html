@@ -77,13 +77,17 @@
                         <div class="hero-dot" style="bottom:25%;right:35%;animation-delay:2s"></div>
                     </div>
                         <div class="home-hero-top">
+                            <div class="exam-type-switch">
+                                <button class="exam-type-btn active" id="cet4-btn" onclick="switchExamType('cet4')">四级</button>
+                                <button class="exam-type-btn" id="cet6-btn" onclick="switchExamType('cet6')">六级</button>
+                            </div>
                             <div class="home-greeting" id="greeting-text">早上好</div>
                             <div class="home-streak-pill" id="home-streak" onclick="openDailyTask()">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c.5 4-2 7-4 9.5C6 14 5.5 16 6 18c.7 3 3.5 4 6 4s5.3-1 6-4c.5-2 0-4-2-6.5C14 9 11.5 6 12 2z"/></svg>
                                 <span id="streak-num">0</span>天
                             </div>
                         </div>
-                        <div class="home-hero-title">开始今天的<br>四级备考</div>
+                        <div class="home-hero-title">开始今天的<br><span id="exam-type-title">四级</span>备考</div>
                         <div class="home-hero-subtitle" id="home-hero-subtitle">5分钟找到你的备考短板</div>
                         <div class="home-hero-actions">
                             <button class="home-cta-primary" id="home-cta-btn" onclick="handleHomeCta()">
