@@ -4412,16 +4412,15 @@ function closeModal(id) {
 
 function openPayment(plan) {
     var planNames = { sprint: '冲刺营', flagship: '全程营' };
-    var planPrices = { sprint: 89, flagship: 299 };
-    var planSalePrices = { sprint: 44.5, flagship: 149.5 }; // 5折后
+    var planPrices = { sprint: 44.5, flagship: 149.5 };
     var planFeatures = {
         sprint: ['AI对话 无限','45天个性化学习计划','作文批改 每日1次（逐句改写）','翻译批改 每日1次（参考译文）','针对短板的每日一练'],
         flagship: ['AI对话 无限','45天个性化学习计划','作文/翻译批改 无限（逐句改写+精讲）','针对短板的每日一练','深度精讲（为什么错+怎么避坑）','六级衔接指导']
     };
     // 面包多商品链接（创建后替换）
     var mbdLinks = {
-        sprint: 'https://mbd.pub/o/bread/YZaTk5tsbA==?discount_code=NGUPFC',
-        flagship: 'https://mbd.pub/o/bread/YZaTk5ttbQ==?discount_code=WPBWPS'
+        sprint: 'https://mbd.pub/o/bread/YZaTk5tsbA==',
+        flagship: 'https://mbd.pub/o/bread/YZaTk5ttbQ=='
     };
 
     var existing = document.getElementById('pay-modal');
@@ -4440,27 +4439,18 @@ function openPayment(plan) {
             '<div class="pay-sheet-handle"></div>' +
             '<button class="pay-close" onclick="closePayModal()"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2"><line x1="1" y1="1" x2="13" y2="13"/><line x1="13" y1="1" x2="1" y2="13"/></svg></button>' +
             '<div class="pay-sheet-title">' + (planNames[plan] || plan) + '</div>' +
-            '<div class="pay-sheet-price"><small>¥</small>' + (planSalePrices[plan] || '') + '<span style="font-size:14px;color:#94A3B8;text-decoration:line-through;margin-left:8px;font-weight:400">¥' + (planPrices[plan] || '') + '</span></div>' +
+            '\u003cdiv class="pay-sheet-price"\u003e\u003csmall\u003e¥\u003c/small\u003e' + (planPrices[plan] || '') + '\u003c/div\u003e' +
             '<ul class="pay-feature-list">' + featureHtml + '</ul>' +
             '<div class="pay-tabs">' +
                 '<div class="pay-tab active" onclick="switchPayTab(\'online\')">在线购买</div>' +
                 '<div class="pay-tab" onclick="switchPayTab(\'code\')">激活码</div>' +
             '</div>' +
-            '<div class="pay-panel active" id="pay-panel-online">' +
-                '<a class="pay-mbd-link" href="' + (mbdLinks[plan] || '#') + '" target="_blank" onclick="setTimeout(function(){document.getElementById(\'mbd-activate-section\').style.display=\'block\';},500)">去面包多购买 ¥' + (planPrices[plan] || '') + '</a>' +
-                '<div class="pay-coupon-tip">💡 付款时输入优惠码 <strong style="color:#6C5CE7">' + (plan === 'sprint' ? 'NGUPFC' : 'WPBWPS') + '</strong> 享5折</div>' +
-                '<div id="mbd-activate-section" style="margin-top:16px;padding-top:16px;border-top:1px solid #F1F5F9">' +
-                    '<div style="font-size:13px;color:#64748B;margin-bottom:8px">购买完成后，粘贴面包多订单号即可自动开通</div>' +
-                    '<div class="pay-input-row">' +
-                        '<input type="text" id="mbd-order-input" placeholder="粘贴面包多订单号" autocomplete="off" spellcheck="false">' +
-                        '<button id="mbd-activate-btn" onclick="activateWithMbdOrder(\'' + plan + '\')">验证激活</button>' +
-                    '</div>' +
-                    '<div id="mbd-activate-msg" style="font-size:12px;margin-top:8px;min-height:18px"></div>' +
-                '</div>' +
-            '</div>' +
-            '<div class="pay-panel" id="pay-panel-code">' +
-                '<div style="font-size:13px;color:#64748B;margin-bottom:4px">输入激活码开通</div>' +
-                '<div class="pay-input-row">' +
+            '\u003cdiv class="pay-panel active" id="pay-panel-online"\u003e' +
+                '\u003ca class="pay-mbd-link" href="' + (mbdLinks[plan] || '#') + '" target="_blank"\u003e立即购买 ¥' + (planPrices[plan] || '') + '\u003c/a\u003e' +
+                '\u003cdiv style="margin-top:12px;font-size:12px;color:#94A3B8;text-align:center"\u003e付款后自动跳转激活，即可开始使用\u003c/div\u003e' +
+            '\u003c/div\u003e' +
+            '\u003cdiv class="pay-panel" id="pay-panel-code"\u003e' +
+                '\u003cdiv style="font-size:13px;color:#64748B;margin-bottom:4px"\u003e输入激活码开通\u003c/div\u003e' +
                     '<input type="text" id="activate-code-input" placeholder="如 CET4S-A1B2C3-D4E5F6" autocomplete="off" spellcheck="false">' +
                     '<button id="activate-btn" onclick="activateWithCode()">激活</button>' +
                 '</div>' +
