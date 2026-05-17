@@ -1240,9 +1240,7 @@ function initApp() {
             html += '<div class="dashboard-hero-title">学习进度</div>';
             html += '<div class="dashboard-hero-sub">让你的进步看得见</div>';
             html += '<div class="dashboard-hero-divider"></div>';
-            html += '<div class="dashboard-hero-countdown">';
-            html += '<span class="dashboard-hero-countdown-dot"></span>';
-            html += '距考试 ' + daysToExam + ' 天</div>';
+
             html += '</div>';
             
             // ===== 概览卡片 - 2大+2小布局 =====
