@@ -1054,9 +1054,7 @@ function initApp() {
                 html += '<div class="empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg></div>';
                 html += '<div class="empty-title">还没有错题</div>';
                 html += '<div class="empty-desc">继续保持，做题全对的感觉太棒了！</div>';
-                html += '<button class="empty-btn" onclick="switchTab(\'diagnosis\'); setTimeout(openQuiz, 300)">';
-                html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 114 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>';
-                html += '去练题</button>';
+                html += '<button class="empty-btn" onclick="switchTab(\'diagnosis\'); setTimeout(openQuiz, 300)">去练题</button>';
                 html += '</div>';
                 html += '</div>';
             } else {
