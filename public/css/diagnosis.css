@@ -1295,3 +1295,18 @@
     font-size: 15px;
     color: #64748B;
 }
+
+/* 自评选项副描述 */
+.eval-sub {
+    font-size: 11px;
+    color: #94A3B8;
+    margin-top: 2px;
+}
+
+.diag-eval-btn.selected .eval-sub {
+    color: #A29BFE;
+}
+
+.diag-eval-btn {
+    padding: 10px 6px 12px;
+}
