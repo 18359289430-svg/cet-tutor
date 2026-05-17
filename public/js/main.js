@@ -1,4 +1,19 @@
-        var personalities = [
+        // ===== 考试类型：页面加载时确定，之后不变 =====
+var EXAM_TYPE = (function() {
+    try {
+        var params = new URLSearchParams(window.location.search);
+        return params.get('type') === 'cet6' ? 'cet6' : 'cet4';
+    } catch(e) { return 'cet4'; }
+})();
+var IS_CET6 = EXAM_TYPE === 'cet6';
+var EXAM_LABEL = IS_CET6 ? '六级' : '四级';
+
+// ===== localStorage key辅助函数 =====
+function examKey(base) {
+    return (IS_CET6 ? 'cet6_' : 'cet4_') + base;
+}
+
+var personalities = [
                 { type:'佛系随缘选手', color:'#F5C6AA', emoji:'😌', img:'/cards/foxisuiyuan.png', honor:'佛系陪跑员', comment:'你很佛系，但四级不佛', scores:{"细节定位":95,"推理判断":33,"同义替换":66,"主旨归纳":77,"态度判断":93} },
                 { type:'脑补大师', color:'#C4A8E0', emoji:'💭', img:'/cards/naobudashi.png', honor:'四级白日梦家', comment:'笔在卷子上，魂在银河系', scores:{"细节定位":40,"推理判断":75,"同义替换":50,"主旨归纳":30,"态度判断":60} },
                 { type:'偏科大佬', color:'#FFB6C1', emoji:'📚', img:'/cards/piankedalao.png', honor:'阅读王者·翻译菜鸡', comment:'一半封神，一半白给', scores:{"细节定位":98,"推理判断":20,"同义替换":95,"主旨归纳":99,"态度判断":25} },
@@ -845,6 +860,31 @@ function initApp() {
             setTimeout(initPlanScrollSync, 100);
         }
 
+        // 根据URL参数初始化UI状态
+        (function initExamTypeUI() {
+            if (IS_CET6) {
+                // 更新切换按钮状态
+                var cet4Btn = document.getElementById('cet4-btn');
+                var cet6Btn = document.getElementById('cet6-btn');
+                if (cet4Btn) cet4Btn.classList.remove('active');
+                if (cet6Btn) cet6Btn.classList.add('active');
+                
+                // 更新标题
+                var examTitle = document.getElementById('exam-type-title');
+                if (examTitle) examTitle.textContent = '六级';
+                
+                // 更新品牌名
+                var brandEl = document.querySelector('.brand');
+                if (brandEl) brandEl.textContent = '六级备考搭子';
+                
+                // 更新页脚
+                var footerTexts = document.querySelectorAll('.profile-footer-text');
+                footerTexts.forEach(function(el) {
+                    if (el) el.textContent = el.textContent.replace('四级', '六级');
+                });
+            }
+        })();
+
         function loadUserData() {
             try {
                 var data = localStorage.getItem('cet_user');
@@ -1082,12 +1122,12 @@ function initApp() {
             }
             var homeCd = document.getElementById('home-countdown');
             if (homeCd) {
-                var cdText = diffDays > 0 ? (diffHours > 0 ? '距四级 ' + diffDays + '天' + diffHours + '时' : '距四级 ' + diffDays + '天') : '四级加油';
+                var cdText = diffDays > 0 ? (diffHours > 0 ? '距' + EXAM_LABEL + ' ' + diffDays + '天' + diffHours + '时' : '距' + EXAM_LABEL + ' ' + diffDays + '天') : EXAM_LABEL + '加油';
                 homeCd.innerHTML = '<span class="cd-days">' + diffDays + '</span>天' + (diffHours > 0 ? diffHours + '时' : '');
             }
             var chatCd = document.getElementById('chat-countdown');
             if (chatCd) {
-                chatCd.textContent = diffDays > 0 ? diffHours > 0 ? '距四级 ' + diffDays + '天' + diffHours + '时' : '距四级 ' + diffDays + '天' : '四级加油';
+                chatCd.textContent = diffDays > 0 ? diffHours > 0 ? '距' + EXAM_LABEL + ' ' + diffDays + '天' + diffHours + '时' : '距' + EXAM_LABEL + ' ' + diffDays + '天' : EXAM_LABEL + '加油';
             }
         }
 
@@ -1139,6 +1179,15 @@ function initApp() {
         }
 
         // ===== 快捷操作函数 =====
+        // ===== 考试类型切换函数 =====
+        function switchExamType(type) {
+            if (type === 'cet6') {
+                window.location.href = window.location.pathname + '?type=cet6';
+            } else {
+                window.location.href = window.location.pathname;
+            }
+        }
+
         function handleQuickAction(mode) {
             // 开场白快捷按钮处理
             if (mode === 'diagnosis') {
@@ -1199,7 +1248,7 @@ function initApp() {
 
             // 发送对应消息
             var messages = {
-                'diagnosis': '我想做一个AI诊断，帮我分析四级薄弱点',
+                'diagnosis': '我想做一个AI诊断，帮我分析' + EXAM_LABEL + '薄弱点',
                 'companion': '继续陪我练习，帮我针对薄弱点强化训练',
                 'wrongbook': '复习我之前的错题',
                 'essay': '我想批改作文'
@@ -1987,7 +2036,7 @@ function toggleWrongDetail(card) {
         function getDiagnosisReports() {
             // 从localStorage获取诊断报告历史
             try {
-                var data = localStorage.getItem('cet4_diagnosis_reports');
+                var data = localStorage.getItem(examKey('diagnosis_reports'));
                 if (data) return JSON.parse(data);
                 
                 // 兼容旧数据：从cet_user中读取诊断数据作为最近一次报告
@@ -2221,7 +2270,7 @@ function toggleWrongDetail(card) {
         
         function getPracticeHistory() {
             try {
-                var data = localStorage.getItem('cet4_practice_history');
+                var data = localStorage.getItem(examKey('practice_history'));
                 if (data) return JSON.parse(data);
                 // 兼容旧数据
                 var oldData = localStorage.getItem('cet_practice_history');
@@ -2232,7 +2281,7 @@ function toggleWrongDetail(card) {
         
         function getAbilityScores() {
             try {
-                var data = localStorage.getItem('cet4_ability_scores');
+                var data = localStorage.getItem(examKey('ability_scores'));
                 if (data) return JSON.parse(data);
                 // 兼容旧数据: 从cet_user中读取诊断数据
                 var userData = safeGetItem('cet_user', {});
@@ -2245,7 +2294,7 @@ function toggleWrongDetail(card) {
         
         function getUserProfile() {
             try {
-                var data = localStorage.getItem('cet4_user_profile');
+                var data = localStorage.getItem(examKey('user_profile'));
                 if (data) return JSON.parse(data);
                 // 兼容旧数据
                 var userData = safeGetItem('cet_user', {});
@@ -3225,10 +3274,10 @@ function toggleWrongDetail(card) {
                 
                 // 设置cet4_user_profile的startDate（如果还没有）
                 try {
-                    var profile = safeGetItem('cet4_user_profile', {});
+                    var profile = safeGetItem(examKey('user_profile'), {});
                     if (!profile.startDate) {
                         profile.startDate = today;
-                        localStorage.setItem('cet4_user_profile', JSON.stringify(profile));
+                        localStorage.setItem(examKey('user_profile'), JSON.stringify(profile));
                     }
                 } catch(e) {}
             }
@@ -3369,6 +3418,10 @@ function toggleWrongDetail(card) {
     if (welcomeEl) welcomeEl.style.display = 'none';
             var input = document.getElementById('chat-input');
             var text = input.value.trim();
+            // 六级模式下添加标记
+            if (IS_CET6 && text && !text.startsWith('[')) {
+                text = '[当前模式：六级备考] ' + text;
+            }
             if (!text || chatState.isStreaming) {
                 console.log('[sendMessage] blocked: empty=' + !text + ' streaming=' + chatState.isStreaming);
                 return;
@@ -3475,7 +3528,7 @@ function toggleWrongDetail(card) {
                 } else if (answeredCount === 18) {
                     contextPrefix = `[进度] 用户已答完全部18题，请生成诊断报告。报告必须严格按以下格式输出：
 
-【四级风险等级】高危/中危/低危
+【' + EXAM_LABEL + '风险等级】高危/中危/低危
 【综合评分】XX/100
 
 【五维诊断】
@@ -3503,7 +3556,7 @@ function toggleWrongDetail(card) {
                     contextPrefix = `[批改模式] 请按以下格式批改四级作文：
 
 【评分】X/15分
-【字数】XX词（四级要求120-180词）
+【字数】XX词(' + EXAM_LABEL + '要求120-180词）
 
 【逐句批改】
 原文：xxx
@@ -4197,7 +4250,7 @@ function showClearChatModal() {
             sheet.innerHTML = '<div style="font-size:16px;font-weight:600;margin-bottom:16px">隐私政策</div>' +
                 '<div style="font-size:13px;color:#64748b;line-height:1.8">' +
                 '<p><b>生效日期：2026年5月17日</b></p>' +
-                '<p>本产品由"四级备考搭子"团队（以下简称"我们"）运营。我们重视您的隐私保护，本政策说明我们如何收集、使用和保护您的信息。</p>' +
+                '<p>本产品由' + EXAM_LABEL + "备考搭子"团队（以下简称"我们"）运营。我们重视您的隐私保护，本政策说明我们如何收集、使用和保护您的信息。</p>' +
                 '<p><b>一、我们收集的信息</b></p>' +
                 '<p>1. 设备标识信息：用于生成唯一用户ID，实现数据恢复功能。</p>' +
                 '<p>2. 学习数据：诊断结果、答题记录、打卡记录、自评数据等，用于提供个性化学习服务。</p>' +
@@ -4761,7 +4814,7 @@ function updatePlanDisplay() {
 // === 每日一练系统 ===
 var dailyTasks = [
     {type: 'reading', name: '阅读理解', prompt: '练1篇阅读理解', icon: '📖'},
-    {type: 'vocab', name: '词汇积累', prompt: '背50个四级高频词', icon: '📝'},
+    {type: 'vocab', name: '词汇积累', prompt: '背50个' + EXAM_LABEL + '高频词', icon: '📝'},
     {type: 'translate', name: '翻译练习', prompt: '练1段中译英', icon: '🔄'},
     {type: 'attitude', name: '态度判断', prompt: '练3道态度判断题', icon: '🎯'},
     {type: 'inference', name: '推理判断', prompt: '练3道推理判断题', icon: '🧠'},
@@ -4980,12 +5033,12 @@ async function requestQuizQuestion() {
         } else {
             // fallback: 用AI生成
             // fallback AI quiz handled below
-    var prompt = '请出一道四级' + randomType + '选择题。请严格按照以下格式返回（不要有任何其他内容）：\n[QUIZ:type=' + randomType + '|question=题目内容|optionA=选项A|optionB=选项B|optionC=选项C|optionD=选项D|answer=A|explanation=详细解析]';
+    var prompt = '请出一道' + EXAM_LABEL + randomType + '选择题。请严格按照以下格式返回（不要有任何其他内容）：\n[QUIZ:type=' + randomType + '|question=题目内容|optionA=选项A|optionB=选项B|optionC=选项C|optionD=选项D|answer=A|explanation=详细解析]';
             startAiQuiz(prompt, randomType);
         }
     }).catch(function(){
         // fallback AI quiz handled below
-    var prompt = '请出一道四级' + randomType + '选择题。请严格按照以下格式返回（不要有任何其他内容）：\n[QUIZ:type=' + randomType + '|question=题目内容|optionA=选项A|optionB=选项B|optionC=选项C|optionD=选项D|answer=A|explanation=详细解析]';
+    var prompt = '请出一道' + EXAM_LABEL + randomType + '选择题。请严格按照以下格式返回（不要有任何其他内容）：\n[QUIZ:type=' + randomType + '|question=题目内容|optionA=选项A|optionB=选项B|optionC=选项C|optionD=选项D|answer=A|explanation=详细解析]';
         startAiQuiz(prompt, randomType);
     });
     
@@ -5603,7 +5656,7 @@ function preloadLimitInfo() {
             ctx.fillStyle = '#fff';
             ctx.font = 'bold 16px -apple-system, BlinkMacSystemFont, sans-serif';
             ctx.textAlign = 'center';
-            ctx.fillText('📚 我的四级备考人格', width / 2, 36);
+            ctx.fillText('📚 我的' + EXAM_LABEL + '备考人格', width / 2, 36);
             
             // 人格图标（大圆角矩形卡片）
             var cardX = 60;
@@ -5662,7 +5715,7 @@ function preloadLimitInfo() {
             // 底部信息
             ctx.fillStyle = 'rgba(255,255,255,0.9)';
             ctx.font = '11px -apple-system, BlinkMacSystemFont, sans-serif';
-            ctx.fillText('四级备考搭子 · AI智能诊断', width / 2, 300);
+            ctx.fillText(' + EXAM_LABEL + '备考搭子 · AI智能诊断', width / 2, 300);
             
             // 底部提示
             ctx.fillStyle = 'rgba(255,255,255,0.7)';
@@ -6061,15 +6114,15 @@ function showDiagnosisReport(text) {
         
         // 同时写入cet4_ability_scores（供仪表盘使用）
         try {
-            localStorage.setItem('cet4_ability_scores', JSON.stringify({ dims: reportData.dims }));
+            localStorage.setItem(examKey('ability_scores'), JSON.stringify({ dims: reportData.dims }));
         } catch(e) {}
         
         // 写入cet4_user_profile的startDate（如果还没有）
         try {
-            var profile = safeGetItem('cet4_user_profile', {});
+            var profile = safeGetItem(examKey('user_profile'), {});
             if (!profile.startDate) {
                 profile.startDate = getTodayStr();
-                localStorage.setItem('cet4_user_profile', JSON.stringify(profile));
+                localStorage.setItem(examKey('user_profile'), JSON.stringify(profile));
             }
         } catch(e) {}
     }
@@ -6150,7 +6203,7 @@ async function startNewDiagnosis() {
     
     try {
         // 调用API获取题目
-        var resp = await fetchWithTimeout('/public/diagnosis_questions.json');
+        var resp = await fetchWithTimeout(EXAM_TYPE === 'cet6' ? '/public/cet6_diagnosis_questions.json' : '/public/diagnosis_questions.json');
         var result = await resp.json();
         
         // 解析新版JSON格式（包含passages数组）
@@ -6174,7 +6227,7 @@ async function startNewDiagnosis() {
             // 提示用户使用AI对话诊断
             showToast('新诊断模式暂不可用，将使用AI对话诊断');
             openChat('chat');
-            setTimeout(function(){ sendSuggestion('开始AI诊断，帮我找出四级薄弱点'); }, 300);
+            setTimeout(function(){ sendSuggestion('开始AI诊断，帮我找出' + EXAM_LABEL + '薄弱点'); }, 300);
             return;
         }
         
@@ -6852,7 +6905,7 @@ function selectListeningOption(btn, selectedValue) {
 }
 
 function startReadingPhase() {
-    fetchWithTimeout('/public/diagnosis_questions.json').then(function(resp) {
+    fetchWithTimeout(EXAM_TYPE === 'cet6' ? '/public/cet6_diagnosis_questions.json' : '/public/diagnosis_questions.json').then(function(resp) {
         return resp.json();
     }).then(function(result) {
         var questions = [];
@@ -7750,7 +7803,7 @@ function generateLearningPlan() {
     showPlanOverlay();
     
     // 调用API生成计划
-    var systemPrompt = '你是四级备考规划专家。用户已完成能力诊断，五维分数如下：' + 
+    var systemPrompt = '你是' + EXAM_LABEL + '备考规划专家。用户已完成能力诊断，五维分数如下：' + 
         JSON.stringify(dims) + '。请根据这些分数生成4周学习计划，返回JSON格式：{"weeks":[{"week":1,"focus":"本周重点","tasks":["任务1","任务2"]},{"week":2,"focus":"本周重点","tasks":["任务1","任务2"]},{"week":3,"focus":"本周重点","tasks":["任务1","任务2"]},{"week":4,"focus":"本周重点","tasks":["任务1","任务2"]}]} 只返回JSON。';
     
     fetch('/api/deepseek/chat', {
@@ -7803,16 +7856,16 @@ function generateDefaultPlan(dims) {
 
 function saveLearningPlan(plan) {
     try {
-        var profile = safeGetItem('cet4_user_profile', {});
+        var profile = safeGetItem(examKey('user_profile'), {});
         profile.learning_plan = plan;
         profile.plan_updated = getTodayStr();
-        localStorage.setItem('cet4_user_profile', JSON.stringify(profile));
+        localStorage.setItem(examKey('user_profile'), JSON.stringify(profile));
     } catch(e) {}
 }
 
 function getLearningPlan() {
     try {
-        var profile = safeGetItem('cet4_user_profile', {});
+        var profile = safeGetItem(examKey('user_profile'), {});
         return profile.learning_plan || null;
     } catch(e) { return null; }
 }
@@ -8363,7 +8416,7 @@ function drawReportShareImage() {
     ctx.fillStyle = '#fff';
     ctx.font = 'bold 18px -apple-system, BlinkMacSystemFont, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('📊 我的四级诊断报告', 140, 40);
+    ctx.fillText('📊 我的' + EXAM_LABEL + '诊断报告', 140, 40);
     
     // 风险等级
     var riskLabels = { high: '⚠️ 高危风险', mid: '📊 中危风险', low: '✅ 低危风险' };
@@ -8417,13 +8470,13 @@ function drawReportShareImage() {
     ctx.fillStyle = 'rgba(255,255,255,0.8)';
     ctx.font = '11px -apple-system, BlinkMacSystemFont, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('四级备考搭子 · AI智能诊断', 140, 385);
+    ctx.fillText(' + EXAM_LABEL + '备考搭子 · AI智能诊断', 140, 385);
 }
 
 // ===== 免费AI对话限额逻辑 (GPT风格) =====
 // 每日免费额度：3条AI对话消息
 var CET4_DAILY_FREE_LIMIT = 20;
-var CET4_CHAT_COUNT_KEY_PREFIX = 'cet4_chat_count_';
+// replaced by examKey('chat_count_')
 
 // 获取今天的日期字符串 YYYYMMDD
 function getTodayDateStr() {
@@ -8436,7 +8489,7 @@ function getTodayDateStr() {
 // 获取当天已用免费次数
 function getDailyChatUsed() {
     try {
-        var key = CET4_CHAT_COUNT_KEY_PREFIX + getTodayDateStr();
+        var key = examKey('chat_count_') + getTodayDateStr();
         var used = localStorage.getItem(key);
         return used ? parseInt(used, 10) : 0;
     } catch(e) {
@@ -8461,7 +8514,7 @@ function isFreeLimitReached() {
 // 增加免费额度使用次数
 function incrementDailyChatUsed() {
     try {
-        var key = CET4_CHAT_COUNT_KEY_PREFIX + getTodayDateStr();
+        var key = examKey('chat_count_') + getTodayDateStr();
         var used = getDailyChatUsed();
         localStorage.setItem(key, String(used + 1));
     } catch(e) {
@@ -8539,7 +8592,7 @@ function updateChatInputPlaceholder() {
             hint.style.display = '';
         }
     } else {
-        input.placeholder = '问我任何四级问题...';
+        input.placeholder = '问我任何' + EXAM_LABEL + '问题...';
         if (hint) {
             hint.style.display = 'none';
         }
@@ -9940,32 +9993,32 @@ function upgradeToUnlockPlan() {
 
 // ==================== 变式训练功能 ====================
 
-var CET4_VARIANT_KEY = 'cet4_variant_history';
-var CET4_VARIANT_DAILY_KEY = 'cet4_variant_daily_count';
+var examKey('variant_history') = examKey('variant_history');
+var examKey('variant_daily_count') = examKey('variant_daily_count');
 
 // 获取变式训练历史
 function getVariantHistory() {
-    return safeGetItem(CET4_VARIANT_KEY, []);
+    return safeGetItem(examKey('variant_history'), []);
 }
 
 // 获取今日变式训练次数
 function getTodayVariantCount() {
     var today = getTodayStr();
-    var counts = safeGetItem(CET4_VARIANT_DAILY_KEY, {});
+    var counts = safeGetItem(examKey('variant_daily_count'), {});
     return counts[today] || 0;
 }
 
 // 增加今日变式训练次数
 function incrementTodayVariantCount() {
     var today = getTodayStr();
-    var counts = safeGetItem(CET4_VARIANT_DAILY_KEY, {});
+    var counts = safeGetItem(examKey('variant_daily_count'), {});
     counts[today] = (counts[today] || 0) + 1;
     // 只保留最近7天的记录
     var weekAgo = new Date(Date.now() - 7 * 86400000).toISOString().slice(0, 10);
     for (var k in counts) {
         if (k < weekAgo) delete counts[k];
     }
-    safeSetItem(CET4_VARIANT_DAILY_KEY, counts);
+    safeSetItem(examKey('variant_daily_count'), counts);
 }
 
 // 检查是否可以进行变式训练
@@ -9990,7 +10043,7 @@ function saveVariantRecord(questions, originalQuestion) {
     });
     // 只保留最近50条
     while (history.length > 50) history.pop();
-    safeSetItem(CET4_VARIANT_KEY, history);
+    safeSetItem(examKey('variant_history'), history);
 }
 
 // 显示变式训练入口（在错题本页面调用）
@@ -10303,12 +10356,12 @@ function mapTypeToDim(type) {
 
 // ==================== 动态测评功能 ====================
 
-var CET4_DYNAMIC_SCORES_KEY = 'cet4_dynamic_scores';
+var examKey('dynamic_scores') = examKey('dynamic_scores');
 
 // 获取动态分数
 function getDynamicScores() {
     try {
-        var data = localStorage.getItem(CET4_DYNAMIC_SCORES_KEY);
+        var data = localStorage.getItem(examKey('dynamic_scores'));
         if (data) {
             return JSON.parse(data);
         }
@@ -10319,7 +10372,7 @@ function getDynamicScores() {
 // 保存动态分数
 function saveDynamicScores(scores) {
     try {
-        localStorage.setItem(CET4_DYNAMIC_SCORES_KEY, JSON.stringify(scores));
+        localStorage.setItem(examKey('dynamic_scores'), JSON.stringify(scores));
     } catch(e) {}
 }
 
@@ -10406,7 +10459,7 @@ function updateDynamicScore(dimension, isCorrect, difficulty) {
         abilityScores[dim] = scores[dim].value;
     }
     try {
-        localStorage.setItem('cet4_ability_scores', JSON.stringify({ dims: abilityScores }));
+        localStorage.setItem(examKey('ability_scores'), JSON.stringify({ dims: abilityScores }));
     } catch(e) {}
     
     // 触发雷达图更新（如果函数存在）
@@ -10640,7 +10693,7 @@ renderWrongBook = function() {
 
 // 考点树数据结构
 var CET_PATH_TREE = {
-    name: '四级备考',
+    name: EXAM_LABEL + '备考',
     icon: '📚',
     children: [
         {
@@ -10810,7 +10863,7 @@ var CET_PATH_TREE = {
             children: [
                 {
                     name: '核心词汇',
-                    desc: '掌握四级考试必备的核心词汇',
+                    desc: '掌握' + EXAM_LABEL + '考试必备的核心词汇',
                     tips: ['每天定量背诵', '结合例句记忆', '复习艾宾浩斯', '多场景运用'],
                     children: [
                         { name: '高频词汇', desc: '考试中出现频率最高的词汇' },
@@ -10843,7 +10896,7 @@ var CET_PATH_TREE = {
 // 获取用户能力分数
 function getPathAbilityScores() {
     try {
-        var data = localStorage.getItem('cet4_ability_scores');
+        var data = localStorage.getItem(examKey('ability_scores'));
         if (data) {
             var parsed = JSON.parse(data);
             return parsed.dims || {};
