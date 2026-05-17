@@ -4438,13 +4438,22 @@ function openPayment(plan) {
             '<ul class="pay-feature-list">' + featureHtml + '</ul>' +
             '<div class="pay-tabs">' +
                 '<div class="pay-tab active" onclick="switchPayTab(\'online\')">在线购买</div>' +
-                '<div class="pay-tab" onclick="switchPayTab(\'code\')">激活码</div>' +
+                '<div class="pay-tab" onclick="switchPayTab(\'order\')">订单号激活</div>' +
             '</div>' +
             '\u003cdiv class="pay-panel active" id="pay-panel-online"\u003e' +
                 '\u003ca class="pay-mbd-link" href="' + (mbdLinks[plan] || '#') + '" target="_blank"\u003e立即购买 ¥' + (planPrices[plan] || '') + '\u003c/a\u003e' +
-                '\u003cdiv style="margin-top:12px;font-size:12px;color:#94A3B8;text-align:center"\u003e付款后自动跳转激活，即可开始使用\u003c/div\u003e' +
+                '\u003cdiv style="margin-top:14px;padding:12px;background:#F8F9FA;border-radius:10px;font-size:12px;color:#64748B"\u003e' +
+                    '\u003cdiv style="margin-bottom:8px;font-weight:600;color:#1a1a2e"\u003e激活流程：\u003c/div\u003e' +
+                    '\u003cdiv style="margin-bottom:4px"\u003e\u003cspan style="color:#6C5CE7;font-weight:600"\u003e②\u003c/span\u003e 付款后，复制页面底部的\u003cstrong\u003e订单号\u003c/strong\u003e\u003c/div\u003e' +
+                    '\u003cdiv\u003e\u003cspan style="color:#6C5CE7;font-weight:600"\u003e③\u003c/span\u003e 粘贴订单号到下方输入框，点击激活\u003c/div\u003e' +
+                '\u003c/div\u003e' +
+                '\u003cdiv class="pay-input-row" style="margin-top:12px"\u003e' +
+                    '\u003cinput type="text" id="pay-order-input" placeholder="粘贴面包多订单号" autocomplete="off" spellcheck="false"\u003e' +
+                    '\u003cbutton id="pay-activate-btn" onclick="activateWithOrderIdFromModal()"\u003e激活\u003c/button\u003e' +
+                '\u003c/div\u003e' +
+                '\u003cdiv id="pay-activate-msg" style="font-size:12px;margin-top:8px;min-height:18px;color:#64748B"\u003e\u003c/div\u003e' +
             '\u003c/div\u003e' +
-            '\u003cdiv class="pay-panel" id="pay-panel-code"\u003e' +
+            '\u003cdiv class="pay-panel" id="pay-panel-order"\u003e' +
                 '\u003cdiv style="font-size:13px;color:#64748B;margin-bottom:4px"\u003e输入激活码开通\u003c/div\u003e' +
                     '<input type="text" id="activate-code-input" placeholder="如 CET4S-A1B2C3-D4E5F6" autocomplete="off" spellcheck="false">' +
                     '<button id="activate-btn" onclick="activateWithCode()">激活</button>' +
@@ -4457,15 +4466,62 @@ function openPayment(plan) {
 
 function switchPayTab(tab) {
     document.querySelectorAll('#pay-modal .pay-tab').forEach(function(t, i) {
-        t.classList.toggle('active', (tab === 'online' && i === 0) || (tab === 'code' && i === 1));
+        t.classList.toggle('active', (tab === 'online' && i === 0) || (tab === 'order' && i === 1));
     });
     document.getElementById('pay-panel-online').classList.toggle('active', tab === 'online');
-    document.getElementById('pay-panel-code').classList.toggle('active', tab === 'code');
+    document.getElementById('pay-panel-order').classList.toggle('active', tab === 'order');
 }
 
 function closePayModal() {
     var modal = document.getElementById('pay-modal');
     if (modal) modal.remove();
+}
+
+// 支付弹窗内的订单号激活
+function activateWithOrderIdFromModal() {
+    var input = document.getElementById('pay-order-input');
+    var msgEl = document.getElementById('pay-activate-msg');
+    var btn = document.getElementById('pay-activate-btn');
+    if (!input || !input.value.trim()) {
+        if (msgEl) { msgEl.style.color = '#E17055'; msgEl.textContent = '请输入订单号'; }
+        return;
+    }
+    btn.disabled = true;
+    btn.textContent = '验证中...';
+    if (msgEl) { msgEl.style.color = '#64748B'; msgEl.textContent = ''; }
+
+    fetch('/api/activate-with-mbd-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ order_id: input.value.trim(), plan: 'sprint' })
+    }).then(function(r) { return r.json(); }).then(function(resp) {
+        btn.disabled = false;
+        btn.textContent = '激活';
+        if (resp.success) {
+            if (msgEl) { msgEl.style.color = '#00B894'; msgEl.textContent = '激活成功！'; }
+            state.userData = state.userData || {};
+            state.userData.plan = resp.plan;
+            state.userData.planToken = resp.token;
+            state.userData.planOrderId = resp.orderId;
+            state.userData.planActivatedAt = Date.now();
+            saveUserData(state.userData);
+            updateProfileStats();
+            updateProfileUserId();
+            updateHomeStatus();
+            setTimeout(function() {
+                closePayModal();
+                showToast('🎉 ' + (resp.plan === 'flagship' ? '全程营' : '冲刺营') + ' 已开通！');
+                switchTab('diagnosis');
+                setTimeout(function() { openChat('companion'); }, 500);
+            }, 800);
+        } else {
+            if (msgEl) { msgEl.style.color = '#E17055'; msgEl.textContent = resp.error || '订单号验证失败'; }
+        }
+    }).catch(function(e) {
+        btn.disabled = false;
+        btn.textContent = '激活';
+        if (msgEl) { msgEl.style.color = '#E17055'; msgEl.textContent = '网络错误，请重试'; }
+    });
 }
 
 function activateWithCode() {
