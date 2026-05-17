@@ -6,7 +6,7 @@
                 { type:'全对卷王', color:'#E8E8E8', emoji:'🏆', img:'/cards/quandaowang.png', honor:'四级人形标准答案', comment:'别人考四级，你考四级解析', scores:{"细节定位":100,"推理判断":98,"同义替换":100,"主旨归纳":100,"态度判断":95} },
                 { type:'吗喽型选手', color:'#C4956A', emoji:'🐒', img:'/cards/malouxuanshou.png', honor:'熬夜硬肝特种兵', comment:'咖啡续着命，单词记不住', scores:{"细节定位":35,"推理判断":40,"同义替换":25,"主旨归纳":30,"态度判断":20} },
                 { type:'临时抱佛脚选手', color:'#FFA500', emoji:'🙏', img:'/cards/linshibaifofojiao.png', honor:'考前突击大师', comment:'平时不烧香，考前抱佛脚', scores:{"细节定位":60,"推理判断":55,"同义替换":70,"主旨归纳":65,"态度判断":50} },
-                { type:'资料囤积狂', color:'#4A7C8C', emoji:'📦', img:'/cards/ziliaodunjikuang.png', honor:'四级资料收藏家', comment:'收藏=学会，囤满=稳过', scores:{"细节定位":85,"推理判断":70,"同义替换":80,"主旨归纳":75,"态度判断":60} }
+                { type:'资料囤积狂', color:'#4A7C8C', emoji:'📦', img:'/cards/ziliaodunjikuang.png', honor:'四级资料收藏家', comment:'收藏=学会，囤满=安心', scores:{"细节定位":85,"推理判断":70,"同义替换":80,"主旨归纳":75,"态度判断":60} }
             ];
 
         // ===== localStorage 安全读取辅助函数 =====
@@ -3975,9 +3975,9 @@ function showClearChatModal() {
             sheet.style.cssText = 'background:#fff;border-radius:16px 16px 0 0;width:100%;max-width:480px;max-height:70vh;padding:24px;overflow-y:auto;';
             sheet.innerHTML = '<div style="font-size:16px;font-weight:600;margin-bottom:16px">隐私政策</div>' +
                 '<div style="font-size:13px;color:#64748b;line-height:1.8">' +
-                '<p>1. 本产品为辅助学习工具，不收集、不存储、不上传您的个人信息。</p>' +
+                '<p>1. 本产品为辅助学习工具。您的基本学习数据（诊断结果、打卡记录）会加密保存在云端，仅用于恢复您的学习进度。</p>' +
                 '<p>2. 您的学习数据（诊断结果、打卡记录等）仅保存在您的浏览器本地存储中。</p>' +
-                '<p>3. 与AI的对话内容仅用于提供辅导服务，对话内容不会被保存至我们的服务器。</p>' +
+                '<p>3. 与AI的对话内容仅用于提供辅导服务，由AI服务商处理，我们不会用于其他用途。</p>' +
                 '<p>4. 支付通过面包多平台完成，我们不接触您的支付信息。</p>' +
                 '<p>5. 我们不会将您的数据分享给任何第三方。</p>' +
                 '</div>' +
@@ -3997,8 +3997,9 @@ function showClearChatModal() {
                 '<p>1. 本产品为AI辅助学习工具，提供的评分、批改、建议仅供参考，可能与实际考试评分存在差异。</p>' +
                 '<p>2. 本产品不保证考试成绩，不构成任何通过考试的承诺。</p>' +
                 '<p>3. 请以官方考试评分标准为准，本产品不能替代正规教学。</p>' +
-                '<p>4. 付费服务购买后7天内可协商退款，已使用超过3天或批改超过5次的服务不支持退款。</p>' +
-                '<p>5. 禁止将本产品用于任何违法违规用途。</p>' +
+                '<p>4. 付费服务购买后7天内可申请退款。已使用超过3天或批改超过5次的服务，退款金额为购买价格的50%。</p>' +
+                '<p>5. 如您未满18周岁，请在监护人指导下使用本产品。</p>' +
+                '<p>6. 禁止将本产品用于任何违法违规用途。</p>' +
                 '<p>6. 我们保留在不提前通知的情况下修改服务内容的权利。</p>' +
                 '</div>' +
                 '<button onclick="this.closest("div[style*=fixed]").remove()" style="width:100%;margin-top:20px;padding:12px;border:none;border-radius:10px;background:#6C5CE7;color:#fff;font-size:15px;font-weight:500;cursor:pointer">我知道了</button>';
