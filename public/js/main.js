@@ -6606,7 +6606,7 @@ function renderPlanTab() {
     // 无诊断数据时显示空状态引导
     if (!hasDiagnosis) {
         if (pageContent) {
-            pageContent.innerHTML = \`<div class="plan-page-header">
+            pageContent.innerHTML = `<div class="plan-page-header">
                 <h1 class="plan-page-title">学习计划</h1>
                 <p class="plan-page-sub">完成诊断后自动生成</p>
             </div>
@@ -6676,7 +6676,7 @@ function renderPlanTab() {
                     </div>
                 </div>
             </div>
-            \`;
+            `;
         }
         return;
     }
