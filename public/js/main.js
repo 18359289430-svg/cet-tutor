@@ -6860,17 +6860,22 @@ function buildReportText(data) {
             if (kv.length === 2) {
                 var key = kv[0].trim();
                 var val = parseInt(kv[1]) || 0;
-                if (['细节定位', '推理判断', '同义替换', '主旨归纳', '态度判断'].indexOf(key) !== -1) {
+                if (['细节定位', '推理判断', '同义替换', '主旨归纳', '态度判断', '听力'].indexOf(key) !== -1) {
                     dims[key] = val;
                 }
             }
         });
     }
     
+    // 添加听力统计
+    if (data.listening_stats) {
+        dims['听力'] = Math.round((data.listening_stats.correct / Math.max(data.listening_stats.total, 1)) * 100);
+    }
+    
     // 从dimension_scores补充
     if (data.dimension_scores) {
         Object.keys(data.dimension_scores).forEach(function(k) {
-            if (['细节定位', '推理判断', '同义替换', '主旨归纳', '态度判断'].indexOf(k) !== -1) {
+            if (['细节定位', '推理判断', '同义替换', '主旨归纳', '态度判断', '听力'].indexOf(k) !== -1) {
                 dims[k] = data.dimension_scores[k] || dims[k] || 0;
             }
         });
@@ -7158,6 +7163,7 @@ function renderReportPage() {
     // 生成弱项建议卡片
     var weakAdviceHtml = '';
     var adviceMap = {
+        '听力': { label: '听力强化专项', advice: '建议每天听一段VOA或BBC，先泛听抓大意，再精听记细节。考前集中练习真题听力，熟悉题型和语速。' },
         '细节定位': { label: '细节定位专项', advice: '建议每天练习3道细节题，学会用关键词回原文定位。重点关注时间、数字、绝对词等信号词。' },
         '推理判断': { label: '推理判断专项', advice: '练习从原文信息推导隐含含义，重点关注转折词和因果词。一切答案从原文出发，避免主观推测。' },
         '同义替换': { label: '同义替换专项', advice: '留意选项和原文的改写方式，重点关注词性变换和近义替换。积累高频同义替换词组有助于解题。' },
