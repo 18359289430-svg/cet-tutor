@@ -575,29 +575,6 @@
     line-height: 1.6;
     margin-bottom: 32px;
 }
-.diag-empty-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 14px 32px;
-    background: linear-gradient(135deg, #6C5CE7 0%, #8B7CF7 100%);
-    color: #FFFFFF;
-    border: none;
-    border-radius: 24px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    box-shadow: 0 4px 16px rgba(108, 92, 231, 0.3);
-    transition: background 0.2s, transform 0.2s;
-}
-.diag-empty-btn:active {
-    transform: scale(0.97);
-}
-.diag-empty-btn svg {
-    width: 18px;
-    height: 18px;
-}
-
 /* 记录列表 */
 .diag-list {
     display: flex;
