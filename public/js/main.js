@@ -621,6 +621,7 @@ function initApp() {
             renderHomePersonalityPreview();
             initTabEvents();
             updateProfileStats();
+            updateProfileUserId();
             updateHomeStatus();
             updatePlanDisplay();
             updateWrongBookBadge();
@@ -663,8 +664,17 @@ function initApp() {
         }
 
         // 从云端同步用户数据（优先API，失败降级localStorage）
-        async function syncUserDataFromCloud() {
-            var userId = getCloudUserId();
+        // 支持传入指定 userId 用于数据恢复
+        async function syncUserDataFromCloud(targetUserId) {
+            var userId;
+            // 如果传入了指定的 userId，则使用该 ID 并替换本地存储
+            if (targetUserId) {
+                userId = targetUserId;
+                state.userData = state.userData || {};
+                state.userData.cloudUserId = userId;
+            } else {
+                userId = getCloudUserId();
+            }
             try {
                 var resp = await fetch('http://8.218.88.15:8080/api/progress?user_id=' + encodeURIComponent(userId), {
                     method: 'GET',
@@ -691,6 +701,8 @@ function initApp() {
                         mergedChat.sort(function(a, b) { return (b.lastMsgTime || 0) - (a.lastMsgTime || 0); });
                         localData.chatList = mergedChat;
                     }
+                    // 确保 cloudUserId 被正确保存
+                    localData.cloudUserId = userId;
                     state.userData = localData;
                     saveUserData(state.userData);
                     console.log('[Cloud] 数据同步成功');
@@ -839,6 +851,7 @@ function initApp() {
             state.userData.planActivatedAt = Date.now();
             saveUserData(state.userData);
             updateProfileStats();
+            updateProfileUserId();
             updateHomeStatus();
         }
 
@@ -917,6 +930,9 @@ function initApp() {
             }
             if (tab === 'path') {
                 renderLearningPath();
+            }
+            if (tab === 'profile') {
+                updateProfileUserId();
             }
         }
 
@@ -4228,6 +4244,7 @@ function activateWithCode() {
             state.userData.planActivatedAt = Date.now();
             saveUserData(state.userData);
             updateProfileStats();
+            updateProfileUserId();
             updateHomeStatus();
             showPaySuccess(resp.plan);
         } else {
@@ -4267,6 +4284,7 @@ function activateWithMbdOrder(plan) {
             state.userData.planActivatedAt = Date.now();
             saveUserData(state.userData);
             updateProfileStats();
+            updateProfileUserId();
             updateHomeStatus();
             if (resp.alreadyActivated) {
                 if (msgEl) { msgEl.style.color = '#6C5CE7'; msgEl.textContent = '此订单已激活过'; }
@@ -6664,6 +6682,7 @@ function activateWithMbdOrderFromPlans() {
             state.userData.planActivatedAt = Date.now();
             saveUserData(state.userData);
             updateProfileStats();
+            updateProfileUserId();
             updateHomeStatus();
             if (msgEl) { msgEl.style.color = '#10B981'; msgEl.textContent = '激活成功！刷新页面即可使用'; }
             setTimeout(function(){ switchTab('home'); }, 1500);
@@ -9263,4 +9282,128 @@ function escapeHtml(text) {
     var div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
+}
+
+// ===== 用户ID数据恢复功能 =====
+// 复制用户ID到剪贴板
+function copyUserId() {
+    var userId = getCloudUserId();
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(userId).then(function() {
+            showToast('已复制');
+        }).catch(function() {
+            // 降级方案
+            var textarea = document.createElement('textarea');
+            textarea.value = userId;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                showToast('已复制');
+            } catch(e) {
+                showToast('复制失败，请手动复制');
+            }
+            document.body.removeChild(textarea);
+        });
+    } else {
+        // 降级方案
+        var textarea = document.createElement('textarea');
+        textarea.value = userId;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+            document.execCommand('copy');
+            showToast('已复制');
+        } catch(e) {
+            showToast('复制失败，请手动复制');
+        }
+        document.body.removeChild(textarea);
+    }
+}
+
+// 更新"我的"页面显示的用户ID
+function updateProfileUserId() {
+    var userIdElem = document.getElementById('profile-user-id');
+    if (userIdElem) {
+        var userId = getCloudUserId();
+        userIdElem.textContent = userId.substring(0, 8) + '...';
+    }
+}
+
+// 打开恢复数据模态框
+function openRestoreDataModal() {
+    var existing = document.getElementById('restore-modal');
+    if (existing) existing.remove();
+    
+    var modal = document.createElement('div');
+    modal.className = 'pay-modal';
+    modal.id = 'restore-modal';
+    modal.onclick = function(e) { if (e.target === modal) closeRestoreModal(); };
+    modal.innerHTML = 
+        '<div class="pay-sheet" style="position:relative">' +
+            '<div class="pay-sheet-handle"></div>' +
+            '<button class="pay-close" onclick="closeRestoreModal()">' +
+                '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2">' +
+                    '<line x1="1" y1="1" x2="13" y2="13"/>' +
+                    '<line x1="13" y1="1" x2="1" y2="13"/>' +
+                '</svg>' +
+            '</button>' +
+            '<div class="pay-sheet-title">恢复数据</div>' +
+            '<div style="font-size:13px;color:#64748B;text-align:center;margin-bottom:16px">输入你的用户ID恢复云端数据</div>' +
+            '<div class="pay-input-row">' +
+                '<input type="text" id="restore-user-id-input" placeholder="输入用户ID，如 u_12345678_abc" autocomplete="off" spellcheck="false">' +
+                '<button id="restore-btn" onclick="doRestoreData()">恢复</button>' +
+            '</div>' +
+            '<div id="restore-msg" style="font-size:12px;margin-top:8px;min-height:18px;color:#EF4444"></div>' +
+            '<div style="font-size:11px;color:#94A3B8;text-align:center;margin-top:12px">可在"我的"页面顶部查看您的用户ID</div>' +
+        '</div>';
+    document.body.appendChild(modal);
+}
+
+// 关闭恢复数据模态框
+function closeRestoreModal() {
+    var modal = document.getElementById('restore-modal');
+    if (modal) modal.remove();
+}
+
+// 执行数据恢复
+async function doRestoreData() {
+    var input = document.getElementById('restore-user-id-input');
+    var msg = document.getElementById('restore-msg');
+    var btn = document.getElementById('restore-btn');
+    var userId = input.value.trim();
+    
+    if (!userId) {
+        msg.textContent = '请输入用户ID';
+        return;
+    }
+    
+    btn.disabled = true;
+    btn.textContent = '恢复中...';
+    msg.textContent = '';
+    
+    try {
+        var success = await syncUserDataFromCloud(userId);
+        if (success) {
+            msg.style.color = '#22C55E';
+            msg.textContent = '数据恢复成功！';
+            closeRestoreModal();
+            showToast('数据恢复成功');
+            // 刷新页面以更新所有数据
+            setTimeout(function() {
+                window.location.reload();
+            }, 1000);
+        } else {
+            msg.textContent = '未找到该用户的数据';
+        }
+    } catch(e) {
+        msg.textContent = '恢复失败：' + (e.message || '网络错误');
+    }
+    
+    btn.disabled = false;
+    btn.textContent = '恢复';
 }
