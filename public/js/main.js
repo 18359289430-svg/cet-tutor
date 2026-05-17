@@ -1150,7 +1150,7 @@ function initApp() {
 
         function handleCapsuleClick(text) {
             // 快捷胶囊按钮点击处理
-            if (text === '练题' || text === '做真题') {
+            if (text === '练题' || text === '真题练习') {
                 openQuiz();
                 return;
             }
