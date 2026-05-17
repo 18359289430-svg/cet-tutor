@@ -1243,18 +1243,6 @@ function initApp() {
             html += '<div class="dashboard-hero-countdown">';
             html += '<span class="dashboard-hero-countdown-dot"></span>';
             html += '距考试 ' + daysToExam + ' 天</div>';
-            // 无数据时的引导CTA
-            var hasNoData = (!practiceHistory || practiceHistory.length === 0) && !hasDimData;
-            if (hasNoData) {
-                html += '<div class="dashboard-no-data-cta" onclick="switchTab(\'diagnosis\')">';
-                html += '<div class="dashboard-cta-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>';
-                html += '<div class="dashboard-cta-text">';
-                html += '<div class="dashboard-cta-title">开始你的四级之旅</div>';
-                html += '<div class="dashboard-cta-desc">5分钟AI诊断，找到你的备考短板</div>';
-                html += '</div>';
-                html += '<div class="dashboard-cta-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>';
-                html += '</div>';
-            }
             html += '</div>';
             
             // ===== 概览卡片 - 2大+2小布局 =====
