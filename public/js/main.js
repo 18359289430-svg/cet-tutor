@@ -851,7 +851,7 @@ function initApp() {
         }
 
         function initCountdown() {
-            var examDate = new Date('2026-06-14T09:00:00');
+            var examDate = new Date('2026-06-13');
             var now = new Date();
             var diffMs = examDate - now;
             var diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
