@@ -1745,3 +1745,8 @@
 .diag-loading-step.done {
     color: #00B894;
 }
+.diag-loading-time {
+    font-size: 12px;
+    color: #94a3b8;
+    font-weight: 400;
+}

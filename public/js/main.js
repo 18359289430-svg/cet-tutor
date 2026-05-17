@@ -5976,7 +5976,7 @@ function getTotalListeningQuestions() {
 function showCurrentListening() {
     var passage = diagState.listeningPassages[diagState.currentListeningPassageIndex];
     if (!passage) {
-        startReadingPhase();
+        startWritingTest();
         return;
     }
     
@@ -6277,7 +6277,7 @@ function selectOption(btn, selectedValue) {
         diagState.currentQIndex++;
         var totalQuestions = diagState.questions.length;
         if (diagState.currentQIndex >= totalQuestions) {
-            startWritingTest();
+            startListeningTest();
         } else {
             showCurrentQuestion();
         }
@@ -6780,7 +6780,7 @@ async function generateDiagReport() {
     document.getElementById('diag-body').innerHTML = 
         '<div class="diag-loading">' +
             '<div class="diag-spinner"></div>' +
-            '<div class="diag-loading-text">AI正在分析你的答题情况...</div>' +
+            '<div class="diag-loading-text">AI正在分析你的答题情况<span class="diag-loading-time">（预计1-2分钟）</span></div>' +
             '<div class="diag-loading-steps">' +
                 '<div class="diag-loading-step" id="diag-step-1">📊 汇总答题数据...</div>' +
                 '<div class="diag-loading-step" id="diag-step-2">🔍 分析薄弱维度...</div>' +
