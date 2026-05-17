@@ -1013,21 +1013,13 @@ function initApp() {
             html += '<div class="wrongbook-hero-divider"></div>';
             html += '</div>';
             
-            // 统计区 - 白底+紫色数字
-            html += '<div class="wrongbook-stats">';
-            html += '<div class="wrongbook-stat-item">';
-            html += '<div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg></div>';
-            html += '<div class="stat-info">';
-            html += '<div class="stat-number">' + stats.total + '</div>';
-            html += '<div class="stat-label">错题总数</div>';
-            html += '</div>';
-            html += '</div>';
-            html += '<div class="wrongbook-stat-item">';
-            html += '<div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></div>';
-            html += '<div class="stat-info">';
-            html += '<div class="stat-number">' + stats.todayNew + '</div>';
-            html += '<div class="stat-label">今日新增</div>';
-            html += '</div>';
+            // 主卡 - 大数字
+            html += '<div class="wrongbook-hero-card">';
+            html += '<div class="wrongbook-hero-number">' + stats.total + '</div>';
+            html += '<div class="wrongbook-hero-label">错题总数</div>';
+            html += '<div class="wrongbook-sub-stats">';
+            html += '<div class="wrongbook-sub-item"><span class="sub-dot"></span><span class="sub-num">' + stats.todayNew + '</span> 今日新增</div>';
+            html += '<div class="wrongbook-sub-item"><span class="sub-dot" style="background:#10B981"></span><span class="sub-num">' + (stats.total - stats.todayNew >= 0 ? stats.total - stats.todayNew : 0) + '</span> 待复习</div>';
             html += '</div>';
             html += '</div>';
             
