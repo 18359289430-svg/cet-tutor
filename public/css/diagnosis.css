@@ -1705,6 +1705,7 @@
     color: #94A3B8;
 }
 
+<<<<<<< HEAD
 /* 阅读原文标题样式 */
 .diag-passage-title {
     font-size: 15px;
@@ -1749,4 +1750,305 @@
     font-size: 12px;
     color: #94a3b8;
     font-weight: 400;
+
+
+/* ========== 错题复盘区域 ========== */
+.report-wrong-section {
+    margin-bottom: 16px;
+}
+.report-wrong-subtitle {
+    font-size: 13px;
+    color: #94A3B8;
+    margin-bottom: 12px;
+    margin-top: -8px;
+}
+.report-wrong-card {
+    background: white;
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.report-wrong-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+.report-wrong-num {
+    font-size: 13px;
+    font-weight: 600;
+    color: #E17055;
+    background: #FEE2E2;
+    padding: 2px 8px;
+    border-radius: 6px;
+}
+.report-wrong-ability {
+    font-size: 12px;
+    color: #6C5CE7;
+    background: rgba(108,92,231,0.1);
+    padding: 2px 8px;
+    border-radius: 6px;
+}
+.report-wrong-answers {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+.report-wrong-answer {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border-radius: 10px;
+}
+.report-wrong-answer.wrong {
+    background: #FFF5F5;
+    border: 1px solid #FECACA;
+}
+.report-wrong-answer.correct {
+    background: #F0FFF4;
+    border: 1px solid #BBF7D0;
+}
+.answer-label {
+    font-size: 12px;
+    color: #64748B;
+}
+.answer-letter {
+    font-size: 16px;
+    font-weight: 700;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.report-wrong-answer.wrong .answer-letter {
+    background: #E17055;
+    color: white;
+}
+.report-wrong-answer.correct .answer-letter {
+    background: #00B894;
+    color: white;
+}
+.report-wrong-reason {
+    background: #FFF7ED;
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 10px;
+}
+.reason-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: #C2410C;
+    margin-bottom: 4px;
+}
+.reason-text {
+    font-size: 13px;
+    color: #7C2D12;
+    line-height: 1.5;
+}
+.report-wrong-fix {
+    background: #F0FDF4;
+    border-radius: 10px;
+    padding: 12px;
+}
+.fix-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: #15803D;
+    margin-bottom: 4px;
+}
+.fix-text {
+    font-size: 13px;
+    color: #166534;
+    line-height: 1.5;
+}
+
+/* ========== 3日行动计划区域 ========== */
+.report-plan-section {
+    margin-bottom: 16px;
+}
+.report-plan-subtitle {
+    font-size: 13px;
+    color: #94A3B8;
+    margin-bottom: 12px;
+    margin-top: -8px;
+}
+.report-plan-day {
+    background: white;
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.plan-day-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+.plan-day-icon {
+    font-size: 18px;
+}
+.plan-day-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: #6C5CE7;
+    background: rgba(108,92,231,0.1);
+    padding: 2px 8px;
+    border-radius: 6px;
+}
+.plan-day-focus {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1E293B;
+}
+.plan-tasks {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 10px 0;
+}
+.plan-task-item {
+    font-size: 13px;
+    color: #475569;
+    padding: 6px 0;
+    padding-left: 16px;
+    position: relative;
+    line-height: 1.4;
+}
+.plan-task-item::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: #6C5CE7;
+    font-weight: 700;
+}
+.plan-tip {
+    font-size: 12px;
+    color: #6C5CE7;
+    background: rgba(108,92,231,0.08);
+    padding: 8px 10px;
+    border-radius: 8px;
+}
+
+/* ========== 写作/翻译反馈区域 ========== */
+.report-writing-section,
+.report-translation-section {
+    background: white;
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.report-writing-score,
+.report-translation-score {
+    font-size: 14px;
+    color: #64748B;
+    margin-bottom: 12px;
+}
+.report-writing-score .score-num,
+.report-translation-score .score-num {
+    font-size: 20px;
+    font-weight: 700;
+    color: #6C5CE7;
+}
+.report-writing-issues {
+    margin-bottom: 10px;
+}
+.writing-issue {
+    background: #F8FAFC;
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 8px;
+}
+.issue-from {
+    font-size: 13px;
+    color: #E17055;
+    margin-bottom: 4px;
+}
+.issue-arrow {
+    font-size: 14px;
+    color: #94A3B8;
+    text-align: center;
+    margin: 4px 0;
+}
+.issue-to {
+    font-size: 13px;
+    color: #00B894;
+}
+.report-writing-comment,
+.report-translation-comment {
+    font-size: 13px;
+    color: #475569;
+    background: #F8FAFC;
+    padding: 10px 12px;
+    border-radius: 10px;
+    line-height: 1.5;
+}
+.keyword-results {
+    margin-bottom: 10px;
+}
+.keyword-hit,
+.keyword-miss {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+.keyword-tag {
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 6px;
+}
+.keyword-tag.hit {
+    background: #D1FAE5;
+    color: #059669;
+}
+.keyword-tag.miss {
+    background: #FEE2E2;
+    color: #DC2626;
+}
+
+/* ========== 进步钩子区域 ========== */
+.report-hook-section {
+    background: linear-gradient(135deg, #6C5CE7 0%, #8B7CF7 100%);
+    border-radius: 16px;
+    padding: 24px 20px;
+    text-align: center;
+    margin-bottom: 16px;
+}
+.report-hook-icon {
+    font-size: 32px;
+    margin-bottom: 8px;
+}
+.report-hook-text {
+    font-size: 15px;
+    color: white;
+    margin-bottom: 16px;
+    font-weight: 500;
+}
+.report-hook-btn {
+    background: white;
+    color: #6C5CE7;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 24px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+.report-hook-btn:active {
+    transform: scale(0.96);
+}
+
+/* ========== 百分位排名 ========== */
+.report-dim-percentile {
+    font-size: 11px;
+    color: #94A3B8;
+    margin-top: 6px;
+
 }

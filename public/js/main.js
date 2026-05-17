@@ -5451,6 +5451,182 @@ const DIM_CONFIGS = {
 };
 
 // 诊断数据（从Bot回复解析）
+// 百分位映射表
+var PERCENTILE_MAP = {
+    90: 95,
+    80: 80,
+    70: 65,
+    60: 50,
+    50: 35,
+    40: 20,
+    0: 5
+};
+
+// 获取百分位排名
+function getPercentile(score) {
+    if (score >= 90) return 95;
+    if (score >= 80) return 80;
+    if (score >= 70) return 65;
+    if (score >= 60) return 50;
+    if (score >= 50) return 35;
+    if (score >= 40) return 20;
+    return 5;
+}
+
+// 错因分析映射
+var ERROR_REASON_MAP = {
+    '细节定位': {
+        reason: '关键词定位不准，可能被干扰选项迷惑',
+        fix: '练习划关键词回原文定位，注意时间、数字、绝对词等信号词'
+    },
+    '推理判断': {
+        reason: '过度推断或推断不足，答案需从原文出发',
+        fix: '所有推断必须有原文依据，避免主观臆测'
+    },
+    '同义替换': {
+        reason: '同义替换识别能力弱，需积累高频替换词',
+        fix: '背诵常见同义替换词组，注意词性和句式变化'
+    },
+    '主旨归纳': {
+        reason: '抓不住文章主旨，注意首尾段和转折词',
+        fix: '先看首尾句和每段首句，关注高频名词和主题词'
+    },
+    '态度判断': {
+        reason: '作者态度题要区分事实和观点',
+        fix: '积累态度词（skeptical、optimistic等），区分直接表态和引用观点'
+    }
+};
+
+// 3日行动计划模板
+var ACTION_PLANS = {
+    '细节定位': {
+        day1: { focus: '关键词定位突破', tasks: ['做3道细节定位题，练习划关键词', '背5组常见同义替换词'], tip: '重点关注时间、数字、绝对词' },
+        day2: { focus: '干扰项识别', tasks: ['做3道含干扰项的题目', '对比正确选项和干扰项的区别'], tip: '警惕"不是...而是..."等转折陷阱' },
+        day3: { focus: '综合巩固', tasks: ['做1套完整阅读（5题）', '对照错因分析查漏补缺'], tip: '限时15分钟完成' }
+    },
+    '推理判断': {
+        day1: { focus: '原文依据训练', tasks: ['做3道推理题，标注每题原文依据', '总结推理词（therefore、suggest等）'], tip: '没有原文支持的不选' },
+        day2: { focus: '推断程度把握', tasks: ['练习区分"可能"和"一定"', '做2道推断题检验'], tip: '过度推断是常见陷阱' },
+        day3: { focus: '综合巩固', tasks: ['做1套完整阅读', '分析所有推理题的解题思路'], tip: '每题必须找到原文依据' }
+    },
+    '同义替换': {
+        day1: { focus: '高频替换词积累', tasks: ['背诵20组高频同义替换', '做2道同义替换专项题'], tip: '如：increase → rise/grow/boost' },
+        day2: { focus: '词性变换识别', tasks: ['练习识别名词↔动词↔形容词的替换', '做2道综合替换题'], tip: '词性变换是常见考法' },
+        day3: { focus: '综合巩固', tasks: ['做1套完整阅读', '整理当天遇到的替换词'], tip: '建立自己的替换词本' }
+    },
+    '主旨归纳': {
+        day1: { focus: '文章结构识别', tasks: ['分析3篇文章的首尾段结构', '总结常见主旨句位置'], tip: '主旨通常在首段末句或末段首句' },
+        day2: { focus: '主题词抓取', tasks: ['练习圈画高频名词', '做2道主旨大意题'], tip: '主题词会在文中反复出现' },
+        day3: { focus: '综合巩固', tasks: ['做1套完整阅读', '每篇试着用一句话概括主旨'], tip: '排除过于具体或宽泛的选项' }
+    },
+    '态度判断': {
+        day1: { focus: '态度词积累', tasks: ['背诵10组常见态度词', '区分正面/负面/中立态度'], tip: 'positive、negative、neutral需分清' },
+        day2: { focus: '事实vs观点', tasks: ['练习区分文中事实和作者观点', '做2道态度题'], tip: '作者观点可能与专家引用不同' },
+        day3: { focus: '综合巩固', tasks: ['做1套完整阅读', '标注每篇文章的态度词'], tip: '注意文章末尾的态度转折' }
+    }
+};
+
+// 生成3日行动计划
+function generateActionPlan(weakDims) {
+    if (!weakDims || weakDims.length === 0) {
+        return { dim: '阅读综合', plans: ACTION_PLANS['细节定位'] };
+    }
+    var primaryWeak = weakDims[0].name || '细节定位';
+    var plans = ACTION_PLANS[primaryWeak] || ACTION_PLANS['细节定位'];
+    return { dim: primaryWeak, plans: plans };
+}
+
+// 提取写作反馈
+function extractWritingFeedback() {
+    if (!diagState.writingScore) return null;
+    var score = diagState.writingScore;
+    var issues = [];
+    
+    // 根据各维度分数判断问题
+    if (score.vocabulary < 60) {
+        issues.push({ from: '词汇单一', to: '使用更丰富的同义词和短语' });
+    }
+    if (score.grammar < 60) {
+        issues.push({ from: '存在语法错误', to: '注意时态、主谓一致' });
+    }
+    if (score.logic < 60) {
+        issues.push({ from: '逻辑衔接较弱', to: '使用Firstly、However等连接词' });
+    }
+    if (score.coherence < 60) {
+        issues.push({ from: '段落连贯性不足', to: '每个段落一个中心思想' });
+    }
+    
+    return {
+        total: score.total,
+        issues: issues.slice(0, 2),  // 最多展示2个问题
+        comment: score.comment || ''
+    };
+}
+
+// 提取翻译反馈
+function extractTranslationFeedback() {
+    if (!diagState.translationScore) return null;
+    var score = diagState.translationScore;
+    var keywords = score.keywords || [];
+    
+    var hit = [];
+    var miss = [];
+    if (keywords && keywords.length > 0) {
+        keywords.forEach(function(k) {
+            if (k.hit) {
+                hit.push(k.word);
+            } else if (k.missed) {
+                miss.push(k.word);
+            }
+        });
+    }
+    
+    return {
+        total: score.total,
+        hit: hit.slice(0, 3),
+        miss: miss.slice(0, 3),
+        comment: score.comment || ''
+    };
+}
+
+// 提取错题数据
+function extractWrongQuestions() {
+    var wrongQuestions = [];
+    if (!diagState.answers || diagState.answers.length === 0) return wrongQuestions;
+    
+    var count = 0;
+    for (var i = 0; i < diagState.answers.length && count < 5; i++) {
+        var answer = diagState.answers[i];
+        if (!answer.isCorrect) {
+            var question = null;
+            for (var j = 0; j < diagState.questions.length; j++) {
+                if (diagState.questions[j].id === answer.id) {
+                    question = diagState.questions[j];
+                    break;
+                }
+            }
+            if (question) {
+                var ability = answer.ability || '细节定位';
+                var errorInfo = ERROR_REASON_MAP[ability] || {
+                    reason: '解题方法有待提高',
+                    fix: '加强相关训练'
+                };
+                wrongQuestions.push({
+                    num: i + 1,
+                    userAnswer: answer.userAnswer,
+                    correctAnswer: answer.correctAnswer,
+                    question: question.question,
+                    ability: ability,
+                    reason: errorInfo.reason,
+                    fix: errorInfo.fix
+                });
+                count++;
+            }
+        }
+    }
+    return wrongQuestions;
+}
+
 var reportData = {
     riskLevel: 'mid',
     totalScore: 0,
@@ -5459,7 +5635,12 @@ var reportData = {
     advice: '',
     tips: [],
     personality: '',
-    botText: ''
+    botText: '',
+    percentile: 50,
+    wrongQuestions: [],
+    actionPlan: null,
+    writingFeedback: null,
+    translationFeedback: null
 };
 
 // 解析诊断结果
@@ -5472,7 +5653,12 @@ function parseDiagnosisReport(text) {
         advice: '',
         tips: [],
         personality: '',
-        botText: text
+        botText: text,
+        percentile: 50,
+        wrongQuestions: [],
+        actionPlan: null,
+        writingFeedback: null,
+        translationFeedback: null
     };
     
     // 尝试解析结构化数据 [RESULT:xxx]
@@ -5560,6 +5746,31 @@ function parseDiagnosisReport(text) {
 // 显示诊断报告页
 function showDiagnosisReport(text) {
     reportData = parseDiagnosisReport(text);
+    
+    // 提取错题数据
+    reportData.wrongQuestions = extractWrongQuestions();
+    
+    // 生成行动计划
+    reportData.actionPlan = generateActionPlan(reportData.weakDims);
+    
+    // 提取百分位
+    var avgScore = 0;
+    var scoreCount = 0;
+    Object.keys(reportData.dims).forEach(function(k) {
+        avgScore += reportData.dims[k];
+        scoreCount++;
+    });
+    if (scoreCount > 0) {
+        reportData.percentile = getPercentile(Math.round(avgScore / scoreCount));
+    }
+    
+    // 提取写作/翻译反馈（如果有）
+    if (diagState.writingScore) {
+        reportData.writingFeedback = extractWritingFeedback();
+    }
+    if (diagState.translationScore) {
+        reportData.translationFeedback = extractTranslationFeedback();
+    }
     
     // 保存到 userData
     if (state.userData) {
@@ -7287,10 +7498,20 @@ function renderReportPage() {
         
         (weakAdviceHtml ? '<div class="report-advice-section"><div class="report-section-title">💪 专项提升建议</div>' + weakAdviceHtml + '</div>' : '') +
         
-        '<div class="report-tips-section">' +
-            '<div class="report-section-title">📚 备考建议</div>' +
-            tipsHtml +
-        '</div>' +
+        // 错题复盘区域
+        buildWrongQuestionsSection() +
+        
+        // 3日行动计划区域
+        buildActionPlanSection() +
+        
+        // 写作批改摘要（如果有）
+        buildWritingFeedbackSection() +
+        
+        // 翻译批改摘要（如果有）
+        buildTranslationFeedbackSection() +
+        
+        // 进步钩子
+        buildProgressHookSection() +
         
         '<div style="text-align:center;padding:16px 0;">' +
             '<button style="padding:10px 20px;background:#F8F9FA;border:1px solid #E2E8F0;border-radius:8px;font-size:13px;color:#64748B;cursor:pointer" onclick="showReportShare()">📱 分享报告</button>' +
@@ -7315,6 +7536,192 @@ function renderReportPage() {
     setTimeout(function() {
         drawReportRadar();
     }, 100);
+}
+
+// 构建错题复盘区域HTML
+function buildWrongQuestionsSection() {
+    if (!reportData.wrongQuestions || reportData.wrongQuestions.length === 0) {
+        return '';
+    }
+    
+    var html = '<div class="report-wrong-section">' +
+        '<div class="report-section-title">📝 错题复盘</div>' +
+        '<div class="report-wrong-subtitle">这些题做错了，看看问题出在哪</div>';
+    
+    reportData.wrongQuestions.forEach(function(q) {
+        html += '<div class="report-wrong-card">' +
+            '<div class="report-wrong-header">' +
+                '<span class="report-wrong-num">第' + q.num + '题</span>' +
+                '<span class="report-wrong-ability">' + q.ability + '</span>' +
+            '</div>' +
+            '<div class="report-wrong-answers">' +
+                '<div class="report-wrong-answer wrong">' +
+                    '<span class="answer-label">你的答案</span>' +
+                    '<span class="answer-letter">' + q.userAnswer + '</span>' +
+                '</div>' +
+                '<div class="report-wrong-answer correct">' +
+                    '<span class="answer-label">正确答案</span>' +
+                    '<span class="answer-letter">' + q.correctAnswer + '</span>' +
+                '</div>' +
+            '</div>' +
+            '<div class="report-wrong-reason">' +
+                '<div class="reason-title">❌ 错因分析</div>' +
+                '<div class="reason-text">' + q.reason + '</div>' +
+            '</div>' +
+            '<div class="report-wrong-fix">' +
+                '<div class="fix-title">💡 改进方法</div>' +
+                '<div class="fix-text">' + q.fix + '</div>' +
+            '</div>' +
+        '</div>';
+    });
+    
+    html += '</div>';
+    return html;
+}
+
+// 构建3日行动计划区域HTML
+function buildActionPlanSection() {
+    if (!reportData.actionPlan || !reportData.actionPlan.plans) {
+        return '';
+    }
+    
+    var plan = reportData.actionPlan;
+    var html = '<div class="report-plan-section">' +
+        '<div class="report-section-title">📅 你的3日突破计划</div>' +
+        '<div class="report-plan-subtitle">针对' + plan.dim + '的专项训练</div>';
+    
+    var days = [
+        { key: 'day1', label: 'Day 1', icon: '1️⃣' },
+        { key: 'day2', label: 'Day 2', icon: '2️⃣' },
+        { key: 'day3', label: 'Day 3', icon: '3️⃣' }
+    ];
+    
+    days.forEach(function(day) {
+        var dayPlan = plan.plans[day.key];
+        if (!dayPlan) return;
+        
+        html += '<div class="report-plan-day">' +
+            '<div class="plan-day-header">' +
+                '<span class="plan-day-icon">' + day.icon + '</span>' +
+                '<span class="plan-day-label">' + day.label + '</span>' +
+                '<span class="plan-day-focus">' + dayPlan.focus + '</span>' +
+            '</div>' +
+            '<ul class="plan-tasks">';
+        
+        dayPlan.tasks.forEach(function(task) {
+            html += '<li class="plan-task-item">' + task + '</li>';
+        });
+        
+        html += '</ul>' +
+            '<div class="plan-tip">💡 ' + dayPlan.tip + '</div>' +
+        '</div>';
+    });
+    
+    html += '</div>';
+    return html;
+}
+
+// 构建写作反馈区域HTML
+function buildWritingFeedbackSection() {
+    if (!reportData.writingFeedback) {
+        return '';
+    }
+    
+    var fb = reportData.writingFeedback;
+    var html = '<div class="report-writing-section">' +
+        '<div class="report-section-title">✍️ 写作批改</div>' +
+        '<div class="report-writing-score">写作得分：<span class="score-num">' + fb.total + '</span></div>';
+    
+    if (fb.issues && fb.issues.length > 0) {
+        html += '<div class="report-writing-issues">';
+        fb.issues.forEach(function(issue) {
+            html += '<div class="writing-issue">' +
+                '<div class="issue-from">原文：' + issue.from + '</div>' +
+                '<div class="issue-arrow">↓</div>' +
+                '<div class="issue-to">建议：' + issue.to + '</div>' +
+            '</div>';
+        });
+        html += '</div>';
+    }
+    
+    if (fb.comment) {
+        html += '<div class="report-writing-comment">💬 ' + fb.comment + '</div>';
+    }
+    
+    html += '</div>';
+    return html;
+}
+
+// 构建翻译反馈区域HTML
+function buildTranslationFeedbackSection() {
+    if (!reportData.translationFeedback) {
+        return '';
+    }
+    
+    var fb = reportData.translationFeedback;
+    var html = '<div class="report-translation-section">' +
+        '<div class="report-section-title">🌐 翻译批改</div>' +
+        '<div class="report-translation-score">翻译得分：<span class="score-num">' + fb.total + '</span></div>';
+    
+    html += '<div class="keyword-results">';
+    
+    if (fb.hit && fb.hit.length > 0) {
+        html += '<div class="keyword-hit">';
+        fb.hit.forEach(function(word) {
+            html += '<span class="keyword-tag hit">✅ ' + word + '</span>';
+        });
+        html += '</div>';
+    }
+    
+    if (fb.miss && fb.miss.length > 0) {
+        html += '<div class="keyword-miss">';
+        fb.miss.forEach(function(word) {
+            html += '<span class="keyword-tag miss">❌ ' + word + '</span>';
+        });
+        html += '</div>';
+    }
+    
+    html += '</div>';
+    
+    if (fb.comment) {
+        html += '<div class="report-translation-comment">💬 ' + fb.comment + '</div>';
+    }
+    
+    html += '</div>';
+    return html;
+}
+
+// 构建进步钩子区域HTML（不说具体数字，遵守广告法）
+function buildProgressHookSection() {
+    var hookTexts = [
+        '针对性练习，备考更高效',
+        '坚持练习，薄弱项会有明显改善',
+        '每天15分钟，4周覆盖全部考点',
+        '找对方法，进步看得见'
+    ];
+    var hookText = hookTexts[Math.floor(Math.random() * hookTexts.length)];
+    
+    var html = '<div class="report-hook-section">' +
+        '<div class="report-hook-icon">🎯</div>' +
+        '<div class="report-hook-text">' + hookText + '</div>' +
+        '<button class="report-hook-btn" onclick="startPracticeChallenge()">' +
+            '开始7天挑战' +
+        '</button>' +
+    '</div>';
+    return html;
+}
+
+// 开始7天挑战
+function startPracticeChallenge() {
+    closeReportPage();
+    switchTab('diagnosis');
+    setTimeout(function() {
+        openChat('companion');
+        setTimeout(function() {
+            var msg = '我想开始7天提升挑战，帮我制定今天的练习计划';
+            sendSuggestion(msg);
+        }, 500);
+    }, 350);
 }
 
 // 绘制报告页雷达图
