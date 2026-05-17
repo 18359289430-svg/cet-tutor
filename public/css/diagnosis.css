@@ -2236,3 +2236,220 @@
     background: #E17055;
     color: white;
 }
+
+/* ========== 听力播放器样式 ========== */
+.listening-section {
+    padding: 16px;
+}
+
+.listening-passage-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 16px;
+    padding: 20px;
+    color: white;
+    margin-bottom: 16px;
+}
+
+.listening-passage-type {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    opacity: 0.9;
+}
+
+.listening-player {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.listening-wave {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    height: 24px;
+}
+
+.listening-wave span {
+    width: 3px;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 2px;
+    animation: wave 0.8s ease-in-out infinite;
+}
+
+.listening-wave span:nth-child(1) { height: 8px; animation-delay: 0s; }
+.listening-wave span:nth-child(2) { height: 16px; animation-delay: 0.1s; }
+.listening-wave span:nth-child(3) { height: 24px; animation-delay: 0.2s; }
+.listening-wave span:nth-child(4) { height: 16px; animation-delay: 0.3s; }
+.listening-wave span:nth-child(5) { height: 8px; animation-delay: 0.4s; }
+
+@keyframes wave {
+    0%, 100% { transform: scaleY(0.5); opacity: 0.7; }
+    50% { transform: scaleY(1); opacity: 1; }
+}
+
+.listening-play-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.listening-play-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+}
+
+.listening-play-btn:active {
+    transform: scale(0.95);
+}
+
+.listening-play-btn .play-icon {
+    font-size: 18px;
+    color: #667eea;
+}
+
+.listening-play-btn.playing .play-icon {
+    display: none;
+}
+
+.listening-hint {
+    font-size: 13px;
+    opacity: 0.9;
+}
+
+/* 进度条容器 */
+.listening-progress-container {
+    margin: 12px 0;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+}
+
+.listening-progress-bar-wrapper {
+    position: relative;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.listening-progress-bar-wrapper progress {
+    width: 100%;
+    height: 8px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    position: relative;
+    z-index: 1;
+}
+
+.listening-progress-bar-wrapper progress::-webkit-progress-value {
+    background: white;
+    border-radius: 4px;
+}
+
+.listening-progress-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background: white;
+    border-radius: 4px;
+    transition: width 0.5s ease;
+}
+
+.listening-progress-text {
+    font-size: 12px;
+    text-align: center;
+    opacity: 0.8;
+}
+
+/* 轮次指示器 */
+.listening-round-indicator {
+    text-align: center;
+    font-size: 14px;
+    font-weight: 500;
+    margin: 8px 0;
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+}
+
+.listening-round-indicator.round-1,
+.listening-round-indicator.round-2 {
+    animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.listening-round-indicator.round-waiting {
+    color: #FFE066;
+}
+
+@keyframes pulse-glow {
+    0%, 100% { opacity: 0.8; }
+    50% { opacity: 1; text-shadow: 0 0 8px rgba(255, 255, 255, 0.5); }
+}
+
+/* 重播按钮 */
+.listening-replay-btn {
+    width: 100%;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 12px;
+}
+
+.listening-replay-btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.listening-replay-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.listening-replay-btn.disabled {
+    background: rgba(100, 100, 100, 0.3);
+    border-color: rgba(100, 100, 100, 0.3);
+}
+
+.listening-replay-btn .replay-count {
+    font-size: 12px;
+    opacity: 0.8;
+    margin-left: 4px;
+}
+
+.listening-replay-btn .replay-tip {
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+/* 播放提示 */
+.listening-play-hint {
+    text-align: center;
+    font-size: 12px;
+    opacity: 0.7;
+}
+
+/* 题目卡片 */
+.listening-question-card {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}

@@ -6103,7 +6103,15 @@ var diagState = {
     writingScore: null,
     translationScore: null,
     writingPrompt: null,
-    translationPrompt: null
+    translationPrompt: null,
+    // 听力相关状态
+    listeningPlayed: false,
+    listeningReplayCount: 0,
+    listeningAnswers: [],
+    listeningCorrectCount: 0,
+    listeningPassages: [],
+    currentListeningPassageIndex: 0,
+    currentListeningQIndex: 0
 };
 
 // 开始新诊断流程
@@ -6122,7 +6130,15 @@ async function startNewDiagnosis() {
         writingScore: null,
         translationScore: null,
         writingPrompt: null,
-        translationPrompt: null
+        translationPrompt: null,
+        // 听力相关状态
+        listeningPlayed: false,
+        listeningReplayCount: 0,
+        listeningAnswers: [],
+        listeningCorrectCount: 0,
+        listeningPassages: [],
+        currentListeningPassageIndex: 0,
+        currentListeningQIndex: 0
     };
     
     // 显示界面
@@ -6196,6 +6212,20 @@ function renderDiagLoading(text) {
 
 // ========== 听力实测功能 ==========
 
+// 判断是否为六级用户
+function isCET6User() {
+    var userData = safeGetItem('cet_user', {});
+    var uid = userData.uid || '';
+    // 六级UID以CET6开头
+    return uid.startsWith('CET6') || uid.startsWith('6');
+}
+
+// 获取CET级别标签
+function getCETLevelLabel() {
+    return isCET6User() ? '六级' : '四级';
+}
+
+// 听力播放器状态
 var listeningPlayer = {
     isPlaying: false,
     isPaused: false,
@@ -6203,7 +6233,13 @@ var listeningPlayer = {
     currentIndex: 0,
     onComplete: null,
     round: 1,
-    maxRounds: 2
+    maxRounds: 1,  // 默认只播放1遍（模拟真题）
+    extraRounds: 0,  // 额外重播次数
+    maxExtraRounds: 1,  // 最多允许1次额外重播
+    currentText: '',
+    totalDuration: 0,
+    startTime: 0,
+    progressInterval: null
 };
 
 function isSpeechSynthesisSupported() {
@@ -6340,6 +6376,11 @@ function playListeningRound(text, isConversation, onSegmentStart, onComplete) {
     return loadVoices().then(function() {
         var segments = parseListeningText(text, isConversation);
         
+        // 根据CET级别设置语速
+        // 四级：约130词/分钟，rate设为1.0
+        // 六级：约150词/分钟，rate设为1.15（适当加快）
+        var cetRate = isCET6User() ? 1.15 : 1.0;
+        
         function playSegment(index) {
             if (index >= segments.length) {
                 return Promise.resolve();
@@ -6353,7 +6394,7 @@ function playListeningRound(text, isConversation, onSegmentStart, onComplete) {
                     
                     var utterance = new SpeechSynthesisUtterance(seg.text);
                     utterance.lang = 'en-US';
-                    utterance.rate = 0.85;
+                    utterance.rate = cetRate;  // 使用CET级别对应的语速
                     utterance.pitch = seg.isMale ? 0.9 : 1.1;
                     
                     if (voice) {
@@ -6388,6 +6429,55 @@ function stopListeningPlayback() {
     listeningPlayer.isPlaying = false;
     listeningPlayer.isPaused = false;
     listeningPlayer.currentIndex = 0;
+    // 清除进度更新定时器
+    if (listeningPlayer.progressInterval) {
+        clearInterval(listeningPlayer.progressInterval);
+        listeningPlayer.progressInterval = null;
+    }
+    updateListeningProgressUI(0, 0);
+}
+
+// 更新听力进度UI
+function updateListeningProgressUI(progress, totalSeconds) {
+    var progressBar = document.getElementById('listening-progress-bar');
+    var progressText = document.getElementById('listening-progress-text');
+    var progressFill = document.getElementById('listening-progress-fill');
+    
+    if (progressBar) {
+        var percentage = totalSeconds > 0 ? Math.round((progress / totalSeconds) * 100) : 0;
+        progressBar.value = percentage;
+        if (progressFill) {
+            progressFill.style.width = percentage + '%';
+        }
+    }
+    
+    if (progressText) {
+        var remaining = Math.max(0, Math.ceil(totalSeconds - progress));
+        progressText.textContent = '剩余 ' + remaining + 's';
+    }
+}
+
+// 开始进度更新定时器
+function startProgressTimer() {
+    if (listeningPlayer.progressInterval) {
+        clearInterval(listeningPlayer.progressInterval);
+    }
+    
+    var startTime = Date.now();
+    var totalDuration = listeningPlayer.totalDuration || 60; // 默认60秒
+    
+    listeningPlayer.progressInterval = setInterval(function() {
+        if (!listeningPlayer.isPlaying || listeningPlayer.isPaused) return;
+        
+        var elapsed = Math.floor((Date.now() - startTime) / 1000);
+        var remaining = Math.max(0, totalDuration - elapsed);
+        
+        updateListeningProgressUI(elapsed, totalDuration);
+        
+        if (remaining <= 0) {
+            clearInterval(listeningPlayer.progressInterval);
+        }
+    }, 500);
 }
 
 function playListeningFull(text, isConversation, onComplete) {
@@ -6401,16 +6491,34 @@ function playListeningFull(text, isConversation, onComplete) {
     
     listeningPlayer.isPlaying = true;
     listeningPlayer.round = 1;
-    listeningPlayer.maxRounds = 2;
+    listeningPlayer.maxRounds = 1;  // 默认只播放1遍（模拟真题）
+    listeningPlayer.currentText = text;
+    listeningPlayer.totalDuration = Math.max(30, text.split(/\s+/).length / 2); // 估算时长
     listeningPlayer.onComplete = onComplete;
     
+    // 显示进度条
+    showListeningProgressBar();
     updatePlayButtonState('playing');
+    
+    // 开始进度更新
+    startProgressTimer();
     
     function doRound(roundNum) {
         if (roundNum > listeningPlayer.maxRounds) {
             listeningPlayer.isPlaying = false;
             updatePlayButtonState('ready');
             diagState.listeningPlayed = true;
+            
+            // 播放完成，显示提示
+            updateListeningHint('✅ 播放结束，请答题');
+            hideListeningProgressBar();
+            
+            // 清除进度定时器
+            if (listeningPlayer.progressInterval) {
+                clearInterval(listeningPlayer.progressInterval);
+                listeningPlayer.progressInterval = null;
+            }
+            
             updateReplayButtonState();
             if (listeningPlayer.onComplete) {
                 listeningPlayer.onComplete();
@@ -6421,6 +6529,7 @@ function playListeningFull(text, isConversation, onComplete) {
         updateRoundIndicator(roundNum);
         
         playListeningRound(text, isConversation, function(index, total) {
+            listeningPlayer.currentIndex = index;
         }, function() {
             if (roundNum < listeningPlayer.maxRounds) {
                 updateRoundIndicator(roundNum + 0.5);
@@ -6434,6 +6543,32 @@ function playListeningFull(text, isConversation, onComplete) {
     }
     
     doRound(1);
+}
+
+// 显示进度条
+function showListeningProgressBar() {
+    var container = document.getElementById('listening-progress-container');
+    if (container) {
+        container.style.display = 'block';
+    }
+}
+
+// 隐藏进度条
+function hideListeningProgressBar() {
+    var container = document.getElementById('listening-progress-container');
+    if (container) {
+        setTimeout(function() {
+            container.style.display = 'none';
+        }, 1000);
+    }
+}
+
+// 更新听力提示文本
+function updateListeningHint(text) {
+    var hint = document.getElementById('listening-hint');
+    if (hint) {
+        hint.textContent = text;
+    }
 }
 
 function updatePlayButtonState(state) {
@@ -6453,12 +6588,17 @@ function updateRoundIndicator(round) {
     var indicator = document.getElementById('listening-round-indicator');
     if (!indicator) return;
     
+    var cetLabel = getCETLevelLabel();
+    
     if (round === 1) {
-        indicator.textContent = '第1遍播放中...';
+        indicator.textContent = '🎧 ' + cetLabel + '听力 第1遍播放中...';
+        indicator.className = 'listening-round-indicator round-1';
     } else if (round === 1.5) {
-        indicator.textContent = '准备第2遍...';
+        indicator.textContent = '⏳ 准备第2遍...';
+        indicator.className = 'listening-round-indicator round-waiting';
     } else if (round === 2) {
-        indicator.textContent = '第2遍播放中...';
+        indicator.textContent = '🎧 ' + cetLabel + '听力 第2遍播放中...';
+        indicator.className = 'listening-round-indicator round-2';
     }
 }
 
@@ -6468,12 +6608,31 @@ function updateReplayButtonState() {
     if (!btn) return;
     
     var isVip = isPathVipUser();
-    var canReplay = isVip || diagState.listeningReplayCount === 0;
+    var extraRounds = listeningPlayer.extraRounds || 0;
+    var canReplay = isVip || extraRounds < listeningPlayer.maxExtraRounds;
     
     btn.disabled = !canReplay;
     
     if (hint) {
-        hint.innerHTML = diagState.listeningPlayed ? '✅ 已听完两遍' : '点击播放听力';
+        if (diagState.listeningPlayed) {
+            hint.innerHTML = '✅ 已播放完毕';
+        } else if (extraRounds >= listeningPlayer.maxExtraRounds && !isVip) {
+            hint.innerHTML = '⚠️ 真题听力只放一遍哦，习惯它';
+        } else if (listeningPlayer.isPlaying) {
+            hint.innerHTML = '🎧 听力播放中...';
+        } else {
+            hint.innerHTML = '点击播放听力';
+        }
+    }
+    
+    // 更新按钮文本
+    if (btn) {
+        if (extraRounds >= listeningPlayer.maxExtraRounds && !isVip) {
+            btn.innerHTML = '🔇 再听一遍 <span class="replay-tip">(限2遍)</span>';
+            btn.disabled = true;
+        } else {
+            btn.innerHTML = '🔄 再听一遍 <span class="replay-count">' + (extraRounds + 1) + '/2</span>';
+        }
     }
 }
 
@@ -6506,6 +6665,12 @@ function showCurrentListening() {
         diagState.currentListeningQIndex = 0;
         diagState.listeningPlayed = false;
         diagState.listeningReplayCount = 0;
+        // 重置听力播放器状态
+        listeningPlayer.extraRounds = 0;
+        listeningPlayer.round = 1;
+        listeningPlayer.maxRounds = 1;
+        listeningPlayer.currentText = '';
+        listeningPlayer.totalDuration = 0;
         showCurrentListening();
         return;
     }
@@ -6519,7 +6684,9 @@ function showCurrentListening() {
     document.getElementById('diag-progress-text').textContent = '听力 第' + (globalIndex + 1) + '/' + totalQuestions + '题';
     
     var isVip = isPathVipUser();
-    var canReplay = isVip || diagState.listeningReplayCount === 0;
+    var extraRounds = listeningPlayer.extraRounds || 0;
+    var canReplay = isVip || extraRounds < listeningPlayer.maxExtraRounds;
+    var cetLabel = getCETLevelLabel();
     
     var html = '<div class="listening-section">';
     
@@ -6528,6 +6695,7 @@ function showCurrentListening() {
     html += isConversation ? '🎧 短对话' : '📝 短文理解';
     html += '</div>';
     
+    // 听力播放器区域
     html += '<div class="listening-player">';
     html += '<div class="listening-wave" id="listening-wave">';
     html += '<span></span><span></span><span></span><span></span><span></span>';
@@ -6540,20 +6708,31 @@ function showCurrentListening() {
     html += '<div class="listening-hint" id="listening-hint">点击播放听力</div>';
     html += '</div>';
     
+    // 进度条容器
+    html += '<div class="listening-progress-container" id="listening-progress-container" style="display:none;">';
+    html += '<div class="listening-progress-bar-wrapper">';
+    html += '<progress id="listening-progress-bar" value="0" max="100"></progress>';
+    html += '<div class="listening-progress-fill" id="listening-progress-fill" style="width:0%;"></div>';
+    html += '</div>';
+    html += '<div class="listening-progress-text" id="listening-progress-text">剩余 0s</div>';
+    html += '</div>';
+    
     html += '<div class="listening-round-indicator" id="listening-round-indicator"></div>';
     
-    html += '<button class="listening-replay-btn" id="listening-replay-btn" onclick="handleReplayClick()" ' + (!canReplay ? 'disabled' : '') + '>';
-    html += '🔄 再听一遍';
-    if (!isVip && diagState.listeningReplayCount > 0) {
-        html += '<span class="replay-tip">(VIP专享)</span>';
+    // 重播按钮
+    var replayBtnClass = 'listening-replay-btn';
+    if (extraRounds >= listeningPlayer.maxExtraRounds && !isVip) {
+        replayBtnClass += ' disabled';
+    }
+    html += '<button class="' + replayBtnClass + '" id="listening-replay-btn" onclick="handleReplayClick()" ' + (!canReplay ? 'disabled' : '') + '>';
+    if (extraRounds >= listeningPlayer.maxExtraRounds && !isVip) {
+        html += '🔇 再听一遍 <span class="replay-tip">(限2遍)</span>';
+    } else {
+        html += '🔄 再听一遍 <span class="replay-count">' + (extraRounds + 1) + '/2</span>';
     }
     html += '</button>';
     
-    html += '<div class="listening-play-hint">📢 系统将自动播放两遍</div>';
-    
-    if (!isVip) {
-        html += '<div class="listening-vip-tip">⭐ 升级Pro会员可无限重播</div>';
-    }
+    html += '<div class="listening-play-hint">📢 ' + cetLabel + '听力语速：' + (isCET6User() ? '约150词/分钟' : '约130词/分钟') + '</div>';
     
     html += '</div>';
     
@@ -6599,26 +6778,31 @@ function handlePlayClick() {
 
 function handleReplayClick() {
     var isVip = isPathVipUser();
+    var extraRounds = listeningPlayer.extraRounds || 0;
     
-    if (!isVip && diagState.listeningReplayCount > 0) {
-        showToast('免费用户只能重播一次，升级Pro会员可无限重播');
+    // 检查重播次数限制
+    if (!isVip && extraRounds >= listeningPlayer.maxExtraRounds) {
+        showToast('⚠️ 真题听力只放一遍哦，习惯它');
         return;
     }
     
     var passage = diagState.listeningPassages[diagState.currentListeningPassageIndex];
     if (!passage) return;
     
+    // 增加重播次数
     if (!isVip) {
-        diagState.listeningReplayCount++;
+        listeningPlayer.extraRounds++;
         updateReplayButtonState();
     }
     
     var isConversation = passage.type === 'conversation';
     stopListeningPlayback();
-    listeningPlayer.maxRounds = 1;
+    listeningPlayer.maxRounds = 1;  // 额外重播只播放1遍
     
     playListeningFull(passage.text, isConversation, function() {
         console.log('[额外重播完成]');
+        // 重播完成后更新按钮状态
+        updateReplayButtonState();
     });
 }
 
@@ -6655,6 +6839,13 @@ function selectListeningOption(btn, selectedValue) {
             diagState.listeningPlayed = false;
             diagState.listeningReplayCount = 0;
         }
+        
+        // 重置听力播放器状态
+        listeningPlayer.extraRounds = 0;
+        listeningPlayer.round = 1;
+        listeningPlayer.maxRounds = 1;
+        listeningPlayer.currentText = '';
+        listeningPlayer.totalDuration = 0;
         
         showCurrentListening();
     }, 500);
