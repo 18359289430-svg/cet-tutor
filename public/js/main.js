@@ -6831,7 +6831,7 @@ async function generateDiagReport() {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(apiData)
-        });
+        }, 60000);
         
         var result = await resp.json();
         
