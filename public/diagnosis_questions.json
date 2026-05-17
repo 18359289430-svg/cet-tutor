@@ -192,5 +192,53 @@
         }
       ]
     }
+  ],
+  "writing_prompts": [
+    {
+      "id": "w1",
+      "title": "The Importance of Time Management",
+      "description": "For this part, you are allowed 30 minutes to write a short essay on the importance of time management. You should write at least 120 words but no more than 180 words.",
+      "reference": "Time management is essential for college students. With so many assignments and activities, learning to manage time effectively can greatly improve academic performance and reduce stress. Students who master time management skills are more likely to achieve their goals and maintain a balanced lifestyle."
+    },
+    {
+      "id": "w2",
+      "title": "Online Learning vs Traditional Learning",
+      "description": "For this part, you are allowed 30 minutes to write a short essay comparing online learning with traditional classroom learning. You should write at least 120 words but no more than 180 words.",
+      "reference": "With the rapid development of technology, online learning has become increasingly popular. While traditional classroom learning offers face-to-face interaction, online learning provides flexibility and convenience. Both approaches have their advantages and disadvantages, and the best choice depends on individual learning styles and circumstances."
+    },
+    {
+      "id": "w3",
+      "title": "The Impact of Social Media on College Students",
+      "description": "For this part, you are allowed 30 minutes to write a short essay on the impact of social media on college students. You should write at least 120 words but no more than 180 words.",
+      "reference": "Social media has profoundly influenced college students' lives. It provides platforms for social connection and information sharing, but also brings challenges such as privacy concerns and potential addiction. Students should use social media wisely to maximize its benefits while minimizing its negative effects."
+    },
+    {
+      "id": "w4",
+      "title": "The Importance of Volunteer Work",
+      "description": "For this part, you are allowed 30 minutes to write a short essay on the importance of volunteer work in college. You should write at least 120 words but no more than 180 words.",
+      "reference": "Volunteer work plays a significant role in college students' personal development. Through volunteering, students can gain practical experience, develop social skills, and contribute to their communities. Moreover, volunteer experiences are highly valued by employers and graduate schools."
+    }
+  ],
+  "translation_prompts": [
+    {
+      "id": "t1",
+      "chinese": "中国是世界上最大的发展中国家，拥有悠久的历史和丰富的文化。近年来，中国在科技、教育和经济等领域取得了显著进步，人民生活水平不断提高。",
+      "reference": "China is the largest developing country in the world, with a long history and rich culture. In recent years, China has made remarkable progress in fields such as technology, education, and economy, and people's living standards have been continuously improving."
+    },
+    {
+      "id": "t2",
+      "chinese": "茶是中国传统文化的重要组成部分。中国人饮茶的习惯可以追溯到几千年前。如今，茶不仅是一种饮品，更是一种生活方式和社交方式。",
+      "reference": "Tea is an important part of traditional Chinese culture. The habit of drinking tea among Chinese people can be traced back thousands of years. Today, tea is not only a beverage, but also a lifestyle and a way of socializing."
+    },
+    {
+      "id": "t3",
+      "chinese": "春节是中国最重要的传统节日之一。它象征着新年的开始，人们会与家人团聚，一起吃年夜饭、放烟花、守夜等。春节期间，大街小巷都装饰一新，充满了喜庆的气氛。",
+      "reference": "The Spring Festival is one of the most important traditional festivals in China. It marks the beginning of the new year, during which people gather with their families to enjoy reunion dinner, set off fireworks, stay up late, and more. During the Spring Festival, streets are decorated with festive decorations, filled with a joyful atmosphere."
+    },
+    {
+      "id": "t4",
+      "chinese": "健康是人生最宝贵的财富。保持健康需要均衡饮食、适量运动和充足睡眠。在当今快节奏的生活中，越来越多的人开始意识到健康的重要性，并积极采取行动改善自己的生活习惯。",
+      "reference": "Health is the most precious wealth in life. Maintaining good health requires a balanced diet, moderate exercise, and sufficient sleep. In today's fast-paced life, an increasing number of people are becoming aware of the importance of health and actively taking measures to improve their living habits."
+    }
   ]
 }

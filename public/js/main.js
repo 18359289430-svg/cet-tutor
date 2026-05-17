@@ -5578,7 +5578,11 @@ var diagState = {
     answers: [],
     selfEval: [],
     correctCount: 0,
-    phase: 'loading' // loading, questions, selfeval, generating, done
+    phase: 'loading', // loading, questions, selfeval, writing, translation, generating, done
+    writingScore: null,
+    translationScore: null,
+    writingPrompt: null,
+    translationPrompt: null
 };
 
 // 开始新诊断流程
@@ -5593,7 +5597,11 @@ async function startNewDiagnosis() {
         answers: [],
         selfEval: [],
         correctCount: 0,
-        phase: 'loading'
+        phase: 'loading',
+        writingScore: null,
+        translationScore: null,
+        writingPrompt: null,
+        translationPrompt: null
     };
     
     // 显示界面
@@ -5634,6 +5642,13 @@ async function startNewDiagnosis() {
         }
         
         diagState.questions = questions;
+        // 保存写作和翻译题目供后续使用
+        if (result.writing_prompts) {
+            diagState.writingPrompts = result.writing_prompts;
+        }
+        if (result.translation_prompts) {
+            diagState.translationPrompts = result.translation_prompts;
+        }
         diagState.phase = 'questions';
         document.getElementById('diag-progress-wrap').style.display = '';
         
@@ -5816,8 +5831,8 @@ function showSelfEval() {
                 '</div>' +
             '</div>' +
             
-            '<button class="diag-generate-btn" id="diag-generate-btn" onclick="generateDiagReport()" disabled>' +
-                '<span>✨</span> 生成诊断报告' +
+            '<button class="diag-generate-btn" id="diag-generate-btn" onclick="startWritingTest()" disabled>' +
+                '<span>✨</span> 开始写作实测' +
             '</button>' +
         '</div>';
     
@@ -5859,7 +5874,382 @@ function checkEvalComplete() {
     });
     
     btn.disabled = !allSelected;
+    
+    // 更新按钮文字
+    if (!btn.disabled) {
+        btn.innerHTML = '<span>✨</span> 开始写作实测';
+    }
 }
+
+// ===== 写作实测 =====
+// 开始写作实测
+function startWritingTest() {
+    diagState.phase = 'writing';
+    
+    // 随机选择一个写作题目
+    var prompts = diagState.writingPrompts || [];
+    if (prompts.length === 0) {
+        // 如果没有题目，直接跳过
+        skipWritingTest();
+        return;
+    }
+    var randomIndex = Math.floor(Math.random() * prompts.length);
+    var prompt = prompts[randomIndex];
+    diagState.writingPrompt = prompt;
+    
+    // 更新进度显示
+    document.getElementById('diag-progress-fill').style.width = '80%';
+    document.getElementById('diag-progress-text').textContent = '第 3/4 步';
+    
+    var html = 
+        '<div class="diag-writing-section">' +
+            '<div class="diag-writing-header">' +
+                '<div class="diag-writing-title">✍️ 写作实测</div>' +
+                '<div class="diag-writing-subtitle">请根据题目要求完成一篇英文作文</div>' +
+            '</div>' +
+            '<div class="diag-writing-prompt">' +
+                '<div class="diag-prompt-title">' + escapeHtml(prompt.title) + '</div>' +
+                '<div class="diag-prompt-desc">' + escapeHtml(prompt.description) + '</div>' +
+            '</div>' +
+            '<textarea class="diag-writing-textarea" id="writing-input" placeholder="请在这里输入你的作文..." oninput="updateWritingCount()"></textarea>' +
+            '<div class="diag-word-count" id="writing-count">已写 0 字（至少30字）</div>' +
+            '<div class="diag-writing-actions">' +
+                '<button class="diag-writing-submit" id="writing-submit-btn" onclick="submitWritingTest()" disabled>提交评分</button>' +
+                '<button class="diag-writing-skip" onclick="skipWritingTest()">跳过</button>' +
+            '</div>' +
+        '</div>';
+    
+    document.getElementById('diag-body').innerHTML = html;
+}
+
+// 更新写作字数统计
+function updateWritingCount() {
+    var input = document.getElementById('writing-input');
+    var countDiv = document.getElementById('writing-count');
+    var submitBtn = document.getElementById('writing-submit-btn');
+    
+    if (!input || !countDiv || !submitBtn) return;
+    
+    var count = input.value.length;
+    
+    if (count < 30) {
+        countDiv.textContent = '已写 ' + count + ' 字（至少30字）';
+        countDiv.className = 'diag-word-count error';
+        submitBtn.disabled = true;
+    } else if (count < 50) {
+        countDiv.textContent = '已写 ' + count + ' 字';
+        countDiv.className = 'diag-word-count warning';
+        submitBtn.disabled = false;
+    } else {
+        countDiv.textContent = '已写 ' + count + ' 字';
+        countDiv.className = 'diag-word-count';
+        submitBtn.disabled = false;
+    }
+}
+
+// 跳过写作实测
+function skipWritingTest() {
+    diagState.writingScore = null;
+    startTranslationTest();
+}
+
+// 提交写作实测
+async function submitWritingTest() {
+    var input = document.getElementById('writing-input');
+    if (!input || input.value.length < 30) {
+        showToast('请至少写30个字');
+        return;
+    }
+    
+    var userText = input.value.trim();
+    var prompt = diagState.writingPrompt;
+    
+    // 显示加载状态
+    document.getElementById('diag-body').innerHTML = 
+        '<div class="diag-ai-loading">' +
+            '<div class="diag-ai-icon">🤖</div>' +
+            '<div class="diag-ai-text">AI正在评分...</div>' +
+            '<div class="diag-ai-subtext">请稍候，正在分析你的作文</div>' +
+        '</div>';
+    
+    try {
+        // 调用评分API
+        var resp = await fetchWithTimeout('/api/diagnosis/writing-grade', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                title: prompt.title,
+                description: prompt.description,
+                user_input: userText
+            })
+        });
+        
+        var result = await resp.json();
+        
+        if (result.code !== 0 || !result.data) {
+            throw new Error(result.error || '评分失败');
+        }
+        
+        // 保存评分结果
+        diagState.writingScore = result.data;
+        
+        // 显示评分结果
+        showWritingScoreResult(result.data);
+        
+    } catch(e) {
+        console.error('[写作评分失败]', e);
+        // 评分失败时跳过
+        diagState.writingScore = null;
+        startTranslationTest();
+    }
+}
+
+// 显示写作评分结果
+function showWritingScoreResult(score) {
+    // 计算颜色等级
+    var getLevel = function(val, max) {
+        var percent = val / max;
+        if (percent >= 0.8) return 'excellent';
+        if (percent >= 0.6) return 'good';
+        if (percent >= 0.4) return 'fair';
+        return 'poor';
+    };
+    
+    var html = 
+        '<div class="diag-score-section">' +
+            '<div class="diag-score-header">' +
+                '<div class="diag-score-title">写作评分结果</div>' +
+                '<div class="diag-score-total">' + score.total + '</div>' +
+            '</div>' +
+            '<div class="diag-score-dimensions">' +
+                '<div class="diag-dimension-item">' +
+                    '<div class="diag-dimension-label">' +
+                        '<span class="diag-dimension-name">词汇运用</span>' +
+                        '<span class="diag-dimension-score">' + score.vocabulary + '/25</span>' +
+                    '</div>' +
+                    '<div class="diag-dimension-bar">' +
+                        '<div class="diag-dimension-fill ' + getLevel(score.vocabulary, 25) + '" style="width:' + (score.vocabulary / 25 * 100) + '%"></div>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="diag-dimension-item">' +
+                    '<div class="diag-dimension-label">' +
+                        '<span class="diag-dimension-name">语法正确</span>' +
+                        '<span class="diag-dimension-score">' + score.grammar + '/25</span>' +
+                    '</div>' +
+                    '<div class="diag-dimension-bar">' +
+                        '<div class="diag-dimension-fill ' + getLevel(score.grammar, 25) + '" style="width:' + (score.grammar / 25 * 100) + '%"></div>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="diag-dimension-item">' +
+                    '<div class="diag-dimension-label">' +
+                        '<span class="diag-dimension-name">逻辑结构</span>' +
+                        '<span class="diag-dimension-score">' + score.logic + '/25</span>' +
+                    '</div>' +
+                    '<div class="diag-dimension-bar">' +
+                        '<div class="diag-dimension-fill ' + getLevel(score.logic, 25) + '" style="width:' + (score.logic / 25 * 100) + '%"></div>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="diag-dimension-item">' +
+                    '<div class="diag-dimension-label">' +
+                        '<span class="diag-dimension-name">连贯衔接</span>' +
+                        '<span class="diag-dimension-score">' + score.coherence + '/25</span>' +
+                    '</div>' +
+                    '<div class="diag-dimension-bar">' +
+                        '<div class="diag-dimension-fill ' + getLevel(score.coherence, 25) + '" style="width:' + (score.coherence / 25 * 100) + '%"></div>' +
+                    '</div>' +
+                '</div>' +
+            '</div>' +
+            '<div class="diag-score-comment">' +
+                '<div class="diag-comment-text">💬 ' + (score.comment || '继续保持！') + '</div>' +
+            '</div>' +
+            '<button class="diag-score-continue" onclick="startTranslationTest()">继续翻译实测 →</button>' +
+        '</div>';
+    
+    document.getElementById('diag-body').innerHTML = html;
+}
+
+// ===== 翻译实测 =====
+// 开始翻译实测
+function startTranslationTest() {
+    diagState.phase = 'translation';
+    
+    // 随机选择一个翻译题目
+    var prompts = diagState.translationPrompts || [];
+    if (prompts.length === 0) {
+        // 如果没有题目，直接生成报告
+        generateDiagReport();
+        return;
+    }
+    var randomIndex = Math.floor(Math.random() * prompts.length);
+    var prompt = prompts[randomIndex];
+    diagState.translationPrompt = prompt;
+    
+    // 更新进度显示
+    document.getElementById('diag-progress-fill').style.width = '95%';
+    document.getElementById('diag-progress-text').textContent = '第 4/4 步';
+    
+    var html = 
+        '<div class="diag-translation-section">' +
+            '<div class="diag-translation-header">' +
+                '<div class="diag-translation-title">🔄 翻译实测</div>' +
+                '<div class="diag-translation-subtitle">请将以下中文翻译成英文</div>' +
+            '</div>' +
+            '<div class="diag-translation-source">' +
+                '<div class="diag-source-text">' + escapeHtml(prompt.chinese) + '</div>' +
+            '</div>' +
+            '<textarea class="diag-translation-textarea" id="translation-input" placeholder="请在这里输入你的英文翻译..." oninput="updateTranslationCount()"></textarea>' +
+            '<div class="diag-char-count" id="translation-count">已写 0 字（至少10字）</div>' +
+            '<div class="diag-translation-actions">' +
+                '<button class="diag-translation-submit" id="translation-submit-btn" onclick="submitTranslationTest()" disabled>提交评分</button>' +
+                '<button class="diag-translation-skip" onclick="skipTranslationTest()">跳过</button>' +
+            '</div>' +
+        '</div>';
+    
+    document.getElementById('diag-body').innerHTML = html;
+}
+
+// 更新翻译字数统计
+function updateTranslationCount() {
+    var input = document.getElementById('translation-input');
+    var countDiv = document.getElementById('translation-count');
+    var submitBtn = document.getElementById('translation-submit-btn');
+    
+    if (!input || !countDiv || !submitBtn) return;
+    
+    var count = input.value.length;
+    
+    if (count < 10) {
+        countDiv.textContent = '已写 ' + count + ' 字（至少10字）';
+        countDiv.className = 'diag-char-count warning';
+        submitBtn.disabled = true;
+    } else {
+        countDiv.textContent = '已写 ' + count + ' 字';
+        countDiv.className = 'diag-char-count';
+        submitBtn.disabled = false;
+    }
+}
+
+// 跳过翻译实测
+function skipTranslationTest() {
+    diagState.translationScore = null;
+    generateDiagReport();
+}
+
+// 提交翻译实测
+async function submitTranslationTest() {
+    var input = document.getElementById('translation-input');
+    if (!input || input.value.length < 10) {
+        showToast('请至少写10个字');
+        return;
+    }
+    
+    var userText = input.value.trim();
+    var prompt = diagState.translationPrompt;
+    
+    // 显示加载状态
+    document.getElementById('diag-body').innerHTML = 
+        '<div class="diag-ai-loading">' +
+            '<div class="diag-ai-icon">🤖</div>' +
+            '<div class="diag-ai-text">AI正在评分...</div>' +
+            '<div class="diag-ai-subtext">请稍候，正在分析你的翻译</div>' +
+        '</div>';
+    
+    try {
+        // 调用评分API
+        var resp = await fetchWithTimeout('/api/diagnosis/translation-grade', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                chinese: prompt.chinese,
+                reference: prompt.reference || '',
+                user_input: userText
+            })
+        });
+        
+        var result = await resp.json();
+        
+        if (result.code !== 0 || !result.data) {
+            throw new Error(result.error || '评分失败');
+        }
+        
+        // 保存评分结果
+        diagState.translationScore = result.data;
+        
+        // 显示评分结果
+        showTranslationScoreResult(result.data);
+        
+    } catch(e) {
+        console.error('[翻译评分失败]', e);
+        // 评分失败时跳过
+        diagState.translationScore = null;
+        generateDiagReport();
+    }
+}
+
+// 显示翻译评分结果
+function showTranslationScoreResult(score) {
+    // 计算颜色等级
+    var getLevel = function(val, max) {
+        var percent = val / max;
+        if (percent >= 0.8) return 'excellent';
+        if (percent >= 0.6) return 'good';
+        if (percent >= 0.4) return 'fair';
+        return 'poor';
+    };
+    
+    var html = 
+        '<div class="diag-score-section">' +
+            '<div class="diag-score-header">' +
+                '<div class="diag-score-title">翻译评分结果</div>' +
+                '<div class="diag-score-total translation">' + score.total + '</div>' +
+            '</div>' +
+            '<div class="diag-score-dimensions">' +
+                '<div class="diag-dimension-item">' +
+                    '<div class="diag-dimension-label">' +
+                        '<span class="diag-dimension-name">关键词覆盖</span>' +
+                        '<span class="diag-dimension-score">' + score.keywords + '/35</span>' +
+                    '</div>' +
+                    '<div class="diag-dimension-bar">' +
+                        '<div class="diag-dimension-fill ' + getLevel(score.keywords, 35) + '" style="width:' + (score.keywords / 35 * 100) + '%"></div>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="diag-dimension-item">' +
+                    '<div class="diag-dimension-label">' +
+                        '<span class="diag-dimension-name">语法正确性</span>' +
+                        '<span class="diag-dimension-score">' + score.grammar + '/35</span>' +
+                    '</div>' +
+                    '<div class="diag-dimension-bar">' +
+                        '<div class="diag-dimension-fill ' + getLevel(score.grammar, 35) + '" style="width:' + (score.grammar / 35 * 100) + '%"></div>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="diag-dimension-item">' +
+                    '<div class="diag-dimension-label">' +
+                        '<span class="diag-dimension-name">表达地道度</span>' +
+                        '<span class="diag-dimension-score">' + score.expression + '/30</span>' +
+                    '</div>' +
+                    '<div class="diag-dimension-bar">' +
+                        '<div class="diag-dimension-fill ' + getLevel(score.expression, 30) + '" style="width:' + (score.expression / 30 * 100) + '%"></div>' +
+                    '</div>' +
+                '</div>' +
+            '</div>' +
+            '<div class="diag-score-comment">' +
+                '<div class="diag-comment-text">💬 ' + (score.comment || '继续保持！') + '</div>' +
+            '</div>' +
+            '<button class="diag-score-continue translation" onclick="generateDiagReport()">✨ 生成诊断报告</button>' +
+        '</div>';
+    
+    document.getElementById('diag-body').innerHTML = html;
+}
+
+// 将AI评分映射为A/B/C/D档
+function mapScoreToLevel(score, max) {
+    var percent = score / max * 100;
+    if (percent >= 80) return 'A';
+    if (percent >= 60) return 'B';
+    if (percent >= 40) return 'C';
+    return 'D';
+}
+
 
 // 生成诊断报告
 async function generateDiagReport() {
@@ -5889,13 +6279,37 @@ async function generateDiagReport() {
             }
         });
         
+        // 将AI评分融入请求（如果有的话）
+        var apiData = {
+            answers: diagState.answers,
+            selfAssessment: selfAssessment
+        };
+        
+        // 如果有写作AI评分，加入请求
+        if (diagState.writingScore) {
+            apiData.writingScore = {
+                vocabulary: diagState.writingScore.vocabulary,
+                grammar: diagState.writingScore.grammar,
+                logic: diagState.writingScore.logic,
+                coherence: diagState.writingScore.coherence,
+                total: diagState.writingScore.total
+            };
+        }
+        
+        // 如果有翻译AI评分，加入请求
+        if (diagState.translationScore) {
+            apiData.translationScore = {
+                keywords: diagState.translationScore.keywords,
+                grammar: diagState.translationScore.grammar,
+                expression: diagState.translationScore.expression,
+                total: diagState.translationScore.total
+            };
+        }
+        
         var resp = await fetchWithTimeout('/api/diagnosis/report', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                answers: diagState.answers,
-                selfAssessment: selfAssessment
-            })
+            body: JSON.stringify(apiData)
         });
         
         var result = await resp.json();

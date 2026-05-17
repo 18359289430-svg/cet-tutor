@@ -1310,3 +1310,397 @@
 .diag-eval-btn {
     padding: 10px 6px 12px;
 }
+
+
+/* ===== 写作实测样式 ===== */
+.diag-writing-section {
+    margin: 20px 16px;
+    padding: 20px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.diag-writing-header {
+    margin-bottom: 16px;
+}
+
+.diag-writing-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1E293B;
+    margin-bottom: 8px;
+}
+
+.diag-writing-subtitle {
+    font-size: 13px;
+    color: #64748B;
+}
+
+.diag-writing-prompt {
+    margin-bottom: 16px;
+    padding: 16px;
+    background: #F8FAFC;
+    border-radius: 12px;
+    border-left: 4px solid #6C5CE7;
+}
+
+.diag-prompt-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1E293B;
+    margin-bottom: 8px;
+}
+
+.diag-prompt-desc {
+    font-size: 13px;
+    color: #475569;
+    line-height: 1.6;
+}
+
+.diag-writing-textarea {
+    width: 100%;
+    min-height: 150px;
+    padding: 14px;
+    border: 2px solid #E2E8F0;
+    border-radius: 12px;
+    font-size: 14px;
+    line-height: 1.6;
+    resize: vertical;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+}
+
+.diag-writing-textarea:focus {
+    outline: none;
+    border-color: #6C5CE7;
+}
+
+.diag-word-count {
+    text-align: right;
+    font-size: 12px;
+    color: #94A3B8;
+    margin-top: 8px;
+    margin-bottom: 16px;
+}
+
+.diag-word-count.warning {
+    color: #F59E0B;
+}
+
+.diag-word-count.error {
+    color: #EF4444;
+}
+
+.diag-writing-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.diag-writing-submit {
+    flex: 1;
+    padding: 14px 24px;
+    background: linear-gradient(135deg, #6C5CE7 0%, #A29BFE 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.diag-writing-submit:disabled {
+    background: #D1D5DB;
+    cursor: not-allowed;
+}
+
+.diag-writing-submit:active:not(:disabled) {
+    transform: scale(0.98);
+}
+
+.diag-writing-skip {
+    padding: 14px 24px;
+    background: #F1F5F9;
+    color: #64748B;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.diag-writing-skip:active {
+    background: #E2E8F0;
+}
+
+/* ===== 翻译实测样式 ===== */
+.diag-translation-section {
+    margin: 20px 16px;
+    padding: 20px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.diag-translation-header {
+    margin-bottom: 16px;
+}
+
+.diag-translation-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1E293B;
+    margin-bottom: 8px;
+}
+
+.diag-translation-subtitle {
+    font-size: 13px;
+    color: #64748B;
+}
+
+.diag-translation-source {
+    margin-bottom: 16px;
+    padding: 16px;
+    background: #FEF3C7;
+    border-radius: 12px;
+    border-left: 4px solid #F59E0B;
+}
+
+.diag-source-text {
+    font-size: 14px;
+    color: #475569;
+    line-height: 1.8;
+}
+
+.diag-translation-textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 14px;
+    border: 2px solid #E2E8F0;
+    border-radius: 12px;
+    font-size: 14px;
+    line-height: 1.6;
+    resize: vertical;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+}
+
+.diag-translation-textarea:focus {
+    outline: none;
+    border-color: #6C5CE7;
+}
+
+.diag-char-count {
+    text-align: right;
+    font-size: 12px;
+    color: #94A3B8;
+    margin-top: 8px;
+    margin-bottom: 16px;
+}
+
+.diag-char-count.warning {
+    color: #F59E0B;
+}
+
+.diag-translation-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.diag-translation-submit {
+    flex: 1;
+    padding: 14px 24px;
+    background: linear-gradient(135deg, #F59E0B 0%, #FBBF24 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.diag-translation-submit:disabled {
+    background: #D1D5DB;
+    cursor: not-allowed;
+}
+
+.diag-translation-submit:active:not(:disabled) {
+    transform: scale(0.98);
+}
+
+.diag-translation-skip {
+    padding: 14px 24px;
+    background: #F1F5F9;
+    color: #64748B;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.diag-translation-skip:active {
+    background: #E2E8F0;
+}
+
+/* ===== 评分结果样式 ===== */
+.diag-score-section {
+    margin: 20px 16px;
+    padding: 20px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.diag-score-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.diag-score-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #64748B;
+    margin-bottom: 8px;
+}
+
+.diag-score-total {
+    font-size: 48px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #6C5CE7, #A29BFE);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.diag-score-total.translation {
+    background: linear-gradient(135deg, #F59E0B, #FBBF24);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.diag-score-dimensions {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+.diag-dimension-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.diag-dimension-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: #475569;
+}
+
+.diag-dimension-name {
+    font-weight: 500;
+}
+
+.diag-dimension-score {
+    font-weight: 600;
+    color: #1E293B;
+}
+
+.diag-dimension-bar {
+    height: 8px;
+    background: #E2E8F0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.diag-dimension-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.6s ease;
+}
+
+.diag-dimension-fill.excellent {
+    background: linear-gradient(90deg, #10B981, #34D399);
+}
+
+.diag-dimension-fill.good {
+    background: linear-gradient(90deg, #3B82F6, #60A5FA);
+}
+
+.diag-dimension-fill.fair {
+    background: linear-gradient(90deg, #F59E0B, #FBBF24);
+}
+
+.diag-dimension-fill.poor {
+    background: linear-gradient(90deg, #EF4444, #F87171);
+}
+
+.diag-score-comment {
+    padding: 14px;
+    background: #F8FAFC;
+    border-radius: 12px;
+    margin-bottom: 16px;
+}
+
+.diag-comment-text {
+    font-size: 14px;
+    color: #475569;
+    line-height: 1.6;
+}
+
+.diag-score-continue {
+    width: 100%;
+    padding: 14px 24px;
+    background: linear-gradient(135deg, #6C5CE7 0%, #A29BFE 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.diag-score-continue:active {
+    transform: scale(0.98);
+}
+
+.diag-score-continue.translation {
+    background: linear-gradient(135deg, #F59E0B 0%, #FBBF24 100%);
+}
+
+/* ===== AI评分加载动画 ===== */
+.diag-ai-loading {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.diag-ai-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    animation: aiPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes aiPulse {
+    0%, 100% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.1); opacity: 1; }
+}
+
+.diag-ai-text {
+    font-size: 16px;
+    color: #64748B;
+    margin-bottom: 8px;
+}
+
+.diag-ai-subtext {
+    font-size: 13px;
+    color: #94A3B8;
+}
