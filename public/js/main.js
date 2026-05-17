@@ -1829,10 +1829,25 @@ function initApp() {
             // 检查是否有数据
             var hasData = trendData.some(function(d) { return d.accuracy !== null; });
             if (!hasData) {
-                ctx.fillStyle = '#94a3b8';
+                // 绘制空状态背景
+                ctx.fillStyle = '#FAFBFC';
+                ctx.fillRect(0, 0, width, height);
+                
+                // 绘制虚线引导
+                ctx.setLineDash([4, 4]);
+                ctx.strokeStyle = '#E2E8F0';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(40, 80);
+                ctx.lineTo(width - 20, 80);
+                ctx.stroke();
+                ctx.setLineDash([]);
+                
+                // 空状态文字
+                ctx.fillStyle = '#94A3B8';
                 ctx.font = '13px -apple-system, BlinkMacSystemFont, sans-serif';
                 ctx.textAlign = 'center';
-                ctx.fillText('暂无练习数据', width / 2, height / 2);
+                ctx.fillText('暂无练习数据', width / 2, height / 2 + 4);
                 return;
             }
             
@@ -1894,25 +1909,64 @@ function initApp() {
                 ctx.fillStyle = gradient;
                 ctx.fill();
                 
-                // 绘制线条
+                // 使用贝塞尔曲线绘制平滑线条
                 ctx.beginPath();
-                validPoints.forEach(function(p, i) {
-                    if (i === 0) ctx.moveTo(p.x, p.y);
-                    else ctx.lineTo(p.x, p.y);
-                });
+                if (validPoints.length === 1) {
+                    // 只有一个点，绘制一个小圆
+                    ctx.arc(validPoints[0].x, validPoints[0].y, 1, 0, Math.PI * 2);
+                } else {
+                    ctx.moveTo(validPoints[0].x, validPoints[0].y);
+                    for (var i = 0; i < validPoints.length - 1; i++) {
+                        var p0 = i > 0 ? validPoints[i - 1] : validPoints[i];
+                        var p1 = validPoints[i];
+                        var p2 = validPoints[i + 1];
+                        var p3 = i < validPoints.length - 2 ? validPoints[i + 2] : p2;
+                        
+                        var cp1x = p1.x + (p2.x - p0.x) / 6;
+                        var cp1y = p1.y + (p2.y - p0.y) / 6;
+                        var cp2x = p2.x - (p3.x - p1.x) / 6;
+                        var cp2y = p2.y - (p3.y - p1.y) / 6;
+                        
+                        ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, p2.x, p2.y);
+                    }
+                }
                 ctx.strokeStyle = '#6C5CE7';
-                ctx.lineWidth = 2;
+                ctx.lineWidth = 2.5;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
                 ctx.stroke();
                 
-                // 绘制数据点
-                validPoints.forEach(function(p) {
+                // 绘制数据点和数值标签
+                validPoints.forEach(function(p, idx) {
+                    // 外圈白色背景
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, 6, 0, Math.PI * 2);
+                    ctx.fillStyle = '#fff';
+                    ctx.fill();
+                    
+                    // 内圈紫色点
                     ctx.beginPath();
                     ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
                     ctx.fillStyle = '#6C5CE7';
                     ctx.fill();
-                    ctx.strokeStyle = '#fff';
-                    ctx.lineWidth = 2;
-                    ctx.stroke();
+                    
+                    // 数值标签（在点上方的气泡）
+                    if (points[idx]) {
+                        var accuracy = points[idx].accuracy;
+                        var labelText = accuracy + '%';
+                        ctx.font = 'bold 10px -apple-system, BlinkMacSystemFont, sans-serif';
+                        var textWidth = ctx.measureText(labelText).width;
+                        
+                        // 标签背景
+                        ctx.fillStyle = '#6C5CE7';
+                        roundRect(ctx, p.x - textWidth/2 - 4, p.y - 18, textWidth + 8, 14, 4);
+                        ctx.fill();
+                        
+                        // 标签文字
+                        ctx.fillStyle = '#fff';
+                        ctx.textAlign = 'center';
+                        ctx.fillText(labelText, p.x, p.y - 8);
+                    }
                 });
             }
             
@@ -5194,15 +5248,141 @@ function preloadLimitInfo() {
 
 
         // 人格卡分享
+        // 绘制人格卡分享图（Canvas绘制确保高清晰度）
+        function drawShareCardImage(canvas, personality) {
+            var ctx = canvas.getContext('2d');
+            var dpr = window.devicePixelRatio || 2; // 使用2倍分辨率确保清晰
+            var width = 320;
+            var height = 400;
+            
+            canvas.width = width * dpr;
+            canvas.height = height * dpr;
+            canvas.style.width = width + 'px';
+            canvas.style.height = height + 'px';
+            ctx.scale(dpr, dpr);
+            
+            // 渐变背景
+            var gradient = ctx.createLinearGradient(0, 0, width, height);
+            gradient.addColorStop(0, personality.color || '#6C5CE7');
+            gradient.addColorStop(1, '#A29BFE');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, width, height);
+            
+            // 顶部装饰圆
+            ctx.fillStyle = 'rgba(255,255,255,0.1)';
+            ctx.beginPath();
+            ctx.arc(width - 40, 40, 80, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(-20, height - 60, 60, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // 标题
+            ctx.fillStyle = '#fff';
+            ctx.font = 'bold 16px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('📚 我的四级备考人格', width / 2, 36);
+            
+            // 人格图标（大圆角矩形卡片）
+            var cardX = 60;
+            var cardY = 60;
+            var cardW = 200;
+            var cardH = 200;
+            
+            ctx.fillStyle = 'rgba(255,255,255,0.95)';
+            ctx.beginPath();
+            roundRect(ctx, cardX, cardY, cardW, cardH, 16);
+            ctx.fill();
+            
+            // 人格头像
+            var avatarSize = 100;
+            var avatarX = cardX + (cardW - avatarSize) / 2;
+            var avatarY = cardY + 20;
+            ctx.fillStyle = personality.color || '#6C5CE7';
+            ctx.beginPath();
+            ctx.arc(avatarX + avatarSize/2, avatarY + avatarSize/2, avatarSize/2, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // 加载并绘制人格图片
+            var img = new Image();
+            img.onload = function() {
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(avatarX + avatarSize/2, avatarY + avatarSize/2, avatarSize/2 - 2, 0, Math.PI * 2);
+                ctx.clip();
+                ctx.drawImage(img, avatarX + 2, avatarY + 2, avatarSize - 4, avatarSize - 4);
+                ctx.restore();
+            };
+            img.src = personality.img;
+            
+            // 人格类型名称
+            ctx.fillStyle = '#1a1a2e';
+            ctx.font = 'bold 18px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.fillText(personality.type, width / 2, cardY + 140);
+            
+            // 荣誉称号
+            ctx.fillStyle = personality.color || '#6C5CE7';
+            ctx.font = '12px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.fillText(personality.honor, width / 2, cardY + 162);
+            
+            // 签名语
+            ctx.fillStyle = '#64748b';
+            ctx.font = '13px -apple-system, BlinkMacSystemFont, sans-serif';
+            // 签名语换行处理
+            var comment = personality.comment || '';
+            if (comment.length > 16) {
+                ctx.fillText(comment.substring(0, 16), width / 2, cardY + 185);
+                ctx.fillText(comment.substring(16), width / 2, cardY + 202);
+            } else {
+                ctx.fillText(comment, width / 2, cardY + 185);
+            }
+            
+            // 底部信息
+            ctx.fillStyle = 'rgba(255,255,255,0.9)';
+            ctx.font = '11px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.fillText('四级备考搭子 · AI智能诊断', width / 2, 300);
+            
+            // 底部提示
+            ctx.fillStyle = 'rgba(255,255,255,0.7)';
+            ctx.font = '10px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.fillText('长按保存图片分享到小红书', width / 2, 325);
+        }
+        
+        // 圆角矩形辅助函数
+        function roundRect(ctx, x, y, width, height, radius) {
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+        }
+        
         function showShareCard() {
             var ptype = (state.userData && state.userData.personality) || '偏科大佬';
-            var imgSrc = '/cards/piankedalao.png';
+            var currentPersonality = null;
             for (var i = 0; i < personalities.length; i++) {
-                if (personalities[i].type === ptype) { imgSrc = personalities[i].img; break; }
+                if (personalities[i].type === ptype) { 
+                    currentPersonality = personalities[i]; 
+                    break; 
+                }
             }
-            document.getElementById('share-card-img').src = imgSrc;
+            if (!currentPersonality) {
+                currentPersonality = personalities[0]; // 默认偏科大佬
+            }
+            
+            // 绘制Canvas分享图
+            var canvas = document.getElementById('share-card-canvas');
+            if (canvas) {
+                drawShareCardImage(canvas, currentPersonality);
+            }
+            
             document.getElementById('share-card-modal').style.display = 'flex';
         }
+        
         function closeShareCard() {
             document.getElementById('share-card-modal').style.display = 'none';
         }
@@ -7565,7 +7745,32 @@ var PLAN_TEMPLATES = {
 };
 
 // 显示专项计划
+// 从localStorage加载已保存的专项计划
+function loadSavedSpecialPlan() {
+    try {
+        var saved = localStorage.getItem('cet_special_plan');
+        if (saved) {
+            var planData = JSON.parse(saved);
+            if (planData && planData.dims && planData.data) {
+                specialPlanState.weakDims = planData.dims;
+                specialPlanState.data = planData.data;
+                return true;
+            }
+        }
+    } catch(e) {}
+    return false;
+}
+
 function showSpecialPlan() {
+    // 优先从localStorage加载已有计划
+    if (loadSavedSpecialPlan()) {
+        // 有已保存的计划，直接显示
+        renderSpecialPlanOverlay();
+        showSpecialPlanOverlay();
+        return;
+    }
+    
+    // 没有已保存的计划，需要生成新计划
     if (!reportData || !reportData.weakDims || reportData.weakDims.length === 0) {
         showToast('请先完成诊断测试');
         return;
@@ -7588,7 +7793,11 @@ function showSpecialPlan() {
     
     // 渲染并显示
     renderSpecialPlanOverlay();
-    
+    showSpecialPlanOverlay();
+}
+
+// 显示专项计划overlay的通用函数
+function showSpecialPlanOverlay() {
     var overlay = document.getElementById('special-plan-overlay');
     if (overlay) {
         overlay.style.display = 'flex';
