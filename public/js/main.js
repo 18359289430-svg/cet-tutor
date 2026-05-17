@@ -1020,45 +1020,87 @@ function initApp() {
             
             var html = '';
             
-            // 统计区
-            html += '<div class="wrongbook-stats">';
-            html += '<div class="wrongbook-stat-item total">';
-            html += '<div class="stat-number">' + stats.total + '</div>';
-            html += '<div class="stat-label">错题总数</div>';
+            // 光晕背景
+            html += '<div class="wb-glow"></div>';
+            html += '<div class="wb-glow-2"></div>';
+            
+            // Hero区域
+            html += '<div class="wb-hero">';
+            html += '<div class="wb-hero-title">错题本</div>';
+            html += '<div class="wb-hero-sub">每道错题都是提分机会</div>';
+            html += '<div class="wb-hero-divider"></div>';
             html += '</div>';
-            html += '<div class="wrongbook-stat-item today">';
-            html += '<div class="stat-number">' + stats.todayNew + '</div>';
-            html += '<div class="stat-label">今日新增</div>';
+            
+            // 统计区 - 带shimmer的渐变卡片
+            html += '<div class="wb-stats">';
+            html += '<div class="wb-stat-card total wb-shimmer-card">';
+            html += '<div class="wb-stat-icon">';
+            html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>';
+            html += '</div>';
+            html += '<div class="wb-stat-num">' + stats.total + '</div>';
+            html += '<div class="wb-stat-label">错题总数</div>';
+            html += '</div>';
+            html += '<div class="wb-stat-card today wb-shimmer-card">';
+            html += '<div class="wb-stat-icon">';
+            html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 6v6l4 2m6-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>';
+            html += '</div>';
+            html += '<div class="wb-stat-num">' + stats.todayNew + '</div>';
+            html += '<div class="wb-stat-label">今日新增</div>';
             html += '</div>';
             html += '</div>';
             
-            // 分布统计
-            html += '<div class="wrongbook-distribution">';
-            html += '<div class="dist-item vocab" onclick="filterWrongbook(\'词汇\')"><span class="dist-label">词汇</span><span class="dist-count">' + stats.vocabulary + '</span></div>';
-            html += '<div class="dist-item grammar" onclick="filterWrongbook(\'语法\')"><span class="dist-label">语法</span><span class="dist-count">' + stats.grammar + '</span></div>';
-            html += '<div class="dist-item reading" onclick="filterWrongbook(\'阅读\')"><span class="dist-label">阅读</span><span class="dist-count">' + stats.reading + '</span></div>';
-            html += '<div class="dist-item listening" onclick="filterWrongbook(\'听力\')"><span class="dist-label">听力</span><span class="dist-count">' + stats.listening + '</span></div>';
+            // 分布统计 - 玻璃拟态卡片
+            var totalWrong = stats.vocabulary + stats.grammar + stats.reading + stats.listening;
+            html += '<div class="wb-distribution">';
+            html += '<div class="wb-dist-item vocab" onclick="filterWrongbook(\'词汇\')">';
+            html += '<div class="wb-dist-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg></div>';
+            html += '<span class="wb-dist-label">词汇</span>';
+            html += '<span class="wb-dist-count">' + stats.vocabulary + '</span>';
+            html += '<div class="wb-dist-progress"><div class="wb-dist-progress-bar" style="width:' + (totalWrong > 0 ? (stats.vocabulary/totalWrong*100) : 0) + '%"></div></div>';
+            html += '</div>';
+            html += '<div class="wb-dist-item grammar" onclick="filterWrongbook(\'语法\')">';
+            html += '<div class="wb-dist-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg></div>';
+            html += '<span class="wb-dist-label">语法</span>';
+            html += '<span class="wb-dist-count">' + stats.grammar + '</span>';
+            html += '<div class="wb-dist-progress"><div class="wb-dist-progress-bar" style="width:' + (totalWrong > 0 ? (stats.grammar/totalWrong*100) : 0) + '%"></div></div>';
+            html += '</div>';
+            html += '<div class="wb-dist-item reading" onclick="filterWrongbook(\'阅读\')">';
+            html += '<div class="wb-dist-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg></div>';
+            html += '<span class="wb-dist-label">阅读</span>';
+            html += '<span class="wb-dist-count">' + stats.reading + '</span>';
+            html += '<div class="wb-dist-progress"><div class="wb-dist-progress-bar" style="width:' + (totalWrong > 0 ? (stats.reading/totalWrong*100) : 0) + '%"></div></div>';
+            html += '</div>';
+            html += '<div class="wb-dist-item listening" onclick="filterWrongbook(\'听力\')">';
+            html += '<div class="wb-dist-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8.56 2.75c4.37 6.03 6.02 9.42 8.03 17.72m2.54-15.38c-3.72 4.35-8.94 5.66-16.88 5.85m19.5 1.9c-3.5-.93-6.63-.82-8.94 0-2.58.92-5.01 2.86-7.44 6.32"/></svg></div>';
+            html += '<span class="wb-dist-label">听力</span>';
+            html += '<span class="wb-dist-count">' + stats.listening + '</span>';
+            html += '<div class="wb-dist-progress"><div class="wb-dist-progress-bar" style="width:' + (totalWrong > 0 ? (stats.listening/totalWrong*100) : 0) + '%"></div></div>';
+            html += '</div>';
             html += '</div>';
             
             // 筛选标签
-            html += '<div class="wrongbook-filter-bar">';
+            html += '<div class="wb-filter-bar">';
             var filterTypes = ['全部', '词汇', '语法', '阅读', '听力'];
             filterTypes.forEach(function(type) {
                 var active = wrongbookFilterType === type ? 'active' : '';
-                html += '<div class="filter-tag ' + active + '" onclick="filterWrongbook(\'' + type + '\')">' + type + '</div>';
+                html += '<div class="wb-filter-tag ' + active + '" onclick="filterWrongbook(\'' + type + '\')">' + type + '</div>';
             });
             html += '</div>';
             
             // 错题列表
             if (questions.length === 0) {
-                html += '<div class="wrongbook-empty">';
-                html += '<div class="empty-icon">📚</div>';
-                html += '<div class="empty-title">还没有错题</div>';
-                html += '<div class="empty-desc">继续保持，做题全对的感觉太棒了！</div>';
-                html += '<button class="empty-btn" onclick="switchTab(\'diagnosis\'); setTimeout(openQuiz, 300)">去练题</button>';
+                html += '<div class="wb-empty">';
+                html += '<div class="wb-empty-icon">';
+                html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>';
+                html += '</div>';
+                html += '<div class="wb-empty-title">还没有错题</div>';
+                html += '<div class="wb-empty-desc">继续保持，做题全对的感觉太棒了！</div>';
+                html += '<button class="wb-empty-btn" onclick="switchTab(\'diagnosis\'); setTimeout(openQuiz, 300)">';
+                html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>';
+                html += '去练题</button>';
                 html += '</div>';
             } else {
-                html += '<div class="wrongbook-list">';
+                html += '<div class="wb-list">';
                 questions.forEach(function(q, index) {
                     html += renderWrongQuestionCard(q, index);
                 });
@@ -1074,32 +1116,43 @@ function initApp() {
         }
         
         function renderWrongQuestionCard(q, index) {
-            var typeColors = {
-                '词汇': '#5B9BD5',
-                '语法': '#F39C12',
-                '阅读': '#10B981',
-                '听力': '#8B5CF6'
+            var typeMap = {
+                '词汇': 'vocab',
+                '语法': 'grammar',
+                '阅读': 'reading',
+                '听力': 'listening'
             };
-            var typeColor = typeColors[q.type] || '#5B9BD5';
+            var typeClass = typeMap[q.type] || 'vocab';
             var date = new Date(q.createdAt);
             var dateStr = (date.getMonth() + 1) + '月' + date.getDate() + '日 ' + date.getHours().toString().padStart(2, '0') + ':' + date.getMinutes().toString().padStart(2, '0');
             var isReviewed = q.reviewedAt && q.reviewedAt >= q.updatedAt;
             
-            var html = '<div class="wrong-card" onclick="toggleWrongDetail(this)">';
-            html += '<div class="wrong-card-header">';
-            html += '<span class="wrong-type-tag" style="background:' + typeColor + '">' + (q.type || '词汇') + '</span>';
+            var html = '<div class="wb-card ' + typeClass + '" onclick="toggleWrongDetail(this)" style="animation-delay:' + (0.6 + index * 0.05) + 's">';
+            html += '<div class="wb-card-accent"></div>';
+            html += '<div class="wb-card-content">';
+            html += '<div class="wb-card-header">';
+            html += '<span class="wb-type-tag ' + typeClass + '">' + (q.type || '词汇') + '</span>';
             if (isReviewed) {
-                html += '<span class="wrong-reviewed-badge">已复习</span>';
+                html += '<span class="wb-reviewed-badge">';
+                html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg>';
+                html += '已复习</span>';
             }
-            html += '<span class="wrong-date">' + dateStr + '</span>';
+            html += '<span class="wb-date">';
+            html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>';
+            html += dateStr + '</span>';
+            html += '<svg class="wb-expand-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>';
             html += '</div>';
-            html += '<div class="wrong-question">' + escapeHtml(q.question || '') + '</div>';
-            html += '<div class="wrong-answer-compare">';
-            html += '<span class="your-answer wrong">你的答案: ' + (q.userAnswer || '-') + '</span>';
-            html += '<span class="correct-answer right">正确答案: ' + (q.answer || '-') + '</span>';
+            html += '<div class="wb-question">' + escapeHtml(q.question || '') + '</div>';
+            html += '<div class="wb-answer-compare">';
+            html += '<span class="wb-your-answer">';
+            html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>';
+            html += '你的: ' + (q.userAnswer || '-') + '</span>';
+            html += '<span class="wb-correct-answer">';
+            html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';
+            html += '正确: ' + (q.answer || '-') + '</span>';
             html += '</div>';
-            html += '<div class="wrong-detail" style="display:none">';
-            html += '<div class="wrong-options">';
+            html += '<div class="wb-detail">';
+            html += '<div class="wb-options">';
             var options = [
                 {key: 'A', val: q.optionA},
                 {key: 'B', val: q.optionB},
@@ -1109,21 +1162,25 @@ function initApp() {
             options.forEach(function(opt) {
                 if (opt.val) {
                     var optClass = opt.key === q.answer ? 'option-correct' : (opt.key === q.userAnswer ? 'option-wrong' : '');
-                    html += '<div class="wrong-option ' + optClass + '"><span class="opt-key">' + opt.key + '. </span>' + escapeHtml(opt.val) + '</div>';
+                    html += '<div class="wb-option ' + optClass + '"><span class="wb-option-key">' + opt.key + '</span>' + escapeHtml(opt.val) + '</div>';
                 }
             });
             html += '</div>';
-            html += '<div class="wrong-explanation">';
-            html += '<div class="exp-label">解析</div>';
-            html += '<div class="exp-content">' + escapeHtml(q.explanation || '暂无解析') + '</div>';
+            html += '<div class="wb-explanation">';
+            html += '<div class="wb-exp-header">';
+            html += '<span class="wb-exp-label">';
+            html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
+            html += '解析</span></div>';
+            html += '<div class="wb-exp-content">' + escapeHtml(q.explanation || '暂无解析') + '</div>';
             html += '</div>';
-            html += '<div class="wrong-actions">';
-            html += '<button class="action-btn ai-btn" onclick="event.stopPropagation(); explainWithAI(\'' + q.id + '\')">';
+            html += '<div class="wb-actions">';
+            html += '<button class="wb-action-btn ai-btn" onclick="event.stopPropagation(); explainWithAI(\'' + q.id + '\')">';
             html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>';
             html += 'AI讲解</button>';
-            html += '<button class="action-btn master-btn" onclick="event.stopPropagation(); markAsMastered(\'' + q.id + '\')">';
+            html += '<button class="wb-action-btn master-btn" onclick="event.stopPropagation(); markAsMastered(\'' + q.id + '\')">';
             html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>';
             html += '已掌握</button>';
+            html += '</div>';
             html += '</div>';
             html += '</div>';
             html += '</div>';
@@ -1131,9 +1188,17 @@ function initApp() {
         }
         
         function toggleWrongDetail(card) {
-            var detail = card.querySelector('.wrong-detail');
+            var detail = card.querySelector('.wb-detail');
             if (detail) {
-                detail.style.display = detail.style.display === 'none' ? 'block' : 'none';
+                if (detail.style.display === 'none' || detail.style.display === '') {
+                    detail.style.display = 'block';
+                    detail.classList.add('show');
+                    card.classList.add('expanded');
+                } else {
+                    detail.style.display = 'none';
+                    detail.classList.remove('show');
+                    card.classList.remove('expanded');
+                }
             }
         }
         
@@ -7982,9 +8047,9 @@ function showVariantLoading() {
     }
     
     overlay.innerHTML = '<div class="variant-loading">' +
-        '<div class="variant-loading-icon">🔄</div>' +
-        '<div class="variant-loading-text">AI正在生成变式题...</div>' +
-        '<div class="variant-loading-dots"><span></span><span></span><span></span></div>' +
+        '<div class="wb-wb-variant-loading-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg></div>' +
+        '<div class="wb-variant-loading-text">AI正在生成变式题...</div>' +
+        '<div class="wb-variant-loading-dots"><span></span><span></span><span></span></div>' +
         '</div>';
     overlay.style.display = 'flex';
 }
@@ -8000,7 +8065,7 @@ function hideVariantLoading() {
 function createVariantOverlay() {
     var overlay = document.createElement('div');
     overlay.id = 'variant-overlay';
-    overlay.className = 'variant-overlay';
+    overlay.className = 'wb-variant-overlay';
     document.body.appendChild(overlay);
 }
 
@@ -8023,23 +8088,23 @@ function showVariantTrainingUI(variants, originalQuestion) {
         var answered = userAnswers[currentIndex] !== undefined;
         
         var html = '<div class="variant-modal">' +
-            '<div class="variant-header">' +
-            '<div class="variant-title">📝 变式训练</div>' +
-            '<div class="variant-progress">' +
-            '<span class="variant-current">' + (currentIndex + 1) + '</span>/' + variants.length +
+            '<div class="wb-variant-header">' +
+            '<div class="wb-variant-title">📝 变式训练</div>' +
+            '<div class="wb-variant-progress">' +
+            '<span class="wb-variant-current">' + (currentIndex + 1) + '</span>/' + variants.length +
             '</div>' +
-            '<button class="variant-close" onclick="closeVariantTraining()">✕</button>' +
-            '</div>' +
-            
-            '<div class="variant-origin">' +
-            '<div class="variant-origin-label">同考点训练 · ' + (originalQuestion.type || '阅读') + '</div>' +
-            '<div class="variant-origin-text">' + escapeHtml(originalQuestion.question.substring(0, 50)) + '...</div>' +
+            '<button class="wb-variant-close" onclick="closeVariantTraining()">✕</button>' +
             '</div>' +
             
-            '<div class="variant-question">' +
-            '<div class="variant-q-text">' + escapeHtml(q.question) + '</div>' +
+            '<div class="wb-variant-origin">' +
+            '<div class="wb-wb-variant-origin-label">同考点训练 · ' + (originalQuestion.type || '阅读') + '</div>' +
+            '<div class="wb-wb-variant-origin-text">' + escapeHtml(originalQuestion.question.substring(0, 50)) + '...</div>' +
+            '</div>' +
             
-            '<div class="variant-options">' +
+            '<div class="wb-variant-question">' +
+            '<div class="wb-variant-q-text">' + escapeHtml(q.question) + '</div>' +
+            
+            '<div class="wb-wb-variant-opts">' +
             ['A', 'B', 'C', 'D'].map(function(key, i) {
                 var opt = q['option' + key];
                 if (!opt) return '';
@@ -8049,30 +8114,30 @@ function showVariantTrainingUI(variants, originalQuestion) {
                 var cls = selected ? 'selected' : (answered ? '' : '');
                 if (correct) cls = 'correct';
                 if (wrong) cls = 'wrong';
-                return '<div class="variant-option ' + cls + '" onclick="selectVariantOption(\'' + key + '\')">' +
-                    '<span class="variant-opt-key">' + key + '</span>' +
-                    '<span class="variant-opt-text">' + escapeHtml(opt) + '</span>' +
+                return '<div class="wb-variant-opt ' + cls + '" onclick="selectVariantOption(\'' + key + '\')">' +
+                    '<span class="wb-variant-opt-key">' + key + '</span>' +
+                    '<span class="wb-variant-opt-text">' + escapeHtml(opt) + '</span>' +
                     '</div>';
             }).join('') +
             '</div>' +
             '</div>';
         
         if (answered) {
-            html += '<div class="variant-explanation">' +
-                '<div class="variant-exp-label">💡 解析</div>' +
-                '<div class="variant-exp-content">' + escapeHtml(q.explanation) + '</div>' +
+            html += '<div class="wb-variant-exp">' +
+                '<div class="wb-variant-exp-label">💡 解析</div>' +
+                '<div class="wb-variant-exp-content">' + escapeHtml(q.explanation) + '</div>' +
                 '</div>';
         }
         
         // 底部按钮
-        html += '<div class="variant-footer">';
+        html += '<div class="wb-variant-footer">';
         if (!answered) {
-            html += '<button class="variant-btn primary" onclick="confirmVariantAnswer()">确认答案</button>';
+            html += '<button class="wb-variant-btn primary" onclick="confirmVariantAnswer()">确认答案</button>';
         } else {
             if (currentIndex < variants.length - 1) {
-                html += '<button class="variant-btn primary" onclick="nextVariantQuestion()">下一题 →</button>';
+                html += '<button class="wb-variant-btn primary" onclick="nextVariantQuestion()">下一题 →</button>';
             } else {
-                html += '<button class="variant-btn primary" onclick="finishVariantTraining()">查看结果</button>';
+                html += '<button class="wb-variant-btn primary" onclick="finishVariantTraining()">查看结果</button>';
             }
         }
         html += '</div>';
@@ -8116,13 +8181,13 @@ function showVariantTrainingUI(variants, originalQuestion) {
             if (userAnswers[i] === q.answer) correct++;
         });
         
-        overlay.innerHTML = '<div class="variant-modal variant-result">' +
-            '<div class="variant-result-icon">' + (correct === variants.length ? '🎉' : '📚') + '</div>' +
-            '<div class="variant-result-title">变式训练完成</div>' +
-            '<div class="variant-result-score">' + correct + '/' + variants.length + ' 正确</div>' +
-            '<div class="variant-result-rate">' + Math.round(correct / variants.length * 100) + '%正确率</div>' +
-            '<div class="variant-result-tip">五维分数已更新，继续加油！</div>' +
-            '<button class="variant-btn primary" onclick="closeVariantTraining()">完成</button>' +
+        overlay.innerHTML = '<div class="variant-modal wb-variant-result">' +
+            '<div class="wb-wb-variant-result-icon">' + (correct === variants.length ? '🎉' : '📚') + '</div>' +
+            '<div class="wb-wb-variant-result-title">变式训练完成</div>' +
+            '<div class="wb-wb-variant-result-score">' + correct + '/' + variants.length + ' 正确</div>' +
+            '<div class="wb-wb-variant-result-rate">' + Math.round(correct / variants.length * 100) + '%正确率</div>' +
+            '<div class="wb-wb-variant-result-tip">五维分数已更新，继续加油！</div>' +
+            '<button class="wb-variant-btn primary" onclick="closeVariantTraining()">完成</button>' +
             '</div>';
     };
     
@@ -8458,29 +8523,31 @@ renderWrongBook = function() {
     
     // 创建变式训练入口卡片
     var variantCard = document.createElement('div');
-    variantCard.className = 'variant-entrance-card';
+    variantCard.className = 'wb-variant-card';
     variantCard.onclick = function() { showVariantTrainingButton(); };
     
-    var html = '<div class="variant-entrance-icon">🔄</div>' +
-        '<div class="variant-entrance-content">' +
-        '<div class="variant-entrance-title">变式训练</div>' +
-        '<div class="variant-entrance-desc">AI生成同考点变式题，举一反三</div>' +
+    var html = '<div class="wb-variant-icon">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>' +
         '</div>' +
-        '<div class="variant-entrance-count">';
+        '<div class="wb-variant-content">' +
+        '<div class="wb-wb-variant-title">变式训练</div>' +
+        '<div class="wb-variant-desc">AI生成同考点变式题，举一反三</div>' +
+        '</div>' +
+        '<div class="wb-variant-count">';
     
     if (remaining > 0) {
-        html += '<span class="variant-count-badge">今日' + remaining + '次</span>';
+        html += '<span class="wb-variant-badge">今日' + remaining + '次</span>';
     } else if (check.allowed) {
-        html += '<span class="variant-count-badge unlimited">不限次数</span>';
+        html += '<span class="wb-variant-badge unlimited">不限次数</span>';
     } else {
-        html += '<span class="variant-count-badge used">已用完</span>';
+        html += '<span class="wb-variant-badge used">已用完</span>';
     }
     
-    html += ' →</div></div>';
+    html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:20px;height:20px"><path d="M9 5l7 7-7 7"/></svg></div>';
     variantCard.innerHTML = html;
     
     // 插入到统计区后
-    var statsEl = container.querySelector('.wrongbook-stats');
+    var statsEl = container.querySelector('.wb-stats');
     if (statsEl) {
         statsEl.parentNode.insertBefore(variantCard, statsEl.nextSibling);
     }

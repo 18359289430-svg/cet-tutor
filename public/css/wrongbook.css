@@ -934,3 +934,319 @@
         animation: none;
     }
 }
+
+/* ===== 变式训练弹窗 ===== */
+.wb-variant-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+    transition: opacity 0.3s;
+}
+
+.wb-variant-overlay.show {
+    display: flex;
+}
+
+.wb-variant-modal {
+    background: white;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 24px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+}
+
+.wb-variant-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.wb-variant-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--wb-text-primary);
+}
+
+.wb-variant-progress {
+    font-size: 14px;
+    color: var(--wb-text-secondary);
+}
+
+.wb-variant-current {
+    font-weight: 700;
+    color: var(--wb-primary);
+}
+
+.wb-variant-close {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: #F1F5F9;
+    border-radius: 50%;
+    font-size: 16px;
+    cursor: pointer;
+    color: var(--wb-text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.wb-variant-close:hover {
+    background: #E2E8F0;
+    color: var(--wb-text-primary);
+}
+
+.wb-variant-origin {
+    background: linear-gradient(135deg, rgba(254, 243, 199, 0.9) 0%, rgba(253, 230, 138, 0.7) 100%);
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 16px;
+}
+
+.wb-variant-origin-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #92400E;
+    margin-bottom: 4px;
+}
+
+.wb-variant-origin-text {
+    font-size: 12px;
+    color: #78350F;
+}
+
+.wb-variant-q-text {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--wb-text-primary);
+    line-height: 1.6;
+    margin-bottom: 16px;
+}
+
+.wb-variant-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.wb-variant-opt {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px;
+    background: #F8FAFC;
+    border: 2px solid #E2E8F0;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.wb-variant-opt:hover:not(.selected):not(.correct):not(.wrong) {
+    border-color: var(--wb-primary);
+    background: #F5F3FF;
+}
+
+.wb-variant-opt.selected {
+    border-color: var(--wb-primary);
+    background: #EDE9FE;
+}
+
+.wb-variant-opt.correct {
+    border-color: var(--wb-success);
+    background: #D1FAE5;
+}
+
+.wb-variant-opt.wrong {
+    border-color: var(--wb-error);
+    background: #FEE2E2;
+}
+
+.wb-variant-opt-key {
+    width: 24px;
+    height: 24px;
+    background: #E2E8F0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--wb-text-secondary);
+    flex-shrink: 0;
+}
+
+.wb-variant-opt.selected .wb-variant-opt-key {
+    background: var(--wb-primary);
+    color: white;
+}
+
+.wb-variant-opt.correct .wb-variant-opt-key {
+    background: var(--wb-success);
+    color: white;
+}
+
+.wb-variant-opt.wrong .wb-variant-opt-key {
+    background: var(--wb-error);
+    color: white;
+}
+
+.wb-variant-opt-text {
+    font-size: 14px;
+    color: var(--wb-text-primary);
+    line-height: 1.5;
+    flex: 1;
+}
+
+.wb-variant-exp {
+    background: #F0FDF4;
+    border: 1px solid #BBF7D0;
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 16px;
+}
+
+.wb-variant-exp-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #166534;
+    margin-bottom: 8px;
+}
+
+.wb-variant-exp-content {
+    font-size: 13px;
+    color: #15803D;
+    line-height: 1.6;
+}
+
+.wb-variant-footer {
+    display: flex;
+    justify-content: center;
+}
+
+.wb-variant-btn {
+    padding: 14px 40px;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.wb-variant-btn.primary {
+    background: var(--wb-primary-gradient);
+    color: white;
+}
+
+.wb-variant-btn.primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(108, 92, 231, 0.4);
+}
+
+/* 加载状态 */
+.wb-variant-loading {
+    background: white;
+    border-radius: 20px;
+    padding: 60px 40px;
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+}
+
+.wb-variant-loading-icon {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 16px;
+    color: var(--wb-primary);
+    animation: wb-spin 1s linear infinite;
+}
+
+@keyframes wb-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.wb-variant-loading-text {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--wb-text-primary);
+    margin-bottom: 16px;
+}
+
+.wb-variant-loading-dots {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+}
+
+.wb-variant-loading-dots span {
+    width: 8px;
+    height: 8px;
+    background: var(--wb-primary);
+    border-radius: 50%;
+    animation: wb-bounce 1.4s ease-in-out infinite;
+}
+
+.wb-variant-loading-dots span:nth-child(1) { animation-delay: 0s; }
+.wb-variant-loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+.wb-variant-loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes wb-bounce {
+    0%, 80%, 100% { transform: scale(0.6); opacity: 0.5; }
+    40% { transform: scale(1); opacity: 1; }
+}
+
+/* 结果页 */
+.wb-variant-result {
+    text-align: center;
+    padding: 40px 24px;
+}
+
+.wb-variant-result-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 16px;
+    color: var(--wb-success);
+}
+
+.wb-variant-result-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--wb-text-primary);
+    margin-bottom: 12px;
+}
+
+.wb-variant-result-score {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--wb-primary);
+    margin-bottom: 8px;
+}
+
+.wb-variant-result-rate {
+    font-size: 16px;
+    color: var(--wb-text-secondary);
+    margin-bottom: 16px;
+}
+
+.wb-variant-result-tip {
+    font-size: 14px;
+    color: var(--wb-success);
+    margin-bottom: 24px;
+    padding: 12px;
+    background: #D1FAE5;
+    border-radius: 10px;
+}
