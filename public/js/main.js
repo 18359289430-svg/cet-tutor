@@ -1251,24 +1251,19 @@ function initApp() {
             html += '</div>';
             html += '</div>';
             
-            // 分类分布 - 紧凑一行
-            html += '<div class="wrongbook-section">';
-            html += '<div class="wrongbook-section-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>错题分布</div>';
-            html += '<div class="wrongbook-distribution">';
-            html += '<div class="dist-item" onclick="filterWrongbook(\'词汇\')"><span class="dist-count">' + stats.vocabulary + '</span><span class="dist-label vocab">词汇</span></div>';
-            html += '<div class="dist-item" onclick="filterWrongbook(\'语法\')"><span class="dist-count">' + stats.grammar + '</span><span class="dist-label grammar">语法</span></div>';
-            html += '<div class="dist-item" onclick="filterWrongbook(\'阅读\')"><span class="dist-count">' + stats.reading + '</span><span class="dist-label reading">阅读</span></div>';
-            html += '<div class="dist-item" onclick="filterWrongbook(\'听力\')"><span class="dist-count">' + stats.listening + '</span><span class="dist-label listening">听力</span></div>';
-            html += '</div>';
-            html += '</div>';
-            
-            // 筛选标签
+            // 筛选标签 - 带数量统计
             html += '<div class="wrongbook-section">';
             html += '<div class="wrongbook-filter-bar">';
             var filterTypes = ['全部', '词汇', '语法', '阅读', '听力'];
             filterTypes.forEach(function(type) {
                 var active = wrongbookFilterType === type ? 'active' : '';
-                html += '<div class="filter-tag ' + active + '" onclick="filterWrongbook(\'' + type + '\')">' + type + '</div>';
+                var count = 0;
+                if (type === '全部') count = stats.total;
+                else if (type === '词汇') count = stats.vocabulary;
+                else if (type === '语法') count = stats.grammar;
+                else if (type === '阅读') count = stats.reading;
+                else if (type === '听力') count = stats.listening;
+                html += '<div class="filter-tag ' + active + '" onclick="filterWrongbook(\'' + type + '\')">' + type + ' ' + count + '</div>';
             });
             // 添加待复习筛选
             var overdueCount = getOverdueReviewCount();

@@ -111,59 +111,6 @@
     stroke-width: 2;
 }
 
-/* ===== 分布统计 - 紧凑一行 ===== */
-.wrongbook-distribution {
-    display: flex;
-    gap: 0;
-    background: white;
-    border-radius: 14px;
-    padding: 14px 8px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-}
-
-.dist-item {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    position: relative;
-    padding: 4px 0;
-}
-
-.dist-item:not(:last-child)::after {
-    content: '';
-    position: absolute;
-    right: 0;
-    top: 4px;
-    bottom: 4px;
-    width: 1px;
-    background: #F1F5F9;
-}
-
-.dist-item:active {
-    transform: scale(0.97);
-}
-
-.dist-count {
-    font-size: 22px;
-    font-weight: 700;
-    color: #1E293B;
-    line-height: 1;
-}
-
-.dist-label {
-    font-size: 11px;
-    font-weight: 500;
-    color: #94A3B8;
-}
-
-.dist-label.vocab { color: #6C5CE7; }
-.dist-label.grammar { color: #F39C12; }
-.dist-label.reading { color: #10B981; }
-.dist-label.listening { color: #8B5CF6; }
 
 /* ===== 筛选栏 ===== */
 .wrongbook-filter-bar {
