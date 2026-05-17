@@ -1070,4 +1070,79 @@ function initApp() {
             container.innerHTML = html;
         }
         
-        
+        function getWeakActionText(dim, score) {
+            var actions = {
+                '细节定位': '做5道细节定位题强化训练',
+                '推理判断': '练习推理判断专项突破',
+                '同义替换': '积累同义替换词汇短语',
+                '主旨归纳': '练习段落主旨概括技巧',
+                '态度判断': '分析作者态度词练习'
+            };
+            return actions[dim] || '针对性练习提升';
+        }
+
+        function renderPersonalities() {
+            var scroll = document.getElementById('personality-grid');
+            var grid = document.getElementById('personality-grid');
+            var html = '';
+            for (var i = 0; i < personalities.length; i++) {
+                var p = personalities[i];
+                html += '<div class="personality-card" onclick="showPersonalityDetail(\'' + p.type + '\')">';
+                html += '<div class="personality-avatar"><img src="' + p.img + '" alt="' + p.type + '" onerror="this.style.display=\'none\'"></div>';
+                html += '<div class="personality-type">' + p.type + '</div>';
+                html += '<span class="personality-honor" style="background:' + p.color + ';color:#fff">' + p.honor + '</span>';
+                html += '</div>';
+            }
+            if (scroll) scroll.innerHTML = html;
+            if (grid) grid.innerHTML = html;
+        }
+
+        function renderHomePersonalityPreview() {
+            var container = document.getElementById('home-personality-preview');
+            if (!container) return;
+            var html = '';
+            for (var i = 0; i < Math.min(6, personalities.length); i++) {
+                var p = personalities[i];
+                html += '<div class="home-preview-card" onclick="switchTab(\'personality\');setTimeout(function(){showPersonalityDetail(\'' + p.type + '\')},300)">';
+                html += '<div class="home-preview-avatar"><img src="' + p.img + '" alt="' + p.type + '" onerror="this.style.display=\'none\'"></div>';
+                html += '<div class="home-preview-name">' + p.type + '</div>';
+                html += '</div>';
+            }
+            container.innerHTML = html;
+        }
+
+        function showPersonalityDetail(type) {
+            var p = null;
+            for (var i = 0; i < personalities.length; i++) {
+                if (personalities[i].type === type) { p = personalities[i]; break; }
+            }
+            if (!p) return;
+            state.selectedPersonality = p;
+            var scoresHtml = '';
+            if (p.scores) {
+                for (var key in p.scores) {
+                    var val = p.scores[key];
+                    var level = val >= 80 ? '强' : val >= 50 ? '中' : '弱';
+                    var color = val >= 80 ? '#00B894' : val >= 50 ? '#FDCB6E' : '#E17055';
+                    scoresHtml += '<div class="detail-score-item"><span class="detail-score-name">' + key + '</span><div class="detail-score-bar"><div class="detail-score-fill" style="width:' + val + '%;background:' + color + '"></div></div><span class="detail-score-val" style="color:' + color + '">' + val + '%</span></div>';
+                }
+            }
+            document.getElementById('detail-card').innerHTML = 
+                '<div class="detail-avatar"><img src="' + p.img + '" alt="' + p.type + '" onerror="this.style.display=\'none\'"></div>' +
+                '<div class="detail-type">' + p.type + '</div>' +
+                '<span class="detail-honor" style="background:' + p.color + ';color:#fff">' + p.honor + '</span>' +
+                '<p class="detail-desc" style="font-style:italic;color:#6C5CE7;margin:8px 0 16px">"' + p.comment + '"</p>' +
+                '<div class="detail-scores">' + scoresHtml + '</div>';
+            document.getElementById('detail-advice-text').textContent = '测出你的备考人格，获取专属备考方案！';
+            document.getElementById('personality-modal').classList.add('show');
+        }
+
+        function closePersonalityModal() {
+            document.getElementById('personality-modal').classList.remove('show');
+        }
+
+        function startPractice() {
+            closePersonalityModal();
+            openChat('chat');
+        }
+
