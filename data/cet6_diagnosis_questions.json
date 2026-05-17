@@ -1,17 +1,17 @@
 {
   "version": "v1-真题版",
-  "total_questions": 15,
+  "total_questions": 24,
   "ability_summary": {
-    "同义替换": 2,
-    "细节定位": 7,
-    "推理判断": 3,
+    "同义替换": 4,
+    "细节定位": 12,
+    "推理判断": 5,
     "主旨归纳": 2,
     "态度推断": 1
   },
   "passages": [
     {
       "passage_id": 1,
-      "text": "Passage Two\nQuestions 51 to 55 are based on the following passage.\nNowhere do the twin forces of climate change and urbanization converge quite like in cities, where concrete and asphalt absorb and radiate heat, worsening temperatures even as the global average climbs. Urban areas can be 1 to 7 degrees Celsius hotter than surrounding rural areas—a phenomenon known as the urban heat island effect. For many city dwellers, air conditioning offers relief, but the energy demand contributes to climate change, creating a vicious cycle.\nCities worldwide are testing nature-based solutions to beat the heat. Urban forests, green roofs, and street trees can lower surface and air temperatures through shading and evapotranspiration. In Mexico City, a massive voluntary demolition program has cleared nearly 60,000 square meters of impermeable surfaces since 2020, replacing them with parks and green areas. Singapore's "City in a Garden" vision has transformed the island nation, with green spaces covering over 40% of its land area. These initiatives not only reduce temperatures but also improve air quality, reduce storm water runoff, and enhance residents' mental health.\nYet green infrastructure faces significant challenges in dense urban environments. Green roofs require structural modifications and ongoing maintenance. Street trees need space for roots and suffer from pollution and limited soil volume. Water scarcity in many cities limits the potential for water-intensive greenery. Moreover, the benefits of urban green spaces often accrue to wealthier neighborhoods, raising questions of environmental justice.",
+      "text": "Passage Two\nQuestions 51 to 55 are based on the following passage.\nNowhere do the twin forces of climate change and urbanization converge quite like in cities, where concrete and asphalt absorb and radiate heat, worsening temperatures even as the global average climbs. Urban areas can be 1 to 7 degrees Celsius hotter than surrounding rural areas—a phenomenon known as the urban heat island effect. For many city dwellers, air conditioning offers relief, but the energy demand contributes to climate change, creating a vicious cycle.\nCities worldwide are testing nature-based solutions to beat the heat. Urban forests, green roofs, and street trees can lower surface and air temperatures through shading and evapotranspiration. In Mexico City, a massive voluntary demolition program has cleared nearly 60,000 square meters of impermeable surfaces since 2020, replacing them with parks and green areas. Singapore's \"City in a Garden\" vision has transformed the island nation, with green spaces covering over 40% of its land area. These initiatives not only reduce temperatures but also improve air quality, reduce storm water runoff, and enhance residents' mental health.\nYet green infrastructure faces significant challenges in dense urban environments. Green roofs require structural modifications and ongoing maintenance. Street trees need space for roots and suffer from pollution and limited soil volume. Water scarcity in many cities limits the potential for water-intensive greenery. Moreover, the benefits of urban green spaces often accrue to wealthier neighborhoods, raising questions of environmental justice.",
       "questions": [
         {
           "id": "2025-06-S1-RC-051",
@@ -189,6 +189,128 @@
           "optionD": "The benefits of automation technology.",
           "answer": "B",
           "explanation": "文章介绍了美国工作的四大问题，并提出了后工作理论作为可能的解决方向。"
+        }
+      ]
+    },
+    {
+      "passage_id": 4,
+      "text": "Passage Two\nQuestions 51 to 55 are based on the following passage.\nIn gaining their first professional job after years of study, young adults often encounter a strange situation: they are simultaneously overqualified for many positions and underprepared for the world of work. Universities equip graduates with theoretical knowledge but rarely teach the practical skills needed to navigate office politics, manage time effectively, or communicate with supervisors.\nThis gap between academic preparation and workplace demands has widened in recent decades. As industries evolve faster than curricula can adapt, graduates frequently find their degrees less relevant than expected. The result is a generation of workers who must essentially retrain themselves on the job, learning through trial and error what their education failed to provide.\nSome companies have recognized this issue and invested in robust onboarding programs. They pair new hires with mentors, provide structured training sessions, and create safe spaces for asking questions. Such initiatives can dramatically reduce the time it takes for new employees to become productive contributors.\nYet the responsibility should not fall on employers alone. Universities could do more to bridge the gap by incorporating internships, project-based learning, and soft skills development into their curricula. After all, education's purpose is not merely to create learned individuals but to prepare them for meaningful participation in society.",
+      "questions": [
+        {
+          "id": "2024-12-S1-RC-051",
+          "ability": "细节定位",
+          "question": "What do young adults often encounter when starting their first professional job?",
+          "optionA": "They are paid less than expected.",
+          "optionB": "They are overqualified but underprepared.",
+          "optionC": "They face no significant challenges.",
+          "optionD": "They are immediately promoted.",
+          "answer": "B",
+          "explanation": "文中明确指出年轻人刚入职时\"simultaneously overqualified for many positions and underprepared for the world of work\"。"
+        },
+        {
+          "id": "2024-12-S1-RC-052",
+          "ability": "推理判断",
+          "question": "What can be inferred about the gap between academic preparation and workplace demands?",
+          "optionA": "It has been narrowing in recent years.",
+          "optionB": "It has widened due to faster industry evolution.",
+          "optionC": "It only affects low-skilled workers.",
+          "optionD": "It has been eliminated by better university curricula.",
+          "answer": "B",
+          "explanation": "文中指出\"As industries evolve faster than curricula can adapt\"，说明差距在扩大。"
+        },
+        {
+          "id": "2024-12-S1-RC-053",
+          "ability": "细节定位",
+          "question": "What do some companies do to address this issue?",
+          "optionA": "They hire only experienced workers.",
+          "optionB": "They increase starting salaries.",
+          "optionC": "They invest in robust onboarding programs.",
+          "optionD": "They extend the trial period.",
+          "answer": "C",
+          "explanation": "文中提到一些公司\"invested in robust onboarding programs\"，包括导师制度、培训等。"
+        },
+        {
+          "id": "2024-12-SC-054",
+          "ability": "同义替换",
+          "question": "What does 'retrain themselves' in the passage mean?",
+          "optionA": "To receive formal education again.",
+          "optionB": "To learn new skills through self-effort on the job.",
+          "optionC": "To change their career completely.",
+          "optionD": "To reject their previous education.",
+          "answer": "B",
+          "explanation": "\"retrain themselves\"指的是年轻人在工作中通过实践来学习教育中没有教授的技能。"
+        },
+        {
+          "id": "2024-12-S1-RC-055",
+          "ability": "推理判断",
+          "question": "What does the author suggest about bridging the gap?",
+          "optionA": "Only employers should be responsible.",
+          "optionB": "Only universities should be responsible.",
+          "optionC": "Both employers and universities should share responsibility.",
+          "optionD": "Neither should take any responsibility.",
+          "answer": "C",
+          "explanation": "文章最后指出\"the responsibility should not fall on employers alone\"，同时提到大学也应该改进。"
+        }
+      ]
+    },
+    {
+      "passage_id": 5,
+      "text": "Passage Two\nQuestions 51 to 55 are based on the following passage.\nDigital minimalism has emerged as a response to our technology-saturated lives. It advocates for a intentional approach to technology use, where individuals carefully choose which digital tools add value to their lives and which merely distract.\nAt its core, digital minimalism is not about rejecting technology altogether. Rather, it emphasizes the importance of setting boundaries and creating space for focused attention. In an era where smartphones constantly demand our focus through notifications and algorithms designed to capture attention, this philosophy offers a path toward reclaiming our cognitive resources.\nResearch supports the benefits of this approach. Studies have shown that constant connectivity leads to decreased attention spans and increased stress levels. Conversely, periods of disconnection have been linked to improved creativity, better sleep quality, and enhanced interpersonal relationships.\nThe practical application of digital minimalism varies from person to person. Some choose to designate certain hours as screen-free, while others opt for digital sabbaths—a full day without technology each week. Still others uninstall distracting apps or use grayscale mode to reduce smartphone appeal. What matters most is finding a balance that aligns with one's values and goals.",
+      "questions": [
+        {
+          "id": "2024-06-S1-RC-051",
+          "ability": "细节定位",
+          "question": "What is digital minimalism according to the passage?",
+          "optionA": "A complete rejection of technology.",
+          "optionB": "An intentional approach to technology use.",
+          "optionC": "A method to increase screen time.",
+          "optionD": "A way to maximize profits from digital products.",
+          "answer": "B",
+          "explanation": "文中明确定义digital minimalism为\"an intentional approach to technology use\"，即有意识地选择使用技术。"
+        },
+        {
+          "id": "2024-06-S1-RC-052",
+          "ability": "细节定位",
+          "question": "What does digital minimalism emphasize at its core?",
+          "optionA": "Rejecting all digital tools.",
+          "optionB": "Setting boundaries and creating space for focused attention.",
+          "optionC": "Maximizing time spent on social media.",
+          "optionD": "Following the latest technology trends.",
+          "answer": "B",
+          "explanation": "文中指出digital minimalism \"emphasizes the importance of setting boundaries and creating space for focused attention\"。"
+        },
+        {
+          "id": "2024-06-S1-RC-053",
+          "ability": "同义替换",
+          "question": "What do studies show about constant connectivity?",
+          "optionA": "It improves attention spans.",
+          "optionB": "It reduces stress levels.",
+          "optionC": "It leads to decreased attention spans and increased stress.",
+          "optionD": "It has no negative effects.",
+          "answer": "C",
+          "explanation": "研究显示constant connectivity导致\"decreased attention spans and increased stress levels\"。"
+        },
+        {
+          "id": "2024-06-S1-RC-054",
+          "ability": "推理判断",
+          "question": "What can be inferred about the benefits of disconnection?",
+          "optionA": "It has no measurable benefits.",
+          "optionB": "It can improve creativity, sleep quality, and relationships.",
+          "optionC": "It only benefits older people.",
+          "optionD": "It causes people to fall behind in technology.",
+          "answer": "B",
+          "explanation": "文中明确指出disconnection有助于\"improved creativity, better sleep quality, and enhanced interpersonal relationships\"。"
+        },
+        {
+          "id": "2024-06-S1-RC-055",
+          "ability": "主旨归纳",
+          "question": "What is the main message of the passage?",
+          "optionA": "Technology is harmful to our health.",
+          "optionB": "We should find a balanced approach to technology use.",
+          "optionC": "Digital tools are useless.",
+          "optionD": "We should quit our jobs and live offline.",
+          "answer": "B",
+          "explanation": "文章介绍digital minimalism的理念，强调找到符合个人价值观和目标的平衡。"
         }
       ]
     }
