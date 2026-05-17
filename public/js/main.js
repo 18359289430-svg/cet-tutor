@@ -6277,7 +6277,7 @@ function selectOption(btn, selectedValue) {
         diagState.currentQIndex++;
         var totalQuestions = diagState.questions.length;
         if (diagState.currentQIndex >= totalQuestions) {
-            showSelfEval();
+            startWritingTest();
         } else {
             showCurrentQuestion();
         }
@@ -6352,8 +6352,8 @@ function showSelfEval() {
                 '</div>' +
             '</div>' +
             
-            '<button class="diag-generate-btn" id="diag-generate-btn" onclick="startWritingTest()" disabled>' +
-                '<span>✨</span> 开始写作实测' +
+            '<button class="diag-generate-btn" id="diag-generate-btn" onclick="generateDiagReport()" disabled>' +
+                '<span>✨</span> 生成诊断报告' +
             '</button>' +
         '</div>';
     
@@ -6653,7 +6653,7 @@ function updateTranslationCount() {
 // 跳过翻译实测
 function skipTranslationTest() {
     diagState.translationScore = null;
-    generateDiagReport();
+    showSelfEval();
 }
 
 // 提交翻译实测
@@ -6756,7 +6756,7 @@ function showTranslationScoreResult(score) {
             '<div class="diag-score-comment">' +
                 '<div class="diag-comment-text">💬 ' + (score.comment || '继续保持！') + '</div>' +
             '</div>' +
-            '<button class="diag-score-continue translation" onclick="generateDiagReport()">✨ 生成诊断报告</button>' +
+            '<button class="diag-score-continue translation" onclick="showSelfEval()">📝 继续自评</button>' +
         '</div>';
     
     document.getElementById('diag-body').innerHTML = html;
