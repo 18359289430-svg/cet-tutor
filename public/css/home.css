@@ -1066,6 +1066,7 @@
         
         /* 错题本徽章 */
         .wrong-book-badge {
+            display: none;
             background: linear-gradient(135deg, #FF6B6B, #FF8E8E);
             color: white;
             font-size: 10px;
