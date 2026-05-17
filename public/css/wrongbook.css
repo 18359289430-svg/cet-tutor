@@ -238,26 +238,6 @@
     line-height: 1.5;
 }
 
-.wrongbook-empty .empty-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 14px 32px;
-    background: #6C5CE7;
-    color: white;
-    border: none;
-    border-radius: 24px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.wrongbook-empty .empty-btn:active {
-    transform: scale(0.97);
-}
-
-/* ===== 错题列表 ===== */
 .wrongbook-list {
     display: flex;
     flex-direction: column;
