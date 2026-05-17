@@ -505,19 +505,21 @@
         }
 
         function showDiagHistory() {
-            var overlay = document.getElementById('diag-history-overlay');
-            if (!overlay) {
-                // 创建诊断记录页面
-                createDiagHistoryOverlay();
-                overlay = document.getElementById('diag-history-overlay');
-            }
-            renderDiagnosisHistoryPage();
-            overlay.style.display = 'flex';
-            overlay.style.opacity = '0';
-            overlay.style.transition = 'opacity 0.3s';
-            requestAnimationFrame(function() {
-                overlay.style.opacity = '1';
-            });
+            try {
+                var overlay = document.getElementById('diag-history-overlay');
+                if (!overlay) {
+                    createDiagHistoryOverlay();
+                    overlay = document.getElementById('diag-history-overlay');
+                }
+                if (!overlay) { console.error('diag-history-overlay not found'); return; }
+                renderDiagnosisHistoryPage();
+                overlay.style.display = 'flex';
+                overlay.style.opacity = '0';
+                overlay.style.transition = 'opacity 0.3s';
+                requestAnimationFrame(function() {
+                    overlay.style.opacity = '1';
+                });
+            } catch(e) { console.error('showDiagHistory error:', e); alert('打开诊断记录失败: ' + e.message); }
         }
 
         function closeDiagHistory() {
