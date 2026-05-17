@@ -1221,13 +1221,43 @@ function initApp() {
             renderWrongBook();
         }
         
-        function renderWrongBook() {
+                function renderWrongBook() {
             var container = document.getElementById('wrongbook-content');
             if (!container) return;
             
             var questions = getWrongQuestions();
             var stats = getWrongQuestionStats();
             
+            // 无错题时的空状态渲染
+            if (stats.total === 0) {
+                var emptyHtml = '';
+                
+                // Hero区域
+                emptyHtml += '<div class="wrongbook-hero">';
+                emptyHtml += '<h2>错题本</h2>';
+                emptyHtml += '<div class="wrongbook-hero-sub">记录每一次失误，让进步更有方向</div>';
+                emptyHtml += '<div class="wrongbook-hero-divider"></div>';
+                emptyHtml += '</div>';
+                
+                // 空状态区域 - 居中简洁设计
+                emptyHtml += '<div class="wrongbook-empty-state">';
+                emptyHtml += '<div class="empty-state-icon">';
+                emptyHtml += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">';
+                emptyHtml += '<path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>';
+                emptyHtml += '</svg>';
+                emptyHtml += '</div>';
+                emptyHtml += '<div class="empty-state-title">还没有错题</div>';
+                emptyHtml += '<div class="empty-state-desc">继续保持，做题全对的感觉太棒了！</div>';
+                emptyHtml += '<button class="empty-state-btn" onclick="switchTab(\'diagnosis\')">去做诊断</button>';
+                emptyHtml += '</div>';
+                
+                emptyHtml += '<div class="wrongbook-bottom-spacer"></div>';
+                
+                container.innerHTML = emptyHtml;
+                return;
+            }
+            
+            // 有错题时的完整渲染逻辑
             if (wrongbookFilterType !== '全部') {
                 questions = questions.filter(function(q) { return q.type === wrongbookFilterType; });
             }
@@ -1298,9 +1328,8 @@ function initApp() {
                 html += '<div class="wrongbook-section">';
                 html += '<div class="wrongbook-empty">';
                 html += '<div class="empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg></div>';
-                html += '<div class="empty-title">还没有错题</div>';
-                html += '<div class="empty-desc">继续保持，做题全对的感觉太棒了！</div>';
-
+                html += '<div class="empty-title">该分类暂无错题</div>';
+                html += '<div class="empty-desc">换个筛选条件试试吧</div>';
                 html += '</div>';
                 html += '</div>';
             } else {
@@ -1318,6 +1347,7 @@ function initApp() {
             
             container.innerHTML = html;
         }
+
         
         function renderWrongQuestionCard(q, index) {
             var typeMap = {

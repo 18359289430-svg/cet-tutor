@@ -516,3 +516,93 @@
 .wrongbook-bottom-spacer {
     height: 24px;
 }
+
+/* ===== 无错题时整体空状态 ===== */
+.wrongbook-empty-state {
+    text-align: center;
+    padding: 60px 24px;
+    margin: 0 16px;
+    background: white;
+    border-radius: 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+}
+
+.wrongbook-empty-state .empty-state-icon {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, #F3F0FF 0%, #EDE9FE 100%);
+    border-radius: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+}
+
+.wrongbook-empty-state .empty-state-icon svg {
+    width: 48px;
+    height: 48px;
+    color: #6C5CE7;
+    stroke-width: 1.5;
+}
+
+.wrongbook-empty-state .empty-state-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1E293B;
+    margin-bottom: 10px;
+}
+
+.wrongbook-empty-state .empty-state-desc {
+    font-size: 15px;
+    color: #64748B;
+    margin-bottom: 28px;
+    line-height: 1.6;
+}
+
+.wrongbook-empty-state .empty-state-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 28px;
+    background: linear-gradient(135deg, #6C5CE7 0%, #8B5CF6 100%);
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 14px rgba(108, 92, 231, 0.35);
+}
+
+.wrongbook-empty-state .empty-state-btn:active {
+    transform: scale(0.96);
+    box-shadow: 0 2px 8px rgba(108, 92, 231, 0.25);
+}
+
+/* ===== 待复习角标 ===== */
+.wrong-overdue-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    background: #FEF3C7;
+    color: #D97706;
+}
+
+.wrong-overdue-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #F59E0B;
+    animation: pulse-dot 2s infinite;
+}
+
+@keyframes pulse-dot {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
