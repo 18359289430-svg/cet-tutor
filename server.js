@@ -71,7 +71,7 @@ const BOT_ID_COMPANION = '7637702903679631395';
 const PLANS = {
     free: { name: '免费版', price: 0, uidPrefix: 'CET4D', needPay: false },
     sprint: { name: '冲刺营', price: 38, uidPrefix: 'CET4S', needPay: true },
-    flagship: { name: '全程营', price: 148, uidPrefix: 'CET4F', needPay: true }
+    flagship: { name: '全程营', price: 88, uidPrefix: 'CET4F', needPay: true }
 };
 
 // 内存订单存储

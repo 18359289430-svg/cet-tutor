@@ -4407,10 +4407,10 @@ function closeModal(id) {
 
 function openPayment(plan) {
     var planNames = { sprint: '冲刺营', flagship: '全程营' };
-    var planPrices = { sprint: 44.5, flagship: 149.5 };
+    var planPrices = { sprint: 38, flagship: 88 };
     var planFeatures = {
-        sprint: ['AI对话 无限','45天个性化学习计划','作文批改 每日1次（逐句改写）','翻译批改 每日1次（参考译文）','针对短板的每日一练'],
-        flagship: ['AI对话 无限','45天个性化学习计划','作文/翻译批改 无限（逐句改写+精讲）','针对短板的每日一练','深度精讲（为什么错+怎么避坑）','六级衔接指导']
+        sprint: ['AI五维诊断 | AI陪练(给答案+解析)','作文批改(评分+问题+方向)','翻译批改(参考译文)','学习计划 | 错题本+复习提醒'],
+        flagship: ['AI五维诊断 | AI深度精讲(解题套路+举一反三)','作文精批(逐句改写+表达升级)','翻译精批(逐句对比)','动态学习计划','错题本+复习提醒+错因归类','诊断详细报告(进步预测+同类题推荐)']
     };
     // 面包多商品链接（创建后替换）
     var mbdLinks = {
