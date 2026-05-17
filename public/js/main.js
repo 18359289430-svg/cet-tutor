@@ -225,17 +225,21 @@
             html += '<div class="diag-hero-divider"></div>';
             html += '</div>';
 
-            // 统计卡片 - 渐变大卡片
+            // 统计卡片 - 白底+紫色数字
             html += '<div class="diag-stats-grid">';
-            html += '<div class="diag-stat-card dark">';
+            html += '<div class="diag-stat-card">';
             html += '<div class="diag-stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h6"/></svg></div>';
+            html += '<div class="diag-stat-info">';
             html += '<div class="diag-stat-number">' + stats.total + '</div>';
             html += '<div class="diag-stat-label">诊断次数</div>';
             html += '</div>';
-            html += '<div class="diag-stat-card light">';
+            html += '</div>';
+            html += '<div class="diag-stat-card">';
             html += '<div class="diag-stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg></div>';
+            html += '<div class="diag-stat-info">';
             html += '<div class="diag-stat-number">' + (stats.lastDate ? formatDateTime(stats.lastDate).split(' ')[0] : '--') + '</div>';
             html += '<div class="diag-stat-label">最近诊断</div>';
+            html += '</div>';
             html += '</div>';
             html += '</div>';
 
@@ -1020,15 +1024,21 @@ function initApp() {
             html += '<div class="wrongbook-hero-divider"></div>';
             html += '</div>';
             
-            // 统计区 - 渐变大卡片
+            // 统计区 - 白底+紫色数字
             html += '<div class="wrongbook-stats">';
-            html += '<div class="wrongbook-stat-item total">';
+            html += '<div class="wrongbook-stat-item">';
+            html += '<div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg></div>';
+            html += '<div class="stat-info">';
             html += '<div class="stat-number">' + stats.total + '</div>';
             html += '<div class="stat-label">错题总数</div>';
             html += '</div>';
-            html += '<div class="wrongbook-stat-item today">';
+            html += '</div>';
+            html += '<div class="wrongbook-stat-item">';
+            html += '<div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></div>';
+            html += '<div class="stat-info">';
             html += '<div class="stat-number">' + stats.todayNew + '</div>';
             html += '<div class="stat-label">今日新增</div>';
+            html += '</div>';
             html += '</div>';
             html += '</div>';
             

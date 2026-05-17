@@ -434,7 +434,7 @@
     border-radius: 2px;
 }
 
-/* 统计卡片 - 渐变大卡片，和数据页一致 */
+/* 统计卡片 - 白底+紫色数字 */
 .diag-stats-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -443,76 +443,49 @@
 }
 
 .diag-stat-card {
+    background: white;
     border-radius: 16px;
-    padding: 22px 18px;
-    position: relative;
-    overflow: hidden;
-}
-
-/* 渐变卡片 - 紫色 */
-.diag-stat-card.dark {
-    background: linear-gradient(135deg, #6C5CE7 0%, #A29BFE 100%);
-    color: #FFFFFF;
-    box-shadow: 0 4px 20px rgba(108, 92, 231, 0.25);
-}
-.diag-stat-card.dark .diag-stat-number {
-    color: #FFFFFF;
-}
-.diag-stat-card.dark .diag-stat-label {
-    color: rgba(255,255,255,0.85);
-}
-
-/* 渐变卡片 - 橙色 */
-.diag-stat-card.light {
-    background: linear-gradient(135deg, #FF6B35 0%, #FF9F43 100%);
-    color: #FFFFFF;
-    box-shadow: 0 4px 20px rgba(255, 107, 53, 0.25);
-}
-.diag-stat-card.light .diag-stat-number {
-    color: #FFFFFF;
-}
-.diag-stat-card.light .diag-stat-label {
-    color: rgba(255,255,255,0.85);
+    padding: 20px 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
 }
 
 .diag-stat-icon {
-    width: 36px;
-    height: 36px;
-    margin: 0 auto 12px;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: #F3F0FF;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 10px;
+    flex-shrink: 0;
 }
-.diag-stat-card.dark .diag-stat-icon {
-    background: rgba(255,255,255,0.2);
-}
-.diag-stat-card.light .diag-stat-icon {
-    background: rgba(255,255,255,0.2);
-}
+
 .diag-stat-icon svg {
-    width: 18px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
+    stroke: #6C5CE7;
+    stroke-width: 2;
 }
-.diag-stat-card.dark .diag-stat-icon svg {
-    stroke: #FFFFFF;
-}
-.diag-stat-card.light .diag-stat-icon svg {
-    stroke: #FFFFFF;
+
+.diag-stat-info {
+    flex: 1;
 }
 
 .diag-stat-number {
-    font-size: 38px;
+    font-size: 28px;
     font-weight: 700;
+    color: #6C5CE7;
     line-height: 1;
-    letter-spacing: -1px;
-    margin-bottom: 6px;
-    text-align: center;
+    letter-spacing: -0.5px;
 }
 
 .diag-stat-label {
-    font-size: 13px;
-    text-align: center;
+    font-size: 12px;
+    color: #94A3B8;
+    margin-top: 4px;
 }
 
 /* 区块间距 */
