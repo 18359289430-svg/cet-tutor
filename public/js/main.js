@@ -1064,9 +1064,6 @@ function initApp() {
                 });
                 html += '</div>';
                 html += '</div>';
-                // 有错题时底部也放一个去练题入口
-                html += '<div class="wrongbook-section">';
-                html += '<button class="wrongbook-practice-btn" onclick="switchTab(\'diagnosis\'); setTimeout(openQuiz, 300)">继续练题</button>';
                 html += '</div>';
             }
             
