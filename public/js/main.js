@@ -8038,7 +8038,7 @@ function showVariantLoading() {
     }
     
     overlay.innerHTML = '<div class="variant-loading">' +
-        '<div class="wb-wb-variant-loading-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg></div>' +
+        '<div class="wb-variant-loading-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg></div>' +
         '<div class="wb-variant-loading-text">AI正在生成变式题...</div>' +
         '<div class="wb-variant-loading-dots"><span></span><span></span><span></span></div>' +
         '</div>';
@@ -8078,24 +8078,24 @@ function showVariantTrainingUI(variants, originalQuestion) {
         var q = variants[currentIndex];
         var answered = userAnswers[currentIndex] !== undefined;
         
-        var html = '<div class="variant-modal">' +
+        var html = '<div class="wb-variant-modal">' +
             '<div class="wb-variant-header">' +
-            '<div class="wb-variant-title">📝 变式训练</div>' +
+            '<div class="wb-variant-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:20px;height:20px"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>变式训练</div>' +
             '<div class="wb-variant-progress">' +
             '<span class="wb-variant-current">' + (currentIndex + 1) + '</span>/' + variants.length +
             '</div>' +
-            '<button class="wb-variant-close" onclick="closeVariantTraining()">✕</button>' +
+            '<button class="wb-variant-close" onclick="closeVariantTraining()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px"><path d="M6 18L18 6M6 6l12 12"/></svg></button>' +
             '</div>' +
             
             '<div class="wb-variant-origin">' +
-            '<div class="wb-wb-variant-origin-label">同考点训练 · ' + (originalQuestion.type || '阅读') + '</div>' +
-            '<div class="wb-wb-variant-origin-text">' + escapeHtml(originalQuestion.question.substring(0, 50)) + '...</div>' +
+            '<div class="wb-variant-origin-label">同考点训练 · ' + (originalQuestion.type || '阅读') + '</div>' +
+            '<div class="wb-variant-origin-text">' + escapeHtml(originalQuestion.question.substring(0, 50)) + '...</div>' +
             '</div>' +
             
             '<div class="wb-variant-question">' +
             '<div class="wb-variant-q-text">' + escapeHtml(q.question) + '</div>' +
             
-            '<div class="wb-wb-variant-opts">' +
+            '<div class="wb-variant-options">' +
             ['A', 'B', 'C', 'D'].map(function(key, i) {
                 var opt = q['option' + key];
                 if (!opt) return '';
@@ -8115,7 +8115,7 @@ function showVariantTrainingUI(variants, originalQuestion) {
         
         if (answered) {
             html += '<div class="wb-variant-exp">' +
-                '<div class="wb-variant-exp-label">💡 解析</div>' +
+                '<div class="wb-variant-exp-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>解析</div>' +
                 '<div class="wb-variant-exp-content">' + escapeHtml(q.explanation) + '</div>' +
                 '</div>';
         }
@@ -8126,7 +8126,7 @@ function showVariantTrainingUI(variants, originalQuestion) {
             html += '<button class="wb-variant-btn primary" onclick="confirmVariantAnswer()">确认答案</button>';
         } else {
             if (currentIndex < variants.length - 1) {
-                html += '<button class="wb-variant-btn primary" onclick="nextVariantQuestion()">下一题 →</button>';
+                html += '<button class="wb-variant-btn primary" onclick="nextVariantQuestion()">下一题<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;margin-left:4px"><path d="M9 5l7 7-7 7"/></svg></button>';
             } else {
                 html += '<button class="wb-variant-btn primary" onclick="finishVariantTraining()">查看结果</button>';
             }
@@ -8172,12 +8172,12 @@ function showVariantTrainingUI(variants, originalQuestion) {
             if (userAnswers[i] === q.answer) correct++;
         });
         
-        overlay.innerHTML = '<div class="variant-modal wb-variant-result">' +
-            '<div class="wb-wb-variant-result-icon">' + (correct === variants.length ? '🎉' : '📚') + '</div>' +
-            '<div class="wb-wb-variant-result-title">变式训练完成</div>' +
-            '<div class="wb-wb-variant-result-score">' + correct + '/' + variants.length + ' 正确</div>' +
-            '<div class="wb-wb-variant-result-rate">' + Math.round(correct / variants.length * 100) + '%正确率</div>' +
-            '<div class="wb-wb-variant-result-tip">五维分数已更新，继续加油！</div>' +
+        overlay.innerHTML = '<div class="wb-variant-modal wb-variant-result">' +
+            '<div class="wb-variant-result-icon">' + (correct === variants.length ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:64px;height:64px;color:#10B981"><path d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>' : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:64px;height:64px;color:#6C5CE7"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>') + '</div>' +
+            '<div class="wb-variant-result-title">变式训练完成</div>' +
+            '<div class="wb-variant-result-score">' + correct + '/' + variants.length + ' 正确</div>' +
+            '<div class="wb-variant-result-rate">' + Math.round(correct / variants.length * 100) + '%正确率</div>' +
+            '<div class="wb-variant-result-tip">五维分数已更新，继续加油！</div>' +
             '<button class="wb-variant-btn primary" onclick="closeVariantTraining()">完成</button>' +
             '</div>';
     };
@@ -8521,7 +8521,7 @@ renderWrongBook = function() {
         '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>' +
         '</div>' +
         '<div class="wb-variant-content">' +
-        '<div class="wb-wb-variant-title">变式训练</div>' +
+        '<div class="wb-variant-title">变式训练</div>' +
         '<div class="wb-variant-desc">AI生成同考点变式题，举一反三</div>' +
         '</div>' +
         '<div class="wb-variant-count">';
