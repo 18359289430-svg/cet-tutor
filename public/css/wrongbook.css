@@ -536,3 +536,22 @@
 .wrongbook-bottom-spacer {
     height: 24px;
 }
+
+/* ===== 继续练题按钮 ===== */
+.wrongbook-practice-btn {
+    width: 100%;
+    padding: 14px;
+    background: #6C5CE7;
+    color: white;
+    border: none;
+    border-radius: 14px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.wrongbook-practice-btn:active {
+    transform: scale(0.98);
+    opacity: 0.9;
+}
