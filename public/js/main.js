@@ -5408,6 +5408,7 @@ function preloadLimitInfo() {
 
 // 五维维度配置
 const DIM_CONFIGS = {
+    '听力': { icon: '🎧', color: '#A29BFE', desc: '能否准确理解听力材料内容' },
     '细节定位': { icon: '🔍', color: '#6C5CE7', desc: '能否快速定位原文关键信息' },
     '推理判断': { icon: '🧠', color: '#00B894', desc: '能否从原文正确推导隐含信息' },
     '同义替换': { icon: '🔄', color: '#FDCB6E', desc: '能否识别选项与原文的同义表达' },
@@ -6181,9 +6182,10 @@ function showCurrentQuestion() {
         return;
     }
     
-    var progress = Math.round((diagState.currentQIndex / 15) * 100);
+    var totalQuestions = diagState.questions.length;
+    var progress = Math.round((diagState.currentQIndex / totalQuestions) * 100);
     document.getElementById('diag-progress-fill').style.width = progress + '%';
-    document.getElementById('diag-progress-text').textContent = '第' + (diagState.currentQIndex + 1) + '题/共15题';
+    document.getElementById('diag-progress-text').textContent = '阅读 第' + (diagState.currentQIndex + 1) + '题/共' + totalQuestions + '题';
     
     // 构建HTML
     var html = '<div class="diag-question-card">';
@@ -6198,7 +6200,7 @@ function showCurrentQuestion() {
         '</div>';
     }
     
-    html += '<div class="diag-question-num">第 ' + (diagState.currentQIndex + 1) + ' / 15 题</div>' +
+    html += '<div class="diag-question-num">第 ' + (diagState.currentQIndex + 1) + ' / ' + totalQuestions + ' 题</div>' +
         '<div class="diag-question-text">' + escapeHtml(q.question) + '</div>' +
         '<div class="diag-options">' +
             renderOptionBtn('A', q.optionA, 'A') +
@@ -6235,7 +6237,14 @@ function renderOptionBtn(letter, text, value) {
 }
 
 // 选择选项
+// 选择选项（阅读阶段专用）
 function selectOption(btn, selectedValue) {
+    // 如果是听力阶段，跳转到听力处理函数
+    if (diagState.phase === 'listening') {
+        selectListeningOption(btn, selectedValue);
+        return;
+    }
+    
     var q = diagState.questions[diagState.currentQIndex];
     var correctAnswer = q.answer || q.correct_answer;
     var isCorrect = selectedValue === correctAnswer;
@@ -6256,7 +6265,8 @@ function selectOption(btn, selectedValue) {
     // 500ms后自动下一题（快速但不突兀）
     setTimeout(function() {
         diagState.currentQIndex++;
-        if (diagState.currentQIndex >= 15) {
+        var totalQuestions = diagState.questions.length;
+        if (diagState.currentQIndex >= totalQuestions) {
             showSelfEval();
         } else {
             showCurrentQuestion();
