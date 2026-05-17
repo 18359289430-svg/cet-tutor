@@ -434,58 +434,58 @@
     border-radius: 2px;
 }
 
-/* 统计卡片 - 白底+紫色数字 */
-.diag-stats-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+/* 主卡 - 全宽大数字 */
+.diag-hero-card {
+    background: white;
+    border-radius: 20px;
+    padding: 28px 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    text-align: center;
     margin-bottom: 0;
 }
 
-.diag-stat-card {
-    background: white;
-    border-radius: 16px;
-    padding: 20px 18px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-}
-
-.diag-stat-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 12px;
-    background: #F3F0FF;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-}
-
-.diag-stat-icon svg {
-    width: 20px;
-    height: 20px;
-    stroke: #6C5CE7;
-    stroke-width: 2;
-}
-
-.diag-stat-info {
-    flex: 1;
-}
-
-.diag-stat-number {
-    font-size: 28px;
-    font-weight: 700;
+.diag-hero-number {
+    font-size: 56px;
+    font-weight: 800;
     color: #6C5CE7;
     line-height: 1;
-    letter-spacing: -0.5px;
+    letter-spacing: -2px;
+    margin-bottom: 8px;
 }
 
-.diag-stat-label {
-    font-size: 12px;
+.diag-hero-label {
+    font-size: 14px;
     color: #94A3B8;
-    margin-top: 4px;
+    margin-bottom: 16px;
+}
+
+/* 次要指标行 */
+.diag-sub-stats {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    padding-top: 16px;
+    border-top: 1px solid #F1F5F9;
+}
+
+.diag-sub-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #64748B;
+}
+
+.diag-sub-item .sub-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #6C5CE7;
+}
+
+.diag-sub-item .sub-num {
+    font-weight: 700;
+    color: #1E293B;
 }
 
 /* 区块间距 */
