@@ -209,7 +209,162 @@
                 lastDate: history[0].date
             };
         }
-        // 渲染诊断记录页面
+        
+// ===== 错题智能复习提醒函数（基于艾宾浩斯遗忘曲线）=====
+// 艾宾浩斯复习间隔：1天→3天→7天→15天→30天
+var REVIEW_INTERVALS = [1, 3, 7, 15, 30]; // 单位：天
+
+// 计算下次复习时间
+function getNextReviewTime(reviewCount, lastReviewAt) {
+    reviewCount = reviewCount || 0;
+    if (reviewCount >= REVIEW_INTERVALS.length) {
+        return null; // 已掌握，不再提醒
+    }
+    var intervalDays = REVIEW_INTERVALS[reviewCount] || 30;
+    if (!lastReviewAt) {
+        return null;
+    }
+    var lastReview = new Date(lastReviewAt);
+    var nextReview = new Date(lastReview.getTime() + intervalDays * 24 * 60 * 60 * 1000);
+    return nextReview;
+}
+
+// 检查是否为待复习状态
+function isOverdueForReview(question) {
+    var reviewCount = question.reviewCount || 0;
+    if (reviewCount >= REVIEW_INTERVALS.length) {
+        return false;
+    }
+    var lastReview = question.reviewedAt || question.createdAt;
+    if (!lastReview) {
+        var createdTime = question.createdAt ? new Date(question.createdAt) : new Date();
+        var oneDayLater = new Date(createdTime.getTime() + 24 * 60 * 60 * 1000);
+        return new Date() >= oneDayLater;
+    }
+    var nextReview = getNextReviewTime(reviewCount, lastReview);
+    if (!nextReview) {
+        var intervalDays = REVIEW_INTERVALS[REVIEW_INTERVALS.length - 1] || 30;
+        var lastReviewDate = new Date(lastReview);
+        var thirtyDaysLater = new Date(lastReviewDate.getTime() + intervalDays * 24 * 60 * 60 * 1000);
+        return new Date() >= thirtyDaysLater;
+    }
+    return new Date() >= nextReview;
+}
+
+// 获取所有到期需要复习的错题
+function getOverdueReviews() {
+    var questions = getWrongQuestions();
+    var overdue = [];
+    questions.forEach(function(q) {
+        if (isOverdueForReview(q)) {
+            overdue.push(q);
+        }
+    });
+    return overdue;
+}
+
+// 获取待复习数量
+function getOverdueReviewCount() {
+    return getOverdueReviews().length;
+}
+
+// 获取下次复习时间描述
+function getReviewTimeDesc(question) {
+    var reviewCount = question.reviewCount || 0;
+    if (reviewCount >= REVIEW_INTERVALS.length) {
+        return '已掌握';
+    }
+    var lastReview = question.reviewedAt || question.createdAt;
+    if (!lastReview) {
+        var createdTime = question.createdAt ? new Date(question.createdAt) : new Date();
+        var oneDayLater = new Date(createdTime.getTime() + 24 * 60 * 60 * 1000);
+        var daysLeft = Math.ceil((oneDayLater - new Date()) / (24 * 60 * 60 * 1000));
+        return daysLeft <= 0 ? '今天' : daysLeft + '天后';
+    }
+    var intervalDays = REVIEW_INTERVALS[reviewCount] || 30;
+    var nextReview = new Date(lastReview.getTime() + intervalDays * 24 * 60 * 60 * 1000);
+    var daysLeft = Math.ceil((nextReview - new Date()) / (24 * 60 * 60 * 1000));
+    if (daysLeft <= 0) return '今天';
+    if (daysLeft === 1) return '明天';
+    return daysLeft + '天后';
+}
+
+// ===== 诊断分数对比功能 =====
+// 获取上一次诊断记录
+function getPreviousDiagnosis() {
+    var history = getDiagnosisHistory();
+    if (history.length < 2) {
+        return null;
+    }
+    return history[1]; // 第二次诊断是上一次
+}
+
+// 计算分数变化
+function calculateScoreDiff(current, previous, dimName) {
+    var currentScore = current.dims[dimName] || 0;
+    var previousScore = previous.scores[dimName] || 0;
+    var diff = currentScore - previousScore;
+    return {
+        current: currentScore,
+        previous: previousScore,
+        diff: diff,
+        improved: diff > 0,
+        declined: diff < 0
+    };
+}
+
+// 生成对比摘要
+function generateCompareSummary(current, previous) {
+    if (!previous) return null;
+    
+    var totalDiff = current.totalScore - previous.totalScore;
+    var improvements = [];
+    var declines = [];
+    
+    Object.keys(current.dims).forEach(function(dim) {
+        var diff = calculateScoreDiff(current, previous, dim);
+        if (diff.diff > 0) {
+            improvements.push({ dim: dim, diff: diff.diff });
+        } else if (diff.diff < 0) {
+            declines.push({ dim: dim, diff: Math.abs(diff.diff) });
+        }
+    });
+    
+    // 按进步幅度排序
+    improvements.sort(function(a, b) { return b.diff - a.diff; });
+    
+    return {
+        totalDiff: totalDiff,
+        improvements: improvements,
+        declines: declines,
+        personalityChanged: current.personality !== previous.personality,
+        previousPersonality: previous.personality
+    };
+}
+
+// 获取进步提示文本
+function getProgressHint(summary) {
+    if (!summary) return '';
+    
+    var hints = [];
+    
+    if (summary.totalDiff > 0) {
+        hints.push('比上次进步了' + summary.totalDiff + '分！');
+    } else if (summary.totalDiff < 0) {
+        hints.push('这次发挥不如上次，别灰心，继续练薄弱项');
+    }
+    
+    // 检查是否有大幅进步（>=10分）
+    if (summary.improvements.length > 0 && summary.improvements[0].diff >= 10) {
+        hints.push(summary.improvements[0].dim + '提升' + summary.improvements[0].diff + '分，进步明显！');
+    }
+    
+    return hints.join(' ');
+}
+
+
+
+// 渲染诊断记录页面
                 function renderDiagnosisHistoryPage() {
             var history = getDiagnosisHistory();
             var stats = getDiagnosisHistoryStats();
@@ -224,6 +379,19 @@
             html += '<div class="diag-hero-sub">追踪学习进度，见证每一次进步</div>';
             html += '<div class="diag-hero-divider"></div>';
             html += '</div>';
+            
+            // 错题复习提醒
+            var overdueCount = typeof getOverdueReviewCount === 'function' ? getOverdueReviewCount() : 0;
+            if (overdueCount > 0) {
+                html += '<div class="dashboard-review-tip" onclick="navigateToWrongBook()">';
+                html += '<div class="dashboard-review-icon">📚</div>';
+                html += '<div class="dashboard-review-info">';
+                html += '<div class="dashboard-review-title">今天有' + overdueCount + '道错题到了复习时间</div>';
+                html += '<div class="dashboard-review-count">艾宾浩斯记忆法，科学巩固薄弱点</div>';
+                html += '</div>';
+                html += '<div class="dashboard-review-arrow">›</div>';
+                html += '</div>';
+            }
 
             // 主卡 - 大数字
             html += '<div class="diag-hero-card">';
@@ -277,6 +445,27 @@
                 html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg>';
                 html += '<div class="diag-section-title">诊断历史</div>';
                 html += '</div>';
+                
+                // 趋势对比（如果有2次以上诊断）
+                if (history.length >= 2) {
+                    html += '<div class="diag-trend-section">';
+                    html += '<div class="diag-trend-title">📈 最近分数变化</div>';
+                    html += '<div class="diag-trend-chart">';
+                    // 取最近5次
+                    var recentRecords = history.slice(0, Math.min(5, history.length));
+                    recentRecords.forEach(function(rec, idx) {
+                        var dateLabel = formatDateTime(rec.date).split(' ')[0].slice(5); // MM-DD格式
+                        html += '<div class="diag-trend-bar-group">';
+                        html += '<div class="diag-trend-bars">';
+                        // 总分柱状
+                        html += '<div class="diag-trend-bar" style="height:' + (rec.totalScore * 0.6) + 'px;background:#6C5CE7;" title="总分:' + rec.totalScore + '"></div>';
+                        html += '</div>';
+                        html += '<div class="diag-trend-label">' + dateLabel + '</div>';
+                        html += '</div>';
+                    });
+                    html += '</div>';
+                    html += '</div>';
+                }
 
                 // 记录列表
                 html += '<div class="diag-list">';
@@ -1068,10 +1257,30 @@ function initApp() {
                 var active = wrongbookFilterType === type ? 'active' : '';
                 html += '<div class="filter-tag ' + active + '" onclick="filterWrongbook(\'' + type + '\')">' + type + '</div>';
             });
+            // 添加待复习筛选
+            var overdueCount = getOverdueReviewCount();
+            if (overdueCount > 0) {
+                var overdueActive = wrongbookFilterType === '待复习' ? 'active overdue-filter' : 'overdue-filter';
+                html += '<div class="filter-tag ' + overdueActive + '" onclick="filterWrongbook(\'待复习\')">⏰ 待复习(' + overdueCount + ')</div>';
+            }
             html += '</div>';
             html += '</div>';
             
-            // 错题列表
+            // 错题列表（待复习的排前面）
+            if (wrongbookFilterType === '待复习') {
+                questions = getOverdueReviews();
+            } else if (wrongbookFilterType !== '全部') {
+                questions = questions.filter(function(q) { return q.type === wrongbookFilterType; });
+            }
+            // 待复习的排前面
+            questions.sort(function(a, b) {
+                var aOverdue = isOverdueForReview(a);
+                var bOverdue = isOverdueForReview(b);
+                if (aOverdue && !bOverdue) return -1;
+                if (!aOverdue && bOverdue) return 1;
+                return (b.createdAt || 0) - (a.createdAt || 0);
+            });
+            
             if (questions.length === 0) {
                 html += '<div class="wrongbook-section">';
                 html += '<div class="wrongbook-empty">';
@@ -1108,11 +1317,15 @@ function initApp() {
             var date = new Date(q.createdAt);
             var dateStr = (date.getMonth() + 1) + '月' + date.getDate() + '日 ' + date.getHours().toString().padStart(2, '0') + ':' + date.getMinutes().toString().padStart(2, '0');
             var isReviewed = q.reviewedAt && q.reviewedAt >= q.updatedAt;
+            var isOverdue = isOverdueForReview(q);
+            var reviewTimeDesc = getReviewTimeDesc(q);
             
             var html = '<div class="wrong-card ' + typeClass + '" onclick="toggleWrongDetail(this)">';
             html += '<div class="wrong-card-header">';
             html += '<span class="wrong-type-tag ' + typeClass + '">' + (q.type || '词汇') + '</span>';
-            if (isReviewed) {
+            if (isOverdue) {
+                html += '<span class="wrong-overdue-badge"><span class="wrong-overdue-dot"></span>待复习</span>';
+            } else if (isReviewed) {
                 html += '<span class="wrong-reviewed-badge">已复习</span>';
             }
             html += '<span class="wrong-date">' + dateStr + '</span>';
@@ -1154,7 +1367,12 @@ function initApp() {
             return html;
         }
         
-        function toggleWrongDetail(card) {
+        // 跳转到错题本
+function navigateToWrongBook() {
+    showWrongBook();
+}
+
+function toggleWrongDetail(card) {
             var detail = card.querySelector('.wrong-detail');
             if (detail) {
                 if (detail.style.display === 'none' || detail.style.display === '') {
@@ -3133,13 +3351,26 @@ function initApp() {
         // 辅助函数：获取待完成任务
         function getPendingTask() {
             var userData = state.userData || {};
-            if (!userData.plan_data) return '';
-            var dayIdx = getPlanDayIndex();
-            var todayKey = 'day' + dayIdx;
-            if (userData.plan_data[todayKey] && !userData.plan_data[todayKey + '_done']) {
-                return 'daily|' + userData.plan_data[todayKey] + '|1|0';
+            var parts = [];
+            
+            // 待复习错题提醒
+            if (typeof getOverdueReviewCount === 'function') {
+                var overdueCount = getOverdueReviewCount();
+                if (overdueCount > 0) {
+                    parts.push('有' + overdueCount + '道错题到了复习时间，建议复习后再开始新练习');
+                }
             }
-            return '';
+            
+            // 今日计划提醒
+            if (userData.plan_data) {
+                var dayIdx = getPlanDayIndex();
+                var todayKey = 'day' + dayIdx;
+                if (userData.plan_data[todayKey] && !userData.plan_data[todayKey + '_done']) {
+                    parts.push('今日计划: ' + userData.plan_data[todayKey]);
+                }
+            }
+            
+            return parts.length > 0 ? parts.join('；') : '';
         }
 
         async function sendMessage() {
@@ -5765,6 +5996,11 @@ function showDiagnosisReport(text) {
         reportData.percentile = getPercentile(Math.round(avgScore / scoreCount));
     }
     
+    // 获取对比信息（用于进步提示）
+    reportData.previousDiagnosis = getPreviousDiagnosis();
+    reportData.compareSummary = generateCompareSummary(reportData, reportData.previousDiagnosis);
+    reportData.progressHint = getProgressHint(reportData.compareSummary);
+    
     // 提取写作/翻译反馈（如果有）
     if (diagState.writingScore) {
         reportData.writingFeedback = extractWritingFeedback();
@@ -7422,15 +7658,28 @@ function renderReportPage() {
     var riskLabels = { high: '高危风险', mid: '中危风险', low: '低危风险' };
     var riskIcons = { high: '⚠️', mid: '📊', low: '✅' };
     
-    // 生成五维卡片HTML
+    // 生成五维卡片HTML（带对比信息）
     var dimCardsHtml = '';
     Object.keys(DIM_CONFIGS).forEach(function(dim) {
         var score = d.dims[dim] || 0;
         var config = DIM_CONFIGS[dim];
         var color = score >= 70 ? '#00B894' : score >= 40 ? '#FDCB6E' : '#E17055';
+        
+        // 添加对比箭头
+        var compareHtml = '';
+        if (d.compareSummary) {
+            var diff = calculateScoreDiff(d, d.previousDiagnosis, dim);
+            if (diff.diff !== 0) {
+                var arrow = diff.improved ? '↑' : '↓';
+                var arrowColor = diff.improved ? '#00B894' : '#E17055';
+                var arrowClass = diff.improved ? 'improved' : 'declined';
+                compareHtml = '<span class="dim-compare ' + arrowClass + '">' + arrow + Math.abs(diff.diff) + '</span>';
+            }
+        }
+        
         dimCardsHtml += 
             '<div class="report-dim-card">' +
-                '<div class="report-dim-name">' + config.icon + ' ' + dim + '</div>' +
+                '<div class="report-dim-name">' + config.icon + ' ' + dim + compareHtml + '</div>' +
                 '<div class="report-dim-score" style="color:' + color + '">' + score + '</div>' +
                 '<div class="report-dim-bar">' +
                     '<div class="report-dim-fill" style="width:' + score + '%;background:' + color + '"></div>' +
@@ -7487,6 +7736,9 @@ function renderReportPage() {
             '<div class="report-score-num">' + d.totalScore + '<span class="report-score-denom">/100</span></div>' +
             '<div class="report-score-label">综合能力评分' + (d.personality ? ' · ' + d.personality : '') + '</div>' +
         '</div>' +
+        
+        // 进步提示
+        (d.progressHint ? '<div class="report-progress-hint">' + d.progressHint + '</div>' : '') +
         
         '<div class="report-radar-section">' +
             '<div class="report-radar-title">📊 五维能力雷达图</div>' +

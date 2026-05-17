@@ -2058,6 +2058,7 @@ function buildRagContext(userMessage, personality, weakDims, dimScores, wrongSum
     if (wrongSummary) {
         context += '\n- 近期错题: ' + wrongSummary + ' → 多出这些类型的题';
     }
+    // 注意：前端会通过 pending_task 字段传递待复习错题信息
     if (studyDays > 0) {
         context += '\n- 已学习: ' + studyDays + '天';
     }
