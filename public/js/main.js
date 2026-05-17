@@ -4011,7 +4011,7 @@ function initPlanScrollSync() {
     });
 }
 
-function showStudyHistory() { switchTab('dashboard'); }
+function showStudyHistory() { switchTab('progress'); }
 
 function closeModal(id) { 
     var modal = document.getElementById(id);
