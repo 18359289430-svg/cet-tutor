@@ -394,6 +394,8 @@
         }
         
         function getRiskLabel(level) {
+            var labels = { high: '高危风险', mid: '中危风险', low: '低危风险' };
+            return labels[level] || '中危风险';
         }
 
         function toggleDiagRecordDetail(card) {
