@@ -218,28 +218,22 @@
 
             var html = '';
 
-            // Hero区域 - 简洁克制
+            // Hero区域 - 和数据页一致
             html += '<div class="diag-hero">';
             html += '<div class="diag-hero-title">诊断记录</div>';
             html += '<div class="diag-hero-sub">追踪学习进度，见证每一次进步</div>';
             html += '<div class="diag-hero-divider"></div>';
             html += '</div>';
 
-            // 统计卡片 - 深色+浅色对比
+            // 统计卡片 - 渐变大卡片
             html += '<div class="diag-stats-grid">';
-            // 深色卡片
             html += '<div class="diag-stat-card dark">';
-            html += '<div class="diag-stat-icon">';
-            html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h6"/></svg>';
-            html += '</div>';
+            html += '<div class="diag-stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h6"/></svg></div>';
             html += '<div class="diag-stat-number">' + stats.total + '</div>';
             html += '<div class="diag-stat-label">诊断次数</div>';
             html += '</div>';
-            // 浅色卡片
             html += '<div class="diag-stat-card light">';
-            html += '<div class="diag-stat-icon">';
-            html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>';
-            html += '</div>';
+            html += '<div class="diag-stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg></div>';
             html += '<div class="diag-stat-number">' + (stats.lastDate ? formatDateTime(stats.lastDate).split(' ')[0] : '--') + '</div>';
             html += '<div class="diag-stat-label">最近诊断</div>';
             html += '</div>';
@@ -255,9 +249,10 @@
                 });
                 var personalities = Object.keys(personalityCount);
                 if (personalities.length > 0) {
+                    html += '<div class="diag-section">';
                     html += '<div class="diag-personalities-section">';
                     html += '<div class="diag-section-header">';
-                    html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>';
+                    html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>';
                     html += '<div class="diag-section-title">人格类型分布</div>';
                     html += '</div>';
                     html += '<div class="diag-personality-tags">';
@@ -266,26 +261,28 @@
                     });
                     html += '</div>';
                     html += '</div>';
+                    html += '</div>';
                 }
             }
 
-            // 空状态 - 大气简约
+            // 空状态
             if (history.length === 0) {
                 html += '<div class="diag-empty-state">';
                 html += '<div class="diag-empty-icon">';
-                html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h6"/></svg>';
+                html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h6"/></svg>';
                 html += '</div>';
                 html += '<div class="diag-empty-title">还没有诊断记录</div>';
                 html += '<div class="diag-empty-desc">完成AI诊断后可查看诊断历史<br>了解你的五维能力和薄弱项</div>';
                 html += '<button class="diag-empty-btn" onclick="closeDiagHistory(); switchTab(\'diagnosis\'); setTimeout(startNewDiagnosis, 300)">';
-                html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>';
+                html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>';
                 html += '去诊断</button>';
                 html += '</div>';
             } else {
                 // 记录列表标题
-                html += '<div class="diag-history-header-section">';
-                html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg>';
-                html += '<div class="diag-history-title-text">诊断历史</div>';
+                html += '<div class="diag-section">';
+                html += '<div class="diag-section-header">';
+                html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg>';
+                html += '<div class="diag-section-title">诊断历史</div>';
                 html += '</div>';
 
                 // 记录列表
@@ -294,7 +291,7 @@
                 history.forEach(function(record, index) {
                     html += '<div class="diag-record-card" onclick="toggleDiagRecordDetail(this)">';
 
-                    // 卡片顶部：标签+日期
+                    // 卡片顶部
                     html += '<div class="diag-card-top">';
                     html += '<div class="diag-card-badges">';
                     if (record.personality) {
@@ -316,7 +313,7 @@
                         html += '</div>';
                     });
                     if (dims.length > 3) {
-                        html += '<span class="diag-more-hint">+' + (dims.length - 3) + '项 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span>';
+                        html += '<span class="diag-more-hint">+' + (dims.length - 3) + '项 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span>';
                     }
                     html += '</div>';
 
@@ -326,7 +323,7 @@
                     // 完整五维分析
                     html += '<div class="diag-detail-section">';
                     html += '<div class="diag-detail-title">';
-                    html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12,2 22,8.5 22,15.5 12,22 2,15.5 2,8.5"/></svg>';
+                    html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12,2 22,8.5 22,15.5 12,22 2,15.5 2,8.5"/></svg>';
                     html += '完整五维分析';
                     html += '</div>';
                     html += '<div class="diag-radar-wrap">';
@@ -334,7 +331,7 @@
                     html += '</div>';
                     html += '<div class="diag-scores-list">';
                     dims.forEach(function(dim) {
-                        var config = DIM_CONFIGS[dim] || { color: '#6C5CE7', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/></svg>' };
+                        var config = DIM_CONFIGS[dim] || { color: '#6C5CE7', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/></svg>' };
                         var isWeak = record.weakDims && record.weakDims.some(function(w) { return w.name === dim; });
                         html += '<div class="diag-score-row' + (isWeak ? ' weak' : '') + '">';
                         html += '<div class="diag-score-row-icon">' + config.icon + '</div>';
@@ -347,16 +344,16 @@
                     html += '</div>';
                     html += '</div>';
 
-                    // 弱项分析 - 温和风格
+                    // 弱项分析
                     if (record.weakDims && record.weakDims.length > 0) {
                         html += '<div class="diag-detail-section">';
                         html += '<div class="diag-detail-title">';
-                        html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
+                        html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
                         html += '弱项分析';
                         html += '</div>';
                         html += '<div class="diag-weak-list">';
                         record.weakDims.forEach(function(weak) {
-                            var config = DIM_CONFIGS[weak.name] || { icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/></svg>', desc: '' };
+                            var config = DIM_CONFIGS[weak.name] || { icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/></svg>', desc: '' };
                             html += '<div class="diag-weak-card">';
                             html += '<div class="diag-weak-header">';
                             html += '<div class="diag-weak-icon">' + config.icon + '</div>';
@@ -384,7 +381,11 @@
                 });
 
                 html += '</div>'; // end diag-list
+                html += '</div>'; // end diag-section
             }
+
+            // 底部间距
+            html += '<div class="diag-bottom-spacer"></div>';
 
             container.innerHTML = html;
 
@@ -398,6 +399,7 @@
                 });
             }, 100);
         }
+        
         function getRiskLabel(level) {
         }
 
@@ -1011,7 +1013,14 @@ function initApp() {
             
             var html = '';
             
-            // 统计区 - 深色卡片
+            // Hero区域 - 和数据页一致
+            html += '<div class="wrongbook-hero">';
+            html += '<h2>错题本</h2>';
+            html += '<div class="wrongbook-hero-sub">记录每一次失误，让进步更有方向</div>';
+            html += '<div class="wrongbook-hero-divider"></div>';
+            html += '</div>';
+            
+            // 统计区 - 渐变大卡片
             html += '<div class="wrongbook-stats">';
             html += '<div class="wrongbook-stat-item total">';
             html += '<div class="stat-number">' + stats.total + '</div>';
@@ -1023,15 +1032,19 @@ function initApp() {
             html += '</div>';
             html += '</div>';
             
-            // 分布统计 - 2x2网格
+            // 分类分布 - 横向pill
+            html += '<div class="wrongbook-section">';
+            html += '<div class="wrongbook-section-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>错题分布</div>';
             html += '<div class="wrongbook-distribution">';
-            html += '<div class="dist-item vocab" onclick="filterWrongbook(\'词汇\')"><span class="dist-label">词汇</span><span class="dist-count">' + stats.vocabulary + '</span></div>';
-            html += '<div class="dist-item grammar" onclick="filterWrongbook(\'语法\')"><span class="dist-label">语法</span><span class="dist-count">' + stats.grammar + '</span></div>';
-            html += '<div class="dist-item reading" onclick="filterWrongbook(\'阅读\')"><span class="dist-label">阅读</span><span class="dist-count">' + stats.reading + '</span></div>';
-            html += '<div class="dist-item listening" onclick="filterWrongbook(\'听力\')"><span class="dist-label">听力</span><span class="dist-count">' + stats.listening + '</span></div>';
+            html += '<div class="dist-item vocab" onclick="filterWrongbook(\'词汇\')"><span class="dist-count">' + stats.vocabulary + '</span><span class="dist-label">词汇</span></div>';
+            html += '<div class="dist-item grammar" onclick="filterWrongbook(\'语法\')"><span class="dist-count">' + stats.grammar + '</span><span class="dist-label">语法</span></div>';
+            html += '<div class="dist-item reading" onclick="filterWrongbook(\'阅读\')"><span class="dist-count">' + stats.reading + '</span><span class="dist-label">阅读</span></div>';
+            html += '<div class="dist-item listening" onclick="filterWrongbook(\'听力\')"><span class="dist-count">' + stats.listening + '</span><span class="dist-label">听力</span></div>';
+            html += '</div>';
             html += '</div>';
             
             // 筛选标签
+            html += '<div class="wrongbook-section">';
             html += '<div class="wrongbook-filter-bar">';
             var filterTypes = ['全部', '词汇', '语法', '阅读', '听力'];
             filterTypes.forEach(function(type) {
@@ -1039,29 +1052,34 @@ function initApp() {
                 html += '<div class="filter-tag ' + active + '" onclick="filterWrongbook(\'' + type + '\')">' + type + '</div>';
             });
             html += '</div>';
+            html += '</div>';
             
             // 错题列表
             if (questions.length === 0) {
+                html += '<div class="wrongbook-section">';
                 html += '<div class="wrongbook-empty">';
-                html += '<div class="empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg></div>';
+                html += '<div class="empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg></div>';
                 html += '<div class="empty-title">还没有错题</div>';
                 html += '<div class="empty-desc">继续保持，做题全对的感觉太棒了！</div>';
-                html += '<button class="empty-btn" onclick="switchTab(\'diagnosis\'); setTimeout(openQuiz, 300)">去练题</button>';
+                html += '<button class="empty-btn" onclick="switchTab(\'diagnosis\'); setTimeout(openQuiz, 300)">';
+                html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 114 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>';
+                html += '去练题</button>';
+                html += '</div>';
                 html += '</div>';
             } else {
+                html += '<div class="wrongbook-section">';
                 html += '<div class="wrongbook-list">';
                 questions.forEach(function(q, index) {
                     html += renderWrongQuestionCard(q, index);
                 });
                 html += '</div>';
+                html += '</div>';
             }
             
+            // 底部间距
+            html += '<div class="wrongbook-bottom-spacer"></div>';
+            
             container.innerHTML = html;
-        }
-        
-        function filterWrongbook(type) {
-            wrongbookFilterType = type;
-            renderWrongBook();
         }
         
         function renderWrongQuestionCard(q, index) {

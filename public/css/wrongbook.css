@@ -1,7 +1,7 @@
-/* ===== 错题本样式 - 高级克制版 ===== */
+/* ===== 错题本样式 - 对齐数据页风格 ===== */
 #tab-wrongbook {
     background: #F8FAFC;
-    padding: 20px 16px 100px;
+    padding: 0 0 100px;
     min-height: 100vh;
 }
 
@@ -9,106 +9,148 @@
     display: block;
 }
 
-/* 页面标题 */
-.wrongbook-header {
-    margin-bottom: 28px;
+/* ===== Hero区域 - 和数据页一致 ===== */
+.wrongbook-hero {
+    padding: 24px 20px 20px;
 }
 
-.wrongbook-header h2 {
-    font-size: 24px;
+.wrongbook-hero h2 {
+    font-size: 26px;
     font-weight: 700;
     color: #1E293B;
-    margin: 0;
     letter-spacing: -0.5px;
+    margin: 0 0 6px;
 }
 
-/* ===== 统计区 - 深色大卡片 ===== */
+.wrongbook-hero-sub {
+    font-size: 14px;
+    color: #94A3B8;
+    margin-bottom: 16px;
+}
+
+.wrongbook-hero-divider {
+    width: 36px;
+    height: 3px;
+    background: linear-gradient(90deg, #6C5CE7, #A29BFE);
+    border-radius: 2px;
+}
+
+/* ===== 统计区 - 渐变大卡片 ===== */
 .wrongbook-stats {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: 12px;
-    margin-bottom: 24px;
+    padding: 0 16px;
+    margin-bottom: 0;
 }
 
 .wrongbook-stat-item {
-    flex: 1;
     border-radius: 16px;
-    padding: 24px 16px;
-    text-align: center;
+    padding: 22px 18px;
+    position: relative;
+    overflow: hidden;
 }
 
 .wrongbook-stat-item.total {
-    background: #1E1B3A;
+    background: linear-gradient(135deg, #6C5CE7 0%, #A29BFE 100%);
     color: white;
+    box-shadow: 0 4px 20px rgba(108, 92, 231, 0.25);
 }
 
 .wrongbook-stat-item.today {
-    background: #1E1B3A;
+    background: linear-gradient(135deg, #FF6B35 0%, #FF9F43 100%);
     color: white;
+    box-shadow: 0 4px 20px rgba(255, 107, 53, 0.25);
 }
 
 .wrongbook-stat-item .stat-number {
-    font-size: 36px;
+    font-size: 38px;
     font-weight: 700;
     line-height: 1;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
     letter-spacing: -1px;
 }
 
 .wrongbook-stat-item .stat-label {
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.6);
-    letter-spacing: 0.5px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.85);
 }
 
-/* ===== 分布统计 - 2x2大方块网格 ===== */
+/* ===== 分布统计 - 横向滚动pill ===== */
+.wrongbook-section {
+    margin: 20px 16px 0;
+}
+
+.wrongbook-section-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1E293B;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.wrongbook-section-title svg {
+    width: 18px;
+    height: 18px;
+    stroke: #6C5CE7;
+    stroke-width: 2;
+}
+
 .wrongbook-distribution {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    margin-bottom: 24px;
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+}
+
+.wrongbook-distribution::-webkit-scrollbar {
+    display: none;
 }
 
 .dist-item {
+    flex-shrink: 0;
     background: white;
-    border-radius: 12px;
-    padding: 16px;
+    border-radius: 14px;
+    padding: 14px 20px;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 12px;
-    position: relative;
-    overflow: hidden;
+    gap: 6px;
+    min-width: 80px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
-.dist-item:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+.dist-item:active {
+    transform: scale(0.97);
 }
 
-.dist-item.vocab { border-left: 3px solid #6C5CE7; }
-.dist-item.grammar { border-left: 3px solid #F39C12; }
-.dist-item.reading { border-left: 3px solid #10B981; }
-.dist-item.listening { border-left: 3px solid #8B5CF6; }
-
-.dist-label {
-    font-size: 13px;
-    font-weight: 500;
-    color: #64748B;
-}
+.dist-item.vocab { border-top: 3px solid #6C5CE7; }
+.dist-item.grammar { border-top: 3px solid #F39C12; }
+.dist-item.reading { border-top: 3px solid #10B981; }
+.dist-item.listening { border-top: 3px solid #8B5CF6; }
 
 .dist-count {
     font-size: 22px;
     font-weight: 700;
     color: #1E293B;
-    margin-left: auto;
+    line-height: 1;
 }
 
-/* ===== 筛选栏 - 简洁pill ===== */
+.dist-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: #94A3B8;
+}
+
+/* ===== 筛选栏 ===== */
 .wrongbook-filter-bar {
     display: flex;
     gap: 8px;
-    margin-bottom: 24px;
     overflow-x: auto;
     padding-bottom: 4px;
     -webkit-overflow-scrolling: touch;
@@ -120,9 +162,9 @@
 
 .filter-tag {
     flex-shrink: 0;
-    padding: 10px 18px;
+    padding: 8px 16px;
     background: white;
-    border-radius: 24px;
+    border-radius: 20px;
     font-size: 13px;
     font-weight: 500;
     color: #64748B;
@@ -135,34 +177,33 @@
     background: #6C5CE7;
     color: white;
     border-color: #6C5CE7;
+    box-shadow: 0 2px 8px rgba(108, 92, 231, 0.25);
 }
 
-.filter-tag:hover:not(.active) {
-    border-color: #6C5CE7;
-    color: #6C5CE7;
+.filter-tag:active {
+    transform: scale(0.96);
 }
 
-/* ===== 空状态 - 大圆角图标框 ===== */
+/* ===== 空状态 ===== */
 .wrongbook-empty {
     text-align: center;
-    padding: 60px 20px;
+    padding: 60px 24px 40px;
 }
 
 .wrongbook-empty .empty-icon {
-    width: 100px;
-    height: 100px;
-    background: #F3F0FF;
+    width: 88px;
+    height: 88px;
+    background: linear-gradient(135deg, rgba(108,92,231,0.1) 0%, rgba(162,155,254,0.08) 100%);
     border-radius: 24px;
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 0 auto 24px;
-    font-size: 0;
 }
 
 .wrongbook-empty .empty-icon svg {
-    width: 48px;
-    height: 48px;
+    width: 40px;
+    height: 40px;
     color: #6C5CE7;
 }
 
@@ -175,57 +216,59 @@
 
 .wrongbook-empty .empty-desc {
     font-size: 14px;
-    color: #64748B;
+    color: #94A3B8;
     margin-bottom: 32px;
     line-height: 1.5;
 }
 
 .wrongbook-empty .empty-btn {
-    padding: 14px 36px;
-    background: #6C5CE7;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 32px;
+    background: linear-gradient(135deg, #6C5CE7 0%, #8B7CF7 100%);
     color: white;
     border: none;
     border-radius: 24px;
     font-size: 15px;
     font-weight: 600;
     cursor: pointer;
+    box-shadow: 0 4px 16px rgba(108, 92, 231, 0.3);
     transition: all 0.2s ease;
 }
 
-.wrongbook-empty .empty-btn:hover {
-    background: #5B4BD5;
-    transform: translateY(-1px);
+.wrongbook-empty .empty-btn:active {
+    transform: scale(0.97);
 }
 
 /* ===== 错题列表 ===== */
 .wrongbook-list {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 14px;
 }
 
-/* ===== 错题卡片 - 白底+左侧细线 ===== */
+/* ===== 错题卡片 ===== */
 .wrong-card {
-    background: white;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     border-radius: 16px;
-    padding: 16px 16px 16px 18px;
+    padding: 18px;
     cursor: pointer;
     transition: all 0.2s ease;
     position: relative;
-    border-left: 2px solid #E2E8F0;
+    border: 1px solid rgba(255,255,255,0.6);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
 
-.wrong-card.vocab { border-left-color: #6C5CE7; }
-.wrong-card.grammar { border-left-color: #F39C12; }
-.wrong-card.reading { border-left-color: #10B981; }
-.wrong-card.listening { border-left-color: #8B5CF6; }
-
-.wrong-card:hover {
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
-}
+.wrong-card.vocab { border-left: 3px solid #6C5CE7; }
+.wrong-card.grammar { border-left: 3px solid #F39C12; }
+.wrong-card.reading { border-left: 3px solid #10B981; }
+.wrong-card.listening { border-left: 3px solid #8B5CF6; }
 
 .wrong-card:active {
-    transform: scale(0.995);
+    transform: scale(0.99);
 }
 
 .wrong-card-header {
@@ -237,7 +280,7 @@
 
 .wrong-type-tag {
     padding: 4px 10px;
-    border-radius: 6px;
+    border-radius: 8px;
     font-size: 11px;
     font-weight: 600;
     color: white;
@@ -248,14 +291,13 @@
 .wrong-type-tag.reading { background: #10B981; }
 .wrong-type-tag.listening { background: #8B5CF6; }
 
-/* 默认：按typeColors行内style */
 .wrong-reviewed-badge {
     padding: 4px 10px;
-    border-radius: 6px;
+    border-radius: 8px;
     font-size: 11px;
     font-weight: 500;
-    background: #E0F2FE;
-    color: #0284C7;
+    background: #D1FAE5;
+    color: #059669;
 }
 
 .wrong-date {
@@ -281,7 +323,7 @@
     font-size: 12px;
     padding: 10px 12px;
     background: #F8FAFC;
-    border-radius: 8px;
+    border-radius: 10px;
 }
 
 .your-answer.wrong { color: #EF4444; }
@@ -363,7 +405,7 @@
     justify-content: center;
     gap: 8px;
     padding: 12px 16px;
-    border-radius: 10px;
+    border-radius: 12px;
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
@@ -378,12 +420,13 @@
 }
 
 .action-btn.ai-btn {
-    background: #6C5CE7;
+    background: linear-gradient(135deg, #6C5CE7 0%, #8B7CF7 100%);
     color: white;
+    box-shadow: 0 2px 10px rgba(108, 92, 231, 0.25);
 }
 
-.action-btn.ai-btn:hover {
-    background: #5B4BD5;
+.action-btn.ai-btn:active {
+    transform: scale(0.97);
 }
 
 .action-btn.master-btn {
@@ -391,7 +434,8 @@
     color: white;
 }
 
-.action-btn.master-btn:hover {
+.action-btn.master-btn:active {
+    transform: scale(0.97);
     background: #059669;
 }
 
@@ -413,26 +457,29 @@
 
 /* ===== 变式训练入口 ===== */
 .variant-entrance-card {
-    margin-bottom: 24px;
-    background: white;
+    margin-top: 20px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     border-radius: 16px;
-    padding: 20px;
+    padding: 18px;
     display: flex;
     align-items: center;
     gap: 14px;
     cursor: pointer;
     transition: all 0.2s ease;
-    border: 1px solid #E2E8F0;
+    border: 1px solid rgba(255,255,255,0.6);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
 
-.variant-entrance-card:hover {
-    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+.variant-entrance-card:active {
+    transform: scale(0.99);
 }
 
 .variant-entrance-icon {
     width: 44px;
     height: 44px;
-    background: #F3F0FF;
+    background: linear-gradient(135deg, rgba(108,92,231,0.1) 0%, rgba(162,155,254,0.08) 100%);
     border-radius: 12px;
     display: flex;
     align-items: center;
@@ -460,7 +507,7 @@
 
 .variant-entrance-desc {
     font-size: 12px;
-    color: #64748B;
+    color: #94A3B8;
 }
 
 .variant-entrance-count {
@@ -472,6 +519,11 @@
     border-radius: 12px;
     font-size: 11px;
     font-weight: 600;
-    background: #F3F0FF;
+    background: linear-gradient(135deg, rgba(108,92,231,0.1) 0%, rgba(162,155,254,0.08) 100%);
     color: #6C5CE7;
+}
+
+/* ===== 底部间距 ===== */
+.wrongbook-bottom-spacer {
+    height: 24px;
 }
