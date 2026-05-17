@@ -1726,3 +1726,22 @@
     line-height: 1.8;
     color: #475569;
 }
+
+/* 诊断报告加载步骤 */
+.diag-loading-steps {
+    margin-top: 16px;
+    text-align: center;
+}
+.diag-loading-step {
+    font-size: 13px;
+    color: #94a3b8;
+    padding: 4px 0;
+    transition: all 0.3s;
+}
+.diag-loading-step.active {
+    color: #6C5CE7;
+    font-weight: 500;
+}
+.diag-loading-step.done {
+    color: #00B894;
+}

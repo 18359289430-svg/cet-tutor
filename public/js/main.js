@@ -6781,9 +6781,32 @@ async function generateDiagReport() {
         '<div class="diag-loading">' +
             '<div class="diag-spinner"></div>' +
             '<div class="diag-loading-text">AI正在分析你的答题情况...</div>' +
+            '<div class="diag-loading-steps">' +
+                '<div class="diag-loading-step" id="diag-step-1">📊 汇总答题数据...</div>' +
+                '<div class="diag-loading-step" id="diag-step-2">🔍 分析薄弱维度...</div>' +
+                '<div class="diag-loading-step" id="diag-step-3">🧠 生成个性化报告...</div>' +
+            '</div>' +
         '</div>';
     
     try {
+        // 加载步骤动画
+        setTimeout(function() {
+            var s1 = document.getElementById('diag-step-1');
+            if (s1) { s1.classList.add('active'); }
+        }, 500);
+        setTimeout(function() {
+            var s1 = document.getElementById('diag-step-1');
+            var s2 = document.getElementById('diag-step-2');
+            if (s1) { s1.classList.remove('active'); s1.classList.add('done'); }
+            if (s2) { s2.classList.add('active'); }
+        }, 3000);
+        setTimeout(function() {
+            var s2 = document.getElementById('diag-step-2');
+            var s3 = document.getElementById('diag-step-3');
+            if (s2) { s2.classList.remove('active'); s2.classList.add('done'); }
+            if (s3) { s3.classList.add('active'); }
+        }, 6000);
+
         // 构建自评数据
         var selfAssessment = {
             listening: '中等',
