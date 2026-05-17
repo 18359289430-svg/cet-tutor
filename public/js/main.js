@@ -3315,7 +3315,7 @@ function toggleWrongDetail(card) {
             selectedPlan = selectedPlan || 'free';
             var benefits = [
                 { name: 'AI诊断+人格卡', free: true, sprint: true, flagship: true },
-                { name: 'AI对话答疑', free: '25轮/天', sprint: '45天无限', flagship: '45天无限' },
+                { name: 'AI对话答疑', free: '20轮/天', sprint: '45天无限', flagship: '45天无限' },
                 { name: '作文批改', free: '评分+问题标注', sprint: '逐句改写', flagship: '改写+精讲' },
                 { name: '翻译批改', free: '评分+踩分点', sprint: '参考译文', flagship: '译文+思路精讲' },
                 { name: '每日一练', free: '通用轮换', sprint: '短板定制', flagship: '短板定制' },
@@ -4313,6 +4313,8 @@ function handleHomeCta() {
     startNewDiagnosis();
 }
 
+var currentSelectedPlan = 'sprint';  // 当前弹窗选中的套餐
+
 function selectPlan(plan) {
     // 支持新旧两种卡片选择
     var cards = document.querySelectorAll('.coze-card, .coze-plan-card');
@@ -4321,7 +4323,7 @@ function selectPlan(plan) {
     if (target) target.classList.add('selected');
     var ctaBtn = document.getElementById('plan-cta-btn');
     if (ctaBtn) {
-        var prices = { free: '当前方案', sprint: '¥44.5 开始冲刺', flagship: '¥149.5 全程陪伴' };
+        var prices = { free: '当前方案', sprint: '¥38 开始冲刺', flagship: '¥88 全程陪伴' };
         ctaBtn.textContent = prices[plan] || '选择方案';
     }
 }
@@ -4493,7 +4495,7 @@ function activateWithOrderIdFromModal() {
     fetch('/api/activate-with-mbd-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ order_id: input.value.trim(), plan: 'sprint' })
+        body: JSON.stringify({ order_id: input.value.trim(), plan: currentSelectedPlan })
     }).then(function(r) { return r.json(); }).then(function(resp) {
         btn.disabled = false;
         btn.textContent = '激活';
@@ -5494,7 +5496,7 @@ function showUpgradeCard() {
                 '<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>' +
             '</div>' +
             '<div class="upgrade-title">今日免费额度已用完</div>' +
-            '<div class="upgrade-subtitle">明天恢复25轮免费对话<br>或升级冲刺营无限对话</div>' +
+            '<div class="upgrade-subtitle">明天恢复20轮免费对话<br>或升级冲刺营无限对话</div>' +
             '<a class="upgrade-btn" href="#" onclick="event.preventDefault();closeUpgradeCard();openPayment(\'sprint\')">了解冲刺营</a>' +
         '</div>';
         document.body.appendChild(div);
@@ -5521,7 +5523,7 @@ function checkChatLimit() {
     if (_cachedLimitInfo) {
         var remaining = _cachedLimitInfo.remaining;
         if (remaining <= 0) {
-            return { limited: true, message: '今日免费陪练额度已用完（25轮/天），明天恢复。升级冲刺营即可无限对话+逐句批改～' };
+            return { limited: true, message: '今日免费陪练额度已用完（20轮/天），明天恢复。升级冲刺营即可无限对话+逐句批改～' };
         }
         return { limited: false, remaining: remaining };
     }
@@ -5530,7 +5532,7 @@ function checkChatLimit() {
     var usage = getChatUsage();
     var limit = 25;
     if (usage.count >= limit) {
-        return { limited: true, message: '今日免费陪练额度已用完（25轮/天），明天恢复。升级冲刺营即可无限对话+逐句批改～' };
+        return { limited: true, message: '今日免费陪练额度已用完（20轮/天），明天恢复。升级冲刺营即可无限对话+逐句批改～' };
     }
     return { limited: false, remaining: limit - usage.count };
 }
