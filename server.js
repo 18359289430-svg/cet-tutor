@@ -896,10 +896,225 @@ async function handleApi(req, res, pathname) {
             return sendJson(res, 404, { error: '诊断题库未找到' });
         }
 
+        // POST /api/diagnosis/writing-grade - 写作AI评分
+        if (pathname === '/api/diagnosis/writing-grade' && req.method === 'POST') {
+            const body = await parseBody(req);
+            const { title, description, user_input } = body;
+
+            if (!user_input || user_input.length < 10) {
+                return sendJson(res, 400, { error: '作文内容过短' });
+            }
+
+            const dsApiKey = DEEPSEEK_API_KEY || process.env.DEEPSEEK_API_KEY;
+            if (!dsApiKey) {
+                return sendJson(res, 500, { error: 'DeepSeek API未配置' });
+            }
+
+            try {
+                // 构建评分prompt
+                const prompt = `你是一位四级考试写作评分专家。请对以下作文进行评分。
+题目：${title || 'CET-4写作'}
+要求：${description || '请根据题目要求完成一篇120-180词的作文'}
+学生作文：
+${user_input}
+
+请按以下格式返回JSON（不要加markdown代码块，不要有其他内容）：
+{
+  "vocabulary": 0-25之间的整数,
+  "grammar": 0-25之间的整数,
+  "logic": 0-25之间的整数,
+  "coherence": 0-25之间的整数,
+  "total": 0-100之间的整数,
+  "comment": "1-2句简短评语（中文）"
+}`;
+
+                const dsPayload = {
+                    model: 'deepseek-chat',
+                    messages: [
+                        { role: 'system', content: '你是一位专业、严谨的四级写作评分专家。你必须严格按照格式返回JSON结果，不要包含任何markdown代码块标记。' },
+                        { role: 'user', content: prompt }
+                    ],
+                    temperature: 0.3,
+                    max_tokens: 500
+                };
+
+                const dsResp = await fetch(DEEPSEEK_API_BASE + '/chat/completions', {
+                    method: 'POST',
+                    headers: { 'Authorization': 'Bearer ' + dsApiKey, 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dsPayload)
+                });
+
+                if (!dsResp.ok) {
+                    const errText = await dsResp.text();
+                    console.error('[DeepSeek写作评分API错误]', dsResp.status, errText);
+                    return sendJson(res, 500, { error: 'AI评分服务暂时不可用' });
+                }
+
+                const dsData = await dsResp.json();
+                let responseText = dsData.choices && dsData.choices[0] && dsData.choices[0].message ? dsData.choices[0].message.content : '';
+
+                // 清理可能的markdown代码块
+                responseText = responseText.replace(/^```json\s*/i, '').replace(/```\s*$/i, '').trim();
+
+                // 尝试解析JSON
+                let scoreData;
+                try {
+                    scoreData = JSON.parse(responseText);
+                } catch(e) {
+                    // 尝试提取JSON
+                    const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+                    if (jsonMatch) {
+                        try {
+                            scoreData = JSON.parse(jsonMatch[0]);
+                        } catch(e2) {
+                            // 返回默认分数
+                            scoreData = {
+                                vocabulary: 15,
+                                grammar: 15,
+                                logic: 15,
+                                coherence: 15,
+                                total: 60,
+                                comment: '评分服务解析失败，使用默认评分'
+                            };
+                        }
+                    } else {
+                        scoreData = {
+                            vocabulary: 15,
+                            grammar: 15,
+                            logic: 15,
+                            coherence: 15,
+                            total: 60,
+                            comment: '评分服务解析失败，使用默认评分'
+                        };
+                    }
+                }
+
+                // 确保数值在有效范围内
+                scoreData.vocabulary = Math.min(25, Math.max(0, parseInt(scoreData.vocabulary) || 15));
+                scoreData.grammar = Math.min(25, Math.max(0, parseInt(scoreData.grammar) || 15));
+                scoreData.logic = Math.min(25, Math.max(0, parseInt(scoreData.logic) || 15));
+                scoreData.coherence = Math.min(25, Math.max(0, parseInt(scoreData.coherence) || 15));
+                scoreData.total = Math.min(100, Math.max(0, parseInt(scoreData.total) || (scoreData.vocabulary + scoreData.grammar + scoreData.logic + scoreData.coherence)));
+                scoreData.comment = scoreData.comment || '继续保持！';
+
+                return sendJson(res, 200, { code: 0, data: scoreData });
+
+            } catch(e) {
+                console.error('[写作评分失败]', e);
+                return sendJson(res, 500, { error: '写作评分失败: ' + e.message });
+            }
+        }
+
+        // POST /api/diagnosis/translation-grade - 翻译AI评分
+        if (pathname === '/api/diagnosis/translation-grade' && req.method === 'POST') {
+            const body = await parseBody(req);
+            const { chinese, reference, user_input } = body;
+
+            if (!user_input || user_input.length < 5) {
+                return sendJson(res, 400, { error: '翻译内容过短' });
+            }
+
+            const dsApiKey = DEEPSEEK_API_KEY || process.env.DEEPSEEK_API_KEY;
+            if (!dsApiKey) {
+                return sendJson(res, 500, { error: 'DeepSeek API未配置' });
+            }
+
+            try {
+                // 构建评分prompt
+                const prompt = `你是一位四级考试翻译评分专家。请对以下翻译进行评分。
+中文原文：
+${chinese || ''}
+${reference ? '参考译文：\n' + reference : ''}
+学生翻译：
+${user_input}
+
+请按以下格式返回JSON（不要加markdown代码块，不要有其他内容）：
+{
+  "keywords": 0-35之间的整数（关键词覆盖程度）,
+  "grammar": 0-35之间的整数（语法正确性）,
+  "expression": 0-30之间的整数（表达地道程度）,
+  "total": 0-100之间的整数,
+  "comment": "1-2句简短评语（中文）"
+}`;
+
+                const dsPayload = {
+                    model: 'deepseek-chat',
+                    messages: [
+                        { role: 'system', content: '你是一位专业、严谨的四级翻译评分专家。你必须严格按照格式返回JSON结果，不要包含任何markdown代码块标记。' },
+                        { role: 'user', content: prompt }
+                    ],
+                    temperature: 0.3,
+                    max_tokens: 500
+                };
+
+                const dsResp = await fetch(DEEPSEEK_API_BASE + '/chat/completions', {
+                    method: 'POST',
+                    headers: { 'Authorization': 'Bearer ' + dsApiKey, 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dsPayload)
+                });
+
+                if (!dsResp.ok) {
+                    const errText = await dsResp.text();
+                    console.error('[DeepSeek翻译评分API错误]', dsResp.status, errText);
+                    return sendJson(res, 500, { error: 'AI评分服务暂时不可用' });
+                }
+
+                const dsData = await dsResp.json();
+                let responseText = dsData.choices && dsData.choices[0] && dsData.choices[0].message ? dsData.choices[0].message.content : '';
+
+                // 清理可能的markdown代码块
+                responseText = responseText.replace(/^```json\s*/i, '').replace(/```\s*$/i, '').trim();
+
+                // 尝试解析JSON
+                let scoreData;
+                try {
+                    scoreData = JSON.parse(responseText);
+                } catch(e) {
+                    // 尝试提取JSON
+                    const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+                    if (jsonMatch) {
+                        try {
+                            scoreData = JSON.parse(jsonMatch[0]);
+                        } catch(e2) {
+                            // 返回默认分数
+                            scoreData = {
+                                keywords: 20,
+                                grammar: 20,
+                                expression: 15,
+                                total: 55,
+                                comment: '评分服务解析失败，使用默认评分'
+                            };
+                        }
+                    } else {
+                        scoreData = {
+                            keywords: 20,
+                            grammar: 20,
+                            expression: 15,
+                            total: 55,
+                            comment: '评分服务解析失败，使用默认评分'
+                        };
+                    }
+                }
+
+                // 确保数值在有效范围内
+                scoreData.keywords = Math.min(35, Math.max(0, parseInt(scoreData.keywords) || 20));
+                scoreData.grammar = Math.min(35, Math.max(0, parseInt(scoreData.grammar) || 20));
+                scoreData.expression = Math.min(30, Math.max(0, parseInt(scoreData.expression) || 15));
+                scoreData.total = Math.min(100, Math.max(0, parseInt(scoreData.total) || (scoreData.keywords + scoreData.grammar + scoreData.expression)));
+                scoreData.comment = scoreData.comment || '继续保持！';
+
+                return sendJson(res, 200, { code: 0, data: scoreData });
+
+            } catch(e) {
+                console.error('[翻译评分失败]', e);
+                return sendJson(res, 500, { error: '翻译评分失败: ' + e.message });
+            }
+        }
+
         // POST /api/diagnosis/report - 生成诊断报告（使用DeepSeek）
         if (pathname === '/api/diagnosis/report' && req.method === 'POST') {
             const body = await parseBody(req);
-            const { answers, selfAssessment } = body;
+            const { answers, selfAssessment, writingScore, translationScore } = body;
 
             if (!answers || !Array.isArray(answers) || answers.length === 0) {
                 return sendJson(res, 400, { error: '缺少答题数据' });
@@ -1006,8 +1221,28 @@ async function handleApi(req, res, pathname) {
                     if (selfAssessment.translation) translationLevel = selfAssessment.translation;
                 }
 
+                // AI实测评分处理（如果有的话）
+                var writingAIScore = null;
+                var translationAIScore = null;
+                if (writingScore) {
+                    writingAIScore = writingScore;
+                    // 根据AI评分调整写作等级描述
+                    if (writingScore.total >= 80) writingLevel = 'AI实测：较好';
+                    else if (writingScore.total >= 60) writingLevel = 'AI实测：一般';
+                    else if (writingScore.total >= 40) writingLevel = 'AI实测：较弱';
+                    else writingLevel = 'AI实测：薄弱';
+                }
+                if (translationScore) {
+                    translationAIScore = translationScore;
+                    // 根据AI评分调整翻译等级描述
+                    if (translationScore.total >= 80) translationLevel = 'AI实测：较好';
+                    else if (translationScore.total >= 60) translationLevel = 'AI实测：一般';
+                    else if (translationScore.total >= 40) translationLevel = 'AI实测：较弱';
+                    else translationLevel = 'AI实测：薄弱';
+                }
+
                 // 构建DeepSeek prompt
-                var prompt = '你是四级备考AI教练。用户刚刚完成了一套15道阅读诊断题，请生成一份个性化的诊断报告。\n\n';
+                var prompt = '你是四级备考AI教练。用户刚刚完成了一套15道阅读诊断题以及写作和翻译实测，请生成一份个性化的诊断报告。\n\n';
                 prompt += '【用户答题情况】\n';
                 answers.forEach(function(a, idx) {
                     var isCorrect = a.userAnswer === a.correctAnswer ? '✓' : '✗';
@@ -1018,15 +1253,32 @@ async function handleApi(req, res, pathname) {
                     prompt += k + ': ' + dims[k] + '分\n';
                 });
                 prompt += '\n总正确率: ' + totalRate + '%（' + totalCorrect + '/15）\n';
+                // 添加AI实测评分到prompt
+                if (writingAIScore) {
+                    prompt += '\n【写作实测AI评分】\n';
+                    prompt += '词汇运用: ' + writingAIScore.vocabulary + '/25 | ';
+                    prompt += '语法正确: ' + writingAIScore.grammar + '/25 | ';
+                    prompt += '逻辑结构: ' + writingAIScore.logic + '/25 | ';
+                    prompt += '连贯衔接: ' + writingAIScore.coherence + '/25\n';
+                    prompt += '写作总分: ' + writingAIScore.total + '/100\n';
+                }
+                if (translationAIScore) {
+                    prompt += '\n【翻译实测AI评分】\n';
+                    prompt += '关键词覆盖: ' + translationAIScore.keywords + '/35 | ';
+                    prompt += '语法正确性: ' + translationAIScore.grammar + '/35 | ';
+                    prompt += '表达地道度: ' + translationAIScore.expression + '/30\n';
+                    prompt += '翻译总分: ' + translationAIScore.total + '/100\n';
+                }
                 prompt += '\n【自评结果】\n';
                 prompt += '听力: ' + listeningLevel + ' | 写作: ' + writingLevel + ' | 翻译: ' + translationLevel + '\n';
                 prompt += '\n【匹配人格】' + personality + '\n';
                 prompt += roast + '\n';
                 prompt += '\n请生成一份完整的诊断报告，包含：\n';
-                prompt += '1. 对用户整体表现的评价\n';
+                prompt += '1. 对用户整体表现的评价（结合阅读实测和写译AI评分）\n';
                 prompt += '2. 五维能力的详细分析\n';
-                prompt += '3. 针对薄弱项的提升建议\n';
-                prompt += '4. 备考策略推荐\n\n';
+                prompt += '3. 写作和翻译的AI评分分析（如果有）\n';
+                prompt += '4. 针对薄弱项的提升建议\n';
+                prompt += '5. 备考策略推荐\n\n';
                 prompt += '报告最后请用以下格式输出结果标签（方便前端解析）：\n';
                 prompt += '[RESULT:type=' + personality + '|score=' + totalRate;
                 Object.keys(dims).forEach(function(k) {
@@ -1102,7 +1354,10 @@ async function handleApi(req, res, pathname) {
                             listening: listeningLevel,
                             writing: writingLevel,
                             translation: translationLevel
-                        }
+                        },
+                        // 新增：AI实测评分
+                        ai_writing_score: writingAIScore,
+                        ai_translation_score: translationAIScore
                     }
                 });
 

@@ -5408,7 +5408,6 @@ function preloadLimitInfo() {
 
 // 五维维度配置
 const DIM_CONFIGS = {
-    '听力': { icon: '🎧', color: '#A29BFE', desc: '能否准确理解听力材料内容' },
     '细节定位': { icon: '🔍', color: '#6C5CE7', desc: '能否快速定位原文关键信息' },
     '推理判断': { icon: '🧠', color: '#00B894', desc: '能否从原文正确推导隐含信息' },
     '同义替换': { icon: '🔄', color: '#FDCB6E', desc: '能否识别选项与原文的同义表达' },
@@ -5579,15 +5578,11 @@ var diagState = {
     answers: [],
     selfEval: [],
     correctCount: 0,
-    // 听力相关状态
-    listeningPassages: [],
-    currentListeningPassageIndex: 0,
-    currentListeningQIndex: 0,
-    listeningAnswers: [],
-    listeningCorrectCount: 0,
-    listeningPlayed: false,  // 是否已播放过
-    listeningReplayCount: 0,  // 重播次数
-    phase: 'loading' // loading, listening, questions, selfeval, generating, done
+    phase: 'loading', // loading, questions, selfeval, writing, translation, generating, done
+    writingScore: null,
+    translationScore: null,
+    writingPrompt: null,
+    translationPrompt: null
 };
 
 // 开始新诊断流程
@@ -5602,15 +5597,11 @@ async function startNewDiagnosis() {
         answers: [],
         selfEval: [],
         correctCount: 0,
-        // 听力相关状态
-        listeningPassages: [],
-        currentListeningPassageIndex: 0,
-        currentListeningQIndex: 0,
-        listeningAnswers: [],
-        listeningCorrectCount: 0,
-        listeningPlayed: false,
-        listeningReplayCount: 0,
-        phase: 'loading'
+        phase: 'loading',
+        writingScore: null,
+        translationScore: null,
+        writingPrompt: null,
+        translationPrompt: null
     };
     
     // 显示界面
@@ -5650,20 +5641,19 @@ async function startNewDiagnosis() {
             return;
         }
         
-        // 加载听力题目
-        if (result.listening_passages && result.listening_passages.length > 0) {
-            diagState.listeningPassages = result.listening_passages;
-            diagState.phase = 'listening';
-            document.getElementById('diag-progress-wrap').style.display = '';
-            // 开始听力测试
-            showCurrentListening();
-        } else {
-            // 没有听力题目，直接开始阅读
-            diagState.questions = questions;
-            diagState.phase = 'questions';
-            document.getElementById('diag-progress-wrap').style.display = '';
-            showCurrentQuestion();
+        diagState.questions = questions;
+        // 保存写作和翻译题目供后续使用
+        if (result.writing_prompts) {
+            diagState.writingPrompts = result.writing_prompts;
         }
+        if (result.translation_prompts) {
+            diagState.translationPrompts = result.translation_prompts;
+        }
+        diagState.phase = 'questions';
+        document.getElementById('diag-progress-wrap').style.display = '';
+        
+        // 开始答题
+        showCurrentQuestion();
         
     } catch(e) {
         console.error('[诊断加载失败]', e);
@@ -5685,23 +5675,20 @@ function renderDiagLoading(text) {
 
 // ========== 听力实测功能 ==========
 
-// TTS播放状态管理
 var listeningPlayer = {
     isPlaying: false,
     isPaused: false,
     currentUtterances: [],
     currentIndex: 0,
     onComplete: null,
-    round: 1,  // 当前播放第几遍
-    maxRounds: 2  // 默认播放两遍
+    round: 1,
+    maxRounds: 2
 };
 
-// 检查浏览器是否支持语音合成
 function isSpeechSynthesisSupported() {
     return 'speechSynthesis' in window;
 }
 
-// 获取可用的英语语音
 var cachedVoices = null;
 var voicePromise = null;
 
@@ -5734,43 +5721,35 @@ function loadVoices() {
     return voicePromise;
 }
 
-// 根据性别获取语音
 function getVoiceByGender(isMale, lang) {
     return loadVoices().then(function(voices) {
         if (!voices || voices.length === 0) return null;
-        
         var enVoices = voices.filter(function(v) { return v.lang.startsWith('en'); });
         
         if (isMale) {
-            // 男声：优先找含"Male"或特定男声的
             var maleVoice = enVoices.find(function(v) { 
                 var name = v.name.toLowerCase();
                 return (name.includes('male') || name.includes('daniel') || 
                         name.includes('alex') || name.includes('mark') ||
-                        name.includes('david') || name.includes('tom')) && 
-                       v.lang.includes('US');
+                        name.includes('david') || name.includes('tom')) && v.lang.includes('US');
             });
             return maleVoice || enVoices[0];
         } else {
-            // 女声：优先找含"Female"或特定女声的
             var femaleVoice = enVoices.find(function(v) { 
                 var name = v.name.toLowerCase();
                 return (name.includes('female') || name.includes('samantha') || 
                         name.includes('victoria') || name.includes('karen') ||
-                        name.includes('susan') || name.includes('zira')) && 
-                       v.lang.includes('US');
+                        name.includes('susan') || name.includes('zira')) && v.lang.includes('US');
             });
             return femaleVoice || enVoices[0];
         }
     });
 }
 
-// 解析听力文本为句子片段
 function parseListeningText(text, isConversation) {
     var segments = [];
     
     if (isConversation) {
-        // 对话格式：M: ... W: ... M: ... W: ...
         var lines = text.split('\n');
         var currentSpeaker = null;
         var currentText = '';
@@ -5779,28 +5758,23 @@ function parseListeningText(text, isConversation) {
             var line = lines[i].trim();
             if (!line) continue;
             
-            // 检测说话者
             if (line.startsWith('M:') || line.startsWith('Man:') || line.startsWith('W:') || line.startsWith('Woman:')) {
-                // 保存之前的句子
                 if (currentText && currentSpeaker) {
                     segments.push({
                         text: currentText.trim(),
                         isMale: currentSpeaker === 'M',
-                        pauseAfter: 1000  // 说话者切换时停顿1秒
+                        pauseAfter: 1000
                     });
                 }
                 
-                // 提取说话内容
                 var colonIndex = line.indexOf(':');
                 currentSpeaker = line.substring(0, colonIndex) === 'W' || line.substring(0, colonIndex) === 'Woman' ? 'W' : 'M';
                 currentText = line.substring(colonIndex + 1).trim();
             } else {
-                // 继续上一句
                 currentText += ' ' + line;
             }
         }
         
-        // 保存最后一句
         if (currentText && currentSpeaker) {
             segments.push({
                 text: currentText.trim(),
@@ -5809,8 +5783,6 @@ function parseListeningText(text, isConversation) {
             });
         }
     } else {
-        // 短文格式：按句子拆分
-        // 按句子分隔符拆分
         var sentences = text.split(/(?<=[.!?])\s+/);
         
         for (var i = 0; i < sentences.length; i++) {
@@ -5818,24 +5790,23 @@ function parseListeningText(text, isConversation) {
             if (!s) continue;
             
             var lastChar = s.charAt(s.length - 1);
-            var pauseAfter = 800;  // 默认句号停顿
+            var pauseAfter = 800;
             
             if (lastChar === ',') {
-                pauseAfter = 300;  // 逗号停顿
+                pauseAfter = 300;
             } else if (lastChar === '?') {
-                pauseAfter = 800;  // 问号停顿
+                pauseAfter = 800;
             } else if (lastChar === '!') {
-                pauseAfter = 800;  // 感叹号停顿
+                pauseAfter = 800;
             }
             
-            // 最后一句后停顿短一点
             if (i === sentences.length - 1) {
                 pauseAfter = 300;
             }
             
             segments.push({
                 text: s,
-                isMale: false,  // 短文统一女声
+                isMale: false,
                 pauseAfter: pauseAfter
             });
         }
@@ -5844,13 +5815,9 @@ function parseListeningText(text, isConversation) {
     return segments;
 }
 
-// 播放一段完整的听力（支持多遍）
 function playListeningRound(text, isConversation, onSegmentStart, onComplete) {
     return loadVoices().then(function() {
         var segments = parseListeningText(text, isConversation);
-        var promises = [];
-        var currentPromise = Promise.resolve();
-        var self = this;
         
         function playSegment(index) {
             if (index >= segments.length) {
@@ -5865,15 +5832,14 @@ function playListeningRound(text, isConversation, onSegmentStart, onComplete) {
                     
                     var utterance = new SpeechSynthesisUtterance(seg.text);
                     utterance.lang = 'en-US';
-                    utterance.rate = 0.85;  // 四级语速
-                    utterance.pitch = seg.isMale ? 0.9 : 1.1;  // 男女声调区分
+                    utterance.rate = 0.85;
+                    utterance.pitch = seg.isMale ? 0.9 : 1.1;
                     
                     if (voice) {
                         utterance.voice = voice;
                     }
                     
                     utterance.onend = function() {
-                        // 停顿后播放下一句
                         setTimeout(function() {
                             resolve();
                             playSegment(index + 1);
@@ -5881,7 +5847,6 @@ function playListeningRound(text, isConversation, onSegmentStart, onComplete) {
                     };
                     
                     utterance.onerror = function(e) {
-                        console.error('[TTS片段错误]', e);
                         setTimeout(function() {
                             resolve();
                             playSegment(index + 1);
@@ -5897,7 +5862,6 @@ function playListeningRound(text, isConversation, onSegmentStart, onComplete) {
     }.bind(this));
 }
 
-// 停止当前播放
 function stopListeningPlayback() {
     speechSynthesis.cancel();
     listeningPlayer.isPlaying = false;
@@ -5905,9 +5869,7 @@ function stopListeningPlayback() {
     listeningPlayer.currentIndex = 0;
 }
 
-// 播放听力（自动播放两遍）
 function playListeningFull(text, isConversation, onComplete) {
-    // 停止之前的播放
     stopListeningPlayback();
     
     if (!isSpeechSynthesisSupported()) {
@@ -5935,17 +5897,12 @@ function playListeningFull(text, isConversation, onComplete) {
             return;
         }
         
-        // 更新轮次提示
         updateRoundIndicator(roundNum);
         
-        // 播放一遍
         playListeningRound(text, isConversation, function(index, total) {
-            // 每句开始时的回调（可用于更新UI）
         }, function() {
-            // 一遍播放完毕
             if (roundNum < listeningPlayer.maxRounds) {
-                // 停顿3秒后播第二遍
-                updateRoundIndicator(roundNum + 0.5);  // 中间态
+                updateRoundIndicator(roundNum + 0.5);
                 setTimeout(function() {
                     doRound(roundNum + 1);
                 }, 3000);
@@ -5958,7 +5915,6 @@ function playListeningFull(text, isConversation, onComplete) {
     doRound(1);
 }
 
-// 更新播放按钮状态
 function updatePlayButtonState(state) {
     var btn = document.getElementById('listening-play-btn');
     if (!btn) return;
@@ -5972,7 +5928,6 @@ function updatePlayButtonState(state) {
     }
 }
 
-// 更新轮次指示器
 function updateRoundIndicator(round) {
     var indicator = document.getElementById('listening-round-indicator');
     if (!indicator) return;
@@ -5986,7 +5941,6 @@ function updateRoundIndicator(round) {
     }
 }
 
-// 更新重播按钮状态
 function updateReplayButtonState() {
     var btn = document.getElementById('listening-replay-btn');
     var hint = document.getElementById('listening-hint');
@@ -5998,15 +5952,10 @@ function updateReplayButtonState() {
     btn.disabled = !canReplay;
     
     if (hint) {
-        if (diagState.listeningPlayed) {
-            hint.innerHTML = '✅ 已听完两遍';
-        } else {
-            hint.innerHTML = '点击播放听力';
-        }
+        hint.innerHTML = diagState.listeningPlayed ? '✅ 已听完两遍' : '点击播放听力';
     }
 }
 
-// 计算当前听力题目的全局索引
 function getCurrentListeningGlobalIndex() {
     var idx = 0;
     for (var i = 0; i < diagState.currentListeningPassageIndex; i++) {
@@ -6015,7 +5964,6 @@ function getCurrentListeningGlobalIndex() {
     return idx + diagState.currentListeningQIndex;
 }
 
-// 获取听力总题数
 function getTotalListeningQuestions() {
     var total = 0;
     for (var i = 0; i < diagState.listeningPassages.length; i++) {
@@ -6024,7 +5972,6 @@ function getTotalListeningQuestions() {
     return total;
 }
 
-// 显示当前听力题目
 function showCurrentListening() {
     var passage = diagState.listeningPassages[diagState.currentListeningPassageIndex];
     if (!passage) {
@@ -6047,42 +5994,33 @@ function showCurrentListening() {
     var progress = Math.round((globalIndex / totalQuestions) * 100);
     var isConversation = passage.type === 'conversation';
     
-    // 更新进度
     document.getElementById('diag-progress-fill').style.width = progress + '%';
     document.getElementById('diag-progress-text').textContent = '听力 第' + (globalIndex + 1) + '/' + totalQuestions + '题';
     
-    // 获取VIP状态
     var isVip = isPathVipUser();
     var canReplay = isVip || diagState.listeningReplayCount === 0;
     
-    // 构建HTML
     var html = '<div class="listening-section">';
     
-    // 听力材料区域
     html += '<div class="listening-passage-card">';
     html += '<div class="listening-passage-type">';
     html += isConversation ? '🎧 短对话' : '📝 短文理解';
     html += '</div>';
     
-    // 播放控制区
     html += '<div class="listening-player">';
     html += '<div class="listening-wave" id="listening-wave">';
     html += '<span></span><span></span><span></span><span></span><span></span>';
     html += '</div>';
     
-    // 播放按钮
     html += '<button class="listening-play-btn" id="listening-play-btn" onclick="handlePlayClick()">';
     html += '<span class="play-icon">▶</span>';
     html += '</button>';
     
-    // 提示文字
     html += '<div class="listening-hint" id="listening-hint">点击播放听力</div>';
     html += '</div>';
     
-    // 轮次指示器
     html += '<div class="listening-round-indicator" id="listening-round-indicator"></div>';
     
-    // 再听一遍按钮
     html += '<button class="listening-replay-btn" id="listening-replay-btn" onclick="handleReplayClick()" ' + (!canReplay ? 'disabled' : '') + '>';
     html += '🔄 再听一遍';
     if (!isVip && diagState.listeningReplayCount > 0) {
@@ -6090,17 +6028,14 @@ function showCurrentListening() {
     }
     html += '</button>';
     
-    // 播放说明
     html += '<div class="listening-play-hint">📢 系统将自动播放两遍</div>';
     
-    // 非VIP提示
     if (!isVip) {
         html += '<div class="listening-vip-tip">⭐ 升级Pro会员可无限重播</div>';
     }
     
-    html += '</div>'; // end listening-passage-card
+    html += '</div>';
     
-    // 答题区域
     html += '<div class="listening-question-card">';
     html += '<div class="diag-question-num">第 ' + (globalIndex + 1) + ' / ' + totalQuestions + ' 题</div>';
     html += '<div class="diag-question-text">' + escapeHtml(q.question) + '</div>';
@@ -6129,23 +6064,18 @@ function showCurrentListening() {
     document.getElementById('diag-body').innerHTML = html;
 }
 
-// 处理播放按钮点击
 function handlePlayClick() {
     var passage = diagState.listeningPassages[diagState.currentListeningPassageIndex];
     if (!passage) return;
     
-    // 停止之前的播放
     stopListeningPlayback();
-    
     var isConversation = passage.type === 'conversation';
     
     playListeningFull(passage.text, isConversation, function() {
-        // 播放完成回调
         console.log('[听力播放完成]');
     });
 }
 
-// 处理重播按钮点击
 function handleReplayClick() {
     var isVip = isPathVipUser();
     
@@ -6163,8 +6093,6 @@ function handleReplayClick() {
     }
     
     var isConversation = passage.type === 'conversation';
-    
-    // 只播一遍
     stopListeningPlayback();
     listeningPlayer.maxRounds = 1;
     
@@ -6173,24 +6101,17 @@ function handleReplayClick() {
     });
 }
 
-// 选择听力选项（覆盖原selectOption用于听力阶段）
-var originalSelectOption = null;
-
-// 临时替换selectOption来处理听力选项
 function selectListeningOption(btn, selectedValue) {
     var passage = diagState.listeningPassages[diagState.currentListeningPassageIndex];
     var q = passage.questions[diagState.currentListeningQIndex];
     var correctAnswer = q.answer;
     var isCorrect = selectedValue === correctAnswer;
     
-    // 停止播放
     stopListeningPlayback();
     
-    // 禁用所有按钮
     var allBtns = document.querySelectorAll('.diag-option-btn');
     allBtns.forEach(function(b) { b.classList.add('disabled'); });
     
-    // 记录答案
     diagState.listeningAnswers.push({
         id: q.question_id,
         passageId: passage.passage_id,
@@ -6204,7 +6125,6 @@ function selectListeningOption(btn, selectedValue) {
         diagState.listeningCorrectCount++;
     }
     
-    // 500ms后自动下一题
     setTimeout(function() {
         diagState.currentListeningQIndex++;
         
@@ -6219,7 +6139,6 @@ function selectListeningOption(btn, selectedValue) {
     }, 500);
 }
 
-// 开始阅读阶段
 function startReadingPhase() {
     fetchWithTimeout('/public/diagnosis_questions.json').then(function(resp) {
         return resp.json();
@@ -6262,10 +6181,9 @@ function showCurrentQuestion() {
         return;
     }
     
-    var totalQuestions = diagState.questions.length;
-    var progress = Math.round((diagState.currentQIndex / totalQuestions) * 100);
+    var progress = Math.round((diagState.currentQIndex / 15) * 100);
     document.getElementById('diag-progress-fill').style.width = progress + '%';
-    document.getElementById('diag-progress-text').textContent = '阅读 第' + (diagState.currentQIndex + 1) + '题/共' + totalQuestions + '题';
+    document.getElementById('diag-progress-text').textContent = '第' + (diagState.currentQIndex + 1) + '题/共15题';
     
     // 构建HTML
     var html = '<div class="diag-question-card">';
@@ -6280,7 +6198,7 @@ function showCurrentQuestion() {
         '</div>';
     }
     
-    html += '<div class="diag-question-num">第 ' + (diagState.currentQIndex + 1) + ' / ' + totalQuestions + ' 题</div>' +
+    html += '<div class="diag-question-num">第 ' + (diagState.currentQIndex + 1) + ' / 15 题</div>' +
         '<div class="diag-question-text">' + escapeHtml(q.question) + '</div>' +
         '<div class="diag-options">' +
             renderOptionBtn('A', q.optionA, 'A') +
@@ -6317,14 +6235,7 @@ function renderOptionBtn(letter, text, value) {
 }
 
 // 选择选项
-// 选择选项（阅读阶段专用）
 function selectOption(btn, selectedValue) {
-    // 如果是听力阶段，跳转到听力处理函数
-    if (diagState.phase === 'listening') {
-        selectListeningOption(btn, selectedValue);
-        return;
-    }
-    
     var q = diagState.questions[diagState.currentQIndex];
     var correctAnswer = q.answer || q.correct_answer;
     var isCorrect = selectedValue === correctAnswer;
@@ -6345,8 +6256,7 @@ function selectOption(btn, selectedValue) {
     // 500ms后自动下一题（快速但不突兀）
     setTimeout(function() {
         diagState.currentQIndex++;
-        var totalQuestions = diagState.questions.length;
-        if (diagState.currentQIndex >= totalQuestions) {
+        if (diagState.currentQIndex >= 15) {
             showSelfEval();
         } else {
             showCurrentQuestion();
@@ -6422,8 +6332,8 @@ function showSelfEval() {
                 '</div>' +
             '</div>' +
             
-            '<button class="diag-generate-btn" id="diag-generate-btn" onclick="generateDiagReport()" disabled>' +
-                '<span>✨</span> 生成诊断报告' +
+            '<button class="diag-generate-btn" id="diag-generate-btn" onclick="startWritingTest()" disabled>' +
+                '<span>✨</span> 开始写作实测' +
             '</button>' +
         '</div>';
     
@@ -6465,7 +6375,382 @@ function checkEvalComplete() {
     });
     
     btn.disabled = !allSelected;
+    
+    // 更新按钮文字
+    if (!btn.disabled) {
+        btn.innerHTML = '<span>✨</span> 开始写作实测';
+    }
 }
+
+// ===== 写作实测 =====
+// 开始写作实测
+function startWritingTest() {
+    diagState.phase = 'writing';
+    
+    // 随机选择一个写作题目
+    var prompts = diagState.writingPrompts || [];
+    if (prompts.length === 0) {
+        // 如果没有题目，直接跳过
+        skipWritingTest();
+        return;
+    }
+    var randomIndex = Math.floor(Math.random() * prompts.length);
+    var prompt = prompts[randomIndex];
+    diagState.writingPrompt = prompt;
+    
+    // 更新进度显示
+    document.getElementById('diag-progress-fill').style.width = '80%';
+    document.getElementById('diag-progress-text').textContent = '第 3/4 步';
+    
+    var html = 
+        '<div class="diag-writing-section">' +
+            '<div class="diag-writing-header">' +
+                '<div class="diag-writing-title">✍️ 写作实测</div>' +
+                '<div class="diag-writing-subtitle">请根据题目要求完成一篇英文作文</div>' +
+            '</div>' +
+            '<div class="diag-writing-prompt">' +
+                '<div class="diag-prompt-title">' + escapeHtml(prompt.title) + '</div>' +
+                '<div class="diag-prompt-desc">' + escapeHtml(prompt.description) + '</div>' +
+            '</div>' +
+            '<textarea class="diag-writing-textarea" id="writing-input" placeholder="请在这里输入你的作文..." oninput="updateWritingCount()"></textarea>' +
+            '<div class="diag-word-count" id="writing-count">已写 0 字（至少30字）</div>' +
+            '<div class="diag-writing-actions">' +
+                '<button class="diag-writing-submit" id="writing-submit-btn" onclick="submitWritingTest()" disabled>提交评分</button>' +
+                '<button class="diag-writing-skip" onclick="skipWritingTest()">跳过</button>' +
+            '</div>' +
+        '</div>';
+    
+    document.getElementById('diag-body').innerHTML = html;
+}
+
+// 更新写作字数统计
+function updateWritingCount() {
+    var input = document.getElementById('writing-input');
+    var countDiv = document.getElementById('writing-count');
+    var submitBtn = document.getElementById('writing-submit-btn');
+    
+    if (!input || !countDiv || !submitBtn) return;
+    
+    var count = input.value.length;
+    
+    if (count < 30) {
+        countDiv.textContent = '已写 ' + count + ' 字（至少30字）';
+        countDiv.className = 'diag-word-count error';
+        submitBtn.disabled = true;
+    } else if (count < 50) {
+        countDiv.textContent = '已写 ' + count + ' 字';
+        countDiv.className = 'diag-word-count warning';
+        submitBtn.disabled = false;
+    } else {
+        countDiv.textContent = '已写 ' + count + ' 字';
+        countDiv.className = 'diag-word-count';
+        submitBtn.disabled = false;
+    }
+}
+
+// 跳过写作实测
+function skipWritingTest() {
+    diagState.writingScore = null;
+    startTranslationTest();
+}
+
+// 提交写作实测
+async function submitWritingTest() {
+    var input = document.getElementById('writing-input');
+    if (!input || input.value.length < 30) {
+        showToast('请至少写30个字');
+        return;
+    }
+    
+    var userText = input.value.trim();
+    var prompt = diagState.writingPrompt;
+    
+    // 显示加载状态
+    document.getElementById('diag-body').innerHTML = 
+        '<div class="diag-ai-loading">' +
+            '<div class="diag-ai-icon">🤖</div>' +
+            '<div class="diag-ai-text">AI正在评分...</div>' +
+            '<div class="diag-ai-subtext">请稍候，正在分析你的作文</div>' +
+        '</div>';
+    
+    try {
+        // 调用评分API
+        var resp = await fetchWithTimeout('/api/diagnosis/writing-grade', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                title: prompt.title,
+                description: prompt.description,
+                user_input: userText
+            })
+        });
+        
+        var result = await resp.json();
+        
+        if (result.code !== 0 || !result.data) {
+            throw new Error(result.error || '评分失败');
+        }
+        
+        // 保存评分结果
+        diagState.writingScore = result.data;
+        
+        // 显示评分结果
+        showWritingScoreResult(result.data);
+        
+    } catch(e) {
+        console.error('[写作评分失败]', e);
+        // 评分失败时跳过
+        diagState.writingScore = null;
+        startTranslationTest();
+    }
+}
+
+// 显示写作评分结果
+function showWritingScoreResult(score) {
+    // 计算颜色等级
+    var getLevel = function(val, max) {
+        var percent = val / max;
+        if (percent >= 0.8) return 'excellent';
+        if (percent >= 0.6) return 'good';
+        if (percent >= 0.4) return 'fair';
+        return 'poor';
+    };
+    
+    var html = 
+        '<div class="diag-score-section">' +
+            '<div class="diag-score-header">' +
+                '<div class="diag-score-title">写作评分结果</div>' +
+                '<div class="diag-score-total">' + score.total + '</div>' +
+            '</div>' +
+            '<div class="diag-score-dimensions">' +
+                '<div class="diag-dimension-item">' +
+                    '<div class="diag-dimension-label">' +
+                        '<span class="diag-dimension-name">词汇运用</span>' +
+                        '<span class="diag-dimension-score">' + score.vocabulary + '/25</span>' +
+                    '</div>' +
+                    '<div class="diag-dimension-bar">' +
+                        '<div class="diag-dimension-fill ' + getLevel(score.vocabulary, 25) + '" style="width:' + (score.vocabulary / 25 * 100) + '%"></div>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="diag-dimension-item">' +
+                    '<div class="diag-dimension-label">' +
+                        '<span class="diag-dimension-name">语法正确</span>' +
+                        '<span class="diag-dimension-score">' + score.grammar + '/25</span>' +
+                    '</div>' +
+                    '<div class="diag-dimension-bar">' +
+                        '<div class="diag-dimension-fill ' + getLevel(score.grammar, 25) + '" style="width:' + (score.grammar / 25 * 100) + '%"></div>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="diag-dimension-item">' +
+                    '<div class="diag-dimension-label">' +
+                        '<span class="diag-dimension-name">逻辑结构</span>' +
+                        '<span class="diag-dimension-score">' + score.logic + '/25</span>' +
+                    '</div>' +
+                    '<div class="diag-dimension-bar">' +
+                        '<div class="diag-dimension-fill ' + getLevel(score.logic, 25) + '" style="width:' + (score.logic / 25 * 100) + '%"></div>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="diag-dimension-item">' +
+                    '<div class="diag-dimension-label">' +
+                        '<span class="diag-dimension-name">连贯衔接</span>' +
+                        '<span class="diag-dimension-score">' + score.coherence + '/25</span>' +
+                    '</div>' +
+                    '<div class="diag-dimension-bar">' +
+                        '<div class="diag-dimension-fill ' + getLevel(score.coherence, 25) + '" style="width:' + (score.coherence / 25 * 100) + '%"></div>' +
+                    '</div>' +
+                '</div>' +
+            '</div>' +
+            '<div class="diag-score-comment">' +
+                '<div class="diag-comment-text">💬 ' + (score.comment || '继续保持！') + '</div>' +
+            '</div>' +
+            '<button class="diag-score-continue" onclick="startTranslationTest()">继续翻译实测 →</button>' +
+        '</div>';
+    
+    document.getElementById('diag-body').innerHTML = html;
+}
+
+// ===== 翻译实测 =====
+// 开始翻译实测
+function startTranslationTest() {
+    diagState.phase = 'translation';
+    
+    // 随机选择一个翻译题目
+    var prompts = diagState.translationPrompts || [];
+    if (prompts.length === 0) {
+        // 如果没有题目，直接生成报告
+        generateDiagReport();
+        return;
+    }
+    var randomIndex = Math.floor(Math.random() * prompts.length);
+    var prompt = prompts[randomIndex];
+    diagState.translationPrompt = prompt;
+    
+    // 更新进度显示
+    document.getElementById('diag-progress-fill').style.width = '95%';
+    document.getElementById('diag-progress-text').textContent = '第 4/4 步';
+    
+    var html = 
+        '<div class="diag-translation-section">' +
+            '<div class="diag-translation-header">' +
+                '<div class="diag-translation-title">🔄 翻译实测</div>' +
+                '<div class="diag-translation-subtitle">请将以下中文翻译成英文</div>' +
+            '</div>' +
+            '<div class="diag-translation-source">' +
+                '<div class="diag-source-text">' + escapeHtml(prompt.chinese) + '</div>' +
+            '</div>' +
+            '<textarea class="diag-translation-textarea" id="translation-input" placeholder="请在这里输入你的英文翻译..." oninput="updateTranslationCount()"></textarea>' +
+            '<div class="diag-char-count" id="translation-count">已写 0 字（至少10字）</div>' +
+            '<div class="diag-translation-actions">' +
+                '<button class="diag-translation-submit" id="translation-submit-btn" onclick="submitTranslationTest()" disabled>提交评分</button>' +
+                '<button class="diag-translation-skip" onclick="skipTranslationTest()">跳过</button>' +
+            '</div>' +
+        '</div>';
+    
+    document.getElementById('diag-body').innerHTML = html;
+}
+
+// 更新翻译字数统计
+function updateTranslationCount() {
+    var input = document.getElementById('translation-input');
+    var countDiv = document.getElementById('translation-count');
+    var submitBtn = document.getElementById('translation-submit-btn');
+    
+    if (!input || !countDiv || !submitBtn) return;
+    
+    var count = input.value.length;
+    
+    if (count < 10) {
+        countDiv.textContent = '已写 ' + count + ' 字（至少10字）';
+        countDiv.className = 'diag-char-count warning';
+        submitBtn.disabled = true;
+    } else {
+        countDiv.textContent = '已写 ' + count + ' 字';
+        countDiv.className = 'diag-char-count';
+        submitBtn.disabled = false;
+    }
+}
+
+// 跳过翻译实测
+function skipTranslationTest() {
+    diagState.translationScore = null;
+    generateDiagReport();
+}
+
+// 提交翻译实测
+async function submitTranslationTest() {
+    var input = document.getElementById('translation-input');
+    if (!input || input.value.length < 10) {
+        showToast('请至少写10个字');
+        return;
+    }
+    
+    var userText = input.value.trim();
+    var prompt = diagState.translationPrompt;
+    
+    // 显示加载状态
+    document.getElementById('diag-body').innerHTML = 
+        '<div class="diag-ai-loading">' +
+            '<div class="diag-ai-icon">🤖</div>' +
+            '<div class="diag-ai-text">AI正在评分...</div>' +
+            '<div class="diag-ai-subtext">请稍候，正在分析你的翻译</div>' +
+        '</div>';
+    
+    try {
+        // 调用评分API
+        var resp = await fetchWithTimeout('/api/diagnosis/translation-grade', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                chinese: prompt.chinese,
+                reference: prompt.reference || '',
+                user_input: userText
+            })
+        });
+        
+        var result = await resp.json();
+        
+        if (result.code !== 0 || !result.data) {
+            throw new Error(result.error || '评分失败');
+        }
+        
+        // 保存评分结果
+        diagState.translationScore = result.data;
+        
+        // 显示评分结果
+        showTranslationScoreResult(result.data);
+        
+    } catch(e) {
+        console.error('[翻译评分失败]', e);
+        // 评分失败时跳过
+        diagState.translationScore = null;
+        generateDiagReport();
+    }
+}
+
+// 显示翻译评分结果
+function showTranslationScoreResult(score) {
+    // 计算颜色等级
+    var getLevel = function(val, max) {
+        var percent = val / max;
+        if (percent >= 0.8) return 'excellent';
+        if (percent >= 0.6) return 'good';
+        if (percent >= 0.4) return 'fair';
+        return 'poor';
+    };
+    
+    var html = 
+        '<div class="diag-score-section">' +
+            '<div class="diag-score-header">' +
+                '<div class="diag-score-title">翻译评分结果</div>' +
+                '<div class="diag-score-total translation">' + score.total + '</div>' +
+            '</div>' +
+            '<div class="diag-score-dimensions">' +
+                '<div class="diag-dimension-item">' +
+                    '<div class="diag-dimension-label">' +
+                        '<span class="diag-dimension-name">关键词覆盖</span>' +
+                        '<span class="diag-dimension-score">' + score.keywords + '/35</span>' +
+                    '</div>' +
+                    '<div class="diag-dimension-bar">' +
+                        '<div class="diag-dimension-fill ' + getLevel(score.keywords, 35) + '" style="width:' + (score.keywords / 35 * 100) + '%"></div>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="diag-dimension-item">' +
+                    '<div class="diag-dimension-label">' +
+                        '<span class="diag-dimension-name">语法正确性</span>' +
+                        '<span class="diag-dimension-score">' + score.grammar + '/35</span>' +
+                    '</div>' +
+                    '<div class="diag-dimension-bar">' +
+                        '<div class="diag-dimension-fill ' + getLevel(score.grammar, 35) + '" style="width:' + (score.grammar / 35 * 100) + '%"></div>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="diag-dimension-item">' +
+                    '<div class="diag-dimension-label">' +
+                        '<span class="diag-dimension-name">表达地道度</span>' +
+                        '<span class="diag-dimension-score">' + score.expression + '/30</span>' +
+                    '</div>' +
+                    '<div class="diag-dimension-bar">' +
+                        '<div class="diag-dimension-fill ' + getLevel(score.expression, 30) + '" style="width:' + (score.expression / 30 * 100) + '%"></div>' +
+                    '</div>' +
+                '</div>' +
+            '</div>' +
+            '<div class="diag-score-comment">' +
+                '<div class="diag-comment-text">💬 ' + (score.comment || '继续保持！') + '</div>' +
+            '</div>' +
+            '<button class="diag-score-continue translation" onclick="generateDiagReport()">✨ 生成诊断报告</button>' +
+        '</div>';
+    
+    document.getElementById('diag-body').innerHTML = html;
+}
+
+// 将AI评分映射为A/B/C/D档
+function mapScoreToLevel(score, max) {
+    var percent = score / max * 100;
+    if (percent >= 80) return 'A';
+    if (percent >= 60) return 'B';
+    if (percent >= 40) return 'C';
+    return 'D';
+}
+
 
 // 生成诊断报告
 async function generateDiagReport() {
@@ -6495,44 +6780,37 @@ async function generateDiagReport() {
             }
         });
         
-        // 计算听力维度分数
-        var listeningDims = {};
-        diagState.listeningAnswers.forEach(function(ans) {
-            if (!listeningDims[ans.dimension]) {
-                listeningDims[ans.dimension] = { correct: 0, total: 0 };
-            }
-            listeningDims[ans.dimension].total++;
-            if (ans.isCorrect) {
-                listeningDims[ans.dimension].correct++;
-            }
-        });
+        // 将AI评分融入请求（如果有的话）
+        var apiData = {
+            answers: diagState.answers,
+            selfAssessment: selfAssessment
+        };
         
-        // 将听力答案转换为与阅读相同的格式
-        var allAnswers = diagState.answers.concat(
-            diagState.listeningAnswers.map(function(la) {
-                return {
-                    id: la.id,
-                    userAnswer: la.userAnswer,
-                    correctAnswer: la.correctAnswer,
-                    isCorrect: la.isCorrect,
-                    ability: la.dimension || '细节定位',
-                    type: 'listening'  // 标记为听力题
-                };
-            })
-        );
+        // 如果有写作AI评分，加入请求
+        if (diagState.writingScore) {
+            apiData.writingScore = {
+                vocabulary: diagState.writingScore.vocabulary,
+                grammar: diagState.writingScore.grammar,
+                logic: diagState.writingScore.logic,
+                coherence: diagState.writingScore.coherence,
+                total: diagState.writingScore.total
+            };
+        }
+        
+        // 如果有翻译AI评分，加入请求
+        if (diagState.translationScore) {
+            apiData.translationScore = {
+                keywords: diagState.translationScore.keywords,
+                grammar: diagState.translationScore.grammar,
+                expression: diagState.translationScore.expression,
+                total: diagState.translationScore.total
+            };
+        }
         
         var resp = await fetchWithTimeout('/api/diagnosis/report', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                answers: allAnswers,
-                selfAssessment: selfAssessment,
-                listeningStats: {
-                    total: diagState.listeningAnswers.length,
-                    correct: diagState.listeningCorrectCount,
-                    dimensions: listeningDims
-                }
-            })
+            body: JSON.stringify(apiData)
         });
         
         var result = await resp.json();
@@ -6572,7 +6850,7 @@ function buildReportText(data) {
             if (kv.length === 2) {
                 var key = kv[0].trim();
                 var val = parseInt(kv[1]) || 0;
-                if (['细节定位', '推理判断', '同义替换', '主旨归纳', '态度判断', '听力'].indexOf(key) !== -1) {
+                if (['细节定位', '推理判断', '同义替换', '主旨归纳', '态度判断'].indexOf(key) !== -1) {
                     dims[key] = val;
                 }
             }
@@ -6582,15 +6860,10 @@ function buildReportText(data) {
     // 从dimension_scores补充
     if (data.dimension_scores) {
         Object.keys(data.dimension_scores).forEach(function(k) {
-            if (['细节定位', '推理判断', '同义替换', '主旨归纳', '态度判断', '听力'].indexOf(k) !== -1) {
+            if (['细节定位', '推理判断', '同义替换', '主旨归纳', '态度判断'].indexOf(k) !== -1) {
                 dims[k] = data.dimension_scores[k] || dims[k] || 0;
             }
         });
-    }
-    
-    // 添加听力统计
-    if (data.listening_stats) {
-        dims['听力'] = Math.round((data.listening_stats.correct / Math.max(data.listening_stats.total, 1)) * 100);
     }
     
     // 计算总评分
@@ -6603,18 +6876,9 @@ function buildReportText(data) {
     if (count > 0) totalScore = Math.round(totalScore / count);
     
     // 构建兼容格式
-    var text = '【能力诊断】\n';
-    
-    // 显示听力成绩
-    if (dims['听力']) {
-        text += '🎧 听力: ' + dims['听力'] + '\n';
-    }
-    
-    // 显示其他维度
+    var text = '【五维诊断】\n';
     Object.keys(dims).forEach(function(k) {
-        if (k !== '听力') {
-            text += k + ': ' + dims[k] + '\n';
-        }
+        text += k + ': ' + dims[k] + '\n';
     });
     text += '\n综合评分: ' + totalScore + '\n';
     text += '\n你是"' + (data.personality || '佛系随缘') + '"！\n';
