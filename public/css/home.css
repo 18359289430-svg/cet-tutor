@@ -197,13 +197,20 @@
             margin-top: 16px;
         }
         .home-countdown-chip {
-            font-size: 12px;
-            color: rgba(255,255,255,0.5);
-            background: rgba(255,255,255,0.08);
+            font-size: 11px;
+            color: rgba(255,255,255,0.6);
+            background: rgba(255,255,255,0.1);
             padding: 5px 12px;
             border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.15);
         
             animation: fadeInUp 0.6s ease backwards 0.6s;
+        }
+        .home-countdown-chip .cd-days {
+            font-weight: 700;
+            font-size: 14px;
+            color: #FFD700;
+            margin-right: 2px;
         }
         
         /* 功能入口 - 4图标 */

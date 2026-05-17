@@ -860,14 +860,15 @@ function initApp() {
             var text = document.getElementById('countdown-text');
             if (text) {
                 if (diffDays > 0) {
-                    text.textContent = diffHours > 0 ? diffDays + '天' + diffHours + '时' : diffDays + '天';
+                    text.innerHTML = diffHours > 0 ? diffDays + '天' + diffHours + '时' : diffDays + '天';
                 } else {
                     text.textContent = diffHours > 0 ? diffHours + '小时' : '即将到来';
                 }
             }
             var homeCd = document.getElementById('home-countdown');
             if (homeCd) {
-                homeCd.textContent = diffDays > 0 ? diffHours > 0 ? '距四级 ' + diffDays + '天' + diffHours + '时' : '距四级 ' + diffDays + '天' : '四级加油';
+                var cdText = diffDays > 0 ? (diffHours > 0 ? '距四级 ' + diffDays + '天' + diffHours + '时' : '距四级 ' + diffDays + '天') : '四级加油';
+                homeCd.innerHTML = '<span class="cd-days">' + diffDays + '</span>天' + (diffHours > 0 ? diffHours + '时' : '');
             }
             var chatCd = document.getElementById('chat-countdown');
             if (chatCd) {
@@ -2068,7 +2069,7 @@ function initApp() {
                 '<span class="detail-honor" style="background:' + p.color + ';color:#fff">' + p.honor + '</span>' +
                 '<p class="detail-desc" style="font-style:italic;color:#6C5CE7;margin:8px 0 16px">"' + p.comment + '"</p>' +
                 '<div class="detail-scores">' + scoresHtml + '</div>';
-            document.getElementById('detail-advice-text').textContent = '测出你的备考人格，获取专属备考方案！';
+            document.getElementById('detail-advice-text').innerHTML = '根据你的备考人格，建议从薄弱项开始针对性练习 👇';
             document.getElementById('personality-modal').classList.add('show');
         }
 
@@ -6434,12 +6435,20 @@ function closeLimitCard(btn) {
 // 更新输入框placeholder
 function updateChatInputPlaceholder() {
     var input = document.getElementById('chat-input');
+    var hint = document.getElementById('chat-quota-hint');
     if (!input) return;
     
     if (isFreeLimitReached()) {
-        input.placeholder = '今日免费额度已用完';
+        input.placeholder = '升级解锁无限对话...';
+        if (hint) {
+            hint.innerHTML = '今日免费对话已用完 <a href="#" onclick="event.preventDefault();switchTab(\'plans\')" style="color:#6C5CE7;font-weight:600;text-decoration:none">升级无限聊 →</a>';
+            hint.style.display = '';
+        }
     } else {
-        input.placeholder = '输入消息...';
+        input.placeholder = '问我任何四级问题...';
+        if (hint) {
+            hint.style.display = 'none';
+        }
     }
 }
 
