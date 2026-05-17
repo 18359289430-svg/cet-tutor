@@ -1,196 +1,518 @@
-commit 99c64bf29c7160c27f483c17fcdc066e81e160df
-Author: dev <dev@cet-tutor.com>
-Date:   Sun May 17 11:15:13 2026 +0800
+/* ===== 错题本样式 - 大小层级分明 ===== */
+#tab-wrongbook {
+    background: #F8FAFC;
+    padding: 0 0 100px;
+    min-height: 100vh;
+}
 
-    视觉层级重构: 主卡大数字+次要指标行+紧凑分布条，大小分明不再平铺
+#tab-wrongbook.active {
+    display: block;
+}
 
-diff --git a/public/css/wrongbook.css b/public/css/wrongbook.css
-index 5cdb2b8..14b2f98 100644
---- a/public/css/wrongbook.css
-+++ b/public/css/wrongbook.css
-@@ -1,4 +1,4 @@
--/* ===== 错题本样式 - 白底+主色数字，对齐主流学习APP ===== */
-+/* ===== 错题本样式 - 大小层级分明 ===== */
- #tab-wrongbook {
-     background: #F8FAFC;
-     padding: 0 0 100px;
-@@ -35,58 +35,58 @@
-     border-radius: 2px;
- }
- 
--/* ===== 统计区 - 白底+紫色数字 ===== */
--.wrongbook-stats {
--    display: grid;
--    grid-template-columns: repeat(2, 1fr);
--    gap: 12px;
--    padding: 0 16px;
-+/* ===== 主卡 - 全宽大数字 ===== */
-+.wrongbook-hero-card {
-+    margin: 0 16px;
-+    background: white;
-+    border-radius: 20px;
-+    padding: 28px 24px;
-+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
-+    text-align: center;
- }
- 
--.wrongbook-stat-item {
--    background: white;
--    border-radius: 16px;
--    padding: 20px 18px;
--    display: flex;
--    align-items: center;
--    gap: 14px;
--    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-+.wrongbook-hero-number {
-+    font-size: 56px;
-+    font-weight: 800;
-+    color: #6C5CE7;
-+    line-height: 1;
-+    letter-spacing: -2px;
-+    margin-bottom: 8px;
- }
- 
--.wrongbook-stat-item .stat-icon {
--    width: 40px;
--    height: 40px;
--    border-radius: 12px;
--    background: #F3F0FF;
-+.wrongbook-hero-label {
-+    font-size: 14px;
-+    color: #94A3B8;
-+    margin-bottom: 16px;
-+}
-+
-+/* 次要指标行 - 紧凑 */
-+.wrongbook-sub-stats {
-     display: flex;
--    align-items: center;
-     justify-content: center;
--    flex-shrink: 0;
-+    gap: 24px;
-+    padding-top: 16px;
-+    border-top: 1px solid #F1F5F9;
- }
- 
--.wrongbook-stat-item .stat-icon svg {
--    width: 20px;
--    height: 20px;
--    stroke: #6C5CE7;
--    stroke-width: 2;
-+.wrongbook-sub-item {
-+    display: flex;
-+    align-items: center;
-+    gap: 6px;
-+    font-size: 13px;
-+    color: #64748B;
- }
- 
--.wrongbook-stat-item .stat-info {
--    flex: 1;
-+.wrongbook-sub-item .sub-dot {
-+    width: 6px;
-+    height: 6px;
-+    border-radius: 50%;
-+    background: #6C5CE7;
- }
- 
--.wrongbook-stat-item .stat-number {
--    font-size: 28px;
-+.wrongbook-sub-item .sub-num {
-     font-weight: 700;
--    color: #6C5CE7;
--    line-height: 1;
--    letter-spacing: -0.5px;
--}
--
--.wrongbook-stat-item .stat-label {
--    font-size: 12px;
--    color: #94A3B8;
--    margin-top: 4px;
-+    color: #1E293B;
- }
- 
- /* ===== 区块 ===== */
-@@ -111,43 +111,42 @@
-     stroke-width: 2;
- }
- 
--/* ===== 分布统计 - 横向滚动 ===== */
-+/* ===== 分布统计 - 紧凑一行 ===== */
- .wrongbook-distribution {
-     display: flex;
--    gap: 10px;
--    overflow-x: auto;
--    padding-bottom: 4px;
--    -webkit-overflow-scrolling: touch;
--}
--
--.wrongbook-distribution::-webkit-scrollbar {
--    display: none;
-+    gap: 0;
-+    background: white;
-+    border-radius: 14px;
-+    padding: 14px 8px;
-+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
- }
- 
- .dist-item {
--    flex-shrink: 0;
--    background: white;
--    border-radius: 14px;
--    padding: 14px 20px;
-+    flex: 1;
-     display: flex;
-     flex-direction: column;
-     align-items: center;
--    gap: 6px;
--    min-width: 76px;
--    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-+    gap: 4px;
-     cursor: pointer;
-     transition: all 0.2s ease;
-+    position: relative;
-+    padding: 4px 0;
-+}
-+
-+.dist-item:not(:last-child)::after {
-+    content: '';
-+    position: absolute;
-+    right: 0;
-+    top: 4px;
-+    bottom: 4px;
-+    width: 1px;
-+    background: #F1F5F9;
- }
- 
- .dist-item:active {
-     transform: scale(0.97);
- }
- 
--.dist-item.vocab { border-top: 3px solid #6C5CE7; }
--.dist-item.grammar { border-top: 3px solid #F39C12; }
--.dist-item.reading { border-top: 3px solid #10B981; }
--.dist-item.listening { border-top: 3px solid #8B5CF6; }
--
- .dist-count {
-     font-size: 22px;
-     font-weight: 700;
-@@ -156,11 +155,16 @@
- }
- 
- .dist-label {
--    font-size: 12px;
-+    font-size: 11px;
-     font-weight: 500;
-     color: #94A3B8;
- }
- 
-+.dist-label.vocab { color: #6C5CE7; }
-+.dist-label.grammar { color: #F39C12; }
-+.dist-label.reading { color: #10B981; }
-+.dist-label.listening { color: #8B5CF6; }
-+
- /* ===== 筛选栏 ===== */
- .wrongbook-filter-bar {
-     display: flex;
+/* ===== Hero区域 ===== */
+.wrongbook-hero {
+    padding: 24px 20px 20px;
+}
+
+.wrongbook-hero h2 {
+    font-size: 26px;
+    font-weight: 700;
+    color: #1E293B;
+    letter-spacing: -0.5px;
+    margin: 0 0 6px;
+}
+
+.wrongbook-hero-sub {
+    font-size: 14px;
+    color: #94A3B8;
+    margin-bottom: 16px;
+}
+
+.wrongbook-hero-divider {
+    width: 36px;
+    height: 3px;
+    background: #6C5CE7;
+    border-radius: 2px;
+}
+
+/* ===== 主卡 - 全宽大数字 ===== */
+.wrongbook-hero-card {
+    margin: 0 16px;
+    background: white;
+    border-radius: 20px;
+    padding: 28px 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    text-align: center;
+}
+
+.wrongbook-hero-number {
+    font-size: 56px;
+    font-weight: 800;
+    color: #6C5CE7;
+    line-height: 1;
+    letter-spacing: -2px;
+    margin-bottom: 8px;
+}
+
+.wrongbook-hero-label {
+    font-size: 14px;
+    color: #94A3B8;
+    margin-bottom: 16px;
+}
+
+/* 次要指标行 - 紧凑 */
+.wrongbook-sub-stats {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    padding-top: 16px;
+    border-top: 1px solid #F1F5F9;
+}
+
+.wrongbook-sub-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #64748B;
+}
+
+.wrongbook-sub-item .sub-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #6C5CE7;
+}
+
+.wrongbook-sub-item .sub-num {
+    font-weight: 700;
+    color: #1E293B;
+}
+
+/* ===== 区块 ===== */
+.wrongbook-section {
+    margin: 20px 16px 0;
+}
+
+.wrongbook-section-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1E293B;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.wrongbook-section-title svg {
+    width: 18px;
+    height: 18px;
+    stroke: #6C5CE7;
+    stroke-width: 2;
+}
+
+/* ===== 分布统计 - 紧凑一行 ===== */
+.wrongbook-distribution {
+    display: flex;
+    gap: 0;
+    background: white;
+    border-radius: 14px;
+    padding: 14px 8px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+
+.dist-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    padding: 4px 0;
+}
+
+.dist-item:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 4px;
+    bottom: 4px;
+    width: 1px;
+    background: #F1F5F9;
+}
+
+.dist-item:active {
+    transform: scale(0.97);
+}
+
+.dist-count {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1E293B;
+    line-height: 1;
+}
+
+.dist-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: #94A3B8;
+}
+
+.dist-label.vocab { color: #6C5CE7; }
+.dist-label.grammar { color: #F39C12; }
+.dist-label.reading { color: #10B981; }
+.dist-label.listening { color: #8B5CF6; }
+
+/* ===== 筛选栏 ===== */
+.wrongbook-filter-bar {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+}
+
+.wrongbook-filter-bar::-webkit-scrollbar {
+    display: none;
+}
+
+.filter-tag {
+    flex-shrink: 0;
+    padding: 8px 16px;
+    background: white;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #64748B;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid #E2E8F0;
+}
+
+.filter-tag.active {
+    background: #6C5CE7;
+    color: white;
+    border-color: #6C5CE7;
+}
+
+.filter-tag:active {
+    transform: scale(0.96);
+}
+
+/* ===== 空状态 ===== */
+.wrongbook-empty {
+    text-align: center;
+    padding: 60px 24px 40px;
+}
+
+.wrongbook-empty .empty-icon {
+    width: 88px;
+    height: 88px;
+    background: #F3F0FF;
+    border-radius: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+}
+
+.wrongbook-empty .empty-icon svg {
+    width: 40px;
+    height: 40px;
+    color: #6C5CE7;
+}
+
+.wrongbook-empty .empty-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #1E293B;
+    margin-bottom: 8px;
+}
+
+.wrongbook-empty .empty-desc {
+    font-size: 14px;
+    color: #94A3B8;
+    margin-bottom: 32px;
+    line-height: 1.5;
+}
+
+.wrongbook-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+/* ===== 错题卡片 ===== */
+.wrong-card {
+    background: white;
+    border-radius: 16px;
+    padding: 18px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+
+.wrong-card.vocab { border-left: 3px solid #6C5CE7; }
+.wrong-card.grammar { border-left: 3px solid #F39C12; }
+.wrong-card.reading { border-left: 3px solid #10B981; }
+.wrong-card.listening { border-left: 3px solid #8B5CF6; }
+
+.wrong-card:active {
+    transform: scale(0.99);
+}
+
+.wrong-card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.wrong-type-tag {
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    color: white;
+}
+
+.wrong-type-tag.vocab { background: #6C5CE7; }
+.wrong-type-tag.grammar { background: #F39C12; }
+.wrong-type-tag.reading { background: #10B981; }
+.wrong-type-tag.listening { background: #8B5CF6; }
+
+.wrong-reviewed-badge {
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 500;
+    background: #D1FAE5;
+    color: #059669;
+}
+
+.wrong-date {
+    margin-left: auto;
+    font-size: 11px;
+    color: #94A3B8;
+}
+
+.wrong-question {
+    font-size: 14px;
+    color: #1E293B;
+    line-height: 1.6;
+    margin-bottom: 12px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.wrong-answer-compare {
+    display: flex;
+    gap: 16px;
+    font-size: 12px;
+    padding: 10px 12px;
+    background: #F8FAFC;
+    border-radius: 10px;
+}
+
+.your-answer.wrong { color: #EF4444; }
+.correct-answer.right { color: #10B981; }
+
+/* ===== 展开详情 ===== */
+.wrong-detail {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #F1F5F9;
+    display: none;
+}
+
+.wrong-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.wrong-option {
+    padding: 12px 14px;
+    background: #F8FAFC;
+    border-radius: 10px;
+    font-size: 13px;
+    color: #1E293B;
+    line-height: 1.5;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.wrong-option.option-correct {
+    background: #D1FAE5;
+    color: #065F46;
+}
+
+.wrong-option.option-wrong {
+    background: #FEE2E2;
+    color: #991B1B;
+}
+
+.opt-key {
+    font-weight: 600;
+    flex-shrink: 0;
+    width: 20px;
+}
+
+.wrong-explanation {
+    background: #F8FAFC;
+    border-radius: 10px;
+    padding: 14px;
+    margin-bottom: 16px;
+    border-left: 3px solid #6C5CE7;
+}
+
+.exp-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #6C5CE7;
+    margin-bottom: 8px;
+}
+
+.exp-content {
+    font-size: 13px;
+    color: #475569;
+    line-height: 1.6;
+}
+
+.wrong-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.action-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.action-btn svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+.action-btn.ai-btn {
+    background: #6C5CE7;
+    color: white;
+}
+
+.action-btn.ai-btn:active {
+    transform: scale(0.97);
+}
+
+.action-btn.master-btn {
+    background: #10B981;
+    color: white;
+}
+
+.action-btn.master-btn:active {
+    transform: scale(0.97);
+    background: #059669;
+}
+
+/* ===== 角标 ===== */
+.wrong-book-badge {
+    display: none;
+    min-width: 18px;
+    height: 18px;
+    background: #EF4444;
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 9px;
+    padding: 0 5px;
+    line-height: 18px;
+    text-align: center;
+    margin-left: auto;
+}
+
+/* ===== 变式训练入口 ===== */
+.variant-entrance-card {
+    margin-top: 20px;
+    background: white;
+    border-radius: 16px;
+    padding: 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+
+.variant-entrance-card:active {
+    transform: scale(0.99);
+}
+
+.variant-entrance-icon {
+    width: 44px;
+    height: 44px;
+    background: #F3F0FF;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.variant-entrance-icon svg {
+    width: 22px;
+    height: 22px;
+    color: #6C5CE7;
+}
+
+.variant-entrance-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.variant-entrance-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1E293B;
+    margin-bottom: 2px;
+}
+
+.variant-entrance-desc {
+    font-size: 12px;
+    color: #94A3B8;
+}
+
+.variant-entrance-count {
+    flex-shrink: 0;
+}
+
+.variant-count-badge {
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    background: #F3F0FF;
+    color: #6C5CE7;
+}
+
+/* ===== 底部间距 ===== */
+.wrongbook-bottom-spacer {
+    height: 24px;
+}
