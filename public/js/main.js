@@ -6195,7 +6195,17 @@ function showCurrentQuestion() {
         html += '<div class="diag-passage-wrap">' +
             '<div class="diag-passage-toggle" onclick="togglePassage(this)">📖 点击展开阅读原文 <span class="toggle-arrow">▼</span></div>' +
             '<div class="diag-passage-content" style="display:none">' +
-            '<div class="diag-passage-text">' + escapeHtml(q._passageText) + '</div>' +
+            (function() {
+                var parts = q._passageText.split('\n');
+                var title = parts[0];
+                var body = parts.slice(1).join('\n');
+                var html = '<div class="diag-passage-title">' + escapeHtml(title) + '</div>';
+                if (body.trim()) {
+                    html += '<div class="diag-passage-divider"></div>';
+                    html += '<div class="diag-passage-body">' + escapeHtml(body) + '</div>';
+                }
+                return html;
+            })() +
             '</div>' +
         '</div>';
     }

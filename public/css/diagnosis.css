@@ -1704,3 +1704,25 @@
     font-size: 13px;
     color: #94A3B8;
 }
+
+/* 阅读原文标题样式 */
+.diag-passage-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1e293b;
+    padding: 10px 14px 0;
+    text-align: center;
+}
+.diag-passage-divider {
+    width: 40px;
+    height: 2px;
+    background: linear-gradient(90deg, #8b5cf6, #6366f1);
+    border-radius: 1px;
+    margin: 10px auto;
+}
+.diag-passage-body {
+    padding: 0 14px 14px;
+    font-size: 13px;
+    line-height: 1.8;
+    color: #475569;
+}
