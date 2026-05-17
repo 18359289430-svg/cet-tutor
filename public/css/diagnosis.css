@@ -1023,3 +1023,119 @@
     -webkit-overflow-scrolling: touch;
     padding: 20px 16px;
 }
+
+/* ===== 自评问卷样式 ===== */
+.diag-eval-section {
+    padding: 20px 16px;
+}
+
+.diag-eval-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1E293B;
+    text-align: center;
+    margin-bottom: 4px;
+}
+
+.diag-eval-subtitle {
+    font-size: 13px;
+    color: #94A3B8;
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.diag-eval-item {
+    margin-bottom: 20px;
+}
+
+.diag-eval-label {
+    font-size: 15px;
+    font-weight: 600;
+    color: #334155;
+    margin-bottom: 10px;
+}
+
+.diag-eval-options {
+    display: flex;
+    gap: 10px;
+}
+
+.diag-eval-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 14px 8px;
+    background: white;
+    border: 2px solid #E2E8F0;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.diag-eval-btn:active {
+    transform: scale(0.97);
+}
+
+.diag-eval-btn.selected {
+    border-color: #6C5CE7;
+    background: #F3F0FF;
+}
+
+.diag-eval-btn .eval-letter {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #F1F5F9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    color: #64748B;
+}
+
+.diag-eval-btn.selected .eval-letter {
+    background: #6C5CE7;
+    color: white;
+}
+
+.diag-eval-btn .eval-desc {
+    font-size: 13px;
+    color: #64748B;
+}
+
+.diag-eval-btn.selected .eval-desc {
+    color: #6C5CE7;
+    font-weight: 600;
+}
+
+.diag-generate-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 16px;
+    margin-top: 24px;
+    background: linear-gradient(135deg, #6C5CE7 0%, #A29BFE 100%);
+    color: white;
+    border: none;
+    border-radius: 16px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 16px rgba(108, 92, 231, 0.3);
+}
+
+.diag-generate-btn:disabled {
+    background: #CBD5E1;
+    box-shadow: none;
+    cursor: not-allowed;
+}
+
+.diag-generate-btn:active:not(:disabled) {
+    transform: scale(0.98);
+}
