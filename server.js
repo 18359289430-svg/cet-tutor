@@ -335,8 +335,46 @@ function searchQuiz(keyword, type, limit) {
     return pool.slice(0, limit);
 }
 
+
+// ===== 考试类型检测辅助函数 =====
+function detectExamType(message, contextPrefix) {
+    contextPrefix = contextPrefix || '';
+    // 优先检测消息中的[当前模式：六级备考]标记
+    if (message.includes('[当前模式：六级备考]') || contextPrefix.includes('[当前模式：六级备考]')) {
+        return 'cet6';
+    }
+    // 其次检测消息中是否包含"六级"关键词
+    if (message.includes('六级') || contextPrefix.includes('六级')) {
+        return 'cet6';
+    }
+    // 默认四级
+    return 'cet4';
+}
+
+function getExamContext(isCet6) {
+    var examLabel = isCet6 ? '六级' : '四级';
+    var wordCountReq = isCet6 ? '150-200词' : '120-180词';
+    var vocabLevel = isCet6 ? '6000' : '4500';
+    return {
+        examLabel: examLabel,
+        wordCountReq: wordCountReq,
+        vocabLevel: vocabLevel,
+        systemPrompt: isCet6 
+            ? '\n\n【重要】当前用户正在备考六级，所有出题必须按六级标准：词汇量6000、推理深度2-3步、选项更隐蔽、逻辑结构更完整。'
+            : ''
+    };
+}
+
 function buildRagContext(userMessage, personality, weakDims, dimScores, wrongSummary, studyDays) {
     var context = '';
+    // 检测考试类型
+    var isCet6 = detectExamType(userMessage, personality);
+    var examCtx = getExamContext(isCet6);
+    var examLabel = examCtx.examLabel;
+    
+    // 考试类型提示
+    context += '\n\n[考试类型]' + examLabel + '备考';
+    
     var searchType = '';
     var weakDimsList = weakDims || [];
     if (weakDimsList.length > 0) {
@@ -1052,12 +1090,14 @@ async function handleApi(req, res, pathname) {
             // 激活码格式: CET4S-XXXXX-YYYY（前缀-随机码-16位签名）
             // 签名 = HMAC-SHA256(前缀-随机码, SECRET_KEY) 的前16位
             // 也兼容无签名格式 CET4S-XXXXX（用于管理员手动创建的订单）
-            const planMatch = codeTrimmed.match(/^(CET4T|CET4S|CET4F|CET4R|CET4P)-([A-Z0-9]+)(?:-([A-Z0-9]{6}))?$/);
+            const planMatch = codeTrimmed.match(/^(CET4T|CET4S|CET4F|CET4R|CET4P|CET6D|CET6S|CET6F)-([A-Z0-9]+)(?:-([A-Z0-9]{6}))?$/);
             if (planMatch) {
                 let plan = 'sprint';
-                if (planMatch[1] === 'CET4F') plan = 'flagship';
+                var isCet6Code = planMatch[1].startsWith('CET6');
+                var plans = isCet6Code ? PLANS_CET6 : PLANS;
+                if (planMatch[1] === 'CET4F' || planMatch[1] === 'CET6F') plan = 'flagship';
                 else if (planMatch[1] === 'CET4P') plan = 'flagship';
-                // CET4T, CET4R, CET4S 都是 sprint
+                // CET4T, CET4R, CET4S, CET6D 都是 sprint
 
                 const prefix = planMatch[1];
                 const randomPart = planMatch[2];
@@ -1093,7 +1133,7 @@ async function handleApi(req, res, pathname) {
                     existingOrder.activatedAt = Date.now();
                     existingOrder.token = token;
 
-                    console.log(`[激活码激活] ${codeTrimmed} - ${PLANS[plan].name}`);
+                    console.log(`[激活码激活] ${codeTrimmed} - ${plans[plan].name}`);
 
                     return sendJson(res, 200, {
                         success: true,
@@ -1114,7 +1154,7 @@ async function handleApi(req, res, pathname) {
                 orders.set(orderId, {
                     orderId,
                     plan,
-                    amount: PLANS[plan].price,
+                    amount: plans[plan].price,
                     status: 'activated',
                     createdAt: Date.now(),
                     activatedAt: Date.now(),
@@ -1123,7 +1163,7 @@ async function handleApi(req, res, pathname) {
                 });
 
                 saveOrders();
-                console.log(`[激活码激活] ${orderId} - ${PLANS[plan].name}`);
+                console.log(`[激活码激活] ${orderId} - ${plans[plan].name}`);
 
                 return sendJson(res, 200, {
                     success: true,
@@ -1295,9 +1335,14 @@ async function handleApi(req, res, pathname) {
 
             try {
                 // 构建评分prompt
-                const prompt = `你是一位四级考试写作评分专家。请对以下作文进行评分。
+                // 检测考试类型
+            const lastMsg = messages && messages.length > 0 ? messages[messages.length - 1].content : '';
+            const isCet6 = detectExamType(lastMsg, '');
+            const examCtx = getExamContext(isCet6);
+            
+            const prompt = `你是一位${examCtx.examLabel}考试写作评分专家。请对以下作文进行评分。
 题目：${title || 'CET-4写作'}
-要求：${description || '请根据题目要求完成一篇120-180词的作文'}
+要求：${description || '请根据题目要求完成一篇' + examCtx.wordCountReq + '的作文'}
 学生作文：
 ${user_input}
 
@@ -1314,7 +1359,7 @@ ${user_input}
                 const dsPayload = {
                     model: 'deepseek-chat',
                     messages: [
-                        { role: 'system', content: '你是一位专业、严谨的四级写作评分专家。你必须严格按照格式返回JSON结果，不要包含任何markdown代码块标记。' },
+                        { role: 'system', content: '你是一位专业、严谨的' + examCtx.examLabel + '写作评分专家。你必须严格按照格式返回JSON结果，不要包含任何markdown代码块标记。' },
                         { role: 'user', content: prompt }
                     ],
                     temperature: 0.3,
@@ -1404,7 +1449,12 @@ ${user_input}
 
             try {
                 // 构建评分prompt
-                const prompt = `你是一位四级考试翻译评分专家。请对以下翻译进行评分。
+                // 检测考试类型
+            const lastMsgT = messages && messages.length > 0 ? messages[messages.length - 1].content : '';
+            const isCet6T = detectExamType(lastMsgT, '');
+            const examCtxT = getExamContext(isCet6T);
+            
+            const prompt = `你是一位${examCtxT.examLabel}考试翻译评分专家。请对以下翻译进行评分。
 中文原文：
 ${chinese || ''}
 ${reference ? '参考译文：\n' + reference : ''}
@@ -1423,7 +1473,7 @@ ${user_input}
                 const dsPayload = {
                     model: 'deepseek-chat',
                     messages: [
-                        { role: 'system', content: '你是一位专业、严谨的四级翻译评分专家。你必须严格按照格式返回JSON结果，不要包含任何markdown代码块标记。' },
+                        { role: 'system', content: '你是一位专业、严谨的' + examCtxT.examLabel + '翻译评分专家。你必须严格按照格式返回JSON结果，不要包含任何markdown代码块标记。' },
                         { role: 'user', content: prompt }
                     ],
                     temperature: 0.3,
@@ -1625,7 +1675,12 @@ ${user_input}
                 }
 
                 // 构建DeepSeek prompt
-                var prompt = '你是四级备考AI教练。用户刚刚完成了一套15道阅读诊断题以及写作和翻译实测，请生成一份个性化的诊断报告。\n\n';
+                // 检测考试类型
+            var lastMsgReport = answers && answers.length > 0 ? JSON.stringify(answers) : '';
+            var isCet6Report = detectExamType(lastMsgReport, '');
+            var examCtxReport = getExamContext(isCet6Report);
+            var examLabelReport = examCtxReport.examLabel;
+            var prompt = '你是' + examLabelReport + '备考AI教练。用户刚刚完成了一套15道阅读诊断题以及写作和翻译实测，请生成一份个性化的诊断报告。\n\n';
                 prompt += '【用户答题情况】\n';
                 answers.forEach(function(a, idx) {
                     var isCorrect = a.userAnswer === a.correctAnswer ? '✓' : '✗';
@@ -1673,7 +1728,7 @@ ${user_input}
                 var dsPayload = {
                     model: 'deepseek-chat',
                     messages: [
-                        { role: 'system', content: '你是一位专业、幽默、温暖的四级备考AI教练。你的任务是根据用户的答题数据生成个性化的诊断报告。报告要既有专业性，又有趣味性，像朋友聊天一样自然。' },
+                        { role: 'system', content: '你是一位专业、幽默、温暖的' + examCtxReport.examLabel + '备考AI教练。你的任务是根据用户的答题数据生成个性化的诊断报告。报告要既有专业性，又有趣味性，像朋友聊天一样自然。' },
                         { role: 'user', content: prompt }
                     ],
                     temperature: 0.7,
@@ -1951,7 +2006,11 @@ ${user_input}
                 const userId = body.user_id || 'anonymous';
                 let ragCtx = '';
                 try { ragCtx = buildRagContext(messages[messages.length-1].content || '', userPersonality, weakDims, body.dim_scores, body.wrong_summary, body.study_days || 0); } catch(e) {}
-                const systemContent = COMPANION_SYSTEM_PROMPT + (ragCtx || '');
+                // 检测考试类型并注入到system prompt
+                var lastMsgChat = messages[messages.length-1] ? messages[messages.length-1].content : '';
+                var isCet6Chat = detectExamType(lastMsgChat, userPersonality);
+                var examCtxChat = getExamContext(isCet6Chat);
+                var systemContent = COMPANION_SYSTEM_PROMPT + (ragCtx || '') + examCtxChat.systemPrompt;
                 const payload = {
                     model: 'deepseek-chat',
                     messages: [{ role: 'system', content: systemContent }, ...messages.slice(-10)],
@@ -2033,8 +2092,14 @@ ${user_input}
                 return sendJson(res, 400, { error: '作文内容太少' });
             }
             
+            // 检测考试类型
             var topicPrefix = topic ? '【题目类型】' + topic + '\n' : '';
-            var systemPrompt = '你是四级作文批改专家。请对以下作文进行批改，返回JSON格式：{"total_score": 数字(15分制), "content_score": 数字(5分制), "organization_score": 数字(5分制), "language_score": 数字(5分制), "sentences": [{"original": "原句", "issue": "问题说明", "suggestion": "修改建议"}], "overall_comment": "总评"} 只返回JSON，不要其他文字。';
+            var essayLastMsg = essay_text || '';
+            var isCet6Essay = detectExamType(essayLastMsg, topicPrefix);
+            var examCtxEssay = getExamContext(isCet6Essay);
+            var examLabelEssay = examCtxEssay.examLabel;
+            var wordCountReqEssay = examCtxEssay.wordCountReq;
+            var systemPrompt = '你是' + examLabelEssay + '作文批改专家。请对以下作文进行批改（' + wordCountReqEssay + '），返回JSON格式：{"total_score": 数字(15分制), "content_score": 数字(5分制), "organization_score": 数字(5分制), "language_score": 数字(5分制), "sentences": [{"original": "原句", "issue": "问题说明", "suggestion": "修改建议"}], "overall_comment": "总评"} 只返回JSON，不要其他文字。';
             
             try {
                 const resp = await fetch(DEEPSEEK_API_BASE + '/chat/completions', {
@@ -2105,11 +2170,22 @@ ${user_input}
         // GET /api/quiz/random - 随机获取真题（每日一练用，支持自适应推题）
         if (pathname === '/api/quiz/random' && req.method === 'GET') {
             try {
-                const csvPath = path.join(__dirname, 'data', 'quiz_questions.json');
+                // 检测考试类型参数
+                const examTypeParam = url.searchParams.get('type') || '';
+                const isCet6Quiz = examTypeParam === 'cet6' || examTypeParam.includes('六级');
+                const quizFileName = isCet6Quiz ? 'cet6_quiz_questions.json' : 'quiz_questions.json';
+                const csvPath = path.join(__dirname, 'data', quizFileName);
+                var questions;
                 if (!fs.existsSync(csvPath)) {
-                    return sendJson(res, 200, { code: 0, data: null, msg: '题库文件不存在' });
+                    // 如果六级题库不存在，fallback到四级题库
+                    const fallbackPath = path.join(__dirname, 'data', 'quiz_questions.json');
+                    if (!fs.existsSync(fallbackPath)) {
+                        return sendJson(res, 200, { code: 0, data: null, msg: '题库文件不存在' });
+                    }
+                    questions = JSON.parse(fs.readFileSync(fallbackPath, 'utf-8'));
+                } else {
+                    questions = JSON.parse(fs.readFileSync(csvPath, 'utf-8'));
                 }
-                const questions = JSON.parse(fs.readFileSync(csvPath, 'utf-8'));
                 const type = url.searchParams.get('type'); // 可选：按题型筛选
                 // 自适应推题：接收用户五维分数
                 const dimsParam = url.searchParams.get('dims'); // 格式: 细节定位:60,推理判断:50,同义替换:70,主旨归纳:55,态度判断:45
