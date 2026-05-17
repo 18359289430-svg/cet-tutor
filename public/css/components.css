@@ -90,8 +90,16 @@
         .detail-advice p { font-size: 13px; color: var(--text-secondary); line-height: 1.7; }
         .detail-actions { display: flex; gap: 10px; }
         .detail-actions button { flex: 1; padding: 14px; border-radius: 14px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; border: none; }
-        .btn-start-detail { background: var(--primary); color: white; }
+        .btn-start-detail { 
+            background: linear-gradient(135deg, #6C5CE7, #A29BFE); 
+            color: white; 
+            font-weight: 700;
+            font-size: 15px;
+            padding: 16px;
+            box-shadow: 0 4px 16px rgba(108, 92, 231, 0.35);
+        }
         .btn-start-detail:active { transform: scale(0.97); }
+        .btn-start-detail:hover { background: linear-gradient(135deg, #5B4BD5, #9189F5); }
         .btn-close-detail { background: #F1F5F9; color: var(--text-secondary); }
         
         /* Toast */
