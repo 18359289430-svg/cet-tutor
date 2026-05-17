@@ -5748,16 +5748,16 @@ function showSelfEval() {
                 '<div class="diag-eval-label">🎧 听力能力</div>' +
                 '<div class="diag-eval-options">' +
                     '<div class="diag-eval-btn" onclick="selectEval(this, \'听力\', \'A\')">' +
-                        '<div class="eval-letter">A</div><div class="eval-desc">较好</div>' +
+                        '<div class="eval-letter">A</div><div class="eval-desc">较好</div><div class="eval-sub">比较有信心</div>' +
                     '</div>' +
                     '<div class="diag-eval-btn" onclick="selectEval(this, \'听力\', \'B\')">' +
-                        '<div class="eval-letter">B</div><div class="eval-desc">中等</div>' +
+                        '<div class="eval-letter">B</div><div class="eval-desc">一般</div><div class="eval-sub">勉强过得去</div>' +
                     '</div>' +
                     '<div class="diag-eval-btn" onclick="selectEval(this, \'听力\', \'C\')">' +
-                        '<div class="eval-letter">C</div><div class="eval-desc">较弱</div>' +
+                        '<div class="eval-letter">C</div><div class="eval-desc">较弱</div><div class="eval-sub">经常吃力</div>' +
                     '</div>' +
                     '<div class="diag-eval-btn" onclick="selectEval(this, \'听力\', \'D\')">' +
-                        '<div class="eval-letter">D</div><div class="eval-desc">比较薄弱</div>' +
+                        '<div class="eval-letter">D</div><div class="eval-desc">薄弱</div><div class="eval-sub">基本不会</div>' +
                     '</div>' +
                 '</div>' +
             '</div>' +
@@ -5766,16 +5766,16 @@ function showSelfEval() {
                 '<div class="diag-eval-label">✍️ 写作能力</div>' +
                 '<div class="diag-eval-options">' +
                     '<div class="diag-eval-btn" onclick="selectEval(this, \'写作\', \'A\')">' +
-                        '<div class="eval-letter">A</div><div class="eval-desc">较好</div>' +
+                        '<div class="eval-letter">A</div><div class="eval-desc">较好</div><div class="eval-sub">比较有信心</div>' +
                     '</div>' +
                     '<div class="diag-eval-btn" onclick="selectEval(this, \'写作\', \'B\')">' +
-                        '<div class="eval-letter">B</div><div class="eval-desc">中等</div>' +
+                        '<div class="eval-letter">B</div><div class="eval-desc">一般</div><div class="eval-sub">勉强过得去</div>' +
                     '</div>' +
                     '<div class="diag-eval-btn" onclick="selectEval(this, \'写作\', \'C\')">' +
-                        '<div class="eval-letter">C</div><div class="eval-desc">较弱</div>' +
+                        '<div class="eval-letter">C</div><div class="eval-desc">较弱</div><div class="eval-sub">经常吃力</div>' +
                     '</div>' +
                     '<div class="diag-eval-btn" onclick="selectEval(this, \'写作\', \'D\')">' +
-                        '<div class="eval-letter">D</div><div class="eval-desc">比较薄弱</div>' +
+                        '<div class="eval-letter">D</div><div class="eval-desc">薄弱</div><div class="eval-sub">基本不会</div>' +
                     '</div>' +
                 '</div>' +
             '</div>' +
@@ -5784,16 +5784,16 @@ function showSelfEval() {
                 '<div class="diag-eval-label">🔄 翻译能力</div>' +
                 '<div class="diag-eval-options">' +
                     '<div class="diag-eval-btn" onclick="selectEval(this, \'翻译\', \'A\')">' +
-                        '<div class="eval-letter">A</div><div class="eval-desc">较好</div>' +
+                        '<div class="eval-letter">A</div><div class="eval-desc">较好</div><div class="eval-sub">比较有信心</div>' +
                     '</div>' +
                     '<div class="diag-eval-btn" onclick="selectEval(this, \'翻译\', \'B\')">' +
-                        '<div class="eval-letter">B</div><div class="eval-desc">中等</div>' +
+                        '<div class="eval-letter">B</div><div class="eval-desc">一般</div><div class="eval-sub">勉强过得去</div>' +
                     '</div>' +
                     '<div class="diag-eval-btn" onclick="selectEval(this, \'翻译\', \'C\')">' +
-                        '<div class="eval-letter">C</div><div class="eval-desc">较弱</div>' +
+                        '<div class="eval-letter">C</div><div class="eval-desc">较弱</div><div class="eval-sub">经常吃力</div>' +
                     '</div>' +
                     '<div class="diag-eval-btn" onclick="selectEval(this, \'翻译\', \'D\')">' +
-                        '<div class="eval-letter">D</div><div class="eval-desc">比较薄弱</div>' +
+                        '<div class="eval-letter">D</div><div class="eval-desc">薄弱</div><div class="eval-sub">基本不会</div>' +
                     '</div>' +
                 '</div>' +
             '</div>' +
@@ -5863,11 +5863,11 @@ async function generateDiagReport() {
         };
         diagState.selfEval.forEach(function(item) {
             if (item.dimension === '听力') {
-                selfAssessment.listening = item.answer === 'A' ? '较好' : item.answer === 'B' ? '中等' : item.answer === 'C' ? '较弱' : '薄弱';
+                selfAssessment.listening = item.answer === 'A' ? '较好' : item.answer === 'B' ? '一般' : item.answer === 'C' ? '较弱' : '薄弱';
             } else if (item.dimension === '写作') {
-                selfAssessment.writing = item.answer === 'A' ? '较好' : item.answer === 'B' ? '中等' : item.answer === 'C' ? '较弱' : '薄弱';
+                selfAssessment.writing = item.answer === 'A' ? '较好' : item.answer === 'B' ? '一般' : item.answer === 'C' ? '较弱' : '薄弱';
             } else if (item.dimension === '翻译') {
-                selfAssessment.translation = item.answer === 'A' ? '较好' : item.answer === 'B' ? '中等' : item.answer === 'C' ? '较弱' : '薄弱';
+                selfAssessment.translation = item.answer === 'A' ? '较好' : item.answer === 'B' ? '一般' : item.answer === 'C' ? '较弱' : '薄弱';
             }
         });
         
