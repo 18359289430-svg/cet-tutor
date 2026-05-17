@@ -392,7 +392,7 @@ function buildRagContext(userMessage, personality, weakDims, dimScores, wrongSum
 }
 
 // ===== 陪练系统提示词 =====
-const COMPANION_SYSTEM_PROMPT = "你是"小过学长"的AI陪练模式，一个温暖又专业的四六级备考私教。根据用户的题目和对话内容，自动判断是四级还是六级，并使用对应的难度和词汇。
+const COMPANION_SYSTEM_PROMPT = `你是"小过学长"的AI陪练模式，一个温暖又专业的四六级备考私教。根据用户的题目和对话内容，自动判断是四级还是六级，并使用对应的难度和词汇。
 
 ## 核心原则：让用户觉得"AI懂我、我能进步、省时间"
 
@@ -462,12 +462,12 @@ AI必须：
 2. 用户再错 → 直接给完整解析
 
 **解析格式**（必须包含解题套路）：
-```
+\`\`\`
 ❌错误，正确答案是X。
 解析：[定位技巧+考点]
 💡解题套路：[可复用的方法]
 下次遇到这类题，你会先找什么？
-```
+\`\`\`
 
 **常用解题套路**：
 - 细节题：定位关键词 → 比对同义替换 → 排除原词干扰项
@@ -514,14 +514,14 @@ AI必须：
 - 提供改前vs改后对比
 
 **写作批改格式（用户不耐烦时直接用这个）**：
-```
+\`\`\`
 📝 批改结果：
 预估分数：X/15
 ✅ 命中关键词：xxx
 ❌ 遗漏关键词：xxx
 🔧 语法修正：xxx → yyy
 💡 建议：xxx
-```
+\`\`\`
 
 ## 【出题质量标准-第三层升级】
 
@@ -545,7 +545,7 @@ AI必须：
 
 **生成选项后，执行以下自检**：
 
-```
+\`\`\`
 自检步骤：
 1. 答案是否唯一且无歧义？ → 如有多个合理答案，重新设计
 2. 干扰项是否都有一定迷惑性但不正确？ → 太明显的错项要重写
@@ -556,7 +556,7 @@ AI必须：
 5. 选项长度是否均衡？ → 调整至相近
 
 如任何一项不通过，重新出题
-```
+\`\`\`
 
 ### 3. 答案校验层（防止歧义）
 
@@ -573,7 +573,7 @@ AI必须：
 ### 4. 难度标注（每题必标）
 
 在题目后附加：
-`难度：⭐基础 / ⭐⭐中等 / ⭐⭐⭐进阶 | 考点：细节定位/推理判断/词汇理解/态度推断/主旨归纳`
+\`难度：⭐基础 / ⭐⭐中等 / ⭐⭐⭐进阶 | 考点：细节定位/推理判断/词汇理解/态度推断/主旨归纳\`
 
 - ⭐基础：定位原文、同义替换、词汇辨认
 - ⭐⭐中等：简单推理、理解作者态度
@@ -670,7 +670,7 @@ A. 选项A B. 选项B C. 选项C D. 选项D
 ## 写作批改格式（当用户说"批改作文"时使用）
 **第一步**：让用户发送作文内容和题目要求
 **第二步**：收到后按四级评分标准批改，返回格式：
-```
+\`\`\`
 📝 作文批改结果：
 总分：X/15
 - 内容：X/5 - 简评
@@ -687,19 +687,19 @@ A. 选项A B. 选项B C. 选项C D. 选项D
    因：形容词作主语不对，需用名词形式
 
 💡 总评：一句话
-```
+\`\`\`
 
 ## 翻译批改格式
 **用户发送**："翻译原文 + 自己的译文"
 **AI批改格式**：
-```
+\`\`\`
 📝 翻译批改：
 预估分数：X/15
 ✅ 命中关键词：xxx, xxx
 ❌ 遗漏关键词：xxx, xxx
 🔧 语法修正：xxx → yyy
 💡 建议：一句话
-```
+\`\`\`
 
 ## 错题分析指引
 当用户说"分析错题"时：
@@ -801,34 +801,7 @@ A. 选项A B. 选项B C. 选项C D. 选项D
 **回复字数控制**：
 - 普通回复：200字内
 - 出变式题时：300字内
-";
-
-
-
-## 【变式题规则】答错自动出同类题巩固
-当用户答错一道题时，在解析完错题后必须：
-1. **先完整解析**：说明正确答案、错误原因、解题套路
-2. **自然引出变式题**：说类似"这个考点换个考法你试试？"或"再练一道同类型的巩固一下？"
-3. **出2-3道变式题，难度递进**：
-   - 第一道：同考点同难度，换题干
-   - 第二道：同考点稍难，或换角度考查
-   - 第三道（如需要）：综合运用
-4. **等用户回答后再出下一道**，不要一次出完
-5. **自然融入对话**，不要生硬地出题
-6. **不要强制**：如果用户明确想聊别的（问其他问题、想休息等），不要硬塞变式题，直接回应用户需求
-
-**变式题示例**：
-用户：答错了"原因是..."（解析完成后）
-AI：❌正确答案是B。这道题考的是因果定位...
-💡解题套路：原因题=找because/since/due to→定位因果词后的内容
-这个考点换个考法你试试？
-【题目】题干内容...
-A. 选项A B. 选项B C. 选项C D. 选项D
-请回答A/B/C/D
-
-**回复字数控制**：
-- 普通回复：200字内
-- 出变式题时：300字内
+`;
 
 async function handleApi(req, res, pathname) {
     const url = new URL(req.url, `http://localhost:${PORT}`);
@@ -2245,6 +2218,177 @@ ${user_input}
 const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY || '';
 const DEEPSEEK_API_BASE = 'https://api.deepseek.com/v1';
 
+// ===== 出题答案校验配置 =====
+const VALIDATION_CONFIG = {
+    maxRetries: 1,           // 最多重试1次
+    timeout: 5000,           // 校验超时5秒
+    // 出题标记模式
+    questionPatterns: [
+        /【题目】/,
+        /【听力题】/,
+        /A\.\s*.{3,}/,
+        /B\.\s*.{3,}/,
+        /C\.\s*.{3,}/,
+        /D\.\s*.{3,}/
+    ]
+};
+
+// 校验 prompt（简短，控制token消耗）
+const VALIDATION_PROMPT = `你是一个题目质量审核员。请审核以下选择题是否合理：
+
+题目：{question}
+A. {optionA}
+B. {optionB}
+C. {optionC}
+D. {optionD}
+正确答案：{answer}
+
+请判断以下问题，回答"是"或"否"：
+1. 是否有多个选项都能合理作为答案？
+2. 干扰项是否都有迷惑性而非明显错误？
+3. 正确答案是否明显比其他选项长或短很多？
+
+如果任一答案为"是"，请给出修改建议。如果全部"否"，只回复"通过"。`;
+
+// 校验统计（用于日志）
+let validationStats = { passed: 0, failed: 0, skipped: 0, retries: 0 };
+
+/**
+ * 检测文本是否包含出题内容
+ */
+function isQuestionContent(text) {
+    if (!text || typeof text !== 'string') return false;
+    let matchCount = 0;
+    for (const pattern of VALIDATION_CONFIG.questionPatterns) {
+        if (pattern.test(text)) matchCount++;
+    }
+    // 至少匹配2个模式才认为是出题内容
+    return matchCount >= 2;
+}
+
+/**
+ * 从文本中提取题目和选项
+ */
+function extractQuestion(text) {
+    const result = { question: '', options: {}, answer: '' };
+    
+    // 提取题目内容（匹配【题目】或【听力题】后的内容）
+    const questionMatch = text.match(/(?:【题目】|【听力题】)\s*([^\n【】]+(?:(?:\n(?!【)[^\n]+)?)*?)(?=\n\s*[A-D]\.|$)/s);
+    if (questionMatch) {
+        result.question = questionMatch[1].trim().replace(/\n/g, ' ');
+    }
+    
+    // 提取选项 A B C D
+    const optionMatches = text.matchAll(/([A-D])\.\s*([^\n]{3,200})/g);
+    for (const match of optionMatches) {
+        result.options[match[1]] = match[2].trim();
+    }
+    
+    // 尝试提取答案（匹配"请回答A"、"答案是C"等）
+    const answerMatch = text.match(/(?:请(?:你)?回答|答案(?:是)?|正确(?:答案)?)\s*([A-D])/i);
+    if (answerMatch) {
+        result.answer = answerMatch[1].toUpperCase();
+    } else {
+        // 尝试从系统提示示例中推断答案（如果有的话）
+        const exampleMatch = text.match(/正确答案[：:]\s*([A-D])/i);
+        if (exampleMatch) {
+            result.answer = exampleMatch[1].toUpperCase();
+        }
+    }
+    
+    return result;
+}
+
+/**
+ * 校验题目质量
+ * @param {string} originalReply - AI原始回复
+ * @returns {object} - { valid: boolean, content: string, reason?: string }
+ */
+async function validateQuestion(originalReply) {
+    try {
+        const extracted = extractQuestion(originalReply);
+        
+        // 检查是否成功提取题目信息
+        if (!extracted.question || !extracted.options.A || !extracted.options.B || 
+            !extracted.options.C || !extracted.options.D || !extracted.answer) {
+            console.log('[校验] 跳过：无法完整提取题目信息');
+            validationStats.skipped++;
+            return { valid: true, content: originalReply, reason: 'extract_failed' };
+        }
+        
+        console.log('[校验] 检测到出题内容，开始校验...');
+        console.log(`[校验] 题目: ${extracted.question.substring(0, 50)}...`);
+        console.log(`[校验] 答案: ${extracted.answer}`);
+        
+        // 构建校验 prompt
+        const validationContent = VALIDATION_PROMPT
+            .replace('{question}', extracted.question)
+            .replace('{optionA}', extracted.options.A)
+            .replace('{optionB}', extracted.options.B)
+            .replace('{optionC}', extracted.options.C)
+            .replace('{optionD}', extracted.options.D)
+            .replace('{answer}', extracted.answer);
+        
+        // 发起校验请求（带超时保护）
+        const validatePayload = {
+            model: 'deepseek-chat',
+            messages: [{ role: 'user', content: validationContent }],
+            temperature: 0.1,
+            max_tokens: 500
+        };
+        
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), VALIDATION_CONFIG.timeout);
+        
+        try {
+            const resp = await fetch(DEEPSEEK_API_BASE + '/chat/completions', {
+                method: 'POST',
+                headers: { 'Authorization': 'Bearer ' + DEEPSEEK_API_KEY, 'Content-Type': 'application/json' },
+                body: JSON.stringify(validatePayload),
+                signal: controller.signal
+            });
+            
+            clearTimeout(timeoutId);
+            
+            if (!resp.ok) {
+                console.error('[校验] API请求失败:', resp.status);
+                validationStats.skipped++;
+                return { valid: true, content: originalReply, reason: 'api_error' };
+            }
+            
+            const data = await resp.json();
+            const validationResult = data.choices && data.choices[0] && data.choices[0].message 
+                ? data.choices[0].message.content.trim() : '';
+            
+            console.log('[校验] 校验结果:', validationResult.substring(0, 100));
+            
+            // 判断校验是否通过
+            if (validationResult.includes('通过')) {
+                validationStats.passed++;
+                console.log(`[校验] ✓ 通过 (累计: 通过${validationStats.passed}, 失败${validationStats.failed}, 跳过${validationStats.skipped})`);
+                return { valid: true, content: originalReply, reason: 'passed' };
+            } else {
+                validationStats.failed++;
+                console.log(`[校验] ✗ 未通过，需要重试 (累计: 通过${validationStats.passed}, 失败${validationStats.failed}, 跳过${validationStats.skipped})`);
+                return { valid: false, content: validationResult, reason: 'failed' };
+            }
+        } catch (fetchErr) {
+            clearTimeout(timeoutId);
+            if (fetchErr.name === 'AbortError') {
+                console.log('[校验] 超时，跳过校验');
+            } else {
+                console.error('[校验] 请求异常:', fetchErr.message);
+            }
+            validationStats.skipped++;
+            return { valid: true, content: originalReply, reason: 'timeout_or_error' };
+        }
+    } catch (err) {
+        console.error('[校验] 校验过程异常:', err.message);
+        validationStats.skipped++;
+        return { valid: true, content: originalReply, reason: 'exception' };
+    }
+}
+
 // 主服务器
 const html = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf-8');
 
@@ -2361,7 +2505,7 @@ function buildRagContext(userMessage, personality, weakDims, dimScores, wrongSum
     return context;
 }
 
-// POST /api/deepseek/chat - DeepSeek陪练对话
+// POST /api/deepseek/chat - DeepSeek陪练对话（带出题校验）
 async function handleDeepseekChat(req, res) {
     if (!DEEPSEEK_API_KEY) {
         return sendJson(res, 500, { error: 'DeepSeek API未配置' });
@@ -2389,72 +2533,103 @@ async function handleDeepseekChat(req, res) {
         const payload = {
             model: 'deepseek-chat',
             messages: [{ role: 'system', content: systemContent }, ...messages.slice(-10)],
-            stream: stream !== false,
+            stream: false,  // 统一使用非流式，便于校验
             temperature: 0.7,
             max_tokens: 800
         };
 
-        if (payload.stream) {
-            const resp = await fetch(DEEPSEEK_API_BASE + '/chat/completions', {
-                method: 'POST',
-                headers: { 'Authorization': 'Bearer ' + DEEPSEEK_API_KEY, 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
+        // 第一次调用：获取AI回复
+        const resp = await fetch(DEEPSEEK_API_BASE + '/chat/completions', {
+            method: 'POST',
+            headers: { 'Authorization': 'Bearer ' + DEEPSEEK_API_KEY, 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        
+        const data = await resp.json();
+        let reply = data.choices && data.choices[0] && data.choices[0].message 
+            ? data.choices[0].message.content : '';
+        const usage = data.usage || {};
+
+        // ===== 出题校验逻辑 =====
+        if (isQuestionContent(reply)) {
+            console.log('[校验] 检测到出题内容，准备校验...');
+            validationStats.retries = 0;
             
-            const contentType = resp.headers.get('content-type') || '';
-            
-            if (contentType.includes('text/event-stream')) {
-                // DeepSeek返回了SSE流，用reader转发（Web ReadableStream无pipe方法）
-                res.writeHead(200, {
-                    'Content-Type': 'text/event-stream',
-                    'Cache-Control': 'no-cache',
-                    'Connection': 'keep-alive',
-                    'X-Accel-Buffering': 'no'
-                });
-                const reader = resp.body.getReader();
-                async function pump() {
-                    try {
-                        while (true) {
-                            const { done, value } = await reader.read();
-                            if (done) { res.end(); break; }
-                            res.write(value);
-                        }
-                    } catch (err) {
-                        console.error('[DeepSeek Stream pump error]', err.message);
-                        res.end();
-                    }
-                }
-                pump();
-            } else {
-                // DeepSeek返回非流式JSON，手动转SSE格式
-                const data = await resp.json();
-                const content = data.choices && data.choices[0] && data.choices[0].message ? data.choices[0].message.content : '';
+            // 最多重试1次
+            while (validationStats.retries <= VALIDATION_CONFIG.maxRetries) {
+                const validation = await validateQuestion(reply);
                 
-                res.writeHead(200, {
-                    'Content-Type': 'text/event-stream',
-                    'Cache-Control': 'no-cache',
-                    'Connection': 'keep-alive',
-                    'X-Accel-Buffering': 'no'
+                if (validation.valid) {
+                    console.log('[校验] 校验通过或跳过，使用原始回复');
+                    break;
+                }
+                
+                validationStats.retries++;
+                console.log(`[校验] 第${validationStats.retries}次校验未通过，尝试重新出题...`);
+                
+                // 构建重试提示
+                const retryPrompt = `请重新出一道阅读理解选择题，替换以下有问题的题目。
+
+原题目问题：${validation.content}
+
+请出一道全新的、符合要求的阅读理解选择题：
+【题目】题干内容
+A. 选项A B. 选项B C. 选项C D. 选项D
+请回答A/B/C/D
+
+要求：
+1. 只有一个正确答案，其他三个选项都是合理的干扰项
+2. 四个选项长度相近，不能有明显差异
+3. 严格按照格式出题，不要额外说明`;
+                
+                // 重新调用AI生成
+                const retryPayload = {
+                    model: 'deepseek-chat',
+                    messages: [
+                        { role: 'system', content: systemContent },
+                        ...messages.slice(-10),
+                        { role: 'user', content: retryPrompt }
+                    ],
+                    temperature: 0.8,
+                    max_tokens: 800
+                };
+                
+                const retryResp = await fetch(DEEPSEEK_API_BASE + '/chat/completions', {
+                    method: 'POST',
+                    headers: { 'Authorization': 'Bearer ' + DEEPSEEK_API_KEY, 'Content-Type': 'application/json' },
+                    body: JSON.stringify(retryPayload)
                 });
                 
-                // 发送content作为单个delta
-                if (content) {
-                    res.write('data: ' + JSON.stringify({
-                        choices: [{ delta: { content: content } }]
-                    }) + '\n\n');
-                }
-                res.write('data: [DONE]\n\n');
-                res.end();
+                const retryData = await retryResp.json();
+                reply = retryData.choices && retryData.choices[0] && retryData.choices[0].message 
+                    ? retryData.choices[0].message.content : reply;
             }
-        } else {
-            const resp = await fetch(DEEPSEEK_API_BASE + '/chat/completions', {
-                method: 'POST',
-                headers: { 'Authorization': 'Bearer ' + DEEPSEEK_API_KEY, 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
+            
+            if (validationStats.retries > VALIDATION_CONFIG.maxRetries) {
+                console.log('[校验] 达到最大重试次数，使用最近一次回复');
+            }
+        }
+
+        // ===== 返回响应 =====
+        if (stream !== false) {
+            // 客户端要求流式响应，转为SSE格式
+            res.writeHead(200, {
+                'Content-Type': 'text/event-stream',
+                'Cache-Control': 'no-cache',
+                'Connection': 'keep-alive',
+                'X-Accel-Buffering': 'no'
             });
-            const data = await resp.json();
-            const reply = data.choices && data.choices[0] && data.choices[0].message ? data.choices[0].message.content : '';
-            sendJson(res, 200, { code: 0, data: { content: reply, usage: data.usage || {} } });
+            
+            if (reply) {
+                res.write('data: ' + JSON.stringify({
+                    choices: [{ delta: { content: reply } }]
+                }) + '\n\n');
+            }
+            res.write('data: [DONE]\n\n');
+            res.end();
+        } else {
+            // 非流式响应
+            sendJson(res, 200, { code: 0, data: { content: reply, usage: usage } });
         }
     } catch(e) {
         console.error('[DeepSeek Error]', e.message, e.stack);
