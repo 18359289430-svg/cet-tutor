@@ -5408,6 +5408,7 @@ function preloadLimitInfo() {
 
 // 五维维度配置
 const DIM_CONFIGS = {
+    '听力': { icon: '🎧', color: '#A29BFE', desc: '能否准确理解听力材料内容' },
     '细节定位': { icon: '🔍', color: '#6C5CE7', desc: '能否快速定位原文关键信息' },
     '推理判断': { icon: '🧠', color: '#00B894', desc: '能否从原文正确推导隐含信息' },
     '同义替换': { icon: '🔄', color: '#FDCB6E', desc: '能否识别选项与原文的同义表达' },
@@ -5578,7 +5579,15 @@ var diagState = {
     answers: [],
     selfEval: [],
     correctCount: 0,
-    phase: 'loading' // loading, questions, selfeval, generating, done
+    // 听力相关状态
+    listeningPassages: [],
+    currentListeningPassageIndex: 0,
+    currentListeningQIndex: 0,
+    listeningAnswers: [],
+    listeningCorrectCount: 0,
+    listeningPlayed: false,  // 是否已播放过
+    listeningReplayCount: 0,  // 重播次数
+    phase: 'loading' // loading, listening, questions, selfeval, generating, done
 };
 
 // 开始新诊断流程
@@ -5593,6 +5602,14 @@ async function startNewDiagnosis() {
         answers: [],
         selfEval: [],
         correctCount: 0,
+        // 听力相关状态
+        listeningPassages: [],
+        currentListeningPassageIndex: 0,
+        currentListeningQIndex: 0,
+        listeningAnswers: [],
+        listeningCorrectCount: 0,
+        listeningPlayed: false,
+        listeningReplayCount: 0,
         phase: 'loading'
     };
     
@@ -5633,12 +5650,20 @@ async function startNewDiagnosis() {
             return;
         }
         
-        diagState.questions = questions;
-        diagState.phase = 'questions';
-        document.getElementById('diag-progress-wrap').style.display = '';
-        
-        // 开始答题
-        showCurrentQuestion();
+        // 加载听力题目
+        if (result.listening_passages && result.listening_passages.length > 0) {
+            diagState.listeningPassages = result.listening_passages;
+            diagState.phase = 'listening';
+            document.getElementById('diag-progress-wrap').style.display = '';
+            // 开始听力测试
+            showCurrentListening();
+        } else {
+            // 没有听力题目，直接开始阅读
+            diagState.questions = questions;
+            diagState.phase = 'questions';
+            document.getElementById('diag-progress-wrap').style.display = '';
+            showCurrentQuestion();
+        }
         
     } catch(e) {
         console.error('[诊断加载失败]', e);
@@ -5657,6 +5682,578 @@ function renderDiagLoading(text) {
         '</div>';
 }
 
+
+// ========== 听力实测功能 ==========
+
+// TTS播放状态管理
+var listeningPlayer = {
+    isPlaying: false,
+    isPaused: false,
+    currentUtterances: [],
+    currentIndex: 0,
+    onComplete: null,
+    round: 1,  // 当前播放第几遍
+    maxRounds: 2  // 默认播放两遍
+};
+
+// 检查浏览器是否支持语音合成
+function isSpeechSynthesisSupported() {
+    return 'speechSynthesis' in window;
+}
+
+// 获取可用的英语语音
+var cachedVoices = null;
+var voicePromise = null;
+
+function loadVoices() {
+    if (cachedVoices) return Promise.resolve(cachedVoices);
+    if (voicePromise) return voicePromise;
+    
+    voicePromise = new Promise(function(resolve) {
+        if (!isSpeechSynthesisSupported()) {
+            resolve(null);
+            return;
+        }
+        var voices = speechSynthesis.getVoices();
+        if (voices.length > 0) {
+            cachedVoices = voices;
+            resolve(voices);
+        } else {
+            speechSynthesis.onvoiceschanged = function() {
+                cachedVoices = speechSynthesis.getVoices();
+                resolve(cachedVoices);
+            };
+            setTimeout(function() {
+                if (!cachedVoices) {
+                    cachedVoices = speechSynthesis.getVoices();
+                    resolve(cachedVoices || []);
+                }
+            }, 1000);
+        }
+    });
+    return voicePromise;
+}
+
+// 根据性别获取语音
+function getVoiceByGender(isMale, lang) {
+    return loadVoices().then(function(voices) {
+        if (!voices || voices.length === 0) return null;
+        
+        var enVoices = voices.filter(function(v) { return v.lang.startsWith('en'); });
+        
+        if (isMale) {
+            // 男声：优先找含"Male"或特定男声的
+            var maleVoice = enVoices.find(function(v) { 
+                var name = v.name.toLowerCase();
+                return (name.includes('male') || name.includes('daniel') || 
+                        name.includes('alex') || name.includes('mark') ||
+                        name.includes('david') || name.includes('tom')) && 
+                       v.lang.includes('US');
+            });
+            return maleVoice || enVoices[0];
+        } else {
+            // 女声：优先找含"Female"或特定女声的
+            var femaleVoice = enVoices.find(function(v) { 
+                var name = v.name.toLowerCase();
+                return (name.includes('female') || name.includes('samantha') || 
+                        name.includes('victoria') || name.includes('karen') ||
+                        name.includes('susan') || name.includes('zira')) && 
+                       v.lang.includes('US');
+            });
+            return femaleVoice || enVoices[0];
+        }
+    });
+}
+
+// 解析听力文本为句子片段
+function parseListeningText(text, isConversation) {
+    var segments = [];
+    
+    if (isConversation) {
+        // 对话格式：M: ... W: ... M: ... W: ...
+        var lines = text.split('\n');
+        var currentSpeaker = null;
+        var currentText = '';
+        
+        for (var i = 0; i < lines.length; i++) {
+            var line = lines[i].trim();
+            if (!line) continue;
+            
+            // 检测说话者
+            if (line.startsWith('M:') || line.startsWith('Man:') || line.startsWith('W:') || line.startsWith('Woman:')) {
+                // 保存之前的句子
+                if (currentText && currentSpeaker) {
+                    segments.push({
+                        text: currentText.trim(),
+                        isMale: currentSpeaker === 'M',
+                        pauseAfter: 1000  // 说话者切换时停顿1秒
+                    });
+                }
+                
+                // 提取说话内容
+                var colonIndex = line.indexOf(':');
+                currentSpeaker = line.substring(0, colonIndex) === 'W' || line.substring(0, colonIndex) === 'Woman' ? 'W' : 'M';
+                currentText = line.substring(colonIndex + 1).trim();
+            } else {
+                // 继续上一句
+                currentText += ' ' + line;
+            }
+        }
+        
+        // 保存最后一句
+        if (currentText && currentSpeaker) {
+            segments.push({
+                text: currentText.trim(),
+                isMale: currentSpeaker === 'M',
+                pauseAfter: 500
+            });
+        }
+    } else {
+        // 短文格式：按句子拆分
+        // 按句子分隔符拆分
+        var sentences = text.split(/(?<=[.!?])\s+/);
+        
+        for (var i = 0; i < sentences.length; i++) {
+            var s = sentences[i].trim();
+            if (!s) continue;
+            
+            var lastChar = s.charAt(s.length - 1);
+            var pauseAfter = 800;  // 默认句号停顿
+            
+            if (lastChar === ',') {
+                pauseAfter = 300;  // 逗号停顿
+            } else if (lastChar === '?') {
+                pauseAfter = 800;  // 问号停顿
+            } else if (lastChar === '!') {
+                pauseAfter = 800;  // 感叹号停顿
+            }
+            
+            // 最后一句后停顿短一点
+            if (i === sentences.length - 1) {
+                pauseAfter = 300;
+            }
+            
+            segments.push({
+                text: s,
+                isMale: false,  // 短文统一女声
+                pauseAfter: pauseAfter
+            });
+        }
+    }
+    
+    return segments;
+}
+
+// 播放一段完整的听力（支持多遍）
+function playListeningRound(text, isConversation, onSegmentStart, onComplete) {
+    return loadVoices().then(function() {
+        var segments = parseListeningText(text, isConversation);
+        var promises = [];
+        var currentPromise = Promise.resolve();
+        var self = this;
+        
+        function playSegment(index) {
+            if (index >= segments.length) {
+                return Promise.resolve();
+            }
+            
+            var seg = segments[index];
+            
+            return getVoiceByGender(seg.isMale, 'en-US').then(function(voice) {
+                return new Promise(function(resolve) {
+                    if (onSegmentStart) onSegmentStart(index, segments.length);
+                    
+                    var utterance = new SpeechSynthesisUtterance(seg.text);
+                    utterance.lang = 'en-US';
+                    utterance.rate = 0.85;  // 四级语速
+                    utterance.pitch = seg.isMale ? 0.9 : 1.1;  // 男女声调区分
+                    
+                    if (voice) {
+                        utterance.voice = voice;
+                    }
+                    
+                    utterance.onend = function() {
+                        // 停顿后播放下一句
+                        setTimeout(function() {
+                            resolve();
+                            playSegment(index + 1);
+                        }, seg.pauseAfter);
+                    };
+                    
+                    utterance.onerror = function(e) {
+                        console.error('[TTS片段错误]', e);
+                        setTimeout(function() {
+                            resolve();
+                            playSegment(index + 1);
+                        }, seg.pauseAfter);
+                    };
+                    
+                    speechSynthesis.speak(utterance);
+                });
+            });
+        }
+        
+        return playSegment(0);
+    }.bind(this));
+}
+
+// 停止当前播放
+function stopListeningPlayback() {
+    speechSynthesis.cancel();
+    listeningPlayer.isPlaying = false;
+    listeningPlayer.isPaused = false;
+    listeningPlayer.currentIndex = 0;
+}
+
+// 播放听力（自动播放两遍）
+function playListeningFull(text, isConversation, onComplete) {
+    // 停止之前的播放
+    stopListeningPlayback();
+    
+    if (!isSpeechSynthesisSupported()) {
+        showToast('您的浏览器不支持语音播放，请使用Chrome浏览器');
+        if (onComplete) onComplete();
+        return;
+    }
+    
+    listeningPlayer.isPlaying = true;
+    listeningPlayer.round = 1;
+    listeningPlayer.maxRounds = 2;
+    listeningPlayer.onComplete = onComplete;
+    
+    updatePlayButtonState('playing');
+    
+    function doRound(roundNum) {
+        if (roundNum > listeningPlayer.maxRounds) {
+            listeningPlayer.isPlaying = false;
+            updatePlayButtonState('ready');
+            diagState.listeningPlayed = true;
+            updateReplayButtonState();
+            if (listeningPlayer.onComplete) {
+                listeningPlayer.onComplete();
+            }
+            return;
+        }
+        
+        // 更新轮次提示
+        updateRoundIndicator(roundNum);
+        
+        // 播放一遍
+        playListeningRound(text, isConversation, function(index, total) {
+            // 每句开始时的回调（可用于更新UI）
+        }, function() {
+            // 一遍播放完毕
+            if (roundNum < listeningPlayer.maxRounds) {
+                // 停顿3秒后播第二遍
+                updateRoundIndicator(roundNum + 0.5);  // 中间态
+                setTimeout(function() {
+                    doRound(roundNum + 1);
+                }, 3000);
+            } else {
+                doRound(roundNum + 1);
+            }
+        });
+    }
+    
+    doRound(1);
+}
+
+// 更新播放按钮状态
+function updatePlayButtonState(state) {
+    var btn = document.getElementById('listening-play-btn');
+    if (!btn) return;
+    
+    if (state === 'playing') {
+        btn.classList.add('playing');
+        btn.innerHTML = '<span class="wave-container"><span></span><span></span><span></span></span>';
+    } else {
+        btn.classList.remove('playing');
+        btn.innerHTML = '<span class="play-icon">▶</span>';
+    }
+}
+
+// 更新轮次指示器
+function updateRoundIndicator(round) {
+    var indicator = document.getElementById('listening-round-indicator');
+    if (!indicator) return;
+    
+    if (round === 1) {
+        indicator.textContent = '第1遍播放中...';
+    } else if (round === 1.5) {
+        indicator.textContent = '准备第2遍...';
+    } else if (round === 2) {
+        indicator.textContent = '第2遍播放中...';
+    }
+}
+
+// 更新重播按钮状态
+function updateReplayButtonState() {
+    var btn = document.getElementById('listening-replay-btn');
+    var hint = document.getElementById('listening-hint');
+    if (!btn) return;
+    
+    var isVip = isPathVipUser();
+    var canReplay = isVip || diagState.listeningReplayCount === 0;
+    
+    btn.disabled = !canReplay;
+    
+    if (hint) {
+        if (diagState.listeningPlayed) {
+            hint.innerHTML = '✅ 已听完两遍';
+        } else {
+            hint.innerHTML = '点击播放听力';
+        }
+    }
+}
+
+// 计算当前听力题目的全局索引
+function getCurrentListeningGlobalIndex() {
+    var idx = 0;
+    for (var i = 0; i < diagState.currentListeningPassageIndex; i++) {
+        idx += diagState.listeningPassages[i].questions.length;
+    }
+    return idx + diagState.currentListeningQIndex;
+}
+
+// 获取听力总题数
+function getTotalListeningQuestions() {
+    var total = 0;
+    for (var i = 0; i < diagState.listeningPassages.length; i++) {
+        total += diagState.listeningPassages[i].questions.length;
+    }
+    return total;
+}
+
+// 显示当前听力题目
+function showCurrentListening() {
+    var passage = diagState.listeningPassages[diagState.currentListeningPassageIndex];
+    if (!passage) {
+        startReadingPhase();
+        return;
+    }
+    
+    var q = passage.questions[diagState.currentListeningQIndex];
+    if (!q) {
+        diagState.currentListeningPassageIndex++;
+        diagState.currentListeningQIndex = 0;
+        diagState.listeningPlayed = false;
+        diagState.listeningReplayCount = 0;
+        showCurrentListening();
+        return;
+    }
+    
+    var globalIndex = getCurrentListeningGlobalIndex();
+    var totalQuestions = getTotalListeningQuestions();
+    var progress = Math.round((globalIndex / totalQuestions) * 100);
+    var isConversation = passage.type === 'conversation';
+    
+    // 更新进度
+    document.getElementById('diag-progress-fill').style.width = progress + '%';
+    document.getElementById('diag-progress-text').textContent = '听力 第' + (globalIndex + 1) + '/' + totalQuestions + '题';
+    
+    // 获取VIP状态
+    var isVip = isPathVipUser();
+    var canReplay = isVip || diagState.listeningReplayCount === 0;
+    
+    // 构建HTML
+    var html = '<div class="listening-section">';
+    
+    // 听力材料区域
+    html += '<div class="listening-passage-card">';
+    html += '<div class="listening-passage-type">';
+    html += isConversation ? '🎧 短对话' : '📝 短文理解';
+    html += '</div>';
+    
+    // 播放控制区
+    html += '<div class="listening-player">';
+    html += '<div class="listening-wave" id="listening-wave">';
+    html += '<span></span><span></span><span></span><span></span><span></span>';
+    html += '</div>';
+    
+    // 播放按钮
+    html += '<button class="listening-play-btn" id="listening-play-btn" onclick="handlePlayClick()">';
+    html += '<span class="play-icon">▶</span>';
+    html += '</button>';
+    
+    // 提示文字
+    html += '<div class="listening-hint" id="listening-hint">点击播放听力</div>';
+    html += '</div>';
+    
+    // 轮次指示器
+    html += '<div class="listening-round-indicator" id="listening-round-indicator"></div>';
+    
+    // 再听一遍按钮
+    html += '<button class="listening-replay-btn" id="listening-replay-btn" onclick="handleReplayClick()" ' + (!canReplay ? 'disabled' : '') + '>';
+    html += '🔄 再听一遍';
+    if (!isVip && diagState.listeningReplayCount > 0) {
+        html += '<span class="replay-tip">(VIP专享)</span>';
+    }
+    html += '</button>';
+    
+    // 播放说明
+    html += '<div class="listening-play-hint">📢 系统将自动播放两遍</div>';
+    
+    // 非VIP提示
+    if (!isVip) {
+        html += '<div class="listening-vip-tip">⭐ 升级Pro会员可无限重播</div>';
+    }
+    
+    html += '</div>'; // end listening-passage-card
+    
+    // 答题区域
+    html += '<div class="listening-question-card">';
+    html += '<div class="diag-question-num">第 ' + (globalIndex + 1) + ' / ' + totalQuestions + ' 题</div>';
+    html += '<div class="diag-question-text">' + escapeHtml(q.question) + '</div>';
+    html += '<div class="diag-options">';
+    html += '<div class="diag-option-btn" onclick="selectListeningOption(this, \'A\')">' +
+        '<div class="diag-option-letter">A</div>' +
+        '<div class="diag-option-text">' + q.optionA + '</div>' +
+    '</div>';
+    html += '<div class="diag-option-btn" onclick="selectListeningOption(this, \'B\')">' +
+        '<div class="diag-option-letter">B</div>' +
+        '<div class="diag-option-text">' + q.optionB + '</div>' +
+    '</div>';
+    html += '<div class="diag-option-btn" onclick="selectListeningOption(this, \'C\')">' +
+        '<div class="diag-option-letter">C</div>' +
+        '<div class="diag-option-text">' + q.optionC + '</div>' +
+    '</div>';
+    html += '<div class="diag-option-btn" onclick="selectListeningOption(this, \'D\')">' +
+        '<div class="diag-option-letter">D</div>' +
+        '<div class="diag-option-text">' + q.optionD + '</div>' +
+    '</div>';
+    html += '</div>';
+    html += '</div>';
+    
+    html += '</div>';
+    
+    document.getElementById('diag-body').innerHTML = html;
+}
+
+// 处理播放按钮点击
+function handlePlayClick() {
+    var passage = diagState.listeningPassages[diagState.currentListeningPassageIndex];
+    if (!passage) return;
+    
+    // 停止之前的播放
+    stopListeningPlayback();
+    
+    var isConversation = passage.type === 'conversation';
+    
+    playListeningFull(passage.text, isConversation, function() {
+        // 播放完成回调
+        console.log('[听力播放完成]');
+    });
+}
+
+// 处理重播按钮点击
+function handleReplayClick() {
+    var isVip = isPathVipUser();
+    
+    if (!isVip && diagState.listeningReplayCount > 0) {
+        showToast('免费用户只能重播一次，升级Pro会员可无限重播');
+        return;
+    }
+    
+    var passage = diagState.listeningPassages[diagState.currentListeningPassageIndex];
+    if (!passage) return;
+    
+    if (!isVip) {
+        diagState.listeningReplayCount++;
+        updateReplayButtonState();
+    }
+    
+    var isConversation = passage.type === 'conversation';
+    
+    // 只播一遍
+    stopListeningPlayback();
+    listeningPlayer.maxRounds = 1;
+    
+    playListeningFull(passage.text, isConversation, function() {
+        console.log('[额外重播完成]');
+    });
+}
+
+// 选择听力选项（覆盖原selectOption用于听力阶段）
+var originalSelectOption = null;
+
+// 临时替换selectOption来处理听力选项
+function selectListeningOption(btn, selectedValue) {
+    var passage = diagState.listeningPassages[diagState.currentListeningPassageIndex];
+    var q = passage.questions[diagState.currentListeningQIndex];
+    var correctAnswer = q.answer;
+    var isCorrect = selectedValue === correctAnswer;
+    
+    // 停止播放
+    stopListeningPlayback();
+    
+    // 禁用所有按钮
+    var allBtns = document.querySelectorAll('.diag-option-btn');
+    allBtns.forEach(function(b) { b.classList.add('disabled'); });
+    
+    // 记录答案
+    diagState.listeningAnswers.push({
+        id: q.question_id,
+        passageId: passage.passage_id,
+        userAnswer: selectedValue,
+        correctAnswer: correctAnswer,
+        isCorrect: isCorrect,
+        dimension: q.dimension
+    });
+    
+    if (isCorrect) {
+        diagState.listeningCorrectCount++;
+    }
+    
+    // 500ms后自动下一题
+    setTimeout(function() {
+        diagState.currentListeningQIndex++;
+        
+        if (diagState.currentListeningQIndex >= passage.questions.length) {
+            diagState.currentListeningPassageIndex++;
+            diagState.currentListeningQIndex = 0;
+            diagState.listeningPlayed = false;
+            diagState.listeningReplayCount = 0;
+        }
+        
+        showCurrentListening();
+    }, 500);
+}
+
+// 开始阅读阶段
+function startReadingPhase() {
+    fetchWithTimeout('/public/diagnosis_questions.json').then(function(resp) {
+        return resp.json();
+    }).then(function(result) {
+        var questions = [];
+        if (result.passages) {
+            result.passages.forEach(function(passage) {
+                if (passage.questions) {
+                    passage.questions.forEach(function(q) {
+                        q._passageText = passage.text;
+                        questions.push(q);
+                    });
+                }
+            });
+        }
+        
+        if (questions.length === 0) {
+            showSelfEval();
+            return;
+        }
+        
+        diagState.questions = questions;
+        diagState.phase = 'questions';
+        diagState.currentQIndex = 0;
+        showCurrentQuestion();
+    }).catch(function(e) {
+        console.error('[加载阅读题目失败]', e);
+        showSelfEval();
+    });
+}
+
+// ========== 听力实测功能结束 ==========
+
+
 // 显示当前题目
 function showCurrentQuestion() {
     var q = diagState.questions[diagState.currentQIndex];
@@ -5665,9 +6262,10 @@ function showCurrentQuestion() {
         return;
     }
     
-    var progress = Math.round((diagState.currentQIndex / 15) * 100);
+    var totalQuestions = diagState.questions.length;
+    var progress = Math.round((diagState.currentQIndex / totalQuestions) * 100);
     document.getElementById('diag-progress-fill').style.width = progress + '%';
-    document.getElementById('diag-progress-text').textContent = '第' + (diagState.currentQIndex + 1) + '题/共15题';
+    document.getElementById('diag-progress-text').textContent = '阅读 第' + (diagState.currentQIndex + 1) + '题/共' + totalQuestions + '题';
     
     // 构建HTML
     var html = '<div class="diag-question-card">';
@@ -5682,7 +6280,7 @@ function showCurrentQuestion() {
         '</div>';
     }
     
-    html += '<div class="diag-question-num">第 ' + (diagState.currentQIndex + 1) + ' / 15 题</div>' +
+    html += '<div class="diag-question-num">第 ' + (diagState.currentQIndex + 1) + ' / ' + totalQuestions + ' 题</div>' +
         '<div class="diag-question-text">' + escapeHtml(q.question) + '</div>' +
         '<div class="diag-options">' +
             renderOptionBtn('A', q.optionA, 'A') +
@@ -5719,7 +6317,14 @@ function renderOptionBtn(letter, text, value) {
 }
 
 // 选择选项
+// 选择选项（阅读阶段专用）
 function selectOption(btn, selectedValue) {
+    // 如果是听力阶段，跳转到听力处理函数
+    if (diagState.phase === 'listening') {
+        selectListeningOption(btn, selectedValue);
+        return;
+    }
+    
     var q = diagState.questions[diagState.currentQIndex];
     var correctAnswer = q.answer || q.correct_answer;
     var isCorrect = selectedValue === correctAnswer;
@@ -5740,7 +6345,8 @@ function selectOption(btn, selectedValue) {
     // 500ms后自动下一题（快速但不突兀）
     setTimeout(function() {
         diagState.currentQIndex++;
-        if (diagState.currentQIndex >= 15) {
+        var totalQuestions = diagState.questions.length;
+        if (diagState.currentQIndex >= totalQuestions) {
             showSelfEval();
         } else {
             showCurrentQuestion();
@@ -5889,12 +6495,43 @@ async function generateDiagReport() {
             }
         });
         
+        // 计算听力维度分数
+        var listeningDims = {};
+        diagState.listeningAnswers.forEach(function(ans) {
+            if (!listeningDims[ans.dimension]) {
+                listeningDims[ans.dimension] = { correct: 0, total: 0 };
+            }
+            listeningDims[ans.dimension].total++;
+            if (ans.isCorrect) {
+                listeningDims[ans.dimension].correct++;
+            }
+        });
+        
+        // 将听力答案转换为与阅读相同的格式
+        var allAnswers = diagState.answers.concat(
+            diagState.listeningAnswers.map(function(la) {
+                return {
+                    id: la.id,
+                    userAnswer: la.userAnswer,
+                    correctAnswer: la.correctAnswer,
+                    isCorrect: la.isCorrect,
+                    ability: la.dimension || '细节定位',
+                    type: 'listening'  // 标记为听力题
+                };
+            })
+        );
+        
         var resp = await fetchWithTimeout('/api/diagnosis/report', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                answers: diagState.answers,
-                selfAssessment: selfAssessment
+                answers: allAnswers,
+                selfAssessment: selfAssessment,
+                listeningStats: {
+                    total: diagState.listeningAnswers.length,
+                    correct: diagState.listeningCorrectCount,
+                    dimensions: listeningDims
+                }
             })
         });
         
@@ -5935,7 +6572,7 @@ function buildReportText(data) {
             if (kv.length === 2) {
                 var key = kv[0].trim();
                 var val = parseInt(kv[1]) || 0;
-                if (['细节定位', '推理判断', '同义替换', '主旨归纳', '态度判断'].indexOf(key) !== -1) {
+                if (['细节定位', '推理判断', '同义替换', '主旨归纳', '态度判断', '听力'].indexOf(key) !== -1) {
                     dims[key] = val;
                 }
             }
@@ -5945,10 +6582,15 @@ function buildReportText(data) {
     // 从dimension_scores补充
     if (data.dimension_scores) {
         Object.keys(data.dimension_scores).forEach(function(k) {
-            if (['细节定位', '推理判断', '同义替换', '主旨归纳', '态度判断'].indexOf(k) !== -1) {
+            if (['细节定位', '推理判断', '同义替换', '主旨归纳', '态度判断', '听力'].indexOf(k) !== -1) {
                 dims[k] = data.dimension_scores[k] || dims[k] || 0;
             }
         });
+    }
+    
+    // 添加听力统计
+    if (data.listening_stats) {
+        dims['听力'] = Math.round((data.listening_stats.correct / Math.max(data.listening_stats.total, 1)) * 100);
     }
     
     // 计算总评分
@@ -5961,9 +6603,18 @@ function buildReportText(data) {
     if (count > 0) totalScore = Math.round(totalScore / count);
     
     // 构建兼容格式
-    var text = '【五维诊断】\n';
+    var text = '【能力诊断】\n';
+    
+    // 显示听力成绩
+    if (dims['听力']) {
+        text += '🎧 听力: ' + dims['听力'] + '\n';
+    }
+    
+    // 显示其他维度
     Object.keys(dims).forEach(function(k) {
-        text += k + ': ' + dims[k] + '\n';
+        if (k !== '听力') {
+            text += k + ': ' + dims[k] + '\n';
+        }
     });
     text += '\n综合评分: ' + totalScore + '\n';
     text += '\n你是"' + (data.personality || '佛系随缘') + '"！\n';

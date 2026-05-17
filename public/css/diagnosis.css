@@ -1310,3 +1310,222 @@
 .diag-eval-btn {
     padding: 10px 6px 12px;
 }
+
+/* ========== 听力实测样式 ========== */
+
+/* 听力区域容器 */
+.listening-section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* 听力材料卡片 */
+.listening-passage-card {
+    background: linear-gradient(135deg, #6C5CE7 0%, #A29BFE 100%);
+    border-radius: 20px;
+    padding: 24px 20px;
+    color: white;
+}
+
+.listening-passage-type {
+    font-size: 14px;
+    font-weight: 600;
+    opacity: 0.9;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+/* 播放器区域 */
+.listening-player {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+/* 波形动画容器 */
+.listening-wave {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    height: 32px;
+}
+
+.listening-wave span {
+    display: block;
+    width: 4px;
+    height: 12px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 2px;
+    animation: wave 0.8s ease-in-out infinite;
+}
+
+.listening-wave span:nth-child(1) { animation-delay: 0s; }
+.listening-wave span:nth-child(2) { animation-delay: 0.1s; }
+.listening-wave span:nth-child(3) { animation-delay: 0.2s; }
+.listening-wave span:nth-child(4) { animation-delay: 0.3s; }
+.listening-wave span:nth-child(5) { animation-delay: 0.4s; }
+
+@keyframes wave {
+    0%, 100% { height: 12px; opacity: 0.5; }
+    50% { height: 32px; opacity: 1; }
+}
+
+/* 播放按钮 */
+.listening-play-btn {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.listening-play-btn:active {
+    transform: scale(0.95);
+}
+
+.listening-play-btn.playing {
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7); }
+    70% { box-shadow: 0 0 0 15px rgba(255, 255, 255, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+}
+
+.listening-play-btn .play-icon {
+    font-size: 28px;
+    color: #6C5CE7;
+}
+
+.listening-play-btn .wave-container {
+    display: flex;
+    gap: 3px;
+}
+
+.listening-play-btn .wave-container span {
+    display: block;
+    width: 4px;
+    height: 20px;
+    background: #6C5CE7;
+    border-radius: 2px;
+    animation: waveBar 0.6s ease-in-out infinite;
+}
+
+.listening-play-btn .wave-container span:nth-child(1) { animation-delay: 0s; }
+.listening-play-btn .wave-container span:nth-child(2) { animation-delay: 0.1s; }
+.listening-play-btn .wave-container span:nth-child(3) { animation-delay: 0.2s; }
+
+@keyframes waveBar {
+    0%, 100% { height: 10px; }
+    50% { height: 24px; }
+}
+
+/* 提示文字 */
+.listening-hint {
+    font-size: 13px;
+    opacity: 0.9;
+}
+
+/* 轮次指示器 */
+.listening-round-indicator {
+    font-size: 12px;
+    text-align: center;
+    opacity: 0.8;
+    min-height: 18px;
+}
+
+/* 再听一遍按钮 */
+.listening-replay-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.listening-replay-btn:active {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.listening-replay-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.listening-replay-btn .replay-tip {
+    font-size: 12px;
+    opacity: 0.8;
+    margin-left: 4px;
+}
+
+/* 播放说明 */
+.listening-play-hint {
+    font-size: 12px;
+    text-align: center;
+    opacity: 0.7;
+    margin-top: 8px;
+}
+
+/* VIP提示 */
+.listening-vip-tip {
+    font-size: 12px;
+    text-align: center;
+    opacity: 0.8;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* 答题卡片 */
+.listening-question-card {
+    background: white;
+    border-radius: 16px;
+    padding: 20px 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+/* 听力选项样式 */
+.listening-section .diag-options .diag-option-btn {
+    border-color: #E2E8F0;
+}
+
+.listening-section .diag-options .diag-option-btn:active {
+    border-color: #6C5CE7;
+    background: #F3F0FF;
+}
+
+/* 浏览器不支持提示 */
+.listening-unsupported {
+    text-align: center;
+    padding: 40px 20px;
+    background: #FEF3C7;
+    border-radius: 12px;
+    margin-bottom: 16px;
+}
+
+.listening-unsupported-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+}
+
+.listening-unsupported-text {
+    font-size: 14px;
+    color: #92400E;
+    line-height: 1.5;
+}

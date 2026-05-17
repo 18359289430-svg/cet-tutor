@@ -192,5 +192,98 @@
         }
       ]
     }
+  ],
+  "listening_passages": [
+    {
+      "passage_id": "L1",
+      "type": "conversation",
+      "text": "M: Have you finished the assignment for Professor Wang's class?\nW: Not yet. I've been working on it all morning but I still can't figure out the last question.\nM: Which one is giving you trouble?\nW: The one about the impact of social media on interpersonal communication. It's quite challenging.\nM: Oh, I found an interesting article about that yesterday. I can send it to you if you want.\nW: That would be great! Thanks so much. Maybe it will help me understand the topic better.\nM: No problem. By the way, when is the deadline for the assignment?\nW: It's due this Friday. So I need to finish it soon.\nM: Don't worry. I'll send you the article right away. It should give you some good ideas.",
+      "questions": [
+        {
+          "question_id": "L1_1",
+          "question": "What is the woman's problem?",
+          "optionA": "She lost her textbook",
+          "optionB": "She can't finish her assignment",
+          "optionC": "She missed Professor Wang's class",
+          "optionD": "She forgot the deadline",
+          "answer": "B",
+          "dimension": "细节定位"
+        },
+        {
+          "question_id": "L1_2",
+          "question": "What does the man offer to do?",
+          "optionA": "Help her write the assignment",
+          "optionB": "Lend her his notes",
+          "optionC": "Send her a related article",
+          "optionD": "Explain the question to her",
+          "answer": "C",
+          "dimension": "推理判断"
+        }
+      ]
+    },
+    {
+      "passage_id": "L2",
+      "type": "conversation",
+      "text": "W: Hi, Tom. I noticed you've been going to the library quite often recently. Are you preparing for the job fair next week?\nM: Yes, I am. I want to make a good impression on potential employers. By the way, do you know what kind of questions they usually ask?\nW: From my experience, they often ask about your strengths and weaknesses, your career goals, and why you want to work for their company.\nM: That sounds reasonable. I should also prepare some questions to ask them, right?\nW: Absolutely. Asking thoughtful questions shows that you're genuinely interested in the position.\nM: Good point. I almost forgot about that. By the way, should I bring extra copies of my resume?\nW: Definitely. Bring at least ten copies. And don't forget to dress professionally.\nM: Thanks for the advice, Lisa. I really appreciate it.",
+      "questions": [
+        {
+          "question_id": "L2_1",
+          "question": "What is Tom preparing for?",
+          "optionA": "A job interview",
+          "optionB": "A final exam",
+          "optionC": "A class presentation",
+          "optionD": "A graduation ceremony",
+          "answer": "A",
+          "dimension": "细节定位"
+        },
+        {
+          "question_id": "L2_2",
+          "question": "According to the woman, what should Tom prepare?",
+          "optionA": "Extra business cards",
+          "optionB": "A formal suit only",
+          "optionC": "Questions to ask employers",
+          "optionD": "A portfolio of his work",
+          "answer": "C",
+          "dimension": "细节定位"
+        }
+      ]
+    },
+    {
+      "passage_id": "L3",
+      "type": "passage",
+      "text": "Good morning, everyone. Today I'd like to talk about the importance of reading in our daily lives. Many studies have shown that regular reading can significantly improve brain function and memory. When we read, our brain creates new neural connections, which helps keep our minds sharp and active. Unlike watching television or scrolling through social media, reading requires active thinking and imagination. This mental engagement is what makes reading so beneficial for cognitive health. Experts recommend reading at least thirty minutes every day. However, in our fast-paced digital age, finding time to read has become increasingly difficult. Many people spend hours on their smartphones, which actually reduces their ability to focus for extended periods. If you want to develop a reading habit, start with just ten minutes a day and gradually increase the time. Choose books that genuinely interest you, whether it's fiction, non-fiction, or self-improvement books. The key is consistency. By making reading a daily habit, you'll not only expand your knowledge but also improve your concentration and analytical skills.",
+      "questions": [
+        {
+          "question_id": "L3_1",
+          "question": "What is the main purpose of the speech?",
+          "optionA": "To introduce a new reading app",
+          "optionB": "To explain the benefits of reading",
+          "optionC": "To compare reading with other activities",
+          "optionD": "To advertise a book club",
+          "answer": "B",
+          "dimension": "主旨归纳"
+        },
+        {
+          "question_id": "L3_2",
+          "question": "According to the speaker, what happens when we read regularly?",
+          "optionA": "Our eyesight becomes weaker",
+          "optionB": "Our brain creates new neural connections",
+          "optionC": "We spend less time with family",
+          "optionD": "We become addicted to books",
+          "answer": "B",
+          "dimension": "细节定位"
+        },
+        {
+          "question_id": "L3_3",
+          "question": "What does the speaker suggest for people who want to develop a reading habit?",
+          "optionA": "Read only academic books",
+          "optionB": "Read for at least three hours daily",
+          "optionC": "Start with ten minutes and gradually increase",
+          "optionD": "Read only before going to bed",
+          "answer": "C",
+          "dimension": "细节定位"
+        }
+      ]
+    }
   ]
 }
