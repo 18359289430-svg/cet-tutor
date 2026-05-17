@@ -4250,7 +4250,7 @@ function showClearChatModal() {
             sheet.innerHTML = '<div style="font-size:16px;font-weight:600;margin-bottom:16px">隐私政策</div>' +
                 '<div style="font-size:13px;color:#64748b;line-height:1.8">' +
                 '<p><b>生效日期：2026年5月17日</b></p>' +
-                '<p>本产品由' + EXAM_LABEL + "备考搭子"团队（以下简称"我们"）运营。我们重视您的隐私保护，本政策说明我们如何收集、使用和保护您的信息。</p>' +
+                '<p>本产品由' + EXAM_LABEL + '“备考搭子”团队（以下简称“我们”）运营。我们重视您的隐私保护，本政策说明我们如何收集、使用和保护您的信息。</p>' +
                 '<p><b>一、我们收集的信息</b></p>' +
                 '<p>1. 设备标识信息：用于生成唯一用户ID，实现数据恢复功能。</p>' +
                 '<p>2. 学习数据：诊断结果、答题记录、打卡记录、自评数据等，用于提供个性化学习服务。</p>' +
@@ -4271,7 +4271,7 @@ function showClearChatModal() {
                 '<p><b>六、政策更新</b></p>' +
                 '<p>本政策可能适时更新，更新后将在产品内通知您。继续使用即视为同意更新后的政策。</p>' +
                 '</div>' +
-                '<button onclick="this.closest("div[style*=fixed]").remove()" style="width:100%;margin-top:20px;padding:12px;border:none;border-radius:10px;background:#6C5CE7;color:#fff;font-size:15px;font-weight:500;cursor:pointer">我知道了</button>';
+                '<button onclick="this.parentElement.parentElement.remove()" style="width:100%;margin-top:20px;padding:12px;border:none;border-radius:10px;background:#6C5CE7;color:#fff;font-size:15px;font-weight:500;cursor:pointer">我知道了</button>';
             overlay.appendChild(sheet);
             overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
             document.body.appendChild(overlay);
@@ -4310,7 +4310,7 @@ function showClearChatModal() {
                 '<p><b>七、协议变更</b></p>' +
                 '<p>我们保留修改本协议的权利，重大变更将在产品内通知。继续使用即视为同意变更后的协议。</p>' +
                 '</div>' +
-                '<button onclick="this.closest("div[style*=fixed]").remove()" style="width:100%;margin-top:20px;padding:12px;border:none;border-radius:10px;background:#6C5CE7;color:#fff;font-size:15px;font-weight:500;cursor:pointer">我知道了</button>';
+                '<button onclick="this.parentElement.parentElement.remove()" style="width:100%;margin-top:20px;padding:12px;border:none;border-radius:10px;background:#6C5CE7;color:#fff;font-size:15px;font-weight:500;cursor:pointer">我知道了</button>';
             overlay.appendChild(sheet);
             overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
             document.body.appendChild(overlay);
@@ -5715,7 +5715,7 @@ function preloadLimitInfo() {
             // 底部信息
             ctx.fillStyle = 'rgba(255,255,255,0.9)';
             ctx.font = '11px -apple-system, BlinkMacSystemFont, sans-serif';
-            ctx.fillText(' + EXAM_LABEL + '备考搭子 · AI智能诊断', width / 2, 300);
+            ctx.fillText(EXAM_LABEL + '备考搭子 · AI智能诊断', width / 2, 300);
             
             // 底部提示
             ctx.fillStyle = 'rgba(255,255,255,0.7)';
@@ -8470,7 +8470,7 @@ function drawReportShareImage() {
     ctx.fillStyle = 'rgba(255,255,255,0.8)';
     ctx.font = '11px -apple-system, BlinkMacSystemFont, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText(' + EXAM_LABEL + '备考搭子 · AI智能诊断', 140, 385);
+    ctx.fillText(EXAM_LABEL + '备考搭子 · AI智能诊断', 140, 385);
 }
 
 // ===== 免费AI对话限额逻辑 (GPT风格) =====
@@ -9993,8 +9993,8 @@ function upgradeToUnlockPlan() {
 
 // ==================== 变式训练功能 ====================
 
-var examKey('variant_history') = examKey('variant_history');
-var examKey('variant_daily_count') = examKey('variant_daily_count');
+var VARIANT_HISTORY_KEY = examKey("variant_history");
+var VARIANT_DAILY_COUNT_KEY = examKey("variant_daily_count");
 
 // 获取变式训练历史
 function getVariantHistory() {
@@ -10356,7 +10356,7 @@ function mapTypeToDim(type) {
 
 // ==================== 动态测评功能 ====================
 
-var examKey('dynamic_scores') = examKey('dynamic_scores');
+var DYNAMIC_SCORES_KEY = examKey("dynamic_scores");
 
 // 获取动态分数
 function getDynamicScores() {
