@@ -676,7 +676,7 @@ function initApp() {
         async function syncUserDataFromCloud() {
             var userId = getCloudUserId();
             try {
-                var resp = await fetch('https://guocet.top/api/progress?user_id=' + encodeURIComponent(userId), {
+                var resp = await fetch('http://8.218.88.15:8080/api/progress?user_id=' + encodeURIComponent(userId), {
                     method: 'GET',
                     headers: { 'Content-Type': 'application/json' }
                 });
@@ -716,7 +716,7 @@ function initApp() {
         async function saveUserDataToCloud(data) {
             var userId = getCloudUserId();
             try {
-                var resp = await fetch('https://guocet.top/api/progress', {
+                var resp = await fetch('http://8.218.88.15:8080/api/progress', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ user_id: userId, data: data })
@@ -796,7 +796,7 @@ function initApp() {
 
             // 处理激活码
             if (!claimCode) return;
-            fetch('https://guocet.top/api/activate-with-code', {
+            fetch('http://8.218.88.15:8080/api/activate-with-code', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ code: claimCode.trim() })
@@ -819,7 +819,7 @@ function initApp() {
             var plan = 'sprint';
             var msgEl = document.getElementById('activate-msg') || document.createElement('div');
             
-            fetch('https://guocet.top/api/activate-with-mbd-order', {
+            fetch('http://8.218.88.15:8080/api/activate-with-mbd-order', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ order_id: orderId, plan: plan })
@@ -3795,7 +3795,7 @@ function initApp() {
             }
             
             // 本地没有数据，尝试从Coze API获取
-            fetch('https://guocet.top/api/chat/messages?conversation_id=' + conversationId, {
+            fetch('http://8.218.88.15:8080/api/chat/messages?conversation_id=' + conversationId, {
                 headers: { 'Content-Type': 'application/json' }
             }).then(function(r) { return r.json(); }).then(function(resp) {
                 console.log('[loadChatHistory] API response:', JSON.stringify(resp).substring(0, 500));
@@ -4208,7 +4208,7 @@ function activateWithCode() {
     btn.textContent = '激活中...';
     if (msgEl) { msgEl.style.color = '#64748B'; msgEl.textContent = ''; }
 
-    fetch('https://guocet.top/api/activate-with-code', {
+    fetch('http://8.218.88.15:8080/api/activate-with-code', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ code: input.value.trim() })
@@ -4247,7 +4247,7 @@ function activateWithMbdOrder(plan) {
     btn.textContent = '验证中...';
     if (msgEl) { msgEl.style.color = '#64748B'; msgEl.textContent = '正在验证订单...'; }
 
-    fetch('https://guocet.top/api/activate-with-mbd-order', {
+    fetch('http://8.218.88.15:8080/api/activate-with-mbd-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ order_id: input.value.trim(), plan: plan })
@@ -4629,7 +4629,7 @@ async function requestQuizQuestion() {
     }
     
     // 从真题库获取题目（不再用AI编题，支持自适应推题）
-    var realQuizUrl = 'https://guocet.top/api/quiz/random?type=' + encodeURIComponent(randomType);
+    var realQuizUrl = 'http://8.218.88.15:8080/api/quiz/random?type=' + encodeURIComponent(randomType);
     
     // 传递用户五维分数用于自适应推题
     var user = state.userData || {};
@@ -5921,7 +5921,7 @@ function generateLearningPlan() {
     var systemPrompt = '你是四级备考规划专家。用户已完成能力诊断，五维分数如下：' + 
         JSON.stringify(dims) + '。请根据这些分数生成4周学习计划，返回JSON格式：{"weeks":[{"week":1,"focus":"本周重点","tasks":["任务1","任务2"]},{"week":2,"focus":"本周重点","tasks":["任务1","任务2"]},{"week":3,"focus":"本周重点","tasks":["任务1","任务2"]},{"week":4,"focus":"本周重点","tasks":["任务1","任务2"]}]} 只返回JSON。';
     
-    fetch('https://guocet.top/api/deepseek/chat', {
+    fetch('http://8.218.88.15:8080/api/deepseek/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -6503,7 +6503,7 @@ function activateWithMbdOrderFromPlans() {
     }
     if (msgEl) { msgEl.style.color = '#64748B'; msgEl.textContent = '正在验证订单...'; }
 
-    fetch('https://guocet.top/api/activate-with-mbd-order', {
+    fetch('http://8.218.88.15:8080/api/activate-with-mbd-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ order_id: input.value.trim() })
