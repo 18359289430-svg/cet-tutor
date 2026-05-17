@@ -1378,3 +1378,754 @@
     0%, 100% { box-shadow: none; }
     50% { box-shadow: 0 0 0 4px rgba(108,92,231,0.3); }
 }
+/* ========== 诊断记录页面 - 高级风格优化 ========== */
+
+/* 页面背景与光晕 - 匹配dashboard风格 */
+.diag-history-page {
+    position: relative;
+    min-height: 100vh;
+    background: #F8F9FA;
+    overflow-x: hidden;
+}
+
+/* 渐变光晕背景 */
+.diag-history-glow {
+    position: fixed;
+    top: -200px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 500px;
+    background: radial-gradient(ellipse at center, 
+        rgba(108, 92, 231, 0.12) 0%,
+        rgba(162, 155, 254, 0.08) 30%,
+        rgba(108, 92, 231, 0.04) 50%,
+        transparent 70%
+    );
+    pointer-events: none;
+    z-index: 0;
+    animation: diagBreathe 8s ease-in-out infinite;
+}
+
+/* 第二层辅助光晕 */
+.diag-history-glow-2 {
+    position: fixed;
+    top: 200px;
+    right: -100px;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(ellipse at center,
+        rgba(0, 184, 148, 0.06) 0%,
+        transparent 70%
+    );
+    pointer-events: none;
+    z-index: 0;
+    animation: diagBreathe2 10s ease-in-out infinite reverse;
+}
+
+/* ===== 毛玻璃卡片 ===== */
+.diag-glass-card {
+    background: rgba(255, 255, 255, 0.75) !important;
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.6) !important;
+    box-shadow: 
+        0 4px 16px rgba(108, 92, 231, 0.08),
+        0 1px 3px rgba(0, 0, 0, 0.04) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.diag-glass-card:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 
+        0 12px 32px rgba(108, 92, 231, 0.15),
+        0 4px 8px rgba(0, 0, 0, 0.06) !important;
+    border-color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* Shimmer光泽动效 */
+.diag-shimmer-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.diag-shimmer-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.5) 50%,
+        transparent 100%
+    );
+    transform: skewX(-20deg);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.diag-shimmer-card:hover::before {
+    animation: diagShimmer 2.5s ease-in-out;
+}
+
+/* ===== Hero区域 ===== */
+.diag-hero {
+    background: transparent;
+    padding: 20px 20px 24px;
+    position: relative;
+    z-index: 1;
+}
+
+.diag-hero-title {
+    color: var(--text-primary);
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 4px;
+    animation: diagFadeInUp 0.5s ease forwards;
+}
+
+.diag-hero-sub {
+    color: var(--text-tertiary);
+    font-size: 14px;
+    margin-bottom: 14px;
+    animation: diagFadeInUp 0.5s ease 0.1s forwards;
+    opacity: 0;
+}
+
+.diag-hero-divider {
+    width: 40px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 100%);
+    border-radius: 2px;
+    margin: 14px 0;
+    animation: diagFadeInUp 0.5s ease 0.2s forwards;
+    opacity: 0;
+}
+
+/* ===== 统计卡片优化 ===== */
+.diag-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding: 0 16px 16px;
+    position: relative;
+    z-index: 1;
+}
+
+.diag-stat-card {
+    border-radius: 16px;
+    padding: 20px 16px;
+    text-align: center;
+    animation: diagFadeInUp 0.5s ease forwards;
+    opacity: 0;
+}
+
+.diag-stat-card:nth-child(1) { animation-delay: 0.1s; }
+.diag-stat-card:nth-child(2) { animation-delay: 0.2s; }
+
+.diag-stat-card.primary {
+    background: linear-gradient(135deg, #6C5CE7 0%, #A29BFE 100%);
+    color: white;
+    box-shadow: 0 4px 20px rgba(108, 92, 231, 0.3);
+}
+
+.diag-stat-card.secondary {
+    background: linear-gradient(135deg, #00B894 0%, #55EFC4 100%);
+    color: white;
+    box-shadow: 0 4px 20px rgba(0, 184, 148, 0.25);
+}
+
+.diag-stat-icon {
+    width: 36px;
+    height: 36px;
+    margin: 0 auto 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.25);
+    border-radius: 10px;
+}
+
+.diag-stat-icon svg {
+    width: 20px;
+    height: 20px;
+}
+
+.diag-stat-number {
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -1px;
+}
+
+.diag-stat-label {
+    font-size: 12px;
+    margin-top: 6px;
+    opacity: 0.9;
+}
+
+/* ===== 空状态优化 ===== */
+.diag-empty-state {
+    text-align: center;
+    padding: 60px 24px;
+    position: relative;
+    z-index: 1;
+}
+
+.diag-empty-icon {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 20px;
+    color: var(--text-tertiary);
+    opacity: 0.5;
+    animation: diagFadeInUp 0.5s ease 0.1s forwards;
+    opacity: 0;
+}
+
+.diag-empty-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.diag-empty-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    animation: diagFadeInUp 0.5s ease 0.2s forwards;
+    opacity: 0;
+}
+
+.diag-empty-desc {
+    font-size: 14px;
+    color: var(--text-tertiary);
+    line-height: 1.6;
+    margin-bottom: 24px;
+    animation: diagFadeInUp 0.5s ease 0.3s forwards;
+    opacity: 0;
+}
+
+.diag-empty-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 28px;
+    background: linear-gradient(135deg, #6C5CE7 0%, #A29BFE 100%);
+    color: white;
+    border: none;
+    border-radius: 24px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(108, 92, 231, 0.35);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: diagFadeInUp 0.5s ease 0.4s forwards;
+    opacity: 0;
+}
+
+.diag-empty-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(108, 92, 231, 0.45);
+}
+
+.diag-empty-btn:active {
+    transform: scale(0.97);
+}
+
+.diag-empty-btn svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* ===== 人格类型分布优化 ===== */
+.diag-personalities-section {
+    margin: 0 16px 16px;
+    padding: 16px;
+    border-radius: 16px;
+    animation: diagFadeInUp 0.5s ease 0.35s forwards;
+    opacity: 0;
+}
+
+.diag-section-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.diag-section-header svg {
+    width: 18px;
+    height: 18px;
+    color: var(--primary);
+}
+
+.diag-section-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.diag-personality-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.diag-personality-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    background: rgba(108, 92, 231, 0.1);
+    color: var(--primary);
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    border: 1px solid rgba(108, 92, 231, 0.15);
+}
+
+.diag-personality-count {
+    font-weight: 700;
+}
+
+/* ===== 诊断历史列表 ===== */
+.diag-history-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 16px 12px;
+}
+
+.diag-history-header svg {
+    width: 18px;
+    height: 18px;
+    color: var(--primary);
+}
+
+.diag-history-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.diag-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 0 16px 32px;
+    position: relative;
+    z-index: 1;
+}
+
+/* ===== 记录卡片优化 ===== */
+.diag-record-card {
+    border-radius: 16px;
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    animation: diagFadeInUp 0.5s ease forwards;
+    opacity: 0;
+}
+
+/* 左侧渐变竖条 */
+.diag-record-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(180deg, var(--primary) 0%, var(--primary-light) 100%);
+}
+
+.diag-record-card:active {
+    transform: scale(0.98);
+}
+
+.diag-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+}
+
+.diag-card-badges {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.diag-personality-badge {
+    padding: 5px 12px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+    color: white;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.diag-risk-badge {
+    padding: 5px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.diag-risk-badge.high {
+    background: #FEE2E2;
+    color: #DC2626;
+}
+
+.diag-risk-badge.mid {
+    background: #FEF3C7;
+    color: #D97706;
+}
+
+.diag-risk-badge.low {
+    background: #D1FAE5;
+    color: #059669;
+}
+
+.diag-card-date {
+    font-size: 12px;
+    color: var(--text-tertiary);
+}
+
+/* 分数预览区域 */
+.diag-scores-preview {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding-left: 4px;
+}
+
+.diag-score-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 48px;
+}
+
+.diag-score-value {
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--text-primary);
+}
+
+.diag-score-label {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    margin-top: 4px;
+}
+
+.diag-more-hint {
+    font-size: 12px;
+    color: var(--primary);
+    font-weight: 500;
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.diag-more-hint svg {
+    width: 14px;
+    height: 14px;
+    transition: transform 0.2s ease;
+}
+
+.diag-record-card.expanded .diag-more-hint svg {
+    transform: rotate(180deg);
+}
+
+.diag-arrow {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-tertiary);
+    transition: all 0.3s ease;
+}
+
+.diag-arrow svg {
+    width: 16px;
+    height: 16px;
+}
+
+.diag-record-card:hover .diag-arrow {
+    color: var(--primary);
+}
+
+/* ===== 展开详情区域 ===== */
+.diag-record-detail {
+    display: none;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(0,0,0,0.06);
+}
+
+.diag-record-card.expanded .diag-record-detail {
+    display: block;
+    animation: diagFadeInUp 0.3s ease forwards;
+}
+
+.diag-detail-section {
+    margin-bottom: 16px;
+}
+
+.diag-detail-section:last-child {
+    margin-bottom: 0;
+}
+
+.diag-detail-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.diag-detail-title svg {
+    width: 16px;
+    height: 16px;
+    color: var(--primary);
+}
+
+/* 雷达图区域 */
+.diag-radar-wrap {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 16px;
+}
+
+.diag-radar-canvas {
+    max-width: 180px;
+}
+
+/* 详细分数列表 */
+.diag-scores-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.diag-score-row {
+    display: grid;
+    grid-template-columns: 24px 1fr auto 60px auto;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    background: rgba(0,0,0,0.02);
+    border-radius: 10px;
+    transition: background 0.2s ease;
+}
+
+.diag-score-row:hover {
+    background: rgba(0,0,0,0.04);
+}
+
+.diag-score-row.weak {
+    background: rgba(220, 38, 38, 0.06);
+}
+
+.diag-score-row.weak:hover {
+    background: rgba(220, 38, 38, 0.1);
+}
+
+.diag-score-row-icon {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.diag-score-row-icon svg {
+    width: 16px;
+    height: 16px;
+    color: var(--text-tertiary);
+}
+
+.diag-score-row-name {
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.diag-score-row-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-primary);
+    min-width: 32px;
+    text-align: right;
+}
+
+.diag-score-bar {
+    height: 5px;
+    background: rgba(0,0,0,0.08);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.diag-score-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.6s ease;
+}
+
+.diag-weak-tag {
+    padding: 3px 8px;
+    background: #FEE2E2;
+    color: #DC2626;
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+/* 弱项分析卡片 */
+.diag-weak-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.diag-weak-card {
+    background: linear-gradient(135deg, rgba(220, 38, 38, 0.06) 0%, rgba(220, 38, 38, 0.02) 100%);
+    border-radius: 12px;
+    padding: 14px;
+    border-left: 3px solid #DC2626;
+}
+
+.diag-weak-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.diag-weak-icon {
+    width: 28px;
+    height: 28px;
+    background: rgba(220, 38, 38, 0.12);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.diag-weak-icon svg {
+    width: 16px;
+    height: 16px;
+    color: #DC2626;
+}
+
+.diag-weak-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    flex: 1;
+}
+
+.diag-weak-score {
+    font-size: 12px;
+    font-weight: 600;
+    color: #DC2626;
+}
+
+.diag-weak-desc {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    line-height: 1.5;
+}
+
+/* 诊断信息区域 */
+.diag-info-grid {
+    background: rgba(0,0,0,0.02);
+    border-radius: 12px;
+    padding: 4px 0;
+}
+
+.diag-info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 14px;
+    font-size: 13px;
+}
+
+.diag-info-row:not(:last-child) {
+    border-bottom: 1px solid rgba(0,0,0,0.04);
+}
+
+.diag-info-label {
+    color: var(--text-tertiary);
+}
+
+.diag-info-value {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+/* ===== 关键帧动画 ===== */
+
+/* 光晕呼吸动画 */
+@keyframes diagBreathe {
+    0%, 100% { 
+        opacity: 0.7;
+        transform: translateX(-50%) scale(1);
+    }
+    50% { 
+        opacity: 1;
+        transform: translateX(-50%) scale(1.08);
+    }
+}
+
+@keyframes diagBreathe2 {
+    0%, 100% { 
+        opacity: 0.5;
+        transform: scale(1);
+    }
+    50% { 
+        opacity: 0.8;
+        transform: scale(1.15);
+    }
+}
+
+/* Shimmer光泽扫过 */
+@keyframes diagShimmer {
+    0% { 
+        left: -100%;
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% { 
+        left: 200%;
+        opacity: 0;
+    }
+}
+
+/* 通用淡入上移动画 */
+@keyframes diagFadeInUp {
+    from { 
+        opacity: 0; 
+        transform: translateY(16px);
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0);
+    }
+}

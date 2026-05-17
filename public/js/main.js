@@ -209,7 +209,6 @@
                 lastDate: history[0].date
             };
         }
-
         // 渲染诊断记录页面
         function renderDiagnosisHistoryPage() {
             var history = getDiagnosisHistory();
@@ -219,15 +218,28 @@
 
             var html = '';
 
-            // 统计区域
-            html += '<div class="diag-history-stats">';
-            html += '<div class="diag-history-stat-item primary">';
-            html += '<div class="stat-number">' + stats.total + '</div>';
-            html += '<div class="stat-label">诊断次数</div>';
+            // Hero区域
+            html += '<div class="diag-hero">';
+            html += '<div class="diag-hero-title">诊断记录</div>';
+            html += '<div class="diag-hero-sub">追踪你的学习进度，见证每一次进步</div>';
+            html += '<div class="diag-hero-divider"></div>';
             html += '</div>';
-            html += '<div class="diag-history-stat-item secondary">';
-            html += '<div class="stat-number">' + (stats.lastDate ? formatDateTime(stats.lastDate).split(' ')[0] : '--') + '</div>';
-            html += '<div class="stat-label">最近诊断</div>';
+
+            // 统计卡片区域
+            html += '<div class="diag-stats-grid">';
+            html += '<div class="diag-stat-card primary">';
+            html += '<div class="diag-stat-icon">';
+            html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h6"/></svg>';
+            html += '</div>';
+            html += '<div class="diag-stat-number">' + stats.total + '</div>';
+            html += '<div class="diag-stat-label">诊断次数</div>';
+            html += '</div>';
+            html += '<div class="diag-stat-card secondary">';
+            html += '<div class="diag-stat-icon">';
+            html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>';
+            html += '</div>';
+            html += '<div class="diag-stat-number">' + (stats.lastDate ? formatDateTime(stats.lastDate).split(' ')[0] : '--') + '</div>';
+            html += '<div class="diag-stat-label">最近诊断</div>';
             html += '</div>';
             html += '</div>';
 
@@ -241,11 +253,14 @@
                 });
                 var personalities = Object.keys(personalityCount);
                 if (personalities.length > 0) {
-                    html += '<div class="diag-history-personalities">';
-                    html += '<div class="diag-history-section-title">人格类型分布</div>';
+                    html += '<div class="diag-personalities-section diag-glass-card diag-shimmer-card">';
+                    html += '<div class="diag-section-header">';
+                    html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>';
+                    html += '<div class="diag-section-title">人格类型分布</div>';
+                    html += '</div>';
                     html += '<div class="diag-personality-tags">';
                     personalities.forEach(function(p) {
-                        html += '<span class="diag-personality-tag">' + p + ' x' + personalityCount[p] + '</span>';
+                        html += '<span class="diag-personality-tag">' + p + ' <span class="diag-personality-count">x' + personalityCount[p] + '</span></span>';
                     });
                     html += '</div>';
                     html += '</div>';
@@ -254,64 +269,82 @@
 
             // 空状态
             if (history.length === 0) {
-                html += '<div class="diag-history-empty">';
-                html += '<div class="empty-icon">📋</div>';
-                html += '<div class="empty-title">还没有诊断记录</div>';
-                html += '<div class="empty-desc">完成AI诊断后可查看诊断历史</div>';
-                html += '<button class="empty-btn" onclick="closeDiagHistory(); switchTab(\'diagnosis\'); setTimeout(startNewDiagnosis, 300)">去诊断</button>';
+                html += '<div class="diag-empty-state">';
+                html += '<div class="diag-empty-icon">';
+                html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h6"/></svg>';
+                html += '</div>';
+                html += '<div class="diag-empty-title">还没有诊断记录</div>';
+                html += '<div class="diag-empty-desc">完成AI诊断后可查看诊断历史<br>了解你的五维能力和薄弱项</div>';
+                html += '<button class="diag-empty-btn" onclick="closeDiagHistory(); switchTab(\'diagnosis\'); setTimeout(startNewDiagnosis, 300)">';
+                html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>';
+                html += '去诊断</button>';
                 html += '</div>';
             } else {
+                // 记录列表标题
+                html += '<div class="diag-history-header">';
+                html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg>';
+                html += '<div class="diag-history-title">诊断历史</div>';
+                html += '</div>';
+
                 // 记录列表
-                html += '<div class="diag-history-section-title">诊断历史</div>';
-                html += '<div class="diag-history-list">';
+                html += '<div class="diag-list">';
 
                 history.forEach(function(record, index) {
-                    html += '<div class="diag-history-card" onclick="toggleDiagRecordDetail(this)">';
-                    html += '<div class="diag-card-header">';
-                    html += '<div class="diag-card-left">';
+                    // 计算动画延迟
+                    var animDelay = (0.45 + index * 0.1).toFixed(1);
+                    html += '<div class="diag-record-card diag-glass-card diag-shimmer-card" style="animation-delay:' + animDelay + 's" onclick="toggleDiagRecordDetail(this)">';
+
+                    // 卡片顶部：标签+日期
+                    html += '<div class="diag-card-top">';
+                    html += '<div class="diag-card-badges">';
                     if (record.personality) {
                         html += '<span class="diag-personality-badge">' + record.personality + '</span>';
                     }
-                    html += '<span class="diag-risk-badge risk-' + record.riskLevel + '">' + getRiskLabel(record.riskLevel) + '</span>';
+                    html += '<span class="diag-risk-badge ' + record.riskLevel + '">' + getRiskLabel(record.riskLevel) + '</span>';
                     html += '</div>';
                     html += '<span class="diag-card-date">' + formatDateTime(record.date) + '</span>';
                     html += '</div>';
 
-                    // 简览分数
-                    html += '<div class="diag-card-scores-preview">';
+                    // 分数预览
+                    html += '<div class="diag-scores-preview">';
                     var dims = Object.keys(record.scores);
                     var previewDims = dims.slice(0, 3);
                     previewDims.forEach(function(dim) {
-                        var config = DIM_CONFIGS[dim] || { color: '#6C5CE7' };
-                        html += '<div class="diag-score-mini">';
-                        html += '<span class="mini-score">' + record.scores[dim] + '</span>';
-                        html += '<span class="mini-label">' + dim + '</span>';
+                        html += '<div class="diag-score-item">';
+                        html += '<span class="diag-score-value">' + record.scores[dim] + '</span>';
+                        html += '<span class="diag-score-label">' + dim + '</span>';
                         html += '</div>';
                     });
                     if (dims.length > 3) {
-                        html += '<span class="diag-more-scores">+' + (dims.length - 3) + '项</span>';
+                        html += '<span class="diag-more-hint">+' + (dims.length - 3) + '项 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span>';
                     }
                     html += '</div>';
 
-                    html += '<div class="diag-card-arrow">▼</div>';
+                    // 展开箭头
+                    html += '<div class="diag-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>';
 
                     // 展开详情
-                    html += '<div class="diag-card-detail">';
+                    html += '<div class="diag-record-detail">';
+
+                    // 完整五维分析
                     html += '<div class="diag-detail-section">';
-                    html += '<div class="diag-detail-title">完整五维分析</div>';
-                    html += '<div class="diag-detail-radar-wrap">';
-                    html += '<canvas class="diag-detail-radar" width="200" height="200" data-record-id="' + record.id + '"></canvas>';
+                    html += '<div class="diag-detail-title">';
+                    html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12,2 22,8.5 22,15.5 12,22 2,15.5 2,8.5"/></svg>';
+                    html += '完整五维分析';
                     html += '</div>';
-                    html += '<div class="diag-detail-scores">';
+                    html += '<div class="diag-radar-wrap">';
+                    html += '<canvas class="diag-radar-canvas" width="180" height="180" data-record-id="' + record.id + '"></canvas>';
+                    html += '</div>';
+                    html += '<div class="diag-scores-list">';
                     dims.forEach(function(dim) {
-                        var config = DIM_CONFIGS[dim] || { color: '#6C5CE7', icon: '📊' };
+                        var config = DIM_CONFIGS[dim] || { color: '#6C5CE7', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>' };
                         var isWeak = record.weakDims && record.weakDims.some(function(w) { return w.name === dim; });
-                        html += '<div class="diag-detail-score-item' + (isWeak ? ' weak' : '') + '">';
-                        html += '<span class="detail-icon">' + config.icon + '</span>';
-                        html += '<span class="detail-name">' + dim + '</span>';
-                        html += '<span class="detail-score">' + record.scores[dim] + '</span>';
-                        html += '<div class="detail-bar"><div class="detail-fill" style="width:' + record.scores[dim] + '%;background:' + config.color + '"></div></div>';
-                        if (isWeak) html += '<span class="weak-tag">弱项</span>';
+                        html += '<div class="diag-score-row' + (isWeak ? ' weak' : '') + '">';
+                        html += '<div class="diag-score-row-icon">' + config.icon + '</div>';
+                        html += '<div class="diag-score-row-name">' + dim + '</div>';
+                        html += '<div class="diag-score-row-value">' + record.scores[dim] + '</div>';
+                        html += '<div class="diag-score-bar"><div class="diag-score-bar-fill" style="width:' + record.scores[dim] + '%;background:' + config.color + '"></div></div>';
+                        if (isWeak) html += '<span class="diag-weak-tag">弱项</span>';
                         html += '</div>';
                     });
                     html += '</div>';
@@ -320,33 +353,40 @@
                     // 弱项分析
                     if (record.weakDims && record.weakDims.length > 0) {
                         html += '<div class="diag-detail-section">';
-                        html += '<div class="diag-detail-title">弱项分析</div>';
+                        html += '<div class="diag-detail-title">';
+                        html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
+                        html += '弱项分析';
+                        html += '</div>';
+                        html += '<div class="diag-weak-list">';
                         record.weakDims.forEach(function(weak) {
-                            var config = DIM_CONFIGS[weak.name] || { icon: '📊', desc: '' };
-                            html += '<div class="diag-weak-item">';
+                            var config = DIM_CONFIGS[weak.name] || { icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83"/></svg>', desc: '' };
+                            html += '<div class="diag-weak-card">';
                             html += '<div class="diag-weak-header">';
-                            html += '<span>' + config.icon + '</span>';
-                            html += '<span class="diag-weak-name">' + weak.name + '</span>';
-                            html += '<span class="diag-weak-score">' + weak.score + '分</span>';
+                            html += '<div class="diag-weak-icon">' + config.icon + '</div>';
+                            html += '<div class="diag-weak-name">' + weak.name + '</div>';
+                            html += '<div class="diag-weak-score">' + weak.score + '分</div>';
                             html += '</div>';
                             html += '<div class="diag-weak-desc">' + config.desc + '</div>';
                             html += '</div>';
                         });
                         html += '</div>';
+                        html += '</div>';
                     }
 
                     // 诊断信息
-                    html += '<div class="diag-detail-section diag-info">';
-                    html += '<div class="diag-info-item"><span>诊断时间</span><span>' + formatDateTime(record.date) + '</span></div>';
-                    html += '<div class="diag-info-item"><span>综合评分</span><span>' + record.totalScore + '分</span></div>';
-                    html += '<div class="diag-info-item"><span>当前套餐</span><span>' + record.plan + '</span></div>';
+                    html += '<div class="diag-detail-section">';
+                    html += '<div class="diag-info-grid">';
+                    html += '<div class="diag-info-row"><span class="diag-info-label">诊断时间</span><span class="diag-info-value">' + formatDateTime(record.date) + '</span></div>';
+                    html += '<div class="diag-info-row"><span class="diag-info-label">综合评分</span><span class="diag-info-value">' + record.totalScore + '分</span></div>';
+                    html += '<div class="diag-info-row"><span class="diag-info-label">当前套餐</span><span class="diag-info-value">' + record.plan + '</span></div>';
+                    html += '</div>';
                     html += '</div>';
 
-                    html += '</div>'; // end diag-card-detail
-                    html += '</div>'; // end diag-history-card
+                    html += '</div>'; // end diag-record-detail
+                    html += '</div>'; // end diag-record-card
                 });
 
-                html += '</div>'; // end diag-history-list
+                html += '</div>'; // end diag-list
             }
 
             container.innerHTML = html;
@@ -361,26 +401,22 @@
                 });
             }, 100);
         }
-
         function getRiskLabel(level) {
             var labels = { high: '高风险', mid: '中风险', low: '低风险' };
             return labels[level] || '中风险';
         }
 
         function toggleDiagRecordDetail(card) {
-            var detail = card.querySelector('.diag-card-detail');
-            var arrow = card.querySelector('.diag-card-arrow');
+            var detail = card.querySelector('.diag-record-detail');
             if (!detail) return;
 
             var isOpen = card.classList.contains('expanded');
             if (isOpen) {
                 card.classList.remove('expanded');
                 detail.style.display = 'none';
-                arrow.textContent = '▼';
             } else {
                 card.classList.add('expanded');
                 detail.style.display = 'block';
-                arrow.textContent = '▲';
             }
         }
 
@@ -515,7 +551,11 @@
                 '<div class="diag-history-title">诊断记录</div>' +
                 '<div style="width:36px"></div>' +
                 '</div>' +
-                '<div class="diag-history-content" id="diag-history-content"></div>';
+                '<div class="diag-history-page" id="diag-history-page">' +
+                '<div class="diag-history-glow"></div>' +
+                '<div class="diag-history-glow-2"></div>' +
+                '<div class="diag-history-content" id="diag-history-content"></div>' +
+                '</div>';
             document.body.appendChild(overlay);
         }
 
