@@ -1295,6 +1295,21 @@ function initApp() {
             }
         }
 
+        // ===== 更新模式说明 =====
+        function updateModeDesc(mode) {
+            var descEl = document.getElementById('mode-desc');
+            if (!descEl) return;
+            var textEl = descEl.querySelector('.mode-desc-text');
+            if (!textEl) return;
+            
+            var descMap = {
+                'diagnosis': '我将通过诊断测试分析你的薄弱维度，给出针对性备考建议',
+                'companion': '我是你的AI陪练，随时解答问题、批改作文、讲解技巧'
+            };
+            
+            textEl.textContent = descMap[mode] || descMap['companion'];
+        }
+        
         function handleCapsuleClick(text) {
             // 快捷胶囊按钮点击处理
             if (text === '练题' || text === '真题练习') {
@@ -1303,6 +1318,32 @@ function initApp() {
             }
             if (text === '批改作文') {
                 handleEssayClick();
+                return;
+            }
+            // 新增6个快捷按钮处理
+            if (text === '开始诊断') {
+                // 切换到诊断模式
+                updateModeDesc('diagnosis');
+                startNewDiagnosis();
+                return;
+            }
+            if (text === '翻译练习') {
+                openChat('companion');
+                setTimeout(function() { sendSuggestion('翻译练习'); }, 300);
+                return;
+            }
+            if (text === '错题重做') {
+                switchTab('wrongbook');
+                return;
+            }
+            if (text === '今日任务') {
+                openChat('companion');
+                setTimeout(function() { sendSuggestion('今天练什么好'); }, 300);
+                return;
+            }
+            if (text === '写作模板') {
+                openChat('companion');
+                setTimeout(function() { sendSuggestion('给我写作模板'); }, 300);
                 return;
             }
             var input = document.getElementById('chat-input');
@@ -3055,6 +3096,12 @@ function getAbilityTrend() {
             // 更新标题
             document.getElementById('chat-title').textContent = mode === 'diagnosis' ? '小过学长' : 'AI陪练';
             
+            // 更新模式说明
+            updateModeDesc(mode);
+            
+            // 初始化快捷chips
+            initChatChips(mode);
+            
             // 显示聊天界面，隐藏对话列表
             console.log('[DEBUG] openConversation: 准备切换视图');
             document.getElementById('chat-list-view').classList.remove('active');
@@ -3148,6 +3195,12 @@ function getAbilityTrend() {
             
             // 更新标题
             document.getElementById('chat-title').textContent = mode === 'diagnosis' ? '小过学长' : 'AI陪练';
+            
+            // 更新模式说明
+            updateModeDesc(mode);
+            
+            // 初始化快捷chips
+            initChatChips(mode);
             
             // 显示聊天界面，隐藏对话列表
             document.getElementById('chat-list-view').classList.remove('active');
@@ -3383,6 +3436,9 @@ function getAbilityTrend() {
             
             // 初始化快捷chips
             initChatChips(mode);
+            
+            // 更新模式说明
+            updateModeDesc(mode);
             
             // 切换到诊断tab，显示聊天界面
             // 注意：直接操作DOM而不是调用switchTab，避免showChatList覆盖聊天页面显示
