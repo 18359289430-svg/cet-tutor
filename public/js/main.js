@@ -4471,7 +4471,8 @@ function updateHomeStatus() {
             
             var streakEl = document.getElementById('home-streak');
             var streak = getStreakData();
-            if (streakEl) streakEl.textContent = streak.count > 0 ? '🔥' + streak.count : '打卡';
+            var streakNum = document.getElementById('streak-num');
+            if (streakNum) streakNum.textContent = streak.count > 0 ? streak.count : '0';
             var ctaText = document.getElementById('home-cta-text');
             if (ctaText) {
                 var hasDiag = data.personality || (data.diagnosis && data.diagnosis.type);
