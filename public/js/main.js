@@ -7670,15 +7670,12 @@ async function startNewDiagnosis() {
             openChat('chat');
             setTimeout(function(){ sendSuggestion('开始AI诊断，帮我找出' + EXAM_LABEL + '薄弱点'); }, 300);
             return;
-        }
-        
-        diagState.questions = questions;
-        // 保存写作和翻译题目供后续使用
-        if (result.writing_prompts) {
-            diagState.writingPrompts = result.writing_prompts;
-        }
-        if (result.translation_prompts) {
-            diagState.translationPrompts = result.translation_prompts;
+
+
+
+
+
+
         }
         diagState.phase = 'questions';
         document.getElementById('diag-progress-wrap').style.display = '';
@@ -8501,7 +8498,7 @@ function selectOption(btn, selectedValue) {
         diagState.currentQIndex++;
         var totalQuestions = diagState.questions.length;
         if (diagState.currentQIndex >= totalQuestions) {
-            startListeningTest();
+            showSelfEval();
         } else {
             showCurrentQuestion();
         }
