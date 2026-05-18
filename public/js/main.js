@@ -5612,8 +5612,8 @@ function openPayment(plan) {
     };
     // 面包多商品链接（创建后替换）
     var mbdLinks = {
-        sprint: 'https://mbd.pub/o/bread/YZaTk5tsbA==',
-        flagship: 'https://mbd.pub/o/bread/YZaTk5ttbQ=='
+        sprint: 'https://mbd.pub/o/bread/mbd-YZaTk5tsbA==',
+        flagship: 'https://mbd.pub/o/bread/mbd-YZaTk5ttbQ=='
     };
 
     var existing = document.getElementById('pay-modal');
