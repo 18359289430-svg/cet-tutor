@@ -4941,7 +4941,12 @@ var quizState = {
     weakTypes: [],
     startTime: null,
     answeredTypes: { '词汇': 0, '语法': 0, '阅读': 0, '听力': 0 },
-    wrongTypes: { '词汇': 0, '语法': 0, '阅读': 0, '听力': 0 }
+    wrongTypes: { '词汇': 0, '语法': 0, '阅读': 0, '听力': 0 },
+    // 限时训练相关
+    timerActive: false,
+    timerRemaining: 0,
+    timerInterval: null,
+    timerMode: 'default'
 };
 
 // 解析[QUIZ:xxx]格式的题目
@@ -4991,8 +4996,88 @@ function openQuiz() {
     
     overlay.classList.add('show');
     
+    // 初始化限时训练计时器
+    initQuizTimer();
+    
     // 请求第一题
     requestQuizQuestion();
+}
+
+// 限时训练计时器初始化
+function initQuizTimer() {
+    // 清除之前的计时器
+    if (quizState.timerInterval) {
+        clearInterval(quizState.timerInterval);
+        quizState.timerInterval = null;
+    }
+    
+    // 根据题型确定计时器模式
+    // 默认混合模式30分钟
+    var defaultTime = 30 * 60; // 30分钟
+    var listeningTime = IS_CET6 ? 20 * 60 : 25 * 60; // 听力：四级25分钟，六级20分钟
+    var readingTime = IS_CET6 ? 35 * 60 : 40 * 60; // 阅读：四级40分钟，六级35分钟
+    
+    quizState.timerMode = 'default';
+    quizState.timerRemaining = defaultTime;
+    quizState.timerActive = true;
+    
+    // 更新计时器显示
+    updateTimerDisplay();
+    
+    // 启动计时器
+    quizState.timerInterval = setInterval(function() {
+        if (!quizState.timerActive) return;
+        
+        quizState.timerRemaining--;
+        updateTimerDisplay();
+        
+        // 5分钟提醒
+        if (quizState.timerRemaining === 5 * 60) {
+            showToast('【限时训练】剩余5分钟！');
+        }
+        
+        // 时间到
+        if (quizState.timerRemaining <= 0) {
+            clearInterval(quizState.timerInterval);
+            quizState.timerInterval = null;
+            quizState.timerActive = false;
+            showTimerExpired();
+        }
+    }, 1000);
+}
+
+// 更新计时器显示
+function updateTimerDisplay() {
+    var timerEl = document.getElementById('quiz-timer');
+    if (!timerEl) return;
+    
+    var minutes = Math.floor(quizState.timerRemaining / 60);
+    var seconds = quizState.timerRemaining % 60;
+    timerEl.textContent = String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
+    
+    // 5分钟以内变红
+    if (quizState.timerRemaining <= 5 * 60) {
+        timerEl.classList.add('warning');
+    } else {
+        timerEl.classList.remove('warning');
+    }
+}
+
+// 时间到处理
+function showTimerExpired() {
+    var body = document.getElementById('quiz-body');
+    body.innerHTML = '<div class="quiz-stats show"><div class="quiz-stats-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="quiz-stats-title">时间到！</div><div class="quiz-stats-subtitle" style="font-size:14px;color:#666;margin-bottom:24px;">您已练习了 ' + quizState.currentIndex + ' 题，计' + quizState.correctCount + '题正确。</div><button class="quiz-stats-btn primary" onclick="submitQuizEarly()">查看结果</button><button class="quiz-stats-btn secondary" onclick="closeQuiz()">返回</button></div>';
+}
+
+// 提前交卷
+function submitQuizEarly() {
+    if (quizState.timerInterval) {
+        clearInterval(quizState.timerInterval);
+        quizState.timerInterval = null;
+    }
+    quizState.timerActive = false;
+    quizState.currentIndex = quizState.totalQuestions; // 标记为已完成
+    showQuizStats();
 }
 
 // 请求题目
@@ -5393,6 +5478,13 @@ function restartQuiz() {
 
 // 关闭Quiz
 function closeQuiz() {
+    // 清除计时器
+    if (quizState.timerInterval) {
+        clearInterval(quizState.timerInterval);
+        quizState.timerInterval = null;
+    }
+    quizState.timerActive = false;
+    
     var overlay = document.getElementById('quiz-overlay');
     overlay.classList.remove('show');
     quizState.isActive = false;

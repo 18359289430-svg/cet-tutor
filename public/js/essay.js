@@ -7,6 +7,200 @@
         topics: []
     };
 
+    // ===== 作文模板库 =====
+    var essayTemplates = IS_CET6 ? {
+        // 六级模板
+        argumentation: {
+            title: '议论文模板',
+            desc: '适用于谈论性作文，如“Should college students take a gap year?”',
+            structure: '开头段引出话题 → 正方观点安排 → 反方观点分析 → 我的看法 → 结尾段总结',
+            sentences: [
+                '“In recent years, the issue of [topic] has become a matter of global concern.”',
+                '“Some people argue that [positive viewpoint]. However, others maintain that [negative viewpoint].”',
+                '“From my perspective, I am inclined to agree with the former/latter view because...”',
+                '“In conclusion, it is imperative that we take concerted actions to address this issue.”'
+            ],
+            example: 'In recent years, the issue of whether college students should take a gap year has sparked heated debates. Some individuals argue that a gap year provides invaluable opportunities for self-discovery and practical experience. However, others contend that it may lead to academic disengagement and career delays. From my perspective, I am inclined to agree with the former view because...'
+        },
+        letter: {
+            title: '应用文模板',
+            desc: '包括主动、建议、感谢、投诉信等',
+            structure: '秸秀标题 → 正文三段 → 沉畸封帽',
+            sentences: [
+                '【主动信〟Dear [Name], I am writing to express my sincere gratitude for...',
+                '【建议信〟Dear [Name], I am writing to offer some constructive suggestions regarding...',
+                '【投诉信〟Dear Sir/Madam, I am writing to lodge a complaint about...'
+            ],
+            example: 'Dear Mr. Johnson, I am writing to express my sincere gratitude for your invaluable guidance during my internship at your company. Your patient instruction and professional expertise have profoundly shaped my understanding of...'
+        },
+        chart: {
+            title: '图表描述模板',
+            desc: '适用于图标题作文，如涉发率变化、销售额趋势等',
+            structure: '描述趋势和数据 → 分析原因 → 预测/建议',
+            sentences: [
+                'As is vividly illustrated in the bar chart, [subject] experienced a significant fluctuation, rising from X% in year A to Y% in year B.',
+                'Several factors contribute to this downward/upward trend. Primarily, ... Additionally, ...',
+                'Based on the analysis above, it is reasonable to predict that this trend will continue in the forthcoming years.'
+            ],
+            example: 'As is vividly illustrated in the line chart, the sales of electric vehicles experienced a dramatic surge, climbing from 50,000 units in 2020 to 200,000 units in 2025. Several factors contribute to this upward trend. Primarily, the increasing environmental awareness...'
+        },
+        translation: {
+            title: '翻译技巧',
+            desc: '常见句型转换和中英思维差异',
+            tips: [
+                '动词涉发转名词：“With the rapid development of... “',
+                '重复词处理：“more and more” → “an increasing number of”',
+                '中英短语差异：中文尽量用短语，英文尽量用长语',
+                '主动语态：遵循“主语平转态”原则'
+            ]
+        }
+    } : {
+        // 四级模板
+        argumentation: {
+            title: '议论文模板',
+            desc: '适用于谈论性作文，如“Should college students take a gap year?”',
+            structure: '开头段引出话题 → 正方观点安排 → 反方观点分析 → 我的看法 → 结尾段总结',
+            sentences: [
+                '“Recently, the issue of [topic] has caused wide public concern.”',
+                '“Some people believe that [positive viewpoint]. However, others argue that [negative viewpoint].”',
+                '“In my opinion, I am in favor of the former/latter view because...”',
+                '“To sum up, we should take effective measures to address this issue.”'
+            ],
+            example: 'Recently, the issue of whether college students should take a gap year has caused wide public concern. Some people believe that a gap year can help students gain practical experience. However, others argue that it may delay their graduation. In my opinion, I am in favor of the former view because...'
+        },
+        letter: {
+            title: '应用文模板',
+            desc: '包括主动、建议、感谢、投诉信等',
+            structure: '秸秀标题 → 正文三段 → 沉畸封帽',
+            sentences: [
+                '【主动信〟Dear [Name], I am writing to express my thanks for...',
+                '【建议信〟Dear [Name], I am writing to give some suggestions about...',
+                '【投诉信〟Dear Sir or Madam, I am writing to complain about...'
+            ],
+            example: 'Dear Tom, I am writing to express my thanks for your help during my visit to your university. Your warm hospitality made me feel at home. I hope you can visit my university in the future...'
+        },
+        chart: {
+            title: '图表描述模板',
+            desc: '适用于图标题作文，如涉发率变化、销售额趋势等',
+            structure: '描述趋势和数据 → 分析原因 → 预测/建议',
+            sentences: [
+                'The chart shows that [subject] increased/decreased significantly from X% in year A to Y% in year B.',
+                'There are several reasons for this change. First, ... Second, ...',
+                'In my opinion, this trend will continue in the future.'
+            ],
+            example: 'The chart shows that the number of people using public transportation increased significantly from 30% in 2020 to 55% in 2025. There are several reasons for this change. First, the government has improved bus services...'
+        },
+        translation: {
+            title: '翻译技巧',
+            desc: '常见句型转换和中英思维差异',
+            tips: [
+                '动词涉发转名词：“With the development of... “',
+                '重复词处理：“many people” → “a large number of people”',
+                '中英短语差异：中文用短语，英文用长语',
+                '主动语态：遵循“主语平转态”原则'
+            ]
+        }
+    };
+
+    // 显示作文模板抽屉
+    function showEssayTemplate() {
+        var overlay = document.createElement('div');
+        overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:3000;display:flex;align-items:flex-end;justify-content:center;';
+        
+        var sheet = document.createElement('div');
+        sheet.style.cssText = 'background:#fff;border-radius:16px 16px 0 0;width:100%;max-width:480px;max-height:80vh;display:flex;flex-direction:column;';
+        
+        // 标题栏
+        var header = document.createElement('div');
+        header.style.cssText = 'padding:16px 20px;border-bottom:1px solid rgba(229,229,234,0.5);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;';
+        header.innerHTML = '<span style="font-size:16px;font-weight:700;color:#1a1a2e;">作文模板库</span><span style="font-size:12px;color:#94A3B8;">' + EXAM_LABEL + '</span>';
+        
+        // 关闭按钮
+        var closeBtn = document.createElement('button');
+        closeBtn.style.cssText = 'width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,0.05);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;';
+        closeBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+        closeBtn.onclick = function() { overlay.remove(); };
+        header.appendChild(closeBtn);
+        
+        // 内容区域
+        var content = document.createElement('div');
+        content.style.cssText = 'flex:1;overflow-y:auto;padding:20px;';
+        
+        // 构建模板内容
+        var templatesHtml = '';
+        
+        // 遍历每种模板类型
+        var templateTypes = ['argumentation', 'letter', 'chart', 'translation'];
+        var typeNames = { argumentation: '议论文', letter: '应用文', chart: '图表描述', translation: '翻译技巧' };
+        
+        templateTypes.forEach(function(type) {
+            var tpl = essayTemplates[type];
+            if (!tpl) return;
+            
+            templatesHtml += '<div style="margin-bottom:24px;">';
+            templatesHtml += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">';
+            templatesHtml += '<span style="font-size:15px;font-weight:700;color:#1a1a2e;">' + tpl.title + '</span>';
+            templatesHtml += '</div>';
+            templatesHtml += '<div style="font-size:12px;color:#94A3B8;margin-bottom:10px;">' + tpl.desc + '</div>';
+            
+            if (tpl.structure) {
+                templatesHtml += '<div style="background:rgba(108,92,231,0.08);padding:10px 12px;border-radius:8px;margin-bottom:12px;">';
+                templatesHtml += '<div style="font-size:11px;font-weight:600;color:#6C5CE7;margin-bottom:4px;">结构框架</div>';
+                templatesHtml += '<div style="font-size:12px;color:#475569;line-height:1.6;">' + tpl.structure + '</div>';
+                templatesHtml += '</div>';
+            }
+            
+            if (tpl.sentences && tpl.sentences.length > 0) {
+                templatesHtml += '<div style="font-size:12px;font-weight:600;color:#64748B;margin-bottom:8px;">关键句型</div>';
+                templatesHtml += '<div style="display:flex;flex-direction:column;gap:8px;">';
+                tpl.sentences.forEach(function(s) {
+                    templatesHtml += '<div style="background:#F8F9FA;padding:10px 12px;border-radius:8px;font-size:13px;color:#475569;line-height:1.6;">' + s + '</div>';
+                });
+                templatesHtml += '</div>';
+            }
+            
+            if (tpl.tips && tpl.tips.length > 0) {
+                templatesHtml += '<div style="font-size:12px;font-weight:600;color:#64748B;margin:12px 0 8px;">技巧点</div>';
+                templatesHtml += '<div style="display:flex;flex-direction:column;gap:6px;">';
+                tpl.tips.forEach(function(tip) {
+                    templatesHtml += '<div style="display:flex;align-items:flex-start;gap:6px;font-size:12px;color:#475569;line-height:1.5;">';
+                    templatesHtml += '<span style="color:#6C5CE7;flex-shrink:0;">•</span><span>' + tip + '</span>';
+                    templatesHtml += '</div>';
+                });
+                templatesHtml += '</div>';
+            }
+            
+            if (tpl.example) {
+                templatesHtml += '<div style="margin-top:12px;">';
+                templatesHtml += '<div style="font-size:12px;font-weight:600;color:#64748B;margin-bottom:8px;">示范片段</div>';
+                templatesHtml += '<div style="background:linear-gradient(135deg,rgba(0,184,148,0.05),rgba(108,92,231,0.05));padding:12px;border-radius:10px;border-left:3px solid #00B894;">';
+                templatesHtml += '<div style="font-size:13px;color:#475569;line-height:1.7;font-style:italic;">' + tpl.example + '</div>';
+                templatesHtml += '</div></div>';
+            }
+            
+            templatesHtml += '</div>';
+        });
+        
+        content.innerHTML = templatesHtml;
+        
+        // 底部关闭按钮
+        var footer = document.createElement('div');
+        footer.style.cssText = 'padding:16px 20px;padding-bottom:calc(16px + var(--safe-bottom));border-top:1px solid rgba(229,229,234,0.5);flex-shrink:0;';
+        var btn = document.createElement('button');
+        btn.style.cssText = 'width:100%;padding:14px;border:none;border-radius:12px;background:linear-gradient(135deg,#6C5CE7,#8B7CF7);color:#fff;font-size:15px;font-weight:600;cursor:pointer;';
+        btn.textContent = '我知道了';
+        btn.onclick = function() { overlay.remove(); };
+        footer.appendChild(btn);
+        
+        sheet.appendChild(header);
+        sheet.appendChild(content);
+        sheet.appendChild(footer);
+        overlay.appendChild(sheet);
+        
+        overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
+        document.body.appendChild(overlay);
+    }
+
     function openEssayOverlay() {
         essayState.selectedTopic = '';
         essayState.selectedTopicId = '';

@@ -422,3 +422,50 @@
                 transition-duration: 0.01ms !important;
             }
         }
+
+/* ===== 限时训练计时器 ===== */
+.quiz-timer-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+.quiz-timer {
+    font-size: 15px;
+    font-weight: 700;
+    font-family: 'SF Mono', 'Menlo', 'Monaco', monospace;
+    color: #6C5CE7;
+    background: rgba(108, 92, 231, 0.1);
+    padding: 6px 12px;
+    border-radius: 8px;
+    min-width: 60px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+.quiz-timer.warning {
+    color: #E17055;
+    background: rgba(225, 112, 85, 0.15);
+    animation: timerPulse 1s ease-in-out infinite;
+}
+@keyframes timerPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+.quiz-submit-btn {
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #fff;
+    background: linear-gradient(135deg, #00B894, #00C9A7);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.quiz-submit-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 184, 148, 0.3);
+}
+.quiz-submit-btn:active {
+    transform: scale(0.95);
+}

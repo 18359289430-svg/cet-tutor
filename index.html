@@ -804,7 +804,10 @@
                 <div class="quiz-title" id="quiz-title">每日一练</div>
                 <div class="quiz-subtitle" id="quiz-subtitle">正在出题...</div>
             </div>
-            <div style="width:36px"></div>
+            <div class="quiz-timer-wrap">
+                <div class="quiz-timer" id="quiz-timer">30:00</div>
+                <button class="quiz-submit-btn" id="quiz-submit-btn" onclick="submitQuizEarly()">交卷</button>
+            </div>
         </div>
         <div class="quiz-progress-bar">
             <div class="quiz-progress-fill" id="quiz-progress-fill" style="width:0%"></div>
@@ -817,6 +820,36 @@
         </div>
     </div>
 
+    <!-- 作文批改 Overlay -->
+    <div class="essay-overlay" id="essay-overlay">
+        <div class="essay-header">
+            <button class="essay-close-btn" onclick="closeEssayOverlay()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            </button>
+            <div class="essay-header-title">作文批改</div>
+            <div style="width:36px"></div>
+        </div>
+        <div class="essay-body" id="essay-body">
+            <div class="essay-topic-section">
+                <div class="essay-section-label">选择题目类型</div>
+                <div class="essay-topic-grid" id="essay-topic-grid">
+                    <div style="text-align:center;padding:20px;color:#94A3B8">加载中...</div>
+                </div>
+            </div>
+            <div class="essay-input-section" id="essay-input-body">
+                <div class="essay-section-label">输入你的作文</div>
+                <textarea class="essay-textarea" id="essay-textarea" placeholder="请输入作文内容（至少20词）..." oninput="updateEssayWordCount()"></textarea>
+                <div class="essay-word-count">
+                    <span id="essay-word-num">0</span> 词
+                    <button class="essay-template-btn" onclick="showEssayTemplate()">📝 模板参考</button>
+                </div>
+                <button class="essay-submit-btn" onclick="submitEssay()">提交批改</button>
+            </div>
+            <div class="essay-result-section" id="essay-result-section"></div>
+        </div>
+    </div>
 
     <!-- JS -->
     <script src="/js/main.js?v=20260516p"></script>
