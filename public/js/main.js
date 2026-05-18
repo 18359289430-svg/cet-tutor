@@ -4501,12 +4501,12 @@ function updateHomeStatus() {
         function renderBenefits(selectedPlan) {
             selectedPlan = selectedPlan || 'free';
             var benefits = [
-                { name: 'AI诊断+人格卡', free: true, sprint: true, flagship: true },
-                { name: 'AI对话答疑', free: '20轮/天', sprint: '30天无限', flagship: '30天无限' },
-                { name: '作文批改', free: '评分+问题标注', sprint: '逐句改写', flagship: '改写+精讲' },
-                { name: '翻译批改', free: '评分+踩分点', sprint: '参考译文', flagship: '译文+思路精讲' },
-                { name: '每日一练', free: '通用轮换', sprint: '短板定制', flagship: '短板定制' },
-                { name: '备考计划', free: '3条建议', sprint: '30天计划', flagship: '30天计划+随时调' }
+                { name: 'AI诊断+人格卡', free: true, sprint: true },
+                { name: 'AI对话答疑', free: '20轮/天', sprint: '30天无限' },
+                { name: '作文批改', free: '评分+问题标注', sprint: '逐句改写+建议' },
+                { name: '翻译批改', free: '评分+踩分点', sprint: '参考译文' },
+                { name: '每日一练', free: '通用轮换', sprint: '短板定制' },
+                { name: '备考计划', free: '3条建议', sprint: '30天学习计划' }
             ];
             var html = '';
             benefits.forEach(function(b) {
@@ -5514,7 +5514,7 @@ function selectPlan(plan) {
     if (target) target.classList.add('selected');
     var ctaBtn = document.getElementById('plan-cta-btn');
     if (ctaBtn) {
-        var prices = { free: '当前方案', sprint: '¥38 开始冲刺', flagship: '¥88 全程陪伴' };
+        var prices = { free: '当前方案', sprint: '¥29.9 开始冲刺' };
         ctaBtn.textContent = prices[plan] || '选择方案';
     }
 }
@@ -5599,16 +5599,14 @@ function closeModal(id) {
 }
 
 function openPayment(plan) {
-    var planNames = { sprint: '冲刺营', flagship: '全程营' };
-    var planPrices = { sprint: 38, flagship: 88 };
+    var planNames = { sprint: '冲刺营' };
+    var planPrices = { sprint: 29.9 };
     var planFeatures = {
-        sprint: ['AI五维诊断 | AI陪练(给答案+解析)','作文批改(评分+问题+方向)','翻译批改(参考译文)','学习计划 | 错题本+复习提醒'],
-        flagship: ['AI五维诊断 | AI深度精讲(解题套路+举一反三)','作文精批(逐句改写+表达升级)','翻译精批(逐句对比)','动态学习计划','错题本+复习提醒+错因归类','诊断详细报告(进步预测+同类题推荐)']
+        sprint: ['AI五维诊断 | AI陪练(给答案+解析)','作文批改(评分+问题+方向)','翻译批改(参考译文)','学习计划 | 错题本+复习提醒']
     };
-    // 面包多商品链接（创建后替换）
+    // 面包多商品链接（冲刺营¥29.9）
     var mbdLinks = {
-        sprint: 'https://mbd.pub/o/bread/mbd-YZaTk5tsbA==',
-        flagship: 'https://mbd.pub/o/bread/mbd-YZaTk5ttbQ=='
+        sprint: 'https://mbd.pub/o/bread/mbd-YZaTk5tsbA=='
     };
 
     var existing = document.getElementById('pay-modal');

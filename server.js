@@ -67,16 +67,14 @@ const MBD_DEVELOPER_KEY = process.env.MBD_DEVELOPER_KEY || '';  // 需在Railway
 const BOT_ID_DIAGNOSIS = '7636289658620215331';
 const BOT_ID_COMPANION = '7637702903679631395';
 
-// 套餐配置（3层定价）- 支持CET4和CET6
+// 套餐配置（2层定价）- 支持CET4和CET6
 const PLANS = {
     free: { name: '免费版', price: 0, uidPrefix: 'CET4D', needPay: false },
-    sprint: { name: '冲刺营', price: 38, uidPrefix: 'CET4S', needPay: true },
-    flagship: { name: '全程营', price: 88, uidPrefix: 'CET4F', needPay: true }
+    sprint: { name: '冲刺营', price: 29.9, uidPrefix: 'CET4S', needPay: true }
 };
 const PLANS_CET6 = {
     free: { name: '免费版', price: 0, uidPrefix: 'CET6D', needPay: false },
-    sprint: { name: '冲刺营', price: 38, uidPrefix: 'CET6S', needPay: true },
-    flagship: { name: '全程营', price: 88, uidPrefix: 'CET6F', needPay: true }
+    sprint: { name: '冲刺营', price: 29.9, uidPrefix: 'CET6S', needPay: true }
 };
 
 // 内存订单存储
@@ -1005,10 +1003,9 @@ async function handleApi(req, res, pathname) {
                 const orderInfo = mbdData.result[0];
                 const amount = parseFloat(orderInfo.amount || 0);
 
-                // 根据金额判断套餐
-                if (amount >= 100) plan = 'flagship';
-                else if (amount >= 30) plan = 'sprint';
-                else plan = 'sprint';
+                // 根据金额判断套餐（冲刺营¥29.9，阈值25元）
+                if (amount >= 25) plan = 'sprint';
+                else plan = 'free'; // 金额不足
 
                 const activationId = 'mbd_' + orderIdTrimmed;
                 const token = crypto.createHash('md5').update(activationId + plan + SECRET_KEY).digest('hex');
