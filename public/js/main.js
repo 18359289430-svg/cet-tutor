@@ -4287,7 +4287,7 @@ function getAbilityTrend() {
                     case 'diagnosis':
                         // 跳转到诊断页并触发诊断
                         switchTab('diagnosis');
-                        setTimeout(function(){ sendSuggestion('我想做一个AI诊断，帮我分析四级薄弱点'); }, 300);
+                        setTimeout(function(){ sendSuggestion('我想做一个AI诊断，帮我分析' + EXAM_LABEL + '薄弱点'); }, 300);
                         break;
                     case 'wrongbook':
                         showWrongBook();
