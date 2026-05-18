@@ -1604,3 +1604,31 @@
     border-radius: 10px;
     margin-top: 8px;
 }
+
+/* 四六级切换药丸按钮 */
+.exam-type-switch {
+    display: flex;
+    background: rgba(255,255,255,0.2);
+    border-radius: 20px;
+    padding: 3px;
+    gap: 2px;
+}
+.exam-type-btn {
+    padding: 5px 14px;
+    border: none;
+    border-radius: 17px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s;
+    background: transparent;
+    color: rgba(255,255,255,0.7);
+}
+.exam-type-btn.active {
+    background: #fff;
+    color: #6C5CE7;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+}
+.exam-type-btn:not(.active):hover {
+    color: rgba(255,255,255,0.95);
+}
