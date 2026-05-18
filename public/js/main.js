@@ -1976,7 +1976,7 @@ function explainWithAI(id) {
             }
             html += '</div>';
             
-            // ===== 45天计划进度 - 环形进度条 =====
+            // ===== 30天计划进度 - 环形进度条 =====
             html += '<div class="dashboard-plan-section glass-card">';
             html += '<div class="dashboard-plan-header">';
             html += '<div class="dashboard-plan-title">' + icons.calendar + planDays + '天冲刺计划</div>';
@@ -4502,16 +4502,16 @@ function updateHomeStatus() {
             selectedPlan = selectedPlan || 'free';
             var benefits = [
                 { name: 'AI诊断+人格卡', free: true, sprint: true, flagship: true },
-                { name: 'AI对话答疑', free: '20轮/天', sprint: '45天无限', flagship: '45天无限' },
+                { name: 'AI对话答疑', free: '20轮/天', sprint: '30天无限', flagship: '30天无限' },
                 { name: '作文批改', free: '评分+问题标注', sprint: '逐句改写', flagship: '改写+精讲' },
                 { name: '翻译批改', free: '评分+踩分点', sprint: '参考译文', flagship: '译文+思路精讲' },
                 { name: '每日一练', free: '通用轮换', sprint: '短板定制', flagship: '短板定制' },
-                { name: '备考计划', free: '3条建议', sprint: '45天计划', flagship: '45天计划+随时调' }
+                { name: '备考计划', free: '3条建议', sprint: '30天计划', flagship: '30天计划+随时调' }
             ];
             var html = '';
             benefits.forEach(function(b) {
                 var val = b[selectedPlan];
-                var isLimited = (typeof val === 'string' && val !== '45天无限');
+                var isLimited = (typeof val === 'string' && val !== '30天无限');
                 html += '<div class="coze-benefit-item"><span>' + b.name + '</span><span class="coze-benefit-val' + (isLimited ? ' limited' : '') + '">' + (val === true ? '✓' : val === false ? '—' : val) + '</span></div>';
             });
             var el = document.getElementById('benefits-content');
