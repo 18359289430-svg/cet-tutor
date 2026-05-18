@@ -7824,13 +7824,13 @@ async function startNewDiagnosis() {
         diagState.translationPrompts = [
             {chinese: '中国是世界上最古老的文明之一，拥有五千多年的历史。中国文化对世界文化的发展做出了重要贡献。', reference: 'China is one of the oldest civilizations in the world, with a history of over five thousand years. Chinese culture has made important contributions to the development of world culture.'},
             {chinese: '随着经济的发展，越来越多的中国人有机会出国旅游。这不仅开阔了他们的眼界，也促进了文化交流。', reference: 'With the development of economy, more and more Chinese people have the opportunity to travel abroad. This not only broadens their horizons but also promotes cultural exchange.'},
-            {chinese: '互联网的普及改变了人们的生活方式。现在，人们可以通过网络购物、学习、交流，这大大提高了生活效率。', reference: 'The popularity of the Internet has changed people's lifestyle. Nowadays, people can shop, study, and communicate online, which greatly improves the efficiency of life.'}
+            {chinese: '互联网的普及改变了人们的生活方式。现在，人们可以通过网络购物、学习、交流，这大大提高了生活效率。', reference: 'The popularity of the Internet has changed people\'s lifestyle. Nowadays, people can shop, study, and communicate online, which greatly improves the efficiency of life.'}
         ];
         if (EXAM_TYPE === 'cet6') {
             diagState.translationPrompts = [
                 {chinese: '丝绸之路是古代连接中国与地中海地区的重要贸易通道。它不仅促进了商品的流通，也推动了不同文明之间的文化交流与融合。', reference: 'The Silk Road was an important trade route connecting China with the Mediterranean region in ancient times. It not only facilitated the flow of goods but also promoted cultural exchange and integration between different civilizations.'},
                 {chinese: '人工智能技术的快速发展正在深刻改变各行各业。从医疗诊断到自动驾驶，AI的应用前景广阔，但也引发了关于就业和隐私的担忧。', reference: 'The rapid development of artificial intelligence technology is profoundly transforming various industries. From medical diagnosis to autonomous driving, AI has broad application prospects, but it has also raised concerns about employment and privacy.'},
-                {chinese: '中国的高铁网络已成为世界上最发达的铁路系统之一，总里程超过四万公里。它不仅缩短了城市间的距离，也推动了区域经济的协调发展。', reference: "China's high-speed rail network has become one of the most developed railway systems in the world, with a total mileage exceeding 40,000 kilometers. It not only shortens the distance between cities but also promotes the coordinated development of regional economies."}
+                {chinese: '中国的高铁网络已成为世界上最发达的铁路系统之一，总里程超过四万公里。它不仅缩短了城市间的距离，也推动了区域经济的协调发展。', reference: "China\'s high-speed rail network has become one of the most developed railway systems in the world, with a total mileage exceeding 40,000 kilometers. It not only shortens the distance between cities but also promotes the coordinated development of regional economies."}
             ];
         }
         
