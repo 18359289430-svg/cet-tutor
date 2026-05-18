@@ -7137,6 +7137,91 @@ function showQuizStats() {
         }
     }
     
+    // 生成维度分布HTML
+    var dimDistHtml = '';
+    var results = quizState.dimResults || [];
+    if (results.length > 0) {
+        // 统计每个维度的正确率
+        var dimStats = {};
+        results.forEach(function(r) {
+            if (!dimStats[r.ability]) {
+                dimStats[r.ability] = { correct: 0, total: 0 };
+            }
+            dimStats[r.ability].total++;
+            if (r.correct) dimStats[r.ability].correct++;
+        });
+        
+        // 生成维度条形图
+        var dimBarsHtml = '';
+        var weakDimList = [];
+        var dimOrder = ['细节理解', '推理判断', '同义替换', '主旨归纳', '态度判断'];
+        
+        for (var i = 0; i < dimOrder.length; i++) {
+            var dim = dimOrder[i];
+            if (!dimStats[dim]) continue;
+            
+            var stat = dimStats[dim];
+            var dimRate = Math.round((stat.correct / stat.total) * 100);
+            var barWidth = dimRate;
+            var barColor = 'green';
+            if (dimRate < 40) {
+                barColor = 'red';
+                weakDimList.push(dim);
+            } else if (dimRate < 60) {
+                barColor = 'orange';
+                weakDimList.push(dim);
+            }
+            
+            dimBarsHtml += '<div class="quiz-dim-bar">';
+            dimBarsHtml += '<div class="quiz-dim-bar-label">' + dim + '</div>';
+            dimBarsHtml += '<div class="quiz-dim-bar-track"><div class="quiz-dim-bar-fill ' + barColor + '" style="width:' + barWidth + '%"></div></div>';
+            dimBarsHtml += '<div class="quiz-dim-bar-rate">' + dimRate + '%（' + stat.correct + '/' + stat.total + '）</div>';
+            dimBarsHtml += '</div>';
+        }
+        
+        if (dimBarsHtml) {
+            dimDistHtml = '<div class="quiz-stats-dims">' + dimBarsHtml + '</div>';
+        }
+    }
+    
+    // 生成能力值变化HTML
+    var dimChangeHtml = '';
+    var dimChanges = quizState.dimChanges || {};
+    var dimChangeList = [];
+    for (var dim in dimChanges) {
+        var change = dimChanges[dim];
+        if (change !== 0) {
+            var arrow = change > 0 ? '↑' : '↓';
+            var sign = change > 0 ? '+' : '';
+            dimChangeList.push(dim + ' ' + sign + change + ' ' + arrow);
+        }
+    }
+    if (dimChangeList.length > 0) {
+        dimChangeHtml = '<div class="quiz-stats-change">' + dimChangeList.join(' &nbsp;|&nbsp; ') + '</div>';
+    }
+    
+    // 生成推荐下一步HTML
+    var recommendHtml = '';
+    var dimChanges2 = quizState.dimChanges || {};
+    var weakDims = [];
+    for (var dim in dimChanges2) {
+        // 找出变化为负或正确率低的维度
+        if (dimChanges2[dim] < 0) {
+            weakDims.push(dim);
+        }
+    }
+    // 如果没有负变化但有薄弱项，使用薄弱项
+    if (weakDims.length === 0 && weakDimList && weakDimList.length > 0) {
+        weakDims = weakDimList.slice(0, 2); // 最多取2个
+    }
+    if (weakDims.length > 0) {
+        var firstWeakDim = weakDims[0];
+        recommendHtml = '<div class="quiz-stats-recommend">';
+        recommendHtml += '<div class="quiz-stats-recommend-text">' + firstWeakDim + '正确率较低，建议做专项练习</div>';
+        recommendHtml += '<button class="quiz-stats-btn recommend" onclick="startDimPractice(\'' + firstWeakDim + '\')">去练薄弱项</button>';
+        recommendHtml += '</div>';
+    }
+    
     var html = '<div class="quiz-stats show">';
     html += '<div class="quiz-stats-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>';
     html += '<div class="quiz-stats-title">' + titleText + '</div>';
@@ -7146,6 +7231,9 @@ function showQuizStats() {
     html += '<div class="quiz-stats-item"><div class="quiz-stats-item-value">' + quizState.wrongCount + '</div><div class="quiz-stats-item-label">错误</div></div>';
     html += '<div class="quiz-stats-item"><div class="quiz-stats-item-value">' + timeStr + '</div><div class="quiz-stats-item-label">用时</div></div>';
     html += '</div>';
+    html += dimDistHtml; // 新增：维度分布
+    html += dimChangeHtml; // 新增：能力值变化
+    html += recommendHtml; // 新增：推荐下一步
     html += weakHtml;
     html += '<button class="quiz-stats-btn primary" onclick="restartQuiz()">再练一组</button>';
     html += '<button class="quiz-stats-btn secondary" onclick="closeQuiz()">返回</button>';
@@ -7182,6 +7270,19 @@ function showQuizStats() {
     if (quizDimState.selectedDim) {
         markTaskComplete('dim_' + quizDimState.selectedDim);
     }
+    
+    // 清空能力值变化记录
+    quizState.dimChanges = null;
+}
+
+// 开始薄弱维度练习
+function startDimPractice(dim) {
+    // 关闭当前练习结果
+    closeQuiz();
+    // 延迟打开新的练习
+    setTimeout(function() {
+        openQuizWithDim(dim);
+    }, 300);
 }
 
 // === 五维能力分数更新系统 ===
@@ -7228,6 +7329,16 @@ function updateDimScore(ability, delta) {
     var current = parseInt(scores[dimKey]) || 50;
     var newScore = Math.max(0, Math.min(100, current + delta));
     scores[dimKey] = newScore;
+    
+    // 记录能力值变化（用于报告显示）
+    if (!quizState.dimChanges) quizState.dimChanges = {};
+    var change = delta;
+    // 由于分数限制，可能实际变化与delta不同
+    if (current + delta !== newScore) {
+        // 被限制在边界，实际变化可能更小
+        change = newScore - current;
+    }
+    quizState.dimChanges[ability] = Math.round(change * 10) / 10; // 保留1位小数
     
     // 保存分数
     localStorage.setItem(examKey('ability_scores'), JSON.stringify(scores));
