@@ -1601,3 +1601,71 @@
     color: #334155;
     line-height: 1.5;
 }
+
+/* 四六级试卷格式样式 */
+.exam-paper-header {
+    text-align: center;
+    margin-bottom: 12px;
+}
+.exam-part-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1a2744;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+.exam-section-label {
+    font-size: 13px;
+    color: #64748B;
+    margin-top: 4px;
+}
+.exam-divider {
+    border: none;
+    border-top: 1.5px dashed #cbd5e1;
+    margin: 16px 0;
+}
+.diag-question-card .diag-question-num {
+    font-size: 13px;
+    color: #6C5CE7;
+    font-weight: 600;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+}
+.diag-passage-wrap {
+    margin-bottom: 16px;
+}
+.diag-passage-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 14px;
+    background: #f0f4ff;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #4338ca;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+.diag-passage-toggle:hover {
+    background: #e0e7ff;
+}
+.diag-passage-content {
+    background: #fafbfc;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 14.5px;
+    line-height: 1.85;
+    color: #334155;
+}
+.diag-passage-title {
+    font-weight: 600;
+    color: #1a2744;
+    margin-bottom: 10px;
+    font-size: 15px;
+}
+.diag-passage-divider {
+    border-top: 1px dashed #cbd5e1;
+    margin: 10px 0;
+}

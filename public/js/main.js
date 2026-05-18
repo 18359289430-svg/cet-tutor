@@ -9434,10 +9434,24 @@ function showCurrentQuestion() {
         '</div>';
     }
     
+    // 判断题目类型，显示对应的Part标题
+    var qType = q.type || q.category || '';
+    var isLC = qType.indexOf('LC') >= 0 || qType.indexOf('听力') >= 0 || dimName === '听力';
+    var partTitle = isLC ? 'Part I Listening Comprehension' : 'Part II Reading Comprehension';
+    var sectionLabel = isLC ? 'Section A' : '';
+    
+    // 试卷格式头部
+    html += '<div class="exam-paper-header">' +
+        '<div class="exam-part-title">' + partTitle + '</div>' +
+        (sectionLabel ? '<div class="exam-section-label">' + sectionLabel + '</div>' : '') +
+    '</div>';
+    
+    html += '<div class="exam-divider"></div>';
+    
     var dimName = q.ability || '细节理解';
     var tipInfo = getTipInfo(dimName);
     html += '<div class="diag-dim-tag">' + tipInfo.tag + '</div>' +
-        '<div class="diag-question-num">第 ' + (diagState.currentQIndex + 1) + ' / ' + totalQuestions + ' 题</div>' +
+        '<div class="diag-question-num">Q' + (diagState.currentQIndex + 1) + '</div>' +
         '<div class="diag-question-text">' + escapeHtml(q.question) + '</div>' +
         '<div class="diag-options">' +
             renderOptionBtn('A', q.optionA, 'A') +
@@ -9445,6 +9459,7 @@ function showCurrentQuestion() {
             renderOptionBtn('C', q.optionC, 'C') +
             renderOptionBtn('D', q.optionD, 'D') +
         '</div>' +
+        '<div class="exam-divider"></div>' +
     '</div>';
     
     document.getElementById('diag-body').innerHTML = html;
