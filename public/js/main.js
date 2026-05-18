@@ -1927,7 +1927,7 @@ function explainWithAI(id) {
             // 大卡片2: 综合水平
             html += '<div class="dashboard-overview-card large score-card shimmer-card">';
             html += '<div class="overview-icon" style="background:rgba(255,255,255,0.2)">' + icons.target + '</div>';
-            html += '<div class="overview-num">' + (hasDimData ? (estimatedScore >= 600 ? '优秀' : estimatedScore >= 500 ? '良好' : estimatedScore >= 425 ? '基础' : '待提升') : '--') + '</div>';
+            html += '<div class="overview-num">' + (hasDimData ? (estimatedScore >= 600 ? '掌握扎实' : estimatedScore >= 500 ? '较好掌握' : estimatedScore >= 425 ? '初步掌握' : '有待提高') : '--') + '</div>';
             html += '<div class="overview-label">综合评估' + (hasDimData ? '' : '<span class="overview-label-hint">完成诊断后解锁</span>') + '</div>';
             html += '</div>';
             // 小卡片1: 今日练习
@@ -2065,7 +2065,7 @@ function explainWithAI(id) {
                 html += '<div class="dashboard-score-target">继续努力，稳步提升</div>';
                 html += '</div>';
                 html += '<div class="dashboard-score-main">';
-                html += '<span class="dashboard-score-num">' + (estimatedScore >= 600 ? '优秀' : estimatedScore >= 500 ? '良好' : estimatedScore >= 425 ? '基础' : '待提升') + '</span>';
+                html += '<span class="dashboard-score-num">' + (estimatedScore >= 600 ? '掌握扎实' : estimatedScore >= 500 ? '较好掌握' : estimatedScore >= 425 ? '初步掌握' : '有待提高') + '</span>';
                 html += '<span class="dashboard-score-unit"></span>';
                 html += '</div>';
                 html += '<div class="dashboard-score-bar">';
