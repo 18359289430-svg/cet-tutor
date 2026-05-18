@@ -2787,7 +2787,10 @@ function getAbilityTrend() {
         }
         
         function formatDate(dateStr) {
-            var parts = dateStr.split('-');
+            if (dateStr instanceof Date) {
+                return (dateStr.getMonth()+1) + '月' + dateStr.getDate() + '日';
+            }
+            var parts = String(dateStr).split('-');
             if (parts.length === 3) {
                 return parseInt(parts[1]) + '月' + parseInt(parts[2]) + '日';
             }
