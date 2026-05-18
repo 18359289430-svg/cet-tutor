@@ -6,7 +6,6 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="theme-color" content="#6C5CE7">
-    <link rel="icon" type="image/svg+xml" href="/public/favicon.svg">
     <title>四级备考搭子 - AI智能四级备考助手</title>
     <script>
     if (new URLSearchParams(window.location.search).get('type') === 'cet6') {
@@ -119,6 +118,20 @@
                     <span>陪你冲刺<span class="social-proof-num">备考</span></span>
                 </div>
 
+                <!-- 每日任务卡 -->
+                <div class="daily-task-card" id="daily-task-card" style="display:none">
+                    <div class="daily-task-card-header">
+                        <div class="daily-task-card-title">🎯 今日任务</div>
+                        <div class="daily-task-complete-badge" id="daily-task-badge">0/0</div>
+                    </div>
+                    <div class="daily-task-list" id="daily-task-list">
+                        <!-- JS动态渲染 -->
+                    </div>
+                    <div class="daily-task-all-done" style="display:none">
+                        🎉 今日任务已完成！
+                    </div>
+                </div>
+
                 <!-- 打卡日历（百词斩风格） -->
                 <div class="streak-calendar" id="streak-calendar">
                     <div class="streak-cal-header">
@@ -154,7 +167,7 @@
                                 <div class="ai-cap-sub">5分钟定位短板</div>
                             </div>
                         </div>
-                        <div class="ai-cap-item" onclick="switchTab('plan')">
+                        <div class="ai-cap-item" onclick="switchTab('progress')">
                             <div class="ai-cap-icon green">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                             </div>
@@ -231,19 +244,19 @@
                     </div>
                     
                     <!-- 每日任务卡片 -->
-                    <div class="daily-task-card" id="plan-daily-task" onclick="openDailyTask()">
+                    <div class="daily-task-card" id="daily-task-card" onclick="openDailyTask()">
                         <div class="daily-task-header">
                             <div class="daily-task-icon">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                             </div>
                             <div class="daily-task-info">
                                 <div class="daily-task-title">每日任务</div>
-                                <div class="daily-task-desc" id="plan-daily-desc">今日薄弱点强化训练</div>
+                                <div class="daily-task-desc" id="daily-task-desc">今日薄弱点强化训练</div>
                             </div>
-                            <div class="daily-task-badge" id="plan-daily-badge">0/4</div>
+                            <div class="daily-task-badge" id="daily-task-badge">0/4</div>
                         </div>
                         <div class="daily-task-progress">
-                            <div class="daily-task-progress-bar" id="plan-daily-progress-bar" style="width: 0%"></div>
+                            <div class="daily-task-progress-bar" id="daily-task-progress-bar" style="width: 0%"></div>
                         </div>
                     </div>
                     
@@ -536,7 +549,9 @@
                 </div>
             </div>
                         <div class="tab-page" id="tab-wrongbook">
-
+                <div class="wrongbook-header">
+                    <h2>📝 错题本</h2>
+                </div>
                 <div id="wrongbook-content">
                     <!-- 动态渲染 -->
                 </div>
@@ -786,12 +801,17 @@
         </div>
         <div class="report-content" id="report-content">
             <!-- 动态内容由JS填充 -->
-        </div>
-        <div class="report-cta-section" id="report-cta-section">
-            <div class="report-cta-hint" id="report-cta-hint"></div>
-            <button class="report-cta-btn" onclick="openReportPayModal()">
-                <span id="report-cta-text">升级冲刺营</span>
-            </button>
+            <div class="report-cta-section" id="report-cta-section">
+                <div class="report-cta-card">
+                    <div class="report-cta-hint" id="report-cta-hint"></div>
+                    <button class="report-cta-btn" onclick="openReportPayModal()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                        </svg>
+                        <span id="report-cta-text">升级冲刺营</span>
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -883,7 +903,7 @@
     </div>
 
     <!-- JS -->
-    <script src="/js/main.js?v=20260518u"></script>
+    <script src="/js/main.js?v=20260518v"></script>
     <script src="/js/essay.js?v=202605142349"></script>
 </body>
 
