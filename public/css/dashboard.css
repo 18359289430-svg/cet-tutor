@@ -569,7 +569,7 @@
     color: var(--text-muted);
 }
 
-/* ===== 薄弱项卡片 ===== */
+/* ===== 薄弱项卡片 - 白卡风格 ===== */
 .dashboard-weak-section {
     margin: 0 16px 16px;
     animation: fadeInUp 0.5s ease 0.8s forwards;
@@ -587,9 +587,10 @@
 .dashboard-section-title svg {
     width: 18px;
     height: 18px;
-    color: var(--warning);
+    color: var(--primary);
 }
 .dashboard-weak-card {
+    background: #fff;
     border-radius: var(--card-radius);
     padding: 16px;
     margin-bottom: 12px;
@@ -603,6 +604,8 @@
                 box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     animation: fadeInUp 0.5s ease forwards;
     opacity: 0;
+    box-shadow: 0 4px 16px rgba(108, 92, 231, 0.08),
+                0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
 .dashboard-weak-card:nth-child(2) { animation-delay: 0.1s; }
@@ -610,23 +613,15 @@
 
 .dashboard-weak-card:hover {
     transform: translateY(-3px) !important;
-    box-shadow: 0 12px 32px rgba(225, 112, 85, 0.15) !important;
+    box-shadow: 0 12px 32px rgba(108, 92, 231, 0.15),
+                0 4px 8px rgba(0, 0, 0, 0.06) !important;
 }
 
 .dashboard-weak-card:active {
     transform: scale(0.98);
 }
 
-/* 左侧彩色竖条 */
-.dashboard-weak-card::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 4px;
-    background: linear-gradient(180deg, #E17055 0%, #FF9F43 100%);
-}
+/* 去掉左侧彩色竖条 */
 .dashboard-weak-icon {
     width: 44px;
     height: 44px;
@@ -635,7 +630,7 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    margin-left: 8px;
+    background: rgba(108, 92, 231, 0.1);
 }
 .dashboard-weak-icon svg {
     width: 22px;
@@ -655,7 +650,7 @@
     margin-top: 2px;
 }
 
-/* 薄弱项进度条 */
+/* 薄弱项进度条 - 紫色渐变 */
 .dashboard-weak-bar {
     height: 4px;
     background: #F1F5F9;
@@ -665,7 +660,7 @@
 }
 .dashboard-weak-bar-fill {
     height: 100%;
-    background: linear-gradient(90deg, #E17055, #FF9F43);
+    background: linear-gradient(90deg, var(--primary), var(--primary-light));
     border-radius: 2px;
     transition: width 1s ease-out;
 }
@@ -688,42 +683,18 @@
     height: 16px;
 }
 
-/* ===== 预估分数卡 - 深色带光晕脉冲 ===== */
+/* ===== 综合评估卡片 - 白卡风格 ===== */
 .dashboard-score-section {
     margin: 0 16px 20px;
-    background: linear-gradient(135deg, #1a1a2e 0%, #2D3561 100%);
+    background: #fff;
     border-radius: var(--card-radius);
     padding: 24px 20px;
-    color: white;
     position: relative;
     overflow: hidden;
     animation: fadeInUp 0.5s ease 0.9s forwards;
     opacity: 0;
-}
-
-/* 深色卡片光晕脉冲 */
-.dashboard-score-section::before {
-    content: '';
-    position: absolute;
-    top: -50px;
-    right: -50px;
-    width: 150px;
-    height: 150px;
-    background: radial-gradient(circle, rgba(108,92,231,0.4) 0%, transparent 70%);
-    border-radius: 50%;
-    animation: glowPulse 3s ease-in-out infinite;
-}
-
-.dashboard-score-section::after {
-    content: '';
-    position: absolute;
-    bottom: -80px;
-    left: -30px;
-    width: 200px;
-    height: 200px;
-    background: radial-gradient(circle, rgba(162,155,254,0.2) 0%, transparent 70%);
-    border-radius: 50%;
-    animation: glowPulse 4s ease-in-out infinite reverse;
+    box-shadow: 0 4px 16px rgba(108, 92, 231, 0.08),
+                0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
 .dashboard-score-header {
@@ -737,6 +708,7 @@
 .dashboard-score-title {
     font-size: 15px;
     font-weight: 600;
+    color: var(--text-primary);
     display: flex;
     align-items: center;
     gap: 8px;
@@ -744,11 +716,11 @@
 .dashboard-score-title svg {
     width: 18px;
     height: 18px;
-    color: var(--primary-light);
+    color: var(--primary);
 }
 .dashboard-score-target {
     font-size: 12px;
-    color: rgba(255,255,255,0.6);
+    color: var(--text-muted);
 }
 .dashboard-score-main {
     text-align: center;
@@ -757,19 +729,20 @@
     z-index: 1;
 }
 .dashboard-score-num {
-    font-size: 56px;
+    font-size: 36px;
     font-weight: 700;
+    color: var(--primary);
     line-height: 1;
-    letter-spacing: -2px;
+    letter-spacing: -1px;
 }
-.dashboard-score-unit {
-    font-size: 16px;
-    opacity: 0.7;
-    margin-left: 4px;
+.dashboard-score-label {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 4px;
 }
 .dashboard-score-bar {
     height: 6px;
-    background: rgba(255,255,255,0.2);
+    background: #F1F5F9;
     border-radius: 3px;
     overflow: hidden;
     position: relative;
@@ -787,7 +760,7 @@
     justify-content: space-between;
     margin-top: 12px;
     font-size: 12px;
-    color: rgba(255,255,255,0.6);
+    color: var(--text-muted);
     position: relative;
     z-index: 1;
 }
