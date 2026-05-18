@@ -908,6 +908,8 @@ function initApp() {
             renderPersonalities();
             renderHomePersonalityPreview();
             renderTodayTaskCard();  // 渲染今日待办卡片
+            renderHomeReviewReminder();  // 渲染首页待复习提醒卡片
+            setTimeout(checkReviewToastReminder, 100);  // 检查是否需要toast提醒
             initTabEvents();
             updateProfileStats();
             updateProfileUserId();
@@ -1526,6 +1528,10 @@ function initApp() {
                 html += '<span class="wrong-reviewed-badge">已复习</span>';
             }
             html += '<span class="wrong-date">' + dateStr + '</span>';
+            // 显示下次复习时间
+            if (reviewTimeDesc && reviewTimeDesc !== '已掌握') {
+                html += '<span class="wrong-review-time">' + reviewTimeDesc + '</span>';
+            }
             html += '</div>';
             html += '<div class="wrong-question">' + escapeHtml(q.question || '') + '</div>';
             html += '<div class="wrong-answer-compare">';
@@ -4190,6 +4196,44 @@ function getAbilityTrend() {
             if (doneEl) {
                 doneEl.style.display = allCompleted ? 'block' : 'none';
             }
+        }
+        
+        // ===== 首页待复习错题提醒 =====
+        function renderHomeReviewReminder() {
+            var reminder = document.getElementById('home-review-reminder');
+            if (!reminder) return;
+            
+            var overdueCount = typeof getOverdueReviewCount === 'function' ? getOverdueReviewCount() : 0;
+            var titleEl = document.getElementById('home-review-title');
+            var descEl = document.getElementById('home-review-desc');
+            
+            if (overdueCount > 0) {
+                reminder.style.display = 'flex';
+                if (titleEl) titleEl.textContent = '📖 待复习错题';
+                if (descEl) descEl.textContent = '有 ' + overdueCount + ' 道错题到了复习时间';
+            } else {
+                reminder.style.display = 'none';
+            }
+        }
+        
+        // 检查是否需要显示打开APP时的toast提醒
+        function checkReviewToastReminder() {
+            var overdueCount = typeof getOverdueReviewCount === 'function' ? getOverdueReviewCount() : 0;
+            if (overdueCount <= 3) return; // 少于等于3道不提醒
+            
+            var today = new Date().toDateString();
+            var lastRemindDate = localStorage.getItem('cet_review_remind_date');
+            
+            // 每天只提醒一次
+            if (lastRemindDate === today) return;
+            
+            localStorage.setItem('cet_review_remind_date', today);
+            
+            setTimeout(function() {
+                if (typeof showToast === 'function') {
+                    showToast('📖 你有 ' + overdueCount + ' 道错题该复习了');
+                }
+            }, 1500);
         }
         
         // 处理今日任务点击
