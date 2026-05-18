@@ -4400,6 +4400,38 @@ function getAbilityTrend() {
             return tasks.slice(0, 3); // 最多3个任务
         }
         
+        // ===== CET每日任务系统（计划tab使用） =====
+        function getCETTodayTasks() {
+            try {
+                var data = localStorage.getItem('cet_today_tasks');
+                if (!data) return null;
+                var parsed = JSON.parse(data);
+                // 检查日期
+                var today = new Date().toISOString().split('T')[0];
+                if (parsed.date !== today) return null;
+                return parsed;
+            } catch(e) { return null; }
+        }
+        
+        function saveCETTodayTasks(taskData) {
+            localStorage.setItem('cet_today_tasks', JSON.stringify(taskData));
+        }
+        
+        function markCETTaskComplete(taskId) {
+            var data = getCETTodayTasks();
+            if (!data || !data.tasks) return false;
+            var found = false;
+            data.tasks.forEach(function(task) {
+                if (task.id === taskId && !task.completed) {
+                    task.completed = true;
+                    task.completedAt = Date.now();
+                    found = true;
+                }
+            });
+            if (found) saveCETTodayTasks(data);
+            return found;
+        }
+        
         // 标记任务完成
         function markTaskComplete(taskId) {
             var tasks = getTodayTasks();
