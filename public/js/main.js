@@ -11902,8 +11902,8 @@ function showLearningPlan() {
 }
 
 // 确保switchTab支持plan tab
-var originalSwitchTab = switchTab;
-switchTab = function(tab) {
+var originalSwitchTab = window.switchTab || function(){};
+window.switchTab = function(tab) {
     originalSwitchTab(tab);
     
     if (tab === 'plan') {
