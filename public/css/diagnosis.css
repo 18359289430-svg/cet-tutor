@@ -1705,7 +1705,6 @@
     color: #94A3B8;
 }
 
-<<<<<<< HEAD
 /* 阅读原文标题样式 */
 .diag-passage-title {
     font-size: 15px;
@@ -1726,6 +1725,9 @@
     font-size: 13px;
     line-height: 1.8;
     color: #475569;
+    max-height: 50vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 /* 诊断报告加载步骤 */
@@ -1750,6 +1752,7 @@
     font-size: 12px;
     color: #94a3b8;
     font-weight: 400;
+}
 
 
 /* ========== 错题复盘区域 ========== */

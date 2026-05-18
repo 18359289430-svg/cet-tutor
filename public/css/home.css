@@ -1632,3 +1632,276 @@
 .exam-type-btn:not(.active):hover {
     color: rgba(255,255,255,0.95);
 }
+
+/* ===== 学习计划页新样式 ===== */
+
+/* 阶段总览 */
+.plan-phase-overview {
+    background: linear-gradient(135deg, #F8F6FF 0%, #F0EEFF 100%);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+.plan-phase-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 12px;
+}
+.plan-phase-progress {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    position: relative;
+}
+.plan-phase-progress::before {
+    content: '';
+    position: absolute;
+    top: 8px;
+    left: 16px;
+    right: 16px;
+    height: 2px;
+    background: #E8E4FF;
+    z-index: 0;
+}
+.plan-phase-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    position: relative;
+    z-index: 1;
+}
+.plan-phase-dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #E8E4FF;
+    border: 2px solid #fff;
+    margin-bottom: 6px;
+}
+.plan-phase-item.active .plan-phase-dot {
+    background: #6C5CE7;
+    box-shadow: 0 0 0 4px rgba(108,92,231,0.2);
+}
+.plan-phase-item.past .plan-phase-dot {
+    background: #10B981;
+}
+.plan-phase-name {
+    font-size: 11px;
+    font-weight: 600;
+    color: #64748B;
+    text-align: center;
+}
+.plan-phase-item.active .plan-phase-name {
+    color: #6C5CE7;
+}
+.plan-phase-days {
+    font-size: 10px;
+    color: #94A3B8;
+    margin-top: 2px;
+}
+
+/* 今日任务卡片 */
+.plan-today-card {
+    background: linear-gradient(135deg, #6C5CE7 0%, #8B7CF7 100%);
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 16px rgba(108,92,231,0.3);
+}
+.plan-today-card.completed {
+    background: linear-gradient(135deg, #10B981 0%, #34D399 100%);
+    box-shadow: 0 4px 16px rgba(16,185,129,0.3);
+}
+.plan-today-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+.plan-today-label {
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+}
+.plan-today-badge {
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+}
+.plan-today-badge.done {
+    background: rgba(255,255,255,0.3);
+}
+.plan-today-focus {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+.plan-focus-tag {
+    font-size: 13px;
+    padding: 4px 12px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 8px;
+    color: #fff;
+}
+.plan-est-time {
+    font-size: 12px;
+    color: rgba(255,255,255,0.8);
+}
+.plan-today-tasks {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.plan-task-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.plan-task-item:active {
+    transform: scale(0.98);
+    background: rgba(255,255,255,0.25);
+}
+.plan-task-icon {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.2);
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+.plan-task-icon svg {
+    width: 16px;
+    height: 16px;
+    stroke: #fff;
+}
+.plan-task-text {
+    flex: 1;
+    font-size: 13px;
+    color: #fff;
+    line-height: 1.4;
+}
+.plan-task-arrow {
+    font-size: 18px;
+    color: rgba(255,255,255,0.6);
+}
+.plan-today-empty {
+    text-align: center;
+    color: rgba(255,255,255,0.8);
+    padding: 20px;
+    font-size: 14px;
+}
+
+/* 未来3天预览 */
+.plan-future-section {
+    background: #fff;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.plan-future-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 12px;
+}
+.plan-future-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.plan-future-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    background: #F8F9FA;
+    border-radius: 12px;
+}
+.plan-future-day {
+    font-size: 13px;
+    font-weight: 600;
+    color: #6C5CE7;
+    margin-right: 12px;
+    min-width: 50px;
+}
+.plan-future-info {
+    flex: 1;
+}
+.plan-future-dim {
+    font-size: 13px;
+    color: #1a1a2e;
+    font-weight: 500;
+}
+.plan-future-phase {
+    font-size: 11px;
+    color: #94A3B8;
+    margin-top: 2px;
+}
+.plan-future-time {
+    font-size: 12px;
+    color: #64748B;
+}
+
+/* 完成度统计 */
+.plan-stats-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    background: #fff;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.plan-stat-item {
+    text-align: center;
+}
+.plan-stat-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: #6C5CE7;
+}
+.plan-stat-label {
+    font-size: 11px;
+    color: #64748B;
+    margin-top: 4px;
+}
+.plan-stat-divider {
+    width: 1px;
+    height: 40px;
+    background: #E8E4FF;
+}
+
+/* 操作按钮 */
+.plan-actions {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+.plan-btn-secondary {
+    flex: 1;
+    padding: 12px;
+    background: #F1F5F9;
+    color: #64748B;
+    border: none;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.plan-btn-secondary:active {
+    background: #E2E8F0;
+}

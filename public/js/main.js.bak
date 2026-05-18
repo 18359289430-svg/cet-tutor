@@ -3982,7 +3982,7 @@ function getAbilityTrend() {
                 });
             }
             
-            // 3. 某维度正确率<60% 或耗时过高 -> 专项练习
+            // 3. 某维度正确率<60% -> 专项练习
             var dimConfigs = {
                 '细节定位': { label: '细节理解', score: dims['细节定位'] || 0 },
                 '推理判断': { label: '推理判断', score: dims['推理判断'] || 0 },
@@ -3991,31 +3991,10 @@ function getAbilityTrend() {
                 '态度判断': { label: '态度判断', score: dims['态度判断'] || 0 }
             };
             
-            // 获取耗时数据
-            var abilityScores = getAbilityScores();
-            var dimTimes = abilityScores && abilityScores.dimTimes ? abilityScores.dimTimes : {};
-            
-            // 计算平均耗时
-            var totalTime = 0;
-            var timeCount = 0;
-            Object.keys(dimTimes).forEach(function(dim) {
-                totalTime += dimTimes[dim];
-                timeCount++;
-            });
-            var avgTime = timeCount > 0 ? totalTime / timeCount : 60;
-            
             var weakDims = [];
             for (var dim in dimConfigs) {
-                var baseScore = dimConfigs[dim].score;
-                var timeSpent = dimTimes[dim] || 0;
-                
-                // 如果耗时超过平均的1.5倍，也视为薄弱项
-                var isTimeWeak = timeSpent > 0 && avgTime > 0 && timeSpent > avgTime * 1.5;
-                
-                if ((baseScore > 0 && baseScore < 60) || isTimeWeak) {
-                    // 耗时过长的维度降低评分优先级
-                    var adjustedScore = isTimeWeak && baseScore >= 60 ? baseScore - 10 : baseScore;
-                    weakDims.push({ key: dim, label: dimConfigs[dim].label, score: adjustedScore, timeWeak: isTimeWeak });
+                if (dimConfigs[dim].score > 0 && dimConfigs[dim].score < 60) {
+                    weakDims.push({ key: dim, label: dimConfigs[dim].label, score: dimConfigs[dim].score });
                 }
             }
             
@@ -5342,7 +5321,7 @@ function showClearChatModal() {
 
         // 禁止整体滚动，只允许内部滚动
         document.body.addEventListener('touchmove', function(e) {
-            if (e.target.closest('.tab-page, .diag-overlay, .report-overlay, .modal-sheet')) {
+            if (e.target.closest('.tab-page')) {
                 // 内部页面可以滚动
             } else {
                 e.preventDefault();
@@ -7282,53 +7261,6 @@ function extractTranslationFeedback() {
     };
 }
 
-
-// 计算各维度平均答题耗时
-function calculateDimTimes() {
-    var dimTimes = {};
-    var dimCounts = {};
-    
-    // 处理阅读题
-    if (diagState.answers && diagState.answers.length > 0) {
-        diagState.answers.forEach(function(ans) {
-            if (ans.timeSpent && ans.ability) {
-                var dim = ans.ability;
-                if (!dimTimes[dim]) {
-                    dimTimes[dim] = 0;
-                    dimCounts[dim] = 0;
-                }
-                dimTimes[dim] += ans.timeSpent;
-                dimCounts[dim]++;
-            }
-        });
-    }
-    
-    // 处理听力题
-    if (diagState.listeningAnswers && diagState.listeningAnswers.length > 0) {
-        diagState.listeningAnswers.forEach(function(ans) {
-            if (ans.timeSpent && ans.dimension) {
-                var dim = ans.dimension;
-                if (!dimTimes[dim]) {
-                    dimTimes[dim] = 0;
-                    dimCounts[dim] = 0;
-                }
-                dimTimes[dim] += ans.timeSpent;
-                dimCounts[dim]++;
-            }
-        });
-    }
-    
-    // 计算平均值（转换为秒）
-    var result = {};
-    Object.keys(dimTimes).forEach(function(dim) {
-        if (dimCounts[dim] > 0) {
-            result[dim] = Math.round(dimTimes[dim] / dimCounts[dim] / 1000);
-        }
-    });
-    
-    return result;
-}
-
 // 提取错题数据
 function extractWrongQuestions() {
     var wrongQuestions = [];
@@ -7531,9 +7463,7 @@ function showDiagnosisReport(text) {
         
         // 同时写入cet4_ability_scores（供仪表盘使用）
         try {
-            // 计算各维度平均耗时
-            var dimTimes = calculateDimTimes();
-            localStorage.setItem(examKey('ability_scores'), JSON.stringify({ dims: reportData.dims, dimTimes: dimTimes }));
+            localStorage.setItem(examKey('ability_scores'), JSON.stringify({ dims: reportData.dims }));
         } catch(e) {}
         
         // 写入cet4_user_profile的startDate（如果还没有）
@@ -7545,9 +7475,6 @@ function showDiagnosisReport(text) {
             }
         } catch(e) {}
     }
-    
-    // 计算并保存各维度平均耗时到reportData
-    reportData.dimTimes = calculateDimTimes();
     
     // 保存到诊断历史记录
     saveDiagnosisRecord(reportData);
@@ -8148,8 +8075,6 @@ function getTotalListeningQuestions() {
 
 function showCurrentListening() {
     var passage = diagState.listeningPassages[diagState.currentListeningPassageIndex];
-    // 记录听力题目展示时间
-    diagState.questionShowTime = Date.now();
     if (!passage) {
         startWritingTest();
         return;
@@ -8321,9 +8246,6 @@ function selectListeningOption(btn, selectedValue) {
         isCorrect: isCorrect,
         dimension: q.dimension
     });
-    // 记录听力答题耗时
-    var lastListeningAnswer = diagState.listeningAnswers[diagState.listeningAnswers.length - 1];
-    lastListeningAnswer.timeSpent = Date.now() - (diagState.questionShowTime || Date.now());
     
     if (isCorrect) {
         diagState.listeningCorrectCount++;
@@ -8395,8 +8317,6 @@ function startReadingPhase() {
 
 // 显示当前题目
 function showCurrentQuestion() {
-    // 记录题目展示时间
-    diagState.questionShowTime = Date.now();
     var q = diagState.questions[diagState.currentQIndex];
     if (!q) {
         showSelfEval();
@@ -8492,9 +8412,6 @@ function selectOption(btn, selectedValue) {
         isCorrect: isCorrect,
         ability: q.ability || '细节定位'
     });
-    // 记录答题耗时
-    var lastAnswer = diagState.answers[diagState.answers.length - 1];
-    lastAnswer.timeSpent = Date.now() - (diagState.questionShowTime || Date.now());
     
     // 500ms后自动下一题（快速但不突兀）
     setTimeout(function() {
@@ -9427,7 +9344,6 @@ function renderReportPage() {
                     '<div class="report-dim-fill" style="width:' + score + '%;background:' + color + '"></div>' +
                 '</div>' +
                 '<div class="report-dim-tip">' + config.desc + '</div>' +
-                (d.dimTimes && d.dimTimes[dim] ? '<div class="report-dim-time">⏱ 平均' + d.dimTimes[dim] + '秒</div>' : '') +
             '</div>';
     });
     
@@ -10381,107 +10297,6 @@ function saveSprintPlan(plan) {
     }
 }
 
-// 动态调整冲刺计划（根据最新能力数据）
-function adjustSprintPlan() {
-    var today = getTodayStr();
-    
-    // 检查今天是否已经调整过
-    try {
-        var lastAdjust = localStorage.getItem(examKey('sprint_plan_last_adjust'));
-        if (lastAdjust === today) {
-            return false; // 今天已经调整过
-        }
-    } catch(e) {}
-    
-    var plan = getSprintPlan();
-    if (!plan || !plan.dailyPlan || plan.dailyPlan.length === 0) {
-        return false;
-    }
-    
-    var abilityScores = getAbilityScores();
-    var dims = abilityScores && abilityScores.dims ? abilityScores.dims : {};
-    var dimTimes = abilityScores && abilityScores.dimTimes ? abilityScores.dimTimes : {};
-    
-    if (Object.keys(dims).length === 0) {
-        return false;
-    }
-    
-    // 找出当前最弱的维度（得分最低）
-    var weakDims = Object.keys(dims).map(function(k) {
-        var score = dims[k];
-        // 同时考虑耗时因素：耗时超过平均1.5倍的也视为薄弱
-        var avgTime = 0;
-        var timeCount = 0;
-        Object.keys(dimTimes).forEach(function(t) {
-            avgTime += dimTimes[t];
-            timeCount++;
-        });
-        if (avgTime > 0 && dimTimes[k] && dimTimes[k] > avgTime / timeCount * 1.5) {
-            score = Math.max(0, score - 20); // 耗时过长的维度降分处理
-        }
-        return { name: k, score: score };
-    }).sort(function(a, b) {
-        return a.score - b.score;
-    });
-    
-    var currentWeakDim = weakDims.length > 0 ? weakDims[0].name : '细节定位';
-    
-    // 获取今天在计划中的索引
-    var dayIdx = getPlanDayIndex();
-    if (dayIdx < 0 || dayIdx >= plan.dailyPlan.length) {
-        return false;
-    }
-    
-    var adjusted = false;
-    
-    // 从今天开始遍历计划
-    for (var i = dayIdx; i < plan.dailyPlan.length; i++) {
-        var dayPlan = plan.dailyPlan[i];
-        var focusDim = dayPlan.focusDim;
-        
-        // 如果该维度得分已>70%且仍是主攻维度，则调整为当前最弱维度
-        if (dims[focusDim] && dims[focusDim] > 70) {
-            // 检查后续是否仍以该维度为主攻
-            var stillFocusing = false;
-            for (var j = i; j < Math.min(i + 3, plan.dailyPlan.length); j++) {
-                if (plan.dailyPlan[j].focusDim === focusDim) {
-                    stillFocusing = true;
-                    break;
-                }
-            }
-            
-            if (stillFocusing && focusDim !== currentWeakDim) {
-                dayPlan.focusDim = currentWeakDim;
-                // 更新任务描述
-                var dimTaskMap = {
-                    '细节定位': '细节定位强化练习',
-                    '推理判断': '推理判断专项训练',
-                    '同义替换': '同义替换技巧练习',
-                    '主旨归纳': '主旨归纳能力提升',
-                    '态度判断': '态度判断专项',
-                    '听力': '听力强化训练'
-                };
-                dayPlan.tasks = dayPlan.tasks.map(function(task) {
-                    if (task.type === 'dim' || dimTaskMap[focusDim] === task.text) {
-                        return { text: dimTaskMap[currentWeakDim] || '专项强化练习', type: 'dim', time: task.time || 10 };
-                    }
-                    return task;
-                });
-                adjusted = true;
-            }
-        }
-    }
-    
-    if (adjusted) {
-        saveSprintPlan(plan);
-        try {
-            localStorage.setItem(examKey('sprint_plan_last_adjust'), today);
-        } catch(e) {}
-    }
-    
-    return adjusted;
-}
-
 // 从localStorage读取冲刺计划
 function getSprintPlan() {
     try {
@@ -10621,9 +10436,6 @@ function getTodayStr() {
 
 // 渲染学习计划Tab（优化展示版本）
 function renderPlanTab() {
-    // 首次调用时动态调整冲刺计划
-    adjustSprintPlan();
-    
     var data = state.userData || {};
     var plan = getSprintPlan() || data.study_plan;
     var dayIdx = getPlanDayIndex();

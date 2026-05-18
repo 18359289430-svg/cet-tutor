@@ -286,7 +286,7 @@
 .coze-card-tag { font-size: 10px; color: #E17055; font-weight: 600; margin-bottom: 8px; }
 .coze-card.recommended .coze-card-tag { color: var(--primary); }
 .coze-card-features { list-style: none; padding: 0; margin: 0 0 10px; flex: 1; }
-.coze-card-features li { font-size: 11px; color: var(--text-secondary); padding: 2px 0; line-height: 1.5; }
+.coze-card-features li { font-size: 11px; color: var(--text-secondary); padding: 2px 0; line-height: 1.5; word-break: break-word; overflow-wrap: break-word; }
 .coze-card-btn { width: 100%; padding: 8px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.15s; border: none; margin-top: auto; }
 .coze-card-btn:active { transform: scale(0.98); }
 .coze-card-btn.primary { background: var(--primary); color: white; }
@@ -295,7 +295,7 @@
 .coze-benefits-header { margin-bottom: 10px; }
 .coze-benefits-title { font-size: 14px; font-weight: 600; color: var(--text-primary); }
 .coze-benefits-list { display: flex; flex-direction: column; gap: 6px; }
-.coze-benefit-item { font-size: 12px; color: var(--text-secondary); display: flex; align-items: center; gap: 6px; }
+.coze-benefit-item { font-size: 12px; color: var(--text-secondary); display: flex; align-items: center; gap: 6px; word-break: break-word; overflow-wrap: break-word; }
 .coze-benefit-check { color: var(--primary); font-weight: 600; font-size: 11px; }
 .coze-faq { padding: 0 16px 24px; }
 .coze-faq-title { font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 10px; }
