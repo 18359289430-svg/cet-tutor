@@ -13,6 +13,69 @@ function examKey(base) {
     return (IS_CET6 ? 'cet6_' : 'cet4_') + base;
 }
 
+// ===== 做题技巧点拨配置 =====
+var DIM_TIPS = {
+    '细节理解': {
+        tag: '📍 定位查找',
+        tip: '先在题干找关键词（人名/数字/特殊词），回原文定位对应句子，仔细比对选项和原文。',
+        wrongHint: '你是不是定位偏了？或者选项有细微差别没注意到？'
+    },
+    '推理判断': {
+        tag: '🧠 逻辑推理',
+        tip: '答案不在原文表面，需要根据上下文推断。重点关注转折词(but/however)和因果词(because/therefore)后面的内容。',
+        wrongHint: '推理题别想太多，答案一定有原文依据，不要过度延伸。'
+    },
+    '同义替换': {
+        tag: '🔄 同义替换',
+        tip: '正确选项几乎不会照抄原文，而是用近义词或改写句表达相同意思。比如 decrease→drop，important→crucial。',
+        wrongHint: '你是不是在找原文原词？正确答案往往是原文的同义转述！'
+    },
+    '主旨归纳': {
+        tag: '🎯 主旨归纳',
+        tip: '重点关注文章首段、尾段和各段首句。主旨题答案通常概括性强，不会是某个细节。',
+        wrongHint: '主旨题别被某个细节带跑，答案要能覆盖全文。'
+    },
+    '态度判断': {
+        tag: '💭 态度判断',
+        tip: '关注带感情色彩的形容词、副词，特别注意转折词后的评价性语言，那里往往藏着作者真实态度。',
+        wrongHint: '态度题的线索藏在评价性词汇里，别只看事实信息。'
+    },
+    // 四级旧标签兼容映射
+    '细节定位': {
+        tag: '📍 定位查找',
+        tip: '先在题干找关键词（人名/数字/特殊词），回原文定位对应句子，仔细比对选项和原文。',
+        wrongHint: '你是不是定位偏了？或者选项有细微差别没注意到？'
+    },
+    '关键信息捕捉': {
+        tag: '📍 定位查找',
+        tip: '先在题干找关键词（人名/数字/特殊词），回原文定位对应句子，仔细比对选项和原文。',
+        wrongHint: '你是不是定位偏了？或者选项有细微差别没注意到？'
+    },
+    '主旨大意': {
+        tag: '🎯 主旨归纳',
+        tip: '重点关注文章首段、尾段和各段首句。主旨题答案通常概括性强，不会是某个细节。',
+        wrongHint: '主旨题别被某个细节带跑，答案要能覆盖全文。'
+    },
+    '态度推断': {
+        tag: '💭 态度判断',
+        tip: '关注带感情色彩的形容词、副词，特别注意转折词后的评价性语言，那里往往藏着作者真实态度。',
+        wrongHint: '态度题的线索藏在评价性词汇里，别只看事实信息。'
+    },
+    '词义推断': {
+        tag: '🔄 同义替换',
+        tip: '正确选项几乎不会照抄原文，而是用近义词或改写句表达相同意思。比如 decrease→drop，important→crucial。',
+        wrongHint: '你是不是在找原文原词？正确答案往往是原文的同义转述！'
+    }
+};
+
+// 获取技巧点拨（带兼容映射）
+function getTipInfo(dimName) {
+    if (DIM_TIPS[dimName]) return DIM_TIPS[dimName];
+    // 未知标签默认映射到细节理解
+    return DIM_TIPS['细节理解'];
+}
+
+
 // ===== 获取动态冲刺计划天数（根据距考试日期计算）=====
 function getPlanDuration() {
     var examDate = new Date('2026-06-13');
@@ -8428,7 +8491,10 @@ function showCurrentQuestion() {
         '</div>';
     }
     
-    html += '<div class="diag-question-num">第 ' + (diagState.currentQIndex + 1) + ' / ' + totalQuestions + ' 题</div>' +
+    var dimName = q.ability || '细节理解';
+    var tipInfo = getTipInfo(dimName);
+    html += '<div class="diag-dim-tag">' + tipInfo.tag + '</div>' +
+        '<div class="diag-question-num">第 ' + (diagState.currentQIndex + 1) + ' / ' + totalQuestions + ' 题</div>' +
         '<div class="diag-question-text">' + escapeHtml(q.question) + '</div>' +
         '<div class="diag-options">' +
             renderOptionBtn('A', q.optionA, 'A') +
@@ -8493,7 +8559,17 @@ function selectOption(btn, selectedValue) {
     var lastAnswer = diagState.answers[diagState.answers.length - 1];
     lastAnswer.timeSpent = Date.now() - (diagState.questionShowTime || Date.now());
     
-    // 500ms后自动下一题（快速但不突兀）
+    // 显示技巧点拨卡片
+    var dimName = q.ability || '细节理解';
+    var tipInfo = getTipInfo(dimName);
+    var tipHtml = '<div class="diag-tip-card">' +
+        '<div class="diag-tip-header">' + tipInfo.tag + '</div>' +
+        '<div class="diag-tip-text">' + tipInfo.tip + '</div>' +
+        (isCorrect ? '' : '<div class="diag-tip-wrong">' + tipInfo.wrongHint + '</div>') +
+        '</div>';
+    document.querySelector('.diag-question-card').insertAdjacentHTML('beforeend', tipHtml);
+    
+    // 1500ms后自动下一题（给用户时间看技巧点拨）
     setTimeout(function() {
         diagState.currentQIndex++;
         var totalQuestions = diagState.questions.length;
@@ -8502,7 +8578,7 @@ function selectOption(btn, selectedValue) {
         } else {
             showCurrentQuestion();
         }
-    }, 500);
+    }, 1500);
 }
 
 // 显示自评问卷
@@ -11479,6 +11555,15 @@ function renderDailyTaskModal() {
             html += '<div class="daily-task-analysis">' +
                 '<strong>' + (isCorrect ? '✓ 回答正确' : '✗ 回答错误') + '</strong><br>' +
                 q.analysis +
+                '</div>';
+            
+            // 显示技巧点拨
+            var dimName = q.dim || '细节理解';
+            var tipInfo = getTipInfo(dimName);
+            html += '<div class="diag-tip-card">' +
+                '<div class="diag-tip-header">' + tipInfo.tag + '</div>' +
+                '<div class="diag-tip-text">' + tipInfo.tip + '</div>' +
+                (isCorrect ? '' : '<div class="diag-tip-wrong">' + tipInfo.wrongHint + '</div>') +
                 '</div>';
         }
         

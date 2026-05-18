@@ -2466,3 +2466,54 @@
     padding: 20px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
+
+/* ========== 做题技巧点拨样式 ========== */
+
+/* 考法标签 */
+.diag-dim-tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    color: #6C5CE7;
+    background: rgba(108,92,231,0.08);
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+/* 技巧点拨卡片 */
+.diag-tip-card {
+    margin-top: 12px;
+    padding: 12px 14px;
+    background: linear-gradient(135deg, #F8F9FF, #F0F0FF);
+    border-radius: 10px;
+    border-left: 3px solid #6C5CE7;
+    animation: fadeInUp 0.3s ease;
+}
+
+.diag-tip-header {
+    font-size: 12px;
+    font-weight: 700;
+    color: #6C5CE7;
+    margin-bottom: 6px;
+}
+
+.diag-tip-text {
+    font-size: 12px;
+    color: #475569;
+    line-height: 1.6;
+}
+
+.diag-tip-wrong {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px dashed #E2E8F0;
+    font-size: 12px;
+    color: #E17055;
+    font-weight: 500;
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
