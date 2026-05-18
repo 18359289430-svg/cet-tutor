@@ -118,21 +118,18 @@
                     <span>陪你冲刺<span class="social-proof-num">备考</span></span>
                 </div>
 
-                <!-- 教练引导卡片 -->
-                <div class="coach-guide-card" id="coach-guide-card" style="display:none">
-                    <div class="coach-guide-content">
-                        <div class="coach-guide-icon">🎯</div>
-                        <div class="coach-guide-text">
-                            <div class="coach-guide-title" id="coach-guide-title"></div>
-                            <div class="coach-guide-sub" id="coach-guide-sub"></div>
-                        </div>
+                <!-- 每日任务卡 -->
+                <div class="daily-task-card" id="daily-task-card" style="display:none">
+                    <div class="daily-task-card-header">
+                        <div class="daily-task-card-title">🎯 今日任务</div>
+                        <div class="daily-task-complete-badge" id="daily-task-badge">0/0</div>
                     </div>
-                    <button class="coach-guide-btn" id="coach-guide-btn" onclick="handleCoachGuideClick()">
-                        <span id="coach-guide-btn-text">开始</span>
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="9 18 15 12 9 6"/>
-                        </svg>
-                    </button>
+                    <div class="daily-task-list" id="daily-task-list">
+                        <!-- JS动态渲染 -->
+                    </div>
+                    <div class="daily-task-all-done" style="display:none">
+                        🎉 今日任务已完成！
+                    </div>
                 </div>
 
                 <!-- 打卡日历（百词斩风格） -->

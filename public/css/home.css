@@ -1495,3 +1495,112 @@
     font-size: 14px;
     line-height: 1.6;
 }
+
+/* ========== 每日任务卡 ========== */
+.daily-task-card {
+    margin: 12px 16px;
+    padding: 16px;
+    background: linear-gradient(135deg, #6C5CE7, #a29bfe);
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(108, 92, 231, 0.25);
+    animation: fadeInUp 0.4s ease;
+}
+
+.daily-task-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.daily-task-card-title {
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.daily-task-complete-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.25);
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 12px;
+    min-width: 36px;
+}
+
+.daily-task-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.daily-task-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.daily-task-item:active {
+    transform: scale(0.98);
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.daily-task-checkbox {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.daily-task-checkbox.checked {
+    background: #10B981;
+}
+
+.daily-task-text {
+    flex: 1;
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.daily-task-text.completed {
+    text-decoration: line-through;
+    opacity: 0.7;
+}
+
+.daily-task-time {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 11px;
+    font-weight: 500;
+    flex-shrink: 0;
+}
+
+.daily-task-all-done {
+    text-align: center;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 12px;
+    background: rgba(16, 185, 129, 0.3);
+    border-radius: 10px;
+    margin-top: 8px;
+}

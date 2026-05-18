@@ -1553,3 +1553,85 @@
     text-align: center;
     line-height: 1.5;
 }
+
+/* ========== 能力变化趋势 ========== */
+.dashboard-trend-section {
+    margin: 0 16px 16px;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 16px;
+}
+
+.dashboard-trend-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #1a1a2e;
+    margin-bottom: 16px;
+}
+
+.dashboard-trend-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.dashboard-trend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: rgba(0, 0, 0, 0.02);
+    border-radius: 10px;
+}
+
+.dashboard-trend-name {
+    font-size: 13px;
+    font-weight: 600;
+    min-width: 70px;
+}
+
+.dashboard-trend-value {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1a1a2e;
+    min-width: 40px;
+}
+
+.dashboard-trend-arrow {
+    font-size: 16px;
+    font-weight: 700;
+    min-width: 20px;
+    text-align: center;
+}
+
+.dashboard-trend-arrow.trend-up {
+    color: #10B981;
+}
+
+.dashboard-trend-arrow.trend-down {
+    color: #E17055;
+}
+
+.dashboard-trend-arrow.trend-stable {
+    color: #94a3b8;
+}
+
+.dashboard-trend-diff {
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.dashboard-trend-diff.trend-up {
+    color: #10B981;
+}
+
+.dashboard-trend-diff.trend-down {
+    color: #E17055;
+}
+
+.dashboard-trend-diff.trend-stable {
+    color: #94a3b8;
+}

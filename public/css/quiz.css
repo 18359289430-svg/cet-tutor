@@ -469,3 +469,73 @@
 .quiz-submit-btn:active {
     transform: scale(0.95);
 }
+
+/* ========== 专项练习维度选择 ========== */
+.quiz-dim-selector {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
+    min-height: 300px;
+}
+
+.quiz-dim-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1a1a2e;
+    margin-bottom: 20px;
+}
+
+.quiz-dim-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 30px;
+    max-width: 360px;
+}
+
+.quiz-dim-tag {
+    padding: 10px 16px;
+    background: rgba(108, 92, 231, 0.08);
+    border: 1.5px solid rgba(108, 92, 231, 0.2);
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #6C5CE7;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.quiz-dim-tag:active {
+    transform: scale(0.95);
+}
+
+.quiz-dim-tag.active {
+    background: linear-gradient(135deg, #6C5CE7, #A29BFE);
+    border-color: #6C5CE7;
+    color: white;
+    box-shadow: 0 4px 12px rgba(108, 92, 231, 0.3);
+}
+
+.quiz-dim-actions {
+    margin-top: auto;
+}
+
+.quiz-dim-start-btn {
+    padding: 14px 48px;
+    background: linear-gradient(135deg, #6C5CE7, #A29BFE);
+    color: white;
+    border: none;
+    border-radius: 24px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(108, 92, 231, 0.3);
+    transition: all 0.2s ease;
+}
+
+.quiz-dim-start-btn:active {
+    transform: scale(0.97);
+    box-shadow: 0 2px 8px rgba(108, 92, 231, 0.3);
+}
