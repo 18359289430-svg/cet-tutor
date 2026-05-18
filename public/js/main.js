@@ -1742,49 +1742,6 @@ function explainWithAI(id) {
 
             html += '</div>';
             
-            // ===== 训练建议区域（基于能力维度分析）=====
-            if (hasDimData && weakDims.length > 0) {
-                html += '<div class="dashboard-training-tips">';
-                html += '<div class="dashboard-training-tips-title">';
-                html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M12 2c.5 4-2 7-4 9.5C6 14 5.5 16 6 18c.7 3 3.5 4 6 4s5.3-1 6-4c.5-2 0-4-2-6.5C14 9 11.5 6 12 2z"/></svg>';
-                html += '个性化训练建议';
-                html += '</div>';
-                
-                // 只显示最弱的2个维度
-                var tipDims = weakDims.slice(0, 2);
-                var tipAdvices = {
-                    '细节定位': { tip: '细节定位较弱，建议每天做2组限时阅读，重点练定位题', action: 'openTimedReading()', actionText: '练阅读' },
-                    '推理判断': { tip: '推理判断较弱，建议每天做2组阅读，重点练推理题', action: 'openTimedReading()', actionText: '练阅读' },
-                    '同义替换': { tip: '同义替换一般，建议积累同义替换词组，多做真题', action: "sendSuggestion('给我一些同义替换的练习')", actionText: '同义替换' },
-                    '主旨归纳': { tip: '主旨归纳较弱，建议每天练1篇阅读，练习概括文章大意', action: 'openTimedReading()', actionText: '练阅读' },
-                    '态度判断': { tip: '态度判断较弱，建议每天练1组阅读，关注作者态度词', action: 'openTimedReading()', actionText: '练阅读' },
-                    '听力': { tip: '听力较弱，建议每天听一段四级听力材料', action: "sendSuggestion('陪我练四级听力')", actionText: '练听力' }
-                };
-                
-                tipDims.forEach(function(dim) {
-                    var advice = tipAdvices[dim] || { tip: dim + '较弱，需要针对性练习', action: 'openDailyTask()', actionText: '练习' };
-                    html += '<div class="dashboard-training-tip-item">';
-                    html += '<div class="dashboard-tip-text"><span class="dashboard-tip-dim">' + dim + '</span> ' + advice.tip + '</div>';
-                    html += '<button class="dashboard-tip-action" onclick="' + advice.action + '">' + advice.actionText + '</button>';
-                    html += '</div>';
-                });
-                
-                html += '</div>';
-            } else if (!hasDimData) {
-                // 没有诊断数据，显示引导
-                html += '<div class="dashboard-training-tips">';
-                html += '<div class="dashboard-training-tips-title">';
-                html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M12 2c.5 4-2 7-4 9.5C6 14 5.5 16 6 18c.7 3 3.5 4 6 4s5.3-1 6-4c.5-2 0-4-2-6.5C14 9 11.5 6 12 2z"/></svg>';
-                html += '个性化训练建议';
-                html += '</div>';
-                html += '<div class="dashboard-training-tip-item">';
-                html += '<div class="dashboard-tip-text">完成诊断后，系统会根据你的薄弱点给出针对性训练建议</div>';
-                html += '<button class="dashboard-tip-action" onclick="sendSuggestion(\'我想做一个AI诊断，帮我分析四级薄弱点\')">开始诊断</button>';
-                html += '</div>';
-                html += '</div>';
-            }
-            
-            
             // ===== 能力变化趋势 =====
             var trend = getAbilityTrend();
             if (trend) {
