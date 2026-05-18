@@ -1074,3 +1074,14 @@
         resultSection.innerHTML = html;
     }
 
+
+
+// 暴露到全局scope供onclick调用
+window.submitEssay = submitEssay;
+window.closeEssayOverlay = closeEssayOverlay;
+window.showEssayTemplate = showEssayTemplate;
+window.updateEssayWordCount = updateEssayWordCount;
+window.openEssayOverlay = openEssayOverlay;
+window.selectEssayTopic = selectEssayTopic;
+window.retryEssay = retryEssay;
+window.saveEssayResult = saveEssayResult;
