@@ -1906,56 +1906,21 @@
     background: #E2E8F0;
 }
 
-/* 首页今日任务卡片（新设计） */
+/* 首页今日任务卡片 */
 .home-task-card {
-    margin: 12px 16px;
-    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 8px 16px;
+    padding: 10px 12px;
     background: white;
-    border-radius: 16px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-    animation: fadeInUp 0.4s ease;
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
     cursor: pointer;
-    transition: transform 0.2s ease;
+    transition: all 0.15s;
 }
 .home-task-card:active {
-    transform: scale(0.98);
-}
-.home-task-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-.home-task-icon-wrap {
-    width: 40px;
-    height: 40px;
-    border-radius: 12px;
-    background: linear-gradient(135deg, #6C5CE7, #a29bfe);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-}
-.home-task-icon-wrap svg {
-    width: 20px;
-    height: 20px;
-    stroke: white;
-}
-.home-task-info {
-    flex: 1;
-    min-width: 0;
-}
-.home-task-title {
-    font-size: 15px;
-    font-weight: 700;
-    color: #1E293B;
-}
-.home-task-desc {
-    font-size: 12px;
-    color: #94A3B8;
-    margin-top: 2px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    transform: scale(0.97);
 }
 .home-task-badge {
     display: inline-flex;
@@ -1963,23 +1928,10 @@
     justify-content: center;
     background: #F1F5F9;
     color: #475569;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
-    padding: 4px 10px;
-    border-radius: 12px;
-    min-width: 36px;
-}
-.home-task-progress {
-    height: 4px;
-    background: #F1F5F9;
-    border-radius: 2px;
-    margin-top: 12px;
-    overflow: hidden;
-}
-.home-task-progress-bar {
-    height: 100%;
-    background: linear-gradient(90deg, #6C5CE7, #a29bfe);
-    border-radius: 2px;
-    transition: width 0.5s ease;
+    padding: 3px 8px;
+    border-radius: 10px;
+    min-width: 32px;
 }
 

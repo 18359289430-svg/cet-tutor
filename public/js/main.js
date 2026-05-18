@@ -11169,10 +11169,6 @@ function renderDailyTaskCard() {
         }
     }
     
-    if (homeProgress) {
-        homeProgress.style.width = todayDone ? '100%' : '0%';
-    }
-    
     if (homeTitle) {
         homeTitle.textContent = todayDone ? '今日任务已完成' : '今日任务';
     }
