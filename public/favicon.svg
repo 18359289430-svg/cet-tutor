@@ -1,4 +1,15 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" rx="6" fill="#6C5CE7"/>
-  <text x="16" y="22" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="18" fill="white">C</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="white"/>
+  <g transform="translate(256,256)">
+    <!-- 左页 -->
+    <path d="M-20,-140 Q-30,-150 -160,-140 L-160,120 Q-30,110 -20,120 Z" fill="#1a2744" stroke="#1a2744" stroke-width="2"/>
+    <path d="M-20,-120 Q-30,-130 -140,-122 L-140,100 Q-30,92 -20,100 Z" fill="none" stroke="#C9A84C" stroke-width="3"/>
+    <path d="M-20,-60 Q-80,-55 -140,-60 L-140,40 Q-80,35 -20,40" fill="none" stroke="#C9A84C" stroke-width="2"/>
+    <!-- 右页 -->
+    <path d="M20,-140 Q30,-150 160,-140 L160,120 Q30,110 20,120 Z" fill="#1a2744" stroke="#1a2744" stroke-width="2"/>
+    <path d="M20,-120 Q30,-130 140,-122 L140,100 Q30,92 20,100 Z" fill="none" stroke="#C9A84C" stroke-width="3"/>
+    <path d="M20,-60 Q80,-55 140,-60 L140,40 Q80,35 20,40" fill="none" stroke="#C9A84C" stroke-width="2"/>
+    <!-- 书脊 -->
+    <line x1="0" y1="-140" x2="0" y2="120" stroke="#C9A84C" stroke-width="4"/>
+  </g>
 </svg>
