@@ -11191,8 +11191,29 @@ function renderDailyTaskCard() {
         }
     }
     
-    // 如果有冲刺计划，更新首页任务卡的内容
+    // 更新首页任务卡内容
     updateHomeTaskCard(todayPlan, todayDone);
+    
+    // 渲染首页任务列表
+    var homeTaskList = document.getElementById('daily-task-list');
+    if (homeTaskList && todayPlan && todayPlan.tasks && todayPlan.tasks.length > 0) {
+        var html = '';
+        todayPlan.tasks.forEach(function(task, idx) {
+            var isDone = todayDone;
+            var taskText = typeof task === 'string' ? task : task.text;
+            var taskTime = (typeof task === 'object' && task.time) ? task.time + 'min' : '';
+            html += '<div class="home-task-item' + (isDone ? ' done' : '') + '">';
+            html += '<div class="home-task-check' + (isDone ? ' done' : '') + '">' + (isDone ? '✓' : (idx+1)) + '</div>';
+            html += '<div class="home-task-item-text' + (isDone ? ' done' : '') + '">' + taskText + '</div>';
+            if (taskTime) html += '<div class="home-task-item-time">' + taskTime + '</div>';
+            html += '</div>';
+        });
+        homeTaskList.innerHTML = html;
+    }
+    
+    // 全部完成
+    var allDone = document.getElementById('daily-task-all-done');
+    if (allDone) allDone.style.display = todayDone ? 'block' : 'none';
 }
 
 // 更新首页任务卡片内容（与冲刺计划联动）
