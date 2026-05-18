@@ -2881,8 +2881,25 @@ async function handleDeepseekEssayGrade(req, res) {
         const filePath = path.join(publicDir, pathname.slice(8));
         if (fs.existsSync(filePath)) {
             const ext = path.extname(filePath).toLowerCase();
-            res.setHeader('Cache-Control', 'public, max-age=604800');
-            res.setHeader('Content-Type', ext === '.jpg' || ext === '.jpeg' ? 'image/jpeg' : 'image/' + ext.slice(1));
+            const contentTypes = {
+                '.json': 'application/json',
+                '.js': 'application/javascript',
+                '.css': 'text/css',
+                '.html': 'text/html',
+                '.svg': 'image/svg+xml',
+                '.jpg': 'image/jpeg',
+                '.jpeg': 'image/jpeg',
+                '.png': 'image/png',
+                '.gif': 'image/gif',
+                '.webp': 'image/webp',
+                '.ico': 'image/x-icon',
+                '.woff': 'font/woff',
+                '.woff2': 'font/woff2',
+                '.ttf': 'font/truetype',
+                '.pdf': 'application/pdf'
+            };
+            res.setHeader('Cache-Control', ext === '.json' ? 'no-cache' : 'public, max-age=604800');
+            res.setHeader('Content-Type', contentTypes[ext] || 'application/octet-stream');
             res.end(fs.readFileSync(filePath));
             return;
         }
