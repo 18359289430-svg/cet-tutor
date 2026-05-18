@@ -230,6 +230,7 @@
 .report-tip-text {
     font-size: 13px;
     color: #475569;
+    white-space: pre-line;
     line-height: 1.5;
     flex: 1;
 }
@@ -1264,6 +1265,7 @@
     font-size: 13px;
     line-height: 1.8;
     color: #475569;
+    white-space: pre-line;
     max-height: 200px;
     overflow-y: auto;
 }
@@ -1355,6 +1357,7 @@
 .diag-prompt-desc {
     font-size: 13px;
     color: #475569;
+    white-space: pre-line;
     line-height: 1.6;
 }
 
@@ -1472,6 +1475,7 @@
 .diag-source-text {
     font-size: 14px;
     color: #475569;
+    white-space: pre-line;
     line-height: 1.8;
 }
 
@@ -1603,6 +1607,7 @@
     justify-content: space-between;
     font-size: 13px;
     color: #475569;
+    white-space: pre-line;
 }
 
 .diag-dimension-name {
@@ -1653,6 +1658,7 @@
 .diag-comment-text {
     font-size: 14px;
     color: #475569;
+    white-space: pre-line;
     line-height: 1.6;
 }
 
@@ -1725,6 +1731,7 @@
     font-size: 13px;
     line-height: 1.8;
     color: #475569;
+    white-space: pre-line;
     max-height: 50vh;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
@@ -1917,6 +1924,7 @@
 .plan-task-item {
     font-size: 13px;
     color: #475569;
+    white-space: pre-line;
     padding: 6px 0;
     padding-left: 16px;
     position: relative;
@@ -1986,6 +1994,7 @@
 .report-translation-comment {
     font-size: 13px;
     color: #475569;
+    white-space: pre-line;
     background: #F8FAFC;
     padding: 10px 12px;
     border-radius: 10px;
@@ -2097,6 +2106,7 @@
     font-size: 14px;
     font-weight: 600;
     color: #475569;
+    white-space: pre-line;
     margin-bottom: 12px;
     display: flex;
     align-items: center;
