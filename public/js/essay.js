@@ -656,6 +656,7 @@
         html += '<div class="essay-result-actions">' +
             '<button class="btn-retry" onclick="retryEssay()">再来一篇</button>' +
             '<button class="btn-save" onclick="saveEssayResult()">保存结果</button>' +
+            '<button class="btn-similar" onclick="practiceSimilarEssay()">练同类题</button>' +
             '</div>';
         
         html += '</div>';
@@ -693,6 +694,20 @@
             return;
         }
         showToast('结果已保存');
+    }
+
+    // 练同类题 - 跳转到每日一练筛选作文相关维度
+    function practiceSimilarEssay() {
+        if (typeof closeEssayOverlay === 'function') {
+            closeEssayOverlay();
+        }
+        // 作文主要考同义替换和主旨归纳，跳转到每日一练筛选这两个维度
+        if (typeof openQuizWithDim === 'function') {
+            // 先筛选同义替换维度
+            openQuizWithDim('同义替换');
+        } else if (typeof openQuiz === 'function') {
+            openQuiz();
+        }
     }
 
 
@@ -1070,7 +1085,7 @@
             html += '<div class="essay-overall-comment"><div class="essay-overall-comment-title">总评</div><div class="essay-overall-comment-text">' + escapeHtml(result.overall_comment) + '</div></div>';
         }
 
-        html += '</div><div class="essay-result-actions"><button class="btn-retry" onclick="retryEssay()">重新批改</button><button class="btn-save" onclick="saveEssayResult()">保存结果</button></div>';
+        html += '</div><div class="essay-result-actions"><button class="btn-retry" onclick="retryEssay()">重新批改</button><button class="btn-save" onclick="saveEssayResult()">保存结果</button><button class="btn-similar" onclick="practiceSimilarEssay()">练同类题</button></div>';
         resultSection.innerHTML = html;
     }
 
@@ -1085,3 +1100,4 @@ window.openEssayOverlay = openEssayOverlay;
 window.selectEssayTopic = selectEssayTopic;
 window.retryEssay = retryEssay;
 window.saveEssayResult = saveEssayResult;
+window.practiceSimilarEssay = practiceSimilarEssay;

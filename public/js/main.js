@@ -6089,6 +6089,8 @@ var quizState = {
     startTime: null,
     answeredTypes: { '词汇': 0, '语法': 0, '阅读': 0, '听力': 0 },
     wrongTypes: { '词汇': 0, '语法': 0, '阅读': 0, '听力': 0 },
+    // 维度答题记录: {ability: '同义替换', correct: true/false}
+    dimResults: [],
     // 限时训练相关
     timerActive: false,
     timerRemaining: 0,
@@ -6151,6 +6153,7 @@ function openQuiz() {
     quizState.answeredTypes = { '词汇': 0, '语法': 0, '阅读': 0, '听力': 0 };
     quizState.wrongTypes = { '词汇': 0, '语法': 0, '阅读': 0, '听力': 0 };
     quizState.startTime = Date.now();
+    quizState.dimResults = []; // 重置维度记录
     
     var overlay = document.getElementById('quiz-overlay');
     var body = document.getElementById('quiz-body');
@@ -6679,6 +6682,13 @@ function selectQuizOption(el, option) {
     var question = quizState.currentQuestion;
     var isCorrect = option === question.answer;
     
+    // 记录维度答题结果（用于更新五维分数）
+    var ability = question.ability || '细节理解'; // 题目中的能力维度
+    quizState.dimResults.push({
+        ability: ability,
+        correct: isCorrect
+    });
+    
     // 禁用所有选项
     var options = document.querySelectorAll('.quiz-option');
     options.forEach(function(opt) {
@@ -6836,12 +6846,107 @@ function showQuizStats() {
     // 记录能力变化趋势
     recordQuizAbility();
     
+    // 更新五维能力分数（练习闭环）
+    updateDimScoresFromQuiz();
+    
     // 标记任务完成
     markTaskComplete('quiz');
     // 如果选择了维度，标记维度任务完成
     if (quizDimState.selectedDim) {
         markTaskComplete('dim_' + quizDimState.selectedDim);
     }
+}
+
+// === 五维能力分数更新系统 ===
+
+// 统一更新维度分数的函数
+// ability: 题目中的能力维度（如"细节理解"、"推理判断"等）
+// delta: 分数变化（正数加分，负数减分）
+// 维度映射：题目中的"细节理解"对应存储的"细节定位"
+function updateDimScore(ability, delta) {
+    // 维度名称映射（题目ability -> 存储key）
+    var dimMapping = {
+        '细节理解': '细节定位',
+        '推理判断': '推理判断',
+        '同义替换': '同义替换',
+        '主旨归纳': '主旨归纳',
+        '态度判断': '态度判断'
+    };
+    
+    var dimKey = dimMapping[ability] || ability;
+    
+    // 获取当前分数
+    var scores = {};
+    try {
+        var data = localStorage.getItem(examKey('ability_scores'));
+        if (data) {
+            scores = JSON.parse(data);
+        }
+    } catch(e) {}
+    
+    // 如果没有分数数据，从诊断数据中读取
+    if (Object.keys(scores).length === 0) {
+        var userData = safeGetItem('cet_user', {});
+        if (userData && userData.diagnosis) {
+            scores = userData.diagnosis;
+        }
+    }
+    
+    // 如果还是没有，初始化为50分
+    if (Object.keys(scores).length === 0) {
+        scores = { '细节定位': 50, '推理判断': 50, '同义替换': 50, '主旨归纳': 50, '态度判断': 50 };
+    }
+    
+    // 计算新分数（0-100范围限制）
+    var current = parseInt(scores[dimKey]) || 50;
+    var newScore = Math.max(0, Math.min(100, current + delta));
+    scores[dimKey] = newScore;
+    
+    // 保存分数
+    localStorage.setItem(examKey('ability_scores'), JSON.stringify(scores));
+    
+    // 如果在数据页，刷新显示
+    if (document.getElementById('tab-progress') && document.getElementById('tab-progress').classList.contains('active')) {
+        try { renderDashboard(); } catch(e) { console.error('renderDashboard error:', e); }
+    }
+    
+    return newScore;
+}
+
+// 根据练习答题结果更新五维分数
+function updateDimScoresFromQuiz() {
+    var results = quizState.dimResults || [];
+    if (results.length === 0) return;
+    
+    // 统计每个维度的正确率和答题数
+    var dimStats = {};
+    results.forEach(function(r) {
+        if (!dimStats[r.ability]) {
+            dimStats[r.ability] = { correct: 0, total: 0 };
+        }
+        dimStats[r.ability].total++;
+        if (r.correct) {
+            dimStats[r.ability].correct++;
+        }
+    });
+    
+    // 更新每个维度的分数
+    var dimWeights = {
+        '正确': 2.5,    // 答对+2.5分
+        '错误': -1      // 答错-1分
+    };
+    
+    for (var ability in dimStats) {
+        var stat = dimStats[ability];
+        var correctRate = stat.total > 0 ? stat.correct / stat.total : 0;
+        
+        // 每答对一题+2.5分，答错-1分
+        var delta = stat.correct * 2.5 - (stat.total - stat.correct) * 1;
+        updateDimScore(ability, delta);
+    }
+    
+    // 清空答题记录
+    quizState.dimResults = [];
 }
 
 // 记录练习后的能力数据
@@ -9878,6 +9983,7 @@ function buildTranslationFeedbackSection() {
         html += '<div class="report-translation-comment">💬 ' + fb.comment + '</div>';
     }
     
+    html += '<button class="report-similar-btn" onclick="practiceSimilarTranslation()">🎯 练同类题（推理+态度）</button>';
     html += '</div>';
     return html;
 }
@@ -9913,6 +10019,17 @@ function startPracticeChallenge() {
             sendSuggestion(msg);
         }, 500);
     }, 350);
+}
+
+// 练同类题 - 翻译主要考推理判断和态度判断
+function practiceSimilarTranslation() {
+    closeReportPage();
+    // 翻译主要考推理判断和态度判断，跳转到每日一练筛选推理判断维度
+    if (typeof openQuizWithDim === 'function') {
+        openQuizWithDim('推理判断');
+    } else if (typeof openQuiz === 'function') {
+        openQuiz();
+    }
 }
 
 // 绘制报告页雷达图
