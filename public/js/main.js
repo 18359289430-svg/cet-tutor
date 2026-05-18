@@ -3432,7 +3432,267 @@ function explainWithAI(id) {
             return html;
         }
 
-        // ===== 打卡/Streak 系统 =====
+
+        // ===== 词汇诊断系统 =====
+        var vocabData = null;
+
+        // 加载词汇数据
+        function loadVocabData() {
+            return new Promise(function(resolve, reject) {
+                if (vocabData) {
+                    resolve(vocabData);
+                    return;
+                }
+                var vocabFile = '/cet' + (IS_CET6 ? '6' : '4') + '_vocab.json';
+                fetch(vocabFile + '?v=' + Date.now())
+                    .then(function(response) { return response.json(); })
+                    .then(function(data) {
+                        vocabData = data;
+                        resolve(data);
+                    })
+                    .catch(function(err) {
+                        console.error('加载词汇数据失败:', err);
+                        reject(err);
+                    });
+            });
+        }
+
+        // 从错题本提取高频词
+        function extractWrongWords() {
+            var wrongQuestions = safeGetItem(examKey('wrong_questions'), []);
+            var wordFreq = {};
+            
+            wrongQuestions.forEach(function(q) {
+                var words = (q.question || '').match(/[a-zA-Z]{4,}/g) || [];
+                words.forEach(function(w) {
+                    w = w.toLowerCase();
+                    wordFreq[w] = (wordFreq[w] || 0) + 1;
+                });
+            });
+            
+            // 排序并取前20个
+            var sorted = Object.keys(wordFreq)
+                .map(function(w) { return { word: w, freq: wordFreq[w] }; })
+                .sort(function(a, b) { return b.freq - a.freq; })
+                .slice(0, 20);
+            
+            return sorted;
+        }
+
+        // 获取诊断报告中的薄弱维度
+        function getWeakDimensions() {
+            var profile = safeGetItem(examKey('user_profile'), {});
+            var radar = profile.radar || { '细节定位': 0, '推理判断': 0, '同义替换': 0, '主旨归纳': 0, '态度判断': 0 };
+            
+            // 找出得分最低的维度
+            var weakDims = Object.keys(radar)
+                .filter(function(k) { return radar[k] < 70; })
+                .sort(function(a, b) { return radar[a] - radar[b]; });
+            
+            return weakDims.slice(0, 3);
+        }
+
+        // 获取维度对应的高频词
+        function getDimensionWords(dimension) {
+            if (!vocabData) return [];
+            var dimMap = {
+                '细节定位': 'detail_words',
+                '推理判断': 'inference_words',
+                '同义替换': 'synonym_words',
+                '主旨归纳': 'main_idea_words',
+                '态度判断': 'attitude_words'
+            };
+            var key = dimMap[dimension];
+            return key && vocabData[key] ? vocabData[key].slice(0, 15) : [];
+        }
+
+        // Web Speech API 发音
+        function speakWord(word) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                var utterance = new SpeechSynthesisUtterance(word);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.85;
+                utterance.pitch = 1;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        // 渲染词汇诊断页面
+        function renderVocab() {
+            var container = document.getElementById('vocab-content');
+            if (!container) return;
+            
+            container.innerHTML = '<div class="vocab-loading"><div class="vocab-loading-spinner"></div><div>正在分析...</div></div>';
+            
+            loadVocabData().then(function() {
+                var wrongWords = extractWrongWords();
+                var weakDims = getWeakDimensions();
+                
+                var html = '';
+                
+                // Hero区域
+                html += '<div class="vocab-hero">';
+                html += '<div class="vocab-hero-title">📖 词汇诊断</div>';
+                html += '<div class="vocab-hero-subtitle">基于你的错题本，智能分析高频词汇</div>';
+                html += '</div>';
+                
+                // 统计信息
+                html += '<div class="vocab-section">';
+                html += '<div class="vocab-stats">';
+                html += '<div class="vocab-stat-item"><div class="vocab-stat-num">' + wrongWords.length + '</div><div class="vocab-stat-label">高频错题词</div></div>';
+                html += '<div class="vocab-stat-item"><div class="vocab-stat-num">' + weakDims.length + '</div><div class="vocab-stat-label">薄弱维度</div></div>';
+                html += '</div>';
+                html += '</div>';
+                
+                // 薄弱维度标签
+                if (weakDims.length > 0) {
+                    html += '<div class="vocab-section">';
+                    html += '<div class="vocab-section-title">💡 推荐强化 <span class="badge">薄弱项优先</span></div>';
+                    html += '<div class="dimension-tags">';
+                    weakDims.forEach(function(dim) {
+                        html += '<div class="dimension-tag weak active" onclick="renderDimensionWords(\'' + dim + '\')">' + dim + '</div>';
+                    });
+                    html += '<div class="dimension-tag" onclick="renderAllDimensionWords()">全部维度</div>';
+                    html += '</div>';
+                    html += '<div id="dimension-words-list"></div>';
+                    html += '</div>';
+                }
+                
+                // 错题本高频词
+                if (wrongWords.length > 0) {
+                    html += '<div class="vocab-section">';
+                    html += '<div class="vocab-section-title">📝 错题高频词 <span class="badge">Top ' + wrongWords.length + '</span></div>';
+                    
+                    wrongWords.forEach(function(item) {
+                        html += '<div class="word-card">';
+                        html += '<div class="word-header">';
+                        html += '<div>';
+                        html += '<span class="word-text">' + item.word + '</span>';
+                        html += '</div>';
+                        html += '<button class="word-speak-btn" onclick="speakWord(\'' + item.word + '\')">';
+                        html += '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>';
+                        html += '</button>';
+                        html += '</div>';
+                        html += '<div class="word-meaning">出现频次: ' + item.freq + ' 次</div>';
+                        html += '<div class="word-source"><span>来自错题本</span></div>';
+                        html += '</div>';
+                    });
+                    html += '</div>';
+                } else {
+                    html += '<div class="vocab-section">';
+                    html += '<div class="vocab-empty">';
+                    html += '<div class="vocab-empty-icon">📚</div>';
+                    html += '<div class="vocab-empty-text">还没有错题记录<br>先去做几道题，我来帮你诊断</div>';
+                    html += '</div>';
+                    html += '</div>';
+                }
+                
+                // 百词斩推荐
+                html += '<a class="vocab-bai-link" href="https://www.baicizhan.com" target="_blank">';
+                html += '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>';
+                html += '推荐用百词斩巩固这些词 →';
+                html += '</a>';
+                
+                container.innerHTML = html;
+                
+                // 渲染第一个薄弱维度的词
+                if (weakDims.length > 0) {
+                    renderDimensionWords(weakDims[0]);
+                }
+            }).catch(function(err) {
+                container.innerHTML = '<div class="vocab-empty"><div class="vocab-empty-icon">⚠️</div><div class="vocab-empty-text">加载词汇数据失败，请刷新重试</div></div>';
+            });
+        }
+
+        // 渲染特定维度的高频词
+        function renderDimensionWords(dimension) {
+            var container = document.getElementById('dimension-words-list');
+            if (!container) return;
+            
+            // 更新标签状态
+            document.querySelectorAll('.dimension-tag').forEach(function(tag) {
+                tag.classList.remove('active');
+                if (tag.textContent.trim() === dimension) {
+                    tag.classList.add('active');
+                }
+            });
+            
+            var words = getDimensionWords(dimension);
+            var html = '';
+            
+            words.forEach(function(item) {
+                html += '<div class="word-card">';
+                html += '<div class="word-header">';
+                html += '<div>';
+                html += '<span class="word-text">' + item.word + '</span>';
+                html += '<span class="word-phonetic">' + item.phonetic + '</span>';
+                html += '</div>';
+                html += '<button class="word-speak-btn" onclick="speakWord(\'' + item.word + '\')">';
+                html += '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>';
+                html += '</button>';
+                html += '</div>';
+                html += '<div class="word-meaning">' + item.meaning + '</div>';
+                html += '<div class="word-example">' + item.example + '</div>';
+                html += '<div class="word-example-cn">' + item.example_cn + '</div>';
+                html += '<div class="word-source"><span>' + dimension + '</span></div>';
+                html += '</div>';
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // 渲染全部维度的高频词
+        function renderAllDimensionWords() {
+            var container = document.getElementById('dimension-words-list');
+            if (!container || !vocabData) return;
+            
+            document.querySelectorAll('.dimension-tag').forEach(function(tag) {
+                tag.classList.remove('active');
+                if (tag.textContent.trim() === '全部维度') {
+                    tag.classList.add('active');
+                }
+            });
+            
+            var dimensions = ['细节定位', '推理判断', '同义替换', '主旨归纳', '态度判断'];
+            var dimMap = { '细节定位': 'detail_words', '推理判断': 'inference_words', '同义替换': 'synonym_words', '主旨归纳': 'main_idea_words', '态度判断': 'attitude_words' };
+            var html = '';
+            
+            dimensions.forEach(function(dim) {
+                var key = dimMap[dim];
+                var words = vocabData[key] ? vocabData[key].slice(0, 5) : [];
+                
+                if (words.length > 0) {
+                    html += '<div style="margin-bottom:12px;font-weight:600;color:#6C5CE7;font-size:13px;">' + dim + '</div>';
+                    words.forEach(function(item) {
+                        html += '<div class="word-card">';
+                        html += '<div class="word-header">';
+                        html += '<div>';
+                        html += '<span class="word-text">' + item.word + '</span>';
+                        html += '<span class="word-phonetic">' + item.phonetic + '</span>';
+                        html += '</div>';
+                        html += '<button class="word-speak-btn" onclick="speakWord(\'' + item.word + '\')">';
+                        html += '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>';
+                        html += '</button>';
+                        html += '</div>';
+                        html += '<div class="word-meaning">' + item.meaning + '</div>';
+                        html += '</div>';
+                    });
+                }
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // 词汇诊断页面切换时渲染
+        var _originalSwitchTab = switchTab;
+        switchTab = function(tab) {
+            if (tab === 'vocab') {
+                renderVocab();
+            }
+            _originalSwitchTab(tab);
+        };
+
         function getStreakData() {
             try {
                 var d = localStorage.getItem('cet_streak');
