@@ -5340,6 +5340,8 @@ function updateHomeStatus() {
                             checkAndParseEssayResponse(fullText);
                         }
                         onBotReply();
+                    // 检测薄弱项引导词，显示快捷入口
+                    checkAndShowWeakDimQuickLink(fullText, aiDiv);
                     } else {
                         removeTypingIndicator();
                         if (aiDiv && aiDiv.parentNode) aiDiv.remove();
@@ -5355,6 +5357,8 @@ function updateHomeStatus() {
                     chatState.chatHistory.push({ role: 'assistant', content: fullText, content_type: 'text' });
                     saveMessagesToLocal(chatState.conversationId);
                     try { onBotReply(); } catch(e2) { console.error('[Stream] onBotReply error in catch:', e2.message); }
+                        // 检测薄弱项引导词，显示快捷入口（fallback分支）
+                        checkAndShowWeakDimQuickLink(fullText, aiDiv);
                 } else {
                     removeTypingIndicator();
                     appendMessage('ai', '网络异常，请重试');
@@ -5421,6 +5425,115 @@ function updateHomeStatus() {
                 console.error('[onBotReply] Error (non-fatal):', e.message);
             }
         }
+
+        // ===== 薄弱项快捷入口检测 =====
+        var lastWeakDimPromptTime = 0;
+        var WEAK_DIM_COOLDOWN = 3; // 每3轮对话最多提1次
+
+        function checkAndShowWeakDimQuickLink(aiText, msgDiv) {
+            if (!aiText || !msgDiv) return;
+            // 非陪练模式不显示
+            if (chatState.currentMode !== 'companion') return;
+            
+            // 冷却检测：每3轮最多提1次
+            var rounds = chatState.chatRounds || 0;
+            if (rounds - lastWeakDimPromptTime < WEAK_DIM_COOLDOWN) return;
+            
+            // 五维维度关键词
+            var dimKeywords = [
+                { dim: '同义替换', patterns: [/同义替换/g, /词汇替换/g, /paraphrase/gi] },
+                { dim: '主旨归纳', patterns: [/主旨归纳/g, /主旨大意/g, /main idea/g, /中心思想/g] },
+                { dim: '推理判断', patterns: [/推理判断/g, /推理题/g, /推断/g, /inference/gi] },
+                { dim: '细节定位', patterns: [/细节定位/g, /细节题/g, /定位/g, /细节理解/g] },
+                { dim: '态度判断', patterns: [/态度判断/g, /态度题/g, /作者态度/g, /attitude/gi] }
+            ];
+            
+            var matchedDim = null;
+            for (var i = 0; i < dimKeywords.length; i++) {
+                var item = dimKeywords[i];
+                for (var j = 0; j < item.patterns.length; j++) {
+                    if (item.patterns[j].test(aiText)) {
+                        matchedDim = item.dim;
+                        break;
+                    }
+                }
+                if (matchedDim) break;
+            }
+            
+            // 同时检查是否有练习建议
+            var hasPracticeSuggestion = /练习|做题|专项|强化|巩固/g.test(aiText);
+            if (!matchedDim || !hasPracticeSuggestion) return;
+            
+            // 检查是否在推荐专项练习（只有提到薄弱项+练习建议才显示按钮）
+            var dimPracticePatterns = [
+                /同义替换.*练习|练习.*同义替换|做.*同义替换|同义替换.*题/,
+                /主旨.*练习|练习.*主旨|做.*主旨|主旨.*题/,
+                /推理.*练习|练习.*推理|做.*推理|推理.*题/,
+                /细节.*练习|练习.*细节|做.*细节|细节.*题/,
+                /态度.*练习|练习.*态度|做.*态度|态度.*题/
+            ];
+            
+            var shouldShow = false;
+            for (var k = 0; k < dimPracticePatterns.length; k++) {
+                if (dimPracticePatterns[k].test(aiText)) {
+                    shouldShow = true;
+                    break;
+                }
+            }
+            if (!shouldShow) return;
+            
+            // 更新冷却时间
+            lastWeakDimPromptTime = rounds;
+            
+            // 获取维度对应的练习类型
+            var dimTypeMap = {
+                '同义替换': '阅读理解-仔细阅读',
+                '主旨归纳': '阅读理解-仔细阅读',
+                '推理判断': '阅读理解-仔细阅读',
+                '细节定位': '阅读理解-仔细阅读',
+                '态度判断': '阅读理解-仔细阅读'
+            };
+            
+            var practiceType = dimTypeMap[matchedDim] || '阅读理解-仔细阅读';
+            var btnText = '去练' + matchedDim;
+            
+            // 创建快捷入口按钮
+            var quickLink = document.createElement('div');
+            quickLink.className = 'weak-dim-quick-link';
+            quickLink.innerHTML = '<button class="weak-dim-btn" onclick="startDimPractice(\'' + matchedDim + '\', \'' + practiceType + '\')">' + btnText + '</button>';
+            
+            // 插入到消息div后面
+            var container = document.getElementById('chat-messages');
+            if (container && msgDiv.parentNode === container) {
+                var insertPos = Array.prototype.indexOf.call(container.children, msgDiv) + 1;
+                if (insertPos < container.children.length) {
+                    container.insertBefore(quickLink, container.children[insertPos]);
+                } else {
+                    container.appendChild(quickLink);
+                }
+                scrollChatToBottom();
+            }
+        }
+        
+        // 开始维度专项练习
+        function startDimPractice(dimName, practiceType) {
+            // 隐藏快捷入口
+            var quickLinks = document.querySelectorAll('.weak-dim-quick-link');
+            quickLinks.forEach(function(el) { el.remove(); });
+            
+            // 切换到练习模式
+            if (typeof showQuizMode === 'function') {
+                showQuizMode(practiceType, dimName);
+            } else {
+                // 如果没有练习模式，通过对话引导
+                var input = document.getElementById('chat-input');
+                if (input) {
+                    input.value = '我要练习' + dimName;
+                    sendMessage();
+                }
+            }
+        }
+
 
         function updateRoundInfo() {}
 
@@ -7017,6 +7130,31 @@ function renderQuizQuestion(question) {
     tagHtml += '</div>';
     
     var html = '<div class="quiz-type-badge">' + tagHtml + '</div>';
+    
+    // 听力题：添加播放按钮
+    var isListeningQuestion = (dimension === '听力' || question.type === '听力' || question.category === 'LC');
+    if (isListeningQuestion && question.passage) {
+        // 保存当前听力文本到quizState
+        quizState.currentListeningText = question.passage;
+        quizState.currentListeningIsConv = (question.passage_type === 'conversation');
+        quizState.listeningPlayed = false;
+        quizState.listeningReplayCount = 0;
+        
+        html += '<div class="quiz-listening-player">';
+        html += '<div class="quiz-listening-wave" id="quiz-listening-wave">';
+        html += '<span></span><span></span><span></span><span></span><span></span>';
+        html += '</div>';
+        html += '<button class="quiz-listening-play-btn" id="quiz-listening-play-btn" onclick="handleQuizPlayClick()">';
+        html += '<span class="play-icon">▶</span>';
+        html += '</button>';
+        html += '<div class="quiz-listening-hint" id="quiz-listening-hint">点击播放听力</div>';
+        html += '</div>';
+        html += '<div class="quiz-listening-progress" id="quiz-listening-progress" style="display:none;">';
+        html += '<div class="quiz-listening-progress-bar"></div>';
+        html += '</div>';
+        html += '<div class="quiz-listening-replay-hint" id="quiz-listening-replay-hint"></div>';
+    }
+    
     html += '<div class="quiz-question">' + question.question + '</div>';
     html += '<div class="quiz-options">';
     
@@ -7046,6 +7184,103 @@ function renderQuizQuestion(question) {
 }
 
 // 选择答案
+// 每日一练听力播放处理
+var quizListeningPlayer = {
+    isPlaying: false,
+    isPaused: false,
+    text: '',
+    onComplete: null
+};
+
+function handleQuizPlayClick() {
+    var text = quizState.currentListeningText;
+    if (!text) return;
+    
+    if (quizListeningPlayer.isPlaying) {
+        // 停止播放
+        stopQuizListening();
+        return;
+    }
+    
+    // 开始播放
+    quizListeningPlayer.isPlaying = true;
+    quizListeningPlayer.text = text;
+    
+    var playBtn = document.getElementById('quiz-listening-play-btn');
+    var hint = document.getElementById('quiz-listening-hint');
+    var progress = document.getElementById('quiz-listening-progress');
+    
+    if (playBtn) {
+        playBtn.classList.add('playing');
+        playBtn.innerHTML = '<span class="wave-container"><span></span><span></span><span></span></span>';
+    }
+    if (hint) hint.textContent = '听力播放中...';
+    if (progress) progress.style.display = 'block';
+    
+    // 估算播放时长
+    var duration = Math.max(15, text.split(/\s+/).length / 2);
+    animateQuizProgress(duration);
+    
+    // 使用SpeechSynthesis播放
+    playListeningFull(text, quizState.currentListeningIsConv, function() {
+        stopQuizListening();
+        quizState.listeningPlayed = true;
+        var hint = document.getElementById('quiz-listening-hint');
+        var replayHint = document.getElementById('quiz-listening-replay-hint');
+        if (hint) hint.textContent = '✅ 播放完毕，请答题';
+        if (replayHint) replayHint.textContent = '';
+        quizListeningPlayer.isPlaying = false;
+    });
+}
+
+function stopQuizListening() {
+    stopListeningPlayback();
+    quizListeningPlayer.isPlaying = false;
+    quizListeningPlayer.isPaused = false;
+    
+    var playBtn = document.getElementById('quiz-listening-play-btn');
+    var hint = document.getElementById('quiz-listening-hint');
+    var progress = document.getElementById('quiz-listening-progress');
+    
+    if (playBtn) {
+        playBtn.classList.remove('playing');
+        playBtn.innerHTML = '<span class="play-icon">▶</span>';
+    }
+    if (progress) {
+        progress.style.display = 'none';
+        var bar = progress.querySelector('.quiz-listening-progress-bar');
+        if (bar) bar.style.width = '0%';
+    }
+}
+
+function animateQuizProgress(duration) {
+    var progress = document.getElementById('quiz-listening-progress');
+    if (!progress) return;
+    
+    var bar = progress.querySelector('.quiz-listening-progress-bar');
+    if (!bar) return;
+    
+    var startTime = Date.now();
+    var totalDuration = duration * 1000;
+    
+    function update() {
+        if (!quizListeningPlayer.isPlaying) {
+            bar.style.width = '0%';
+            return;
+        }
+        
+        var elapsed = Date.now() - startTime;
+        var pct = Math.min(100, (elapsed / totalDuration) * 100);
+        bar.style.width = pct + '%';
+        
+        if (elapsed < totalDuration && quizListeningPlayer.isPlaying) {
+            requestAnimationFrame(update);
+        }
+    }
+    
+    requestAnimationFrame(update);
+}
+
 function selectQuizOption(el, option) {
     if (el.classList.contains('disabled')) return;
     

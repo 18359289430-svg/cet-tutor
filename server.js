@@ -2037,7 +2037,51 @@ ${user_input}
                 var lastMsgChat = messages[messages.length-1] ? messages[messages.length-1].content : '';
                 var isCet6Chat = detectExamType(lastMsgChat, userPersonality);
                 var examCtxChat = getExamContext(isCet6Chat);
-                var systemContent = COMPANION_SYSTEM_PROMPT + (ragCtx || '') + examCtxChat.systemPrompt;
+                
+                // 追加薄弱项主动引导信息（注入到system prompt）
+                var weakGuidePrompt = '';
+                if (weakDims && weakDims.length > 0) {
+                    // 解析薄弱项和强项
+                    var dimScoresMap = {};
+                    try {
+                        var scoresObj = JSON.parse(body.dim_scores || '{}');
+                        for (var k in scoresObj) dimScoresMap[k] = parseInt(scoresObj[k]) || 0;
+                    } catch(e) {}
+                    
+                    // 提取薄弱项（<50%）和强项（>80%）
+                    var weakItems = weakDims.filter(function(d) {
+                        var name = d.replace(/\(.*?\)/, '').trim();
+                        return (dimScoresMap[name] || 0) < 50;
+                    });
+                    var strongItems = Object.keys(dimScoresMap).filter(function(k) {
+                        return dimScoresMap[k] >= 80;
+                    });
+                    
+                    if (weakItems.length > 0 || strongItems.length > 0) {
+                        weakGuidePrompt = '\n\n## 【薄弱项主动引导规则】\n';
+                        if (weakItems.length > 0) {
+                            weakGuidePrompt += '- 当前用户薄弱项：' + weakItems.join('、') + '\n';
+                            weakGuidePrompt += '- 请在对话中适时（每3-5轮最多提1次）引导用户练习薄弱项，如推荐专项练习、讲解技巧。\n';
+                        }
+                        if (strongItems.length > 0) {
+                            weakGuidePrompt += '- 当前用户强项：' + strongItems.join('、') + '（练习时可穿插巩固）\n';
+                        }
+                        weakGuidePrompt += '- 语气要自然，像朋友聊天，不是推销员。\n';
+                        weakGuidePrompt += '- 不要每句话都提薄弱项，会让用户烦。\n';
+                    }
+                }
+                
+                // 新对话开场检测：如果用户刚发起对话（messages只有1-2条），且有薄弱项，主动提及
+                var isNewConversation = messages.length <= 2;
+                if (isNewConversation && weakDims && weakDims.length > 0) {
+                    var firstWeak = weakDims[0].replace(/\(.*?\)/, '').trim();
+                    weakGuidePrompt += '\n\n## 【新对话开场引导】\n';
+                    weakGuidePrompt += '- 用户开启新对话，请根据薄弱项主动建议练习方向。\n';
+                    weakGuidePrompt += '- 例如："你的' + firstWeak + '还有提升空间，要不要做几道专项题练练？"\n';
+                    weakGuidePrompt += '- 语气亲切自然，像朋友间的学习交流。\n';
+                }
+                
+                var systemContent = COMPANION_SYSTEM_PROMPT + (ragCtx || '') + weakGuidePrompt + examCtxChat.systemPrompt;
                 const payload = {
                     model: 'deepseek-chat',
                     messages: [{ role: 'system', content: systemContent }, ...messages.slice(-10)],

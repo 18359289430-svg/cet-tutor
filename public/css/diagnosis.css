@@ -1307,3 +1307,297 @@
     opacity: 0.9;
     line-height: 1.5;
 }
+
+/* ========== 听力播放器样式 ========== */
+.listening-section {
+    padding: 16px;
+}
+
+.listening-passage-card {
+    background: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 16px;
+    color: white;
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+}
+
+.listening-passage-type {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    opacity: 0.9;
+}
+
+.listening-player {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.listening-wave {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    height: 40px;
+    opacity: 0.7;
+}
+
+.listening-wave span {
+    display: block;
+    width: 4px;
+    background: white;
+    border-radius: 2px;
+    animation: wave 1s ease-in-out infinite;
+}
+
+.listening-wave span:nth-child(1) { height: 10px; animation-delay: 0s; }
+.listening-wave span:nth-child(2) { height: 20px; animation-delay: 0.1s; }
+.listening-wave span:nth-child(3) { height: 30px; animation-delay: 0.2s; }
+.listening-wave span:nth-child(4) { height: 20px; animation-delay: 0.3s; }
+.listening-wave span:nth-child(5) { height: 10px; animation-delay: 0.4s; }
+
+@keyframes wave {
+    0%, 100% { transform: scaleY(0.5); }
+    50% { transform: scaleY(1.2); }
+}
+
+.listening-play-btn {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    flex-shrink: 0;
+}
+
+.listening-play-btn:active {
+    transform: scale(0.95);
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.listening-play-btn .play-icon {
+    font-size: 20px;
+    color: white;
+}
+
+.listening-play-btn .wave-container {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.listening-play-btn .wave-container span {
+    display: block;
+    width: 3px;
+    background: white;
+    border-radius: 2px;
+    animation: wave 0.6s ease-in-out infinite;
+}
+
+.listening-play-btn .wave-container span:nth-child(1) { height: 8px; animation-delay: 0s; }
+.listening-play-btn .wave-container span:nth-child(2) { height: 16px; animation-delay: 0.1s; }
+.listening-play-btn .wave-container span:nth-child(3) { height: 8px; animation-delay: 0.2s; }
+
+.listening-play-btn.playing .play-icon {
+    display: none;
+}
+
+.listening-hint {
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+.listening-progress-container {
+    margin-bottom: 16px;
+}
+
+.listening-progress-bar-wrapper {
+    position: relative;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.listening-progress-bar-wrapper progress {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+}
+
+.listening-progress-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: white;
+    border-radius: 3px;
+    transition: width 0.3s;
+}
+
+.listening-progress-text {
+    font-size: 12px;
+    opacity: 0.8;
+    text-align: center;
+    margin-top: 8px;
+}
+
+.listening-round-indicator {
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    margin-bottom: 16px;
+}
+
+.listening-round-indicator.round-1 { background: rgba(255, 255, 255, 0.2); }
+.listening-round-indicator.round-waiting { background: rgba(255, 193, 7, 0.4); color: #FFE082; }
+.listening-round-indicator.round-2 { background: rgba(255, 255, 255, 0.25); }
+
+.listening-replay-btn {
+    width: 100%;
+    padding: 12px 20px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s;
+}
+
+.listening-replay-btn:active {
+    transform: scale(0.98);
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.listening-replay-btn.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.listening-replay-btn .replay-count {
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+.listening-replay-btn .replay-tip {
+    font-size: 12px;
+    opacity: 0.7;
+}
+
+.listening-play-hint {
+    font-size: 12px;
+    opacity: 0.7;
+    text-align: center;
+    margin-top: 12px;
+}
+
+/* 听力题目卡片 */
+.listening-question-card {
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.diag-question-num {
+    font-size: 13px;
+    color: #6C5CE7;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.diag-question-text {
+    font-size: 15px;
+    color: #1E293B;
+    line-height: 1.6;
+    margin-bottom: 16px;
+}
+
+.diag-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.diag-option-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: #F8FAFC;
+    border: 2px solid #E2E8F0;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.diag-option-btn:active {
+    transform: scale(0.98);
+}
+
+.diag-option-btn:hover {
+    border-color: #CBD5E1;
+    background: #F1F5F9;
+}
+
+.diag-option-btn.correct {
+    background: #D1FAE5;
+    border-color: #059669;
+}
+
+.diagnosis-test-btn.wrong,
+.diag-option-btn.wrong {
+    background: #FEE2E2;
+    border-color: #DC2626;
+}
+
+.diag-option-btn.disabled {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.diag-option-letter {
+    width: 28px;
+    height: 28px;
+    background: #6C5CE7;
+    color: white;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.diag-option-btn.correct .diag-option-letter {
+    background: #059669;
+}
+
+.diag-option-btn.wrong .diag-option-letter {
+    background: #DC2626;
+}
+
+.diag-option-text {
+    flex: 1;
+    font-size: 14px;
+    color: #334155;
+    line-height: 1.5;
+}
