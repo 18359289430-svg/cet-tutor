@@ -7760,8 +7760,15 @@ async function startNewDiagnosis() {
     try {
         // 调用API获取题目 - 从统一题库加载
         var quizUrl = EXAM_TYPE === 'cet6' ? '/public/cet6_quiz_questions.json' : '/public/quiz_questions.json';
+        quizUrl += '?t=' + Date.now(); // 禁用缓存
+        console.log('[诊断] 开始加载题目:', quizUrl);
         var resp = await fetchWithTimeout(quizUrl);
+        console.log('[诊断] 响应状态:', resp.status, resp.headers.get('content-type'));
+        if (!resp.ok) {
+            throw new Error('HTTP ' + resp.status);
+        }
         var allQuestions = await resp.json();
+        console.log('[诊断] 题目数量:', allQuestions.length);
         
         // 从统一题库按维度各抽取题目
         // 维度映射：包含更多同义字段
@@ -7796,6 +7803,7 @@ async function startNewDiagnosis() {
             questions = questions.concat(remaining.slice(0, 15 - questions.length));
         }
         
+        console.log('[诊断] 筛选后题目数量:', questions.length, '维度分布:', questions.map(function(q){return q.ability}));
         if (questions.length === 0) {
             // fallback到旧模式
             closeDiagOverlay();
@@ -8484,6 +8492,8 @@ function selectListeningOption(btn, selectedValue) {
 function startReadingPhase() {
     // 从统一题库加载阅读题
     var quizUrl = EXAM_TYPE === 'cet6' ? '/public/cet6_quiz_questions.json' : '/public/quiz_questions.json';
+    quizUrl += '?t=' + Date.now();
+    console.log('[阅读阶段] 加载题目:', quizUrl);
     fetchWithTimeout(quizUrl).then(function(resp) {
         return resp.json();
     }).then(function(allQuestions) {
