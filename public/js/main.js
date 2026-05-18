@@ -4460,7 +4460,7 @@ function updateHomeStatus() {
             // 更新每日任务卡
             var dailyTaskCard = document.getElementById('daily-task-card');
             if (dailyTaskCard) {
-                dailyTaskCard.style.display = 'block';
+                dailyTaskCard.style.display = 'none';
                 initDailyTasks();
                 updateDailyTaskCard();
             }
