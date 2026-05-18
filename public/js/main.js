@@ -2193,7 +2193,7 @@ function explainWithAI(id) {
             } catch(e) { 
                 console.error('renderDashboard error:', e); 
                 var c = document.getElementById('dashboard-content');
-                if(c) c.innerHTML = '<div style="padding:40px 20px;text-align:center"><div style="font-size:40px;margin-bottom:12px">📊</div><div style="font-size:16px;font-weight:600">数据页面加载失败</div><div style="font-size:13px;color:#64748B;margin-top:8px">请刷新页面重试</div></div>';
+                if(c) c.innerHTML = '<div style="padding:40px 20px;text-align:center"><div style="font-size:40px;margin-bottom:12px">📊</div><div style="font-size:16px;font-weight:600">数据页面加载失败</div><div style="font-size:13px;color:#64748B;margin-top:8px">请刷新页面重试</div><div style="font-size:11px;color:#94A3B8;margin-top:4px;word-break:break-all">' + (e && e.message ? e.message : '') + '</div></div>';
             }
         }
 
