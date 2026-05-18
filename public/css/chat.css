@@ -468,19 +468,24 @@
 .custom-chat-msg.ai .custom-chat-bubble {
     background: #fff;
     color: #1E293B; 
-    border: 1px solid #e5e7eb;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    border: none;
+    box-shadow: none;
     max-width: 95%;
-    border-radius: 12px;
-    padding: 16px 20px;
-    font-size: 15.5px;
-    line-height: 1.8;
+    border-radius: 4px 18px 18px 18px;
+    padding: 14px 18px;
+    font-size: 15px;
+    line-height: 1.75;
 }
 /* 用户气泡 - 品牌紫色 */
 .custom-chat-msg.user .custom-chat-bubble {
-    background: #7c3aed;
+    background: #4F6EF7;
     color: #fff; 
-    box-shadow: 0 4px 16px rgba(124, 58, 237, 0.3);
+    max-width: 82%;
+    border-radius: 18px 18px 4px 18px;
+    padding: 12px 16px;
+    font-size: 15px;
+    line-height: 1.7;
+    box-shadow: none;
     position: relative;
 }
 /* 用户气泡shimmer光泽 - 移除，纯色不需要 */
