@@ -2039,9 +2039,15 @@ function explainWithAI(id) {
                     var score = dims[dim] || 0;
                     var actionText = getWeakActionText(dim, score);
                     html += '<div class="dashboard-weak-card" onclick="doCheckIn()">';
-                    var dimEmoji = {'同义替换':'🔄','主旨归纳':'🎯','细节定位':'🔍','推理判断':'🧠','态度判断':'💡'};
-                    var dimBg = {'同义替换':'rgba(253,203,110,0.15)','主旨归纳':'rgba(225,112,85,0.15)','细节定位':'rgba(108,92,231,0.15)','推理判断':'rgba(0,184,148,0.15)','态度判断':'rgba(116,185,255,0.15)'};
-                    html += '<div class="dashboard-weak-icon" style="background:' + (dimBg[dim] || 'rgba(108,92,231,0.1)') + ';font-size:20px">' + (dimEmoji[dim] || '📝') + '</div>';
+                    var dimIcons = {
+                        '同义替换': {bg:'linear-gradient(135deg,#FDCB6E,#F0A500)', svg:'<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 014-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>'},
+                        '主旨归纳': {bg:'linear-gradient(135deg,#E17055,#D63031)', svg:'<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>'},
+                        '细节定位': {bg:'linear-gradient(135deg,#6C5CE7,#A29BFE)', svg:'<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>'},
+                        '推理判断': {bg:'linear-gradient(135deg,#00B894,#00CEC9)', svg:'<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a7 7 0 017 7c0 3-2 5-4 6.5V18a1 1 0 01-1 1h-4a1 1 0 01-1-1v-2.5C7 14 5 12 5 9a7 7 0 017-7z"/><line x1="10" y1="22" x2="14" y2="22"/></svg>'},
+                        '态度判断': {bg:'linear-gradient(135deg,#74B9FF,#0984E3)', svg:'<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>'}
+                    };
+                    var iconCfg = dimIcons[dim] || {bg:'linear-gradient(135deg,#6C5CE7,#A29BFE)', svg:'<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>'};
+                    html += '<div class="dashboard-weak-icon" style="background:' + iconCfg.bg + '">' + iconCfg.svg + '</div>';
                     html += '<div class="dashboard-weak-info">';
                     html += '<div class="dashboard-weak-name">' + dim + '</div>';
                     html += '<div class="dashboard-weak-score">当前水平: ' + score + '%</div>';
