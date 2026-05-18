@@ -1928,7 +1928,7 @@ function explainWithAI(id) {
             html += '<div class="dashboard-overview-card large score-card shimmer-card">';
             html += '<div class="overview-icon" style="background:rgba(255,255,255,0.2)">' + icons.target + '</div>';
             html += '<div class="overview-num">' + (hasDimData ? estimatedScore : '--') + '</div>';
-            html += '<div class="overview-label">综合水平' + (hasDimData ? '' : '<span class="overview-label-hint">完成诊断后解锁</span>') + '</div>';
+            html += '<div class="overview-label">综合评估' + (hasDimData ? '' : '<span class="overview-label-hint">完成诊断后解锁</span>') + '</div>';
             html += '</div>';
             // 小卡片1: 今日练习
             html += '<div class="dashboard-overview-card small practice">';
@@ -2061,8 +2061,8 @@ function explainWithAI(id) {
                 var scorePercent = Math.round(((estimatedScore - 425) / (710 - 425)) * 100);
                 html += '<div class="dashboard-score-section">';
                 html += '<div class="dashboard-score-header">';
-                html += '<div class="dashboard-score-title">' + icons.target + '综合水平</div>';
-                html += '<div class="dashboard-score-target">目标: ' + targetScore + ' 分</div>';
+                html += '<div class="dashboard-score-title">' + icons.target + '综合评估</div>';
+                html += '<div class="dashboard-score-target">继续努力，稳步提升</div>';
                 html += '</div>';
                 html += '<div class="dashboard-score-main">';
                 html += '<span class="dashboard-score-num">' + estimatedScore + '</span>';
@@ -2072,12 +2072,7 @@ function explainWithAI(id) {
                 html += '<div class="dashboard-score-bar-fill" style="width:' + Math.min(100, scorePercent) + '%"></div>';
                 html += '</div>';
                 html += '<div class="dashboard-score-footer">';
-                html += '<span>及格线 425分</span>';
-                if (diff > 0) {
-                    html += '<span class="dashboard-score-diff">还差 ' + diff + ' 分</span>';
-                } else {
-                    html += '<span style="color:#00B894">已超过目标</span>';
-                }
+                html += '<span>诊断评估参考</span>';
                 html += '</div>';
                 html += '</div>';
             }
