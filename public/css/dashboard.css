@@ -623,18 +623,17 @@
 
 /* 去掉左侧彩色竖条 */
 .dashboard-weak-icon {
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    background: rgba(108, 92, 231, 0.1);
 }
 .dashboard-weak-icon svg {
-    width: 22px;
-    height: 22px;
+    width: 20px;
+    height: 20px;
 }
 .dashboard-weak-info {
     flex: 1;
@@ -652,9 +651,9 @@
 
 /* 薄弱项进度条 - 紫色渐变 */
 .dashboard-weak-bar {
-    height: 4px;
+    height: 3px;
     background: #F1F5F9;
-    border-radius: 2px;
+    border-radius: 1.5px;
     margin-top: 8px;
     overflow: hidden;
 }

@@ -2039,9 +2039,9 @@ function explainWithAI(id) {
                     var score = dims[dim] || 0;
                     var actionText = getWeakActionText(dim, score);
                     html += '<div class="dashboard-weak-card" onclick="doCheckIn()">';
-                    html += '<div class="dashboard-weak-icon">';
-                    html += '<svg viewBox="0 0 24 24" fill="none" stroke="' + (config.color || '#6C5CE7') + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>';
-                    html += '</div>';
+                    var dimEmoji = {'同义替换':'🔄','主旨归纳':'🎯','细节定位':'🔍','推理判断':'🧠','态度判断':'💡'};
+                    var dimBg = {'同义替换':'rgba(253,203,110,0.15)','主旨归纳':'rgba(225,112,85,0.15)','细节定位':'rgba(108,92,231,0.15)','推理判断':'rgba(0,184,148,0.15)','态度判断':'rgba(116,185,255,0.15)'};
+                    html += '<div class="dashboard-weak-icon" style="background:' + (dimBg[dim] || 'rgba(108,92,231,0.1)') + ';font-size:20px">' + (dimEmoji[dim] || '📝') + '</div>';
                     html += '<div class="dashboard-weak-info">';
                     html += '<div class="dashboard-weak-name">' + dim + '</div>';
                     html += '<div class="dashboard-weak-score">当前水平: ' + score + '%</div>';
