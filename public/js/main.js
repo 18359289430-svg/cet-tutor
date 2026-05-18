@@ -1075,7 +1075,7 @@ function initApp() {
         // 统一保存函数：同时保存到localStorage和云端
         function saveUserData(data) {
             state.userData = data;
-            saveUserData(state.userData);
+            safeSetItem(examKey('user'), JSON.stringify(data));
             saveUserDataToCloud(data).catch(function() {});
         }
 
@@ -1999,7 +1999,7 @@ function explainWithAI(id) {
             html += '</div>';
             html += '</div>';
             html += '<div class="dashboard-plan-footer">';
-            html += '<span>开始于 ' + formatDate(startDate) + '</span>';
+            html += '<span>开始于 ' + formatDate((function(){ var p=getSprintPlan(); return p&&p.startDay?new Date(p.startDay):new Date(); })()) + '</span>';
             html += '<span class="dashboard-plan-end">距考试 ' + daysToExam + ' 天</span>';
             html += '</div>';
             html += '</div>';
