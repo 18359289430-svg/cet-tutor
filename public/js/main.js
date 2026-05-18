@@ -4414,6 +4414,23 @@ function getAbilityTrend() {
             
             saveTodayTasks(tasks);
             updateDailyTaskCard();
+            
+            // 同时标记CET任务系统中的任务完成
+            // quiz类型任务 -> 找第一个quiz类型的未完成任务
+            if (taskId === 'quiz' || (typeof taskId === 'string' && taskId.startsWith('dim_'))) {
+                var cetTaskData = getCETTodayTasks();
+                if (cetTaskData && cetTaskData.tasks) {
+                    cetTaskData.tasks.forEach(function(task) {
+                        if (task.type === 'quiz' && !task.completed) {
+                            // 找到quiz类型任务，标记完成
+                            var marked = markCETTaskComplete(task.id);
+                            if (marked) {
+                                console.log('[CET任务] 标记quiz任务完成:', task.title);
+                            }
+                        }
+                    });
+                }
+            }
         }
         
         // 初始化或更新任务卡
@@ -9461,6 +9478,16 @@ function skipTranslationTest() {
 
 // 提交翻译实测
 async function submitTranslationTest() {
+        // 保存练习记录前先标记CET任务
+        var cetTaskData = getCETTodayTasks();
+        if (cetTaskData && cetTaskData.tasks) {
+            cetTaskData.tasks.forEach(function(task) {
+                if (task.type === 'translation' && !task.completed) {
+                    markCETTaskComplete(task.id);
+                }
+            });
+        }
+    
     var input = document.getElementById('translation-input');
     if (!input || input.value.length < 10) {
         showToast('请至少写10个字');

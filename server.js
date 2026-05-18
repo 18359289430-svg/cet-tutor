@@ -3059,6 +3059,130 @@ async function handleDeepseekEssayGrade(req, res) {
         return;
     }
 
+
+    // ===== 每日任务生成 API =====
+    if (pathname === '/api/daily-tasks' && req.method === 'GET') {
+        try {
+            const dimsParam = url.searchParams.get('dims'); // 格式: 细节定位:60,推理判断:50
+            const weakParam = url.searchParams.get('weak'); // 薄弱维度，逗号分隔
+            
+            // 解析维度分数
+            const dimScores = {};
+            if (dimsParam) {
+                try {
+                    const dimPairs = dimsParam.split(',');
+                    dimPairs.forEach(pair => {
+                        const [key, val] = pair.split(':');
+                        if (key && val) {
+                            dimScores[key.trim()] = parseInt(val) || 50;
+                        }
+                    });
+                } catch(e) {
+                    console.error('[维度分数解析失败]', e);
+                }
+            }
+            
+            // 解析薄弱维度
+            const weakDims = weakParam ? weakParam.split(',').map(d => d.trim()).filter(d => d) : [];
+            
+            // 计算薄弱维度（分数低于60的）
+            let priorityDims = weakDims.slice();
+            if (priorityDims.length === 0) {
+                for (const [key, val] of Object.entries(dimScores)) {
+                    if (val < 60) {
+                        priorityDims.push(key);
+                    }
+                }
+            }
+            
+            // 如果没有薄弱维度，取最低的2个
+            if (priorityDims.length === 0 && Object.keys(dimScores).length > 0) {
+                const sorted = Object.entries(dimScores).sort((a, b) => a[1] - b[1]);
+                priorityDims = sorted.slice(0, 2).map(([k]) => k);
+            }
+            
+            // 任务类型映射
+            const dimTaskTitles = {
+                '细节定位': '做5道细节定位题',
+                '推理判断': '做5道推理判断题',
+                '同义替换': '做5道同义替换题',
+                '主旨归纳': '做5道主旨归纳题',
+                '态度判断': '做5道态度判断题'
+            };
+            
+            // 生成3个任务
+            const tasks = [];
+            const usedDims = new Set();
+            
+            // 任务1: 优先从薄弱维度出题
+            if (priorityDims.length > 0) {
+                const targetDim = priorityDims[Math.floor(Math.random() * priorityDims.length)];
+                tasks.push({
+                    id: 1,
+                    title: dimTaskTitles[targetDim] || '做5道阅读理解题',
+                    type: 'quiz',
+                    dim: targetDim,
+                    estimated: '10分钟'
+                });
+                usedDims.add(targetDim);
+            } else {
+                tasks.push({
+                    id: 1,
+                    title: '做5道阅读理解题',
+                    type: 'quiz',
+                    dim: null,
+                    estimated: '10分钟'
+                });
+            }
+            
+            // 任务2: 作文或翻译
+            const task2Options = [
+                { id: 2, title: '完成一篇作文批改', type: 'essay', dim: null, estimated: '15分钟' },
+                { id: 2, title: '完成一段翻译练习', type: 'translation', dim: null, estimated: '10分钟' }
+            ];
+            tasks.push(task2Options[Math.floor(Math.random() * task2Options.length)]);
+            
+            // 任务3: 错题复习或AI对话
+            if (Math.random() > 0.5) {
+                tasks.push({
+                    id: 3,
+                    title: '复习3道错题',
+                    type: 'review',
+                    dim: usedDims.size > 0 ? Array.from(usedDims)[0] : null,
+                    estimated: '8分钟'
+                });
+            } else {
+                tasks.push({
+                    id: 3,
+                    title: '进行AI对话练习',
+                    type: 'chat',
+                    dim: null,
+                    estimated: '8分钟'
+                });
+            }
+            
+            // 随机打乱任务顺序（保持id正确）
+            const shuffledTasks = tasks.sort(() => Math.random() - 0.5).map((t, idx) => ({
+                ...t,
+                id: idx + 1
+            }));
+            
+            console.log('[每日任务生成]', { dimScores, weakDims: priorityDims, taskCount: shuffledTasks.length });
+            
+            return sendJson(res, 200, {
+                code: 0,
+                data: {
+                    tasks: shuffledTasks,
+                    generatedAt: new Date().toISOString(),
+                    priorityDims: priorityDims
+                }
+            });
+        } catch(e) {
+            console.error('[每日任务生成失败]', e);
+            return sendJson(res, 500, { code: 1, error: '生成任务失败' });
+        }
+    }
+
     // 404
     res.writeHead(404);
     res.end('Not Found');
