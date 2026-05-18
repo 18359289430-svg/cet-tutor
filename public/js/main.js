@@ -6219,7 +6219,93 @@ function startQuizWithDim() {
 }
 
 // 请求题目（支持维度筛选）
+// 批量题目缓存
+var quizBatchCache = {
+    questions: [],
+    currentIdx: 0,
+    dimDistribution: {},
+    totalCount: 0
+};
+
 async function requestQuizQuestion() {
+    var user = state.userData || {};
+    var plan = user.plan || 'free';
+    var types = ['词汇', '语法', '阅读', '听力'];
+    
+    // 如果缓存中有题目，直接取下一题
+    if (quizBatchCache.questions && quizBatchCache.questions.length > 0 && quizBatchCache.currentIdx < quizBatchCache.questions.length) {
+        var q = quizBatchCache.questions[quizBatchCache.currentIdx];
+        quizBatchCache.currentIdx++;
+        renderRealQuiz(q);
+        return;
+    }
+    
+    // 缓存用完或为空，需要获取新批次
+    var subtitle = document.getElementById('quiz-subtitle');
+    if (subtitle) subtitle.textContent = '正在加载题目...';
+    
+    // 构造批量获取URL
+    var batchUrl = '/api/quiz/batch';
+    var dimsParts = [];
+    
+    // 传递用户五维分数用于自适应推题
+    var diag = user.diagnosis || {};
+    if (diag['细节定位'] || diag['推理判断'] || diag['同义替换'] || diag['主旨归纳'] || diag['态度判断']) {
+        if (diag['细节定位']) dimsParts.push('细节定位:' + diag['细节定位']);
+        if (diag['推理判断']) dimsParts.push('推理判断:' + diag['推理判断']);
+        if (diag['同义替换']) dimsParts.push('同义替换:' + diag['同义替换']);
+        if (diag['主旨归纳']) dimsParts.push('主旨归纳:' + diag['主旨归纳']);
+        if (diag['态度判断']) dimsParts.push('态度判断:' + diag['态度判断']);
+    }
+    
+    if (dimsParts.length > 0) {
+        batchUrl += '?dims=' + encodeURIComponent(dimsParts.join(','));
+    }
+    
+    // 支持按维度筛选（专项练习）
+    if (quizDimState.selectedDim) {
+        var dimConfig = quizDimState.dimList.find(function(d) { return d.key === quizDimState.selectedDim; });
+        if (dimConfig && dimConfig.abilityKey) {
+            batchUrl += (dimsParts.length > 0 ? '&' : '?') + 'ability=' + encodeURIComponent(dimConfig.abilityKey);
+        }
+    }
+    
+    try {
+        var resp = await fetch(batchUrl);
+        var data = await resp.json();
+        
+        if (data.code === 0 && data.data && data.data.questions && data.data.questions.length > 0) {
+            // 成功获取批量题目
+            quizBatchCache.questions = data.data.questions;
+            quizBatchCache.currentIdx = 1;
+            quizBatchCache.dimDistribution = data.data.dimDistribution || {};
+            quizBatchCache.totalCount = data.data.totalCount || data.data.questions.length;
+            quizState.totalQuestions = quizBatchCache.totalCount;
+            
+            // 显示分配信息
+            if (subtitle) {
+                var dimInfo = Object.entries(quizBatchCache.dimDistribution)
+                    .map(function(e) { return e[0] + ':' + e[1]; })
+                    .join(' / ');
+                subtitle.textContent = '已加载' + quizBatchCache.totalCount + '题';
+            }
+            
+            // 渲染第一题
+            var q = quizBatchCache.questions[0];
+            renderRealQuiz(q);
+        } else {
+            // fallback: 单题获取
+            console.warn('[批量获取失败，降级到单题模式]');
+            requestQuizQuestionSingle();
+        }
+    } catch(e) {
+        console.error('[批量获取题目失败]', e);
+        requestQuizQuestionSingle();
+    }
+}
+
+// 单题获取（降级方案）
+async function requestQuizQuestionSingle() {
     var user = state.userData || {};
     var plan = user.plan || 'free';
     var types = ['词汇', '语法', '阅读', '听力'];
