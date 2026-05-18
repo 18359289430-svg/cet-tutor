@@ -1675,7 +1675,7 @@ function explainWithAI(id) {
             var dims = abilityScores && abilityScores.dims ? abilityScores.dims : {};
             var hasDimData = Object.keys(dims).length > 0;
             
-            // 计算预估分数
+            // 计算综合水平
             var estimatedScore = 0;
             if (hasDimData) {
                 var weights = {
@@ -1829,11 +1829,11 @@ function explainWithAI(id) {
             html += '<div class="overview-num">' + streak.count + '</div>';
             html += '<div class="overview-label">连续学习天数</div>';
             html += '</div>';
-            // 大卡片2: 预估分数
+            // 大卡片2: 综合水平
             html += '<div class="dashboard-overview-card large score-card shimmer-card">';
             html += '<div class="overview-icon" style="background:rgba(255,255,255,0.2)">' + icons.target + '</div>';
             html += '<div class="overview-num">' + (hasDimData ? estimatedScore : '--') + '</div>';
-            html += '<div class="overview-label">预估分数' + (hasDimData ? '' : '<span class="overview-label-hint">完成诊断后解锁</span>') + '</div>';
+            html += '<div class="overview-label">综合水平' + (hasDimData ? '' : '<span class="overview-label-hint">完成诊断后解锁</span>') + '</div>';
             html += '</div>';
             // 小卡片1: 今日练习
             html += '<div class="dashboard-overview-card small practice">';
@@ -1959,14 +1959,14 @@ function explainWithAI(id) {
                 html += '</div>';
             }
             
-            // ===== 预估分数卡 - 深色高亮 =====
+            // ===== 综合水平卡 - 深色高亮 =====
             if (hasDimData) {
                 var targetScore = 500;
                 var diff = targetScore - estimatedScore;
                 var scorePercent = Math.round(((estimatedScore - 425) / (710 - 425)) * 100);
                 html += '<div class="dashboard-score-section">';
                 html += '<div class="dashboard-score-header">';
-                html += '<div class="dashboard-score-title">' + icons.target + '预估分数</div>';
+                html += '<div class="dashboard-score-title">' + icons.target + '综合水平</div>';
                 html += '<div class="dashboard-score-target">目标: ' + targetScore + ' 分</div>';
                 html += '</div>';
                 html += '<div class="dashboard-score-main">';
@@ -2284,7 +2284,7 @@ function explainWithAI(id) {
                     var diagDate = userData.diagnosedAt ? new Date(userData.diagnosedAt) : new Date();
                     var dateStr = (diagDate.getMonth() + 1) + '月' + diagDate.getDate() + '日';
                     
-                    // 计算预估分数
+                    // 计算综合水平
                     var dims = userData.diagnosis;
                     var weights = {
                         '细节定位': 0.25, '推理判断': 0.25, '同义替换': 0.2,
