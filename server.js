@@ -2838,8 +2838,18 @@ async function handleDeepseekEssayGrade(req, res) {
         if (fs.existsSync(filePath)) {
             const ext = path.extname(filePath).toLowerCase();
             const contentTypes = {'.css': 'text/css; charset=utf-8', '.js': 'application/javascript; charset=utf-8'};
-            const fileContent = fs.readFileSync(filePath);
             const acceptEncoding = req.headers['accept-encoding'] || '';
+            // 优先使用预压缩文件
+            const gzPath = filePath + '.gz';
+            if (acceptEncoding.includes('gzip') && fs.existsSync(gzPath)) {
+                res.setHeader('Cache-Control', 'public, max-age=3600');
+                res.setHeader('Content-Type', contentTypes[ext] || 'application/octet-stream');
+                res.setHeader('Content-Encoding', 'gzip');
+                res.setHeader('Vary', 'Accept-Encoding');
+                res.end(fs.readFileSync(gzPath));
+                return;
+            }
+            const fileContent = fs.readFileSync(filePath);
             if (acceptEncoding.includes('gzip') && fileContent.length > 1024) {
                 zlib.gzip(fileContent, (err, compressed) => {
                     if (!err) {
