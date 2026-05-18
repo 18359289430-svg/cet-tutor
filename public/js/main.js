@@ -5606,7 +5606,7 @@ function openPayment(plan) {
     };
     // 面包多商品链接（冲刺营¥29.9）
     var mbdLinks = {
-        sprint: 'https://mbd.pub/o/bread/mbd-YZaTk5tsbA=='
+        sprint: 'https://mbd.pub/o/bread/YZaTk5tsbA=='
     };
 
     var existing = document.getElementById('pay-modal');
