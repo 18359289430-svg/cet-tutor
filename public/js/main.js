@@ -907,6 +907,7 @@ function initApp() {
             initCountdown();
             renderPersonalities();
             renderHomePersonalityPreview();
+            renderTodayTaskCard();  // 渲染今日待办卡片
             initTabEvents();
             updateProfileStats();
             updateProfileUserId();
@@ -4084,6 +4085,197 @@ function getAbilityTrend() {
                 localStorage.setItem(getDailyTasksKey(), JSON.stringify(tasks));
             } catch(e) {}
         }
+        // ===== 今日待办卡片 - 从 cet_today_tasks 读取 =====
+        function getTodayTaskData() {
+            try {
+                var data = localStorage.getItem('cet_today_tasks');
+                if (!data) return null;
+                var taskData = JSON.parse(data);
+                var today = getTodayStr();
+                // 如果日期不是今天，返回 null
+                if (taskData.date !== today) return null;
+                return taskData;
+            } catch(e) {
+                return null;
+            }
+        }
+        
+        // 获取任务类型图标
+        function getTaskTypeIcon(type) {
+            var icons = {
+                'quiz': '📝',
+                'essay': '✍️',
+                'translation': '🔄',
+                'review': '📖',
+                'chat': '💬',
+                'listening': '🎧',
+                'vocab': '📚'
+            };
+            return icons[type] || '📋';
+        }
+        
+        // 获取任务类型名称
+        function getTaskTypeName(type) {
+            var names = {
+                'quiz': '练习',
+                'essay': '作文',
+                'translation': '翻译',
+                'review': '复习',
+                'chat': '对话',
+                'listening': '听力',
+                'vocab': '词汇'
+            };
+            return names[type] || '任务';
+        }
+        
+        // 渲染今日待办卡片
+        function renderTodayTaskCard() {
+            var card = document.getElementById('today-task-card');
+            if (!card) return;
+            
+            var taskData = getTodayTaskData();
+            var listContainer = document.getElementById('today-task-list');
+            var progressEl = document.getElementById('today-task-progress');
+            var doneEl = document.getElementById('today-task-all-done');
+            var emptyEl = document.getElementById('today-task-empty');
+            
+            if (!listContainer || !progressEl) return;
+            
+            // 如果没有任务数据，显示生成入口
+            if (!taskData || !taskData.tasks || taskData.tasks.length === 0) {
+                card.style.display = 'block';
+                listContainer.innerHTML = '';
+                progressEl.textContent = '0/0';
+                if (doneEl) doneEl.style.display = 'none';
+                if (emptyEl) emptyEl.style.display = 'block';
+                return;
+            }
+            
+            // 显示卡片
+            card.style.display = 'block';
+            if (emptyEl) emptyEl.style.display = 'none';
+            
+            var tasks = taskData.tasks;
+            var completedCount = tasks.filter(function(t) { return t.completed; }).length;
+            var totalCount = tasks.length;
+            var allCompleted = completedCount === totalCount;
+            
+            // 更新进度
+            progressEl.textContent = completedCount + '/' + totalCount;
+            
+            // 渲染任务列表
+            var html = '';
+            tasks.forEach(function(task, idx) {
+                var isCompleted = task.completed;
+                var icon = getTaskTypeIcon(task.type);
+                var typeName = getTaskTypeName(task.type);
+                
+                html += '<div class="today-task-item' + (isCompleted ? ' completed' : '') + '" ';
+                html += 'data-task-id="' + task.id + '" ';
+                html += 'data-task-type="' + task.type + '" ';
+                html += 'data-task-dim="' + (task.dim || '') + '" ';
+                html += 'onclick="handleTodayTaskClick(' + task.id + ', \'' + task.type + '\', \'' + (task.dim || '') + '\', ' + isCompleted + ')"';
+                html += '>';
+                html += '<div class="today-task-icon' + (isCompleted ? ' completed' : '') + '">' + (isCompleted ? '✓' : icon) + '</div>';
+                html += '<div class="today-task-text' + (isCompleted ? ' completed' : '') + '">' + task.title + '</div>';
+                if (task.dim) {
+                    html += '<div class="today-task-dim">' + task.dim + '</div>';
+                }
+                html += '</div>';
+            });
+            
+            listContainer.innerHTML = html;
+            
+            // 如果全部完成，显示鼓励文案
+            if (doneEl) {
+                doneEl.style.display = allCompleted ? 'block' : 'none';
+            }
+        }
+        
+        // 处理今日任务点击
+        function handleTodayTaskClick(taskId, taskType, taskDim, isCompleted) {
+            // 如果已完成，无操作
+            if (isCompleted) return;
+            
+            // 根据任务类型执行对应操作
+            switch(taskType) {
+                case 'quiz':
+                    // 跳转到诊断页并开始练习
+                    switchTab('diagnosis');
+                    if (taskDim) {
+                        setTimeout(function() {
+                            if (typeof startPractice === 'function') {
+                                startPractice([taskDim]);
+                            }
+                        }, 300);
+                    }
+                    break;
+                case 'essay':
+                    // 打开作文批改
+                    if (typeof openEssayOverlay === 'function') {
+                        openEssayOverlay();
+                    } else {
+                        switchTab('diagnosis');
+                        setTimeout(function() {
+                            if (typeof sendSuggestion === 'function') {
+                                sendSuggestion('帮我批改作文');
+                            }
+                        }, 300);
+                    }
+                    break;
+                case 'translation':
+                    // 打开翻译练习
+                    switchTab('diagnosis');
+                    setTimeout(function() {
+                        if (typeof sendSuggestion === 'function') {
+                            sendSuggestion('翻译练习');
+                        }
+                    }, 300);
+                    break;
+                case 'review':
+                    // 跳转到错题本
+                    switchTab('wrongbook');
+                    break;
+                case 'chat':
+                    // 打开聊天
+                    switchTab('diagnosis');
+                    if (taskDim) {
+                        setTimeout(function() {
+                            if (typeof sendSuggestion === 'function') {
+                                sendSuggestion(taskDim);
+                            }
+                        }, 300);
+                    }
+                    break;
+                case 'listening':
+                    // 打开听力练习
+                    switchTab('diagnosis');
+                    setTimeout(function() {
+                        if (typeof sendSuggestion === 'function') {
+                            sendSuggestion('听力练习');
+                        }
+                    }, 300);
+                    break;
+                case 'vocab':
+                    // 打开词汇诊断
+                    switchTab('vocab');
+                    break;
+                default:
+                    // 默认跳转到诊断页
+                    switchTab('diagnosis');
+            }
+        }
+        
+        // 生成今日学习计划（跳转到聊天让AI生成）
+        function generateTodayPlan() {
+            switchTab('diagnosis');
+            setTimeout(function() {
+                if (typeof sendSuggestion === 'function') {
+                    sendSuggestion('帮我生成今日学习计划');
+                }
+            }, 300);
+        }
+
         
         // 生成每日任务
         function generateDailyTasks() {

@@ -1935,3 +1935,138 @@
     min-width: 32px;
 }
 
+
+/* 今日待办卡片样式 */
+.today-task-card {
+    margin: 12px 16px;
+    padding: 16px;
+    background: linear-gradient(135deg, #6C5CE7, #a29bfe);
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(108, 92, 231, 0.25);
+    animation: fadeInUp 0.4s ease;
+}
+
+.today-task-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.today-task-title {
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.today-task-progress {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.25);
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 12px;
+    min-width: 36px;
+}
+
+.today-task-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.today-task-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.today-task-item:active {
+    transform: scale(0.98);
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.today-task-item.completed {
+    opacity: 0.7;
+    cursor: default;
+}
+
+.today-task-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    flex-shrink: 0;
+}
+
+.today-task-icon.completed {
+    background: #10B981;
+}
+
+.today-task-text {
+    flex: 1;
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.today-task-text.completed {
+    text-decoration: line-through;
+    opacity: 0.8;
+}
+
+.today-task-dim {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 11px;
+    font-weight: 500;
+    flex-shrink: 0;
+}
+
+.today-task-all-done {
+    text-align: center;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 12px;
+    background: rgba(16, 185, 129, 0.3);
+    border-radius: 10px;
+    margin-top: 8px;
+}
+
+.today-task-empty {
+    text-align: center;
+    padding: 8px 0;
+}
+
+.today-task-generate-btn {
+    width: 100%;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px dashed rgba(255, 255, 255, 0.5);
+    border-radius: 10px;
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.today-task-generate-btn:active {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(0.98);
+}

@@ -119,17 +119,22 @@
                     <span>陪你冲刺<span class="social-proof-num">备考</span></span>
                 </div>
 
-                <!-- 每日任务卡 -->
-                <div class="daily-task-card" id="daily-task-card" style="display:none">
-                    <div class="daily-task-card-header">
-                        <div class="daily-task-card-title">🎯 今日任务</div>
-                        <div class="daily-task-complete-badge" id="daily-task-badge">0/0</div>
+                <!-- 今日待办卡片 -->
+                <div class="today-task-card" id="today-task-card" style="display:none">
+                    <div class="today-task-header">
+                        <div class="today-task-title">📋 今日待办</div>
+                        <div class="today-task-progress" id="today-task-progress">0/3</div>
                     </div>
-                    <div class="daily-task-list" id="daily-task-list">
+                    <div class="today-task-list" id="today-task-list">
                         <!-- JS动态渲染 -->
                     </div>
-                    <div class="daily-task-all-done" style="display:none">
-                        🎉 今日任务已完成！
+                    <div class="today-task-all-done" id="today-task-all-done" style="display:none">
+                        🎉 今日任务已全部完成！继续保持，你真棒！
+                    </div>
+                    <div class="today-task-empty" id="today-task-empty" style="display:none">
+                        <button class="today-task-generate-btn" onclick="generateTodayPlan()">
+                            📝 点击生成今日学习计划
+                        </button>
                     </div>
                 </div>
 
