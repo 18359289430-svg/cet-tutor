@@ -860,6 +860,24 @@ function getProgressHint(summary) {
         // 对话列表状态在用户进入diagnosis tab时初始化
 
         if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', initApp); } else { initApp(); }
+        // 暴露闭包内函数到全局（HTML onclick需要）
+        window.switchExamType = switchExamType;
+        window.handleQuickAction = handleQuickAction;
+        window.handleHomeCta = handleHomeCta;
+        window.handleEssayClick = handleEssayClick;
+        window.handleReviewClick = handleReviewClick;
+        window.handleModeTag = handleModeTag;
+        window.openDailyTask = openDailyTask;
+        window.handleCapsuleClick = handleCapsuleClick;
+        window.createNewChat = createNewChat;
+        window.sendMessage = sendMessage;
+        window.handleChatBack = handleChatBack;
+        window.showNewChatModal = showNewChatModal;
+        window.hideNewChatModal = hideNewChatModal;
+        window.startPractice = startPractice;
+        window.closeQuiz = closeQuiz;
+        window.quizNextQuestion = quizNextQuestion;
+        window.submitQuizEarly = submitQuizEarly;
 
         // ===== CountUp动画函数 =====
         function animateCountUp(element, target, duration, suffix) {
@@ -3959,6 +3977,8 @@ function getAbilityTrend() {
             }
             _originalSwitchTab(tab);
         };
+        // 暴露关键函数到全局作用域（HTML onclick需要）
+        window.switchTab = switchTab;
 
         function getStreakData() {
             try {
@@ -7846,6 +7866,7 @@ async function startNewDiagnosis() {
 
 
         }
+        diagState.questions = questions;
         diagState.phase = 'questions';
         document.getElementById('diag-progress-wrap').style.display = '';
         
