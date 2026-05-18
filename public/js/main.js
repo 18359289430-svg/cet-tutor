@@ -6981,6 +6981,7 @@ function restartQuiz() {
     quizState.wrongCount = 0;
     quizState.answeredTypes = { '词汇': 0, '语法': 0, '阅读': 0, '听力': 0 };
     quizState.wrongTypes = { '词汇': 0, '语法': 0, '阅读': 0, '听力': 0 };
+    quizState.dimResults = []; // 重置维度记录
     quizState.startTime = Date.now();
     
     var body = document.getElementById('quiz-body');
