@@ -1423,6 +1423,7 @@ function initApp() {
             
             // Hero区域 - 和数据页一致
             html += '<div class="wrongbook-hero">';
+            html += '<h2>错题本</h2>';
             html += '<div class="wrongbook-hero-sub">记录每一次失误，让进步更有方向</div>';
             html += '<div class="wrongbook-hero-divider"></div>';
             html += '</div>';
