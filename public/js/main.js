@@ -1927,7 +1927,7 @@ function explainWithAI(id) {
             // 大卡片2: 综合水平
             html += '<div class="dashboard-overview-card large score-card shimmer-card">';
             html += '<div class="overview-icon" style="background:rgba(255,255,255,0.2)">' + icons.target + '</div>';
-            html += '<div class="overview-num">' + (hasDimData ? estimatedScore : '--') + '</div>';
+            html += '<div class="overview-num">' + (hasDimData ? (estimatedScore >= 600 ? '优秀' : estimatedScore >= 500 ? '良好' : estimatedScore >= 425 ? '基础' : '待提升') : '--') + '</div>';
             html += '<div class="overview-label">综合评估' + (hasDimData ? '' : '<span class="overview-label-hint">完成诊断后解锁</span>') + '</div>';
             html += '</div>';
             // 小卡片1: 今日练习
@@ -2044,7 +2044,7 @@ function explainWithAI(id) {
                     html += '</div>';
                     html += '<div class="dashboard-weak-info">';
                     html += '<div class="dashboard-weak-name">' + dim + '</div>';
-                    html += '<div class="dashboard-weak-score">当前分数: ' + score + '分</div>';
+                    html += '<div class="dashboard-weak-score">当前水平: ' + score + '%</div>';
                     html += '<div class="dashboard-weak-bar"><div class="dashboard-weak-bar-fill" style="width:' + score + '%"></div></div>';
                     html += '<div class="dashboard-weak-action">' + actionText + '</div>';
                     html += '</div>';
@@ -2058,15 +2058,15 @@ function explainWithAI(id) {
             if (hasDimData) {
                 var targetScore = 500;
                 var diff = targetScore - estimatedScore;
-                var scorePercent = Math.round(((estimatedScore - 425) / (710 - 425)) * 100);
+                var scorePercent = Math.round((estimatedScore / 710) * 100);
                 html += '<div class="dashboard-score-section">';
                 html += '<div class="dashboard-score-header">';
                 html += '<div class="dashboard-score-title">' + icons.target + '综合评估</div>';
                 html += '<div class="dashboard-score-target">继续努力，稳步提升</div>';
                 html += '</div>';
                 html += '<div class="dashboard-score-main">';
-                html += '<span class="dashboard-score-num">' + estimatedScore + '</span>';
-                html += '<span class="dashboard-score-unit">分</span>';
+                html += '<span class="dashboard-score-num">' + (estimatedScore >= 600 ? '优秀' : estimatedScore >= 500 ? '良好' : estimatedScore >= 425 ? '基础' : '待提升') + '</span>';
+                html += '<span class="dashboard-score-unit"></span>';
                 html += '</div>';
                 html += '<div class="dashboard-score-bar">';
                 html += '<div class="dashboard-score-bar-fill" style="width:' + Math.min(100, scorePercent) + '%"></div>';
