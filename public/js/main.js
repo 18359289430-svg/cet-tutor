@@ -860,24 +860,7 @@ function getProgressHint(summary) {
         // 对话列表状态在用户进入diagnosis tab时初始化
 
         if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', initApp); } else { initApp(); }
-        // 暴露闭包内函数到全局（HTML onclick需要）
-        window.switchExamType = switchExamType;
-        window.handleQuickAction = handleQuickAction;
-        window.handleHomeCta = handleHomeCta;
-        window.handleEssayClick = handleEssayClick;
-        window.handleReviewClick = handleReviewClick;
-        window.handleModeTag = handleModeTag;
-        window.openDailyTask = openDailyTask;
-        window.handleCapsuleClick = handleCapsuleClick;
-        window.createNewChat = createNewChat;
-        window.sendMessage = sendMessage;
-        window.handleChatBack = handleChatBack;
-        window.showNewChatModal = showNewChatModal;
-        window.hideNewChatModal = hideNewChatModal;
-        window.startPractice = startPractice;
-        window.closeQuiz = closeQuiz;
-        window.quizNextQuestion = quizNextQuestion;
-        window.submitQuizEarly = submitQuizEarly;
+
 
         // ===== CountUp动画函数 =====
         function animateCountUp(element, target, duration, suffix) {
@@ -13657,3 +13640,53 @@ async function doRestoreData() {
     btn.disabled = false;
     btn.textContent = '恢复';
 }
+
+// ===== 暴露函数到全局作用域（HTML onclick需要）=====
+window.switchTab = switchTab;
+window.switchExamType = switchExamType;
+window.handleQuickAction = handleQuickAction;
+window.handleHomeCta = handleHomeCta;
+window.handleEssayClick = handleEssayClick;
+window.handleReviewClick = handleReviewClick;
+window.handleModeTag = handleModeTag;
+window.openDailyTask = openDailyTask;
+window.handleCapsuleClick = handleCapsuleClick;
+window.createNewChat = createNewChat;
+window.sendMessage = sendMessage;
+window.handleChatBack = handleChatBack;
+window.showNewChatModal = showNewChatModal;
+window.hideNewChatModal = hideNewChatModal;
+window.startPractice = startPractice;
+window.closeQuiz = closeQuiz;
+window.quizNextQuestion = quizNextQuestion;
+window.submitQuizEarly = submitQuizEarly;
+window.startNewDiagnosis = startNewDiagnosis;
+window.showDiagHistory = showDiagHistory;
+window.showShareCard = showShareCard;
+window.closeShareCard = closeShareCard;
+window.showRediagModal = showRediagModal;
+window.showClearChatModal = showClearChatModal;
+window.showPrivacyModal = showPrivacyModal;
+window.showTermsModal = showTermsModal;
+window.showToast = showToast;
+window.toggleVoiceInput = toggleVoiceInput;
+window.closePersonalityModal = closePersonalityModal;
+window.closeDailyTaskModal = closeDailyTaskModal;
+window.submitDailyTask = submitDailyTask;
+window.selectPlan = selectPlan;
+window.switchCozeTab = switchCozeTab;
+window.openActivateCodeModal = openActivateCodeModal;
+window.openReportPayModal = openReportPayModal;
+window.closeReportPage = closeReportPage;
+window.exitDiagnosis = exitDiagnosis;
+window.closeReportShare = closeReportShare;
+window.submitEssay = submitEssay;
+window.closeEssayOverlay = closeEssayOverlay;
+window.showEssayTemplate = showEssayTemplate;
+window.showLearningPlan = showLearningPlan;
+window.closeSpecialPlan = closeSpecialPlan;
+window.regeneratePlan = regeneratePlan;
+window.openRestoreDataModal = openRestoreDataModal;
+window.copyUserId = copyUserId;
+window.toggleFaq = toggleFaq;
+window.showStudyHistory = showStudyHistory;
