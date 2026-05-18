@@ -120,15 +120,15 @@
                 </div>
 
                 <!-- 每日任务卡 -->
-                <div class="home-task-card" id="home-daily-task" onclick="openDailyTask()">
-                    <div class="ai-cap-icon purple" style="width:32px;height:32px;flex-shrink:0">
-                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;stroke:#6C5CE7"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+                <div style="display:flex;align-items:center;gap:10px;margin:8px 16px;padding:10px 12px;background:white;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,0.06);cursor:pointer" id="home-daily-task" onclick="openDailyTask()">
+                    <div style="width:32px;height:32px;border-radius:10px;background:#F0EEFF;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#6C5CE7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
                     </div>
                     <div style="flex:1;min-width:0">
-                        <div class="ai-cap-text" id="home-daily-title">今日任务</div>
-                        <div class="ai-cap-sub" id="home-daily-desc">薄弱点强化训练</div>
+                        <div style="font-size:12px;font-weight:600;color:#1a1a2e;line-height:1.3" id="home-daily-title">今日任务</div>
+                        <div style="font-size:10px;color:#94a3b8;font-weight:400;margin-top:1px" id="home-daily-desc">薄弱点强化训练</div>
                     </div>
-                    <div class="home-task-badge" id="home-daily-badge">0/3</div>
+                    <div style="display:inline-flex;align-items:center;justify-content:center;background:#F1F5F9;color:#475569;font-size:11px;font-weight:600;padding:3px 8px;border-radius:10px;flex-shrink:0" id="home-daily-badge">0/3</div>
                 </div>
 
                 <!-- 打卡日历（百词斩风格） -->
