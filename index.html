@@ -119,26 +119,20 @@
                     <span>陪你冲刺<span class="social-proof-num">备考</span></span>
                 </div>
 
-                <!-- 每日任务卡（重新设计） -->
-                <div class="home-task-card" id="daily-task-card" onclick="openDailyTask()">
+                <!-- 每日任务卡（紧凑风格） -->
+                <div class="home-task-card" id="home-daily-task" onclick="openDailyTask()">
                     <div class="home-task-header">
                         <div class="home-task-icon-wrap">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
                         </div>
                         <div class="home-task-info">
-                            <div class="home-task-title" id="home-task-card-title">今日任务</div>
-                            <div class="home-task-desc" id="home-task-card-content">薄弱点强化训练</div>
+                            <div class="home-task-title" id="home-daily-title">今日任务</div>
+                            <div class="home-task-desc" id="home-daily-desc">薄弱点强化训练</div>
                         </div>
-                        <div class="home-task-badge" id="daily-task-badge">0/3</div>
+                        <div class="home-task-badge" id="home-daily-badge">0/3</div>
                     </div>
                     <div class="home-task-progress">
-                        <div class="home-task-progress-bar" id="daily-task-progress-bar" style="width: 0%"></div>
-                    </div>
-                    <div class="home-task-tasks" id="daily-task-list">
-                        <!-- JS动态渲染任务列表 -->
-                    </div>
-                    <div class="home-task-footer" id="daily-task-all-done" style="display:none">
-                        <span>✓</span> 今日目标已达成
+                        <div class="home-task-progress-bar" id="home-daily-progress" style="width: 0%"></div>
                     </div>
                 </div>
 
@@ -254,19 +248,19 @@
                     </div>
                     
                     <!-- 每日任务卡片 -->
-                    <div class="daily-task-card" id="daily-task-card" onclick="openDailyTask()">
+                    <div class="daily-task-card" id="plan-daily-task" onclick="openDailyTask()">
                         <div class="daily-task-header">
                             <div class="daily-task-icon">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                             </div>
                             <div class="daily-task-info">
                                 <div class="daily-task-title">每日任务</div>
-                                <div class="daily-task-desc" id="daily-task-desc">今日薄弱点强化训练</div>
+                                <div class="daily-task-desc" id="plan-daily-desc">今日薄弱点强化训练</div>
                             </div>
-                            <div class="daily-task-badge" id="daily-task-badge">0/4</div>
+                            <div class="daily-task-badge" id="plan-daily-badge">0/4</div>
                         </div>
                         <div class="daily-task-progress">
-                            <div class="daily-task-progress-bar" id="daily-task-progress-bar" style="width: 0%"></div>
+                            <div class="daily-task-progress-bar" id="plan-daily-progress-bar" style="width: 0%"></div>
                         </div>
                     </div>
                     

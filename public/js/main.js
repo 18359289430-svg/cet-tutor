@@ -11149,90 +11149,82 @@ function renderDailyTaskCard() {
     var focusDim = todayPlan ? todayPlan.focusDim : '';
     var todayTasks = todayPlan ? todayPlan.tasks : [];
     var estimatedTime = todayPlan ? todayPlan.estimatedTime : 0;
+    var taskCount = todayTasks.length || 3;
     
-    // 计算完成的任务数
-    var completedCount = todayDone ? todayTasks.length : 0;
+    // === 首页卡片 ===
+    var homeBadge = document.getElementById('home-daily-badge');
+    var homeProgress = document.getElementById('home-daily-progress');
+    var homeDesc = document.getElementById('home-daily-desc');
+    var homeTitle = document.getElementById('home-daily-title');
     
-    // 更新徽章
-    var badgeEl = document.getElementById('daily-task-badge');
-    var progressEl = document.getElementById('daily-task-progress-bar');
-    
-    if (badgeEl) {
+    if (homeBadge) {
         if (todayDone) {
-            badgeEl.textContent = todayTasks.length + '/' + todayTasks.length;
-            badgeEl.style.background = '#D1FAE5';
-            badgeEl.style.color = '#059669';
+            homeBadge.textContent = taskCount + '/' + taskCount;
+            homeBadge.style.background = '#D1FAE5';
+            homeBadge.style.color = '#059669';
         } else {
-            badgeEl.textContent = '0/' + todayTasks.length;
-            badgeEl.style.background = '#F1F5F9';
-            badgeEl.style.color = '#475569';
+            homeBadge.textContent = '0/' + taskCount;
+            homeBadge.style.background = '#F1F5F9';
+            homeBadge.style.color = '#475569';
         }
     }
     
-    if (progressEl) {
-        progressEl.style.width = todayDone ? '100%' : '0%';
+    if (homeProgress) {
+        homeProgress.style.width = todayDone ? '100%' : '0%';
     }
     
-    // 更新描述
-    var descEl = document.getElementById('daily-task-desc');
-    if (descEl) {
+    if (homeTitle) {
+        homeTitle.textContent = todayDone ? '今日任务已完成' : '今日任务';
+    }
+    
+    if (homeDesc) {
         if (todayDone) {
-            descEl.textContent = '已完成今日任务，继续加油！';
+            homeDesc.textContent = '继续加油，保持节奏！';
+        } else if (focusDim) {
+            homeDesc.textContent = focusDim + ' · 约' + estimatedTime + '分钟';
         } else {
-            if (focusDim) {
-                descEl.textContent = focusDim + ' · 约' + estimatedTime + '分钟';
+            var weakDims = getWeakDims();
+            if (weakDims.length > 0) {
+                homeDesc.textContent = weakDims[0] + '强化训练';
             } else {
-                var weakDims = getWeakDims();
-                if (weakDims.length > 0) {
-                    descEl.textContent = weakDims[0] + '强化训练';
-                } else {
-                    descEl.textContent = '综合能力提升训练';
-                }
+                homeDesc.textContent = '综合能力提升训练';
             }
         }
     }
     
-    // 更新首页任务卡内容
-    updateHomeTaskCard(todayPlan, todayDone);
+    // === 计划页卡片 ===
+    var planBadge = document.getElementById('plan-daily-badge');
+    var planProgress = document.getElementById('plan-daily-progress-bar');
+    var planDesc = document.getElementById('plan-daily-desc');
     
-    // 渲染首页任务列表
-    var homeTaskList = document.getElementById('daily-task-list');
-    if (homeTaskList && todayPlan && todayPlan.tasks && todayPlan.tasks.length > 0) {
-        var html = '';
-        todayPlan.tasks.forEach(function(task, idx) {
-            var isDone = todayDone;
-            var taskText = typeof task === 'string' ? task : task.text;
-            var taskTime = (typeof task === 'object' && task.time) ? task.time + 'min' : '';
-            html += '<div class="home-task-item' + (isDone ? ' done' : '') + '">';
-            html += '<div class="home-task-check' + (isDone ? ' done' : '') + '">' + (isDone ? '✓' : (idx+1)) + '</div>';
-            html += '<div class="home-task-item-text' + (isDone ? ' done' : '') + '">' + taskText + '</div>';
-            if (taskTime) html += '<div class="home-task-item-time">' + taskTime + '</div>';
-            html += '</div>';
-        });
-        homeTaskList.innerHTML = html;
+    if (planBadge) {
+        if (todayDone) {
+            planBadge.textContent = taskCount + '/' + taskCount;
+            planBadge.style.background = '#D1FAE5';
+            planBadge.style.color = '#059669';
+        } else {
+            planBadge.textContent = '0/' + taskCount;
+            planBadge.style.background = '#F1F5F9';
+            planBadge.style.color = '#475569';
+        }
     }
     
-    // 全部完成
-    var allDone = document.getElementById('daily-task-all-done');
-    if (allDone) allDone.style.display = todayDone ? 'block' : 'none';
+    if (planProgress) {
+        planProgress.style.width = todayDone ? '100%' : '0%';
+    }
+    
+    if (planDesc) {
+        if (todayDone) {
+            planDesc.textContent = '已完成今日任务，继续加油！';
+        } else if (focusDim) {
+            planDesc.textContent = focusDim + ' · 约' + estimatedTime + '分钟';
+        } else {
+            planDesc.textContent = '今日薄弱点强化训练';
+        }
+    }
 }
 
-// 更新首页任务卡片内容（与冲刺计划联动）
-function updateHomeTaskCard(todayPlan, todayDone) {
-    var taskCardTitle = document.getElementById('home-task-card-title');
-    var taskCardContent = document.getElementById('home-task-card-content');
-    
-    if (taskCardTitle && todayPlan) {
-        taskCardTitle.textContent = '今日' + (todayPlan.focusDim || '综合') + '训练';
-    }
-    
-    if (taskCardContent && todayPlan && todayPlan.tasks) {
-        var taskTexts = todayPlan.tasks.slice(0, 2).map(function(t) {
-            return typeof t === 'string' ? t : t.text;
-        });
-        taskCardContent.textContent = taskTexts.join(' · ');
-    }
-}
+
 
 // 获取薄弱维度
 function getWeakDims() {
