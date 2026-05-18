@@ -7823,7 +7823,14 @@ async function startNewDiagnosis() {
         document.getElementById('diag-progress-wrap').style.display = '';
         
         // 开始答题
-        showCurrentQuestion();
+        try {
+            console.log('[诊断] 准备显示第1题, questions:', diagState.questions.length);
+            showCurrentQuestion();
+            console.log('[诊断] 第1题显示成功');
+        } catch(e) {
+            console.error('[诊断] 显示题目失败:', e);
+            showSelfEval();
+        }
         
     } catch(e) {
         console.error('[诊断加载失败]', e);
@@ -8538,11 +8545,14 @@ function startReadingPhase() {
 function showCurrentQuestion() {
     // 记录题目展示时间
     diagState.questionShowTime = Date.now();
+    console.log('[诊断] showCurrentQuestion called, index:', diagState.currentQIndex, 'phase:', diagState.phase);
     var q = diagState.questions[diagState.currentQIndex];
     if (!q) {
+        console.error('[诊断] 题目为空! index:', diagState.currentQIndex, 'total:', diagState.questions.length);
         showSelfEval();
         return;
     }
+    console.log('[诊断] 题目:', q.id, q.question ? q.question.substring(0, 30) : 'NO QUESTION');
     
     var totalQuestions = diagState.questions.length;
     var progress = Math.round((diagState.currentQIndex / totalQuestions) * 100);
