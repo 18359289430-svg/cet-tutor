@@ -13641,7 +13641,6 @@ async function doRestoreData() {
 }
 
 // ===== 暴露函数到全局作用域（HTML onclick需要）=====
-window.switchTab = switchTab;
 window.switchExamType = switchExamType;
 window.handleQuickAction = handleQuickAction;
 window.handleHomeCta = handleHomeCta;
