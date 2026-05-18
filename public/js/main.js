@@ -3710,7 +3710,7 @@ function getAbilityTrend() {
                     resolve(vocabData);
                     return;
                 }
-                var vocabFile = '/cet' + (IS_CET6 ? '6' : '4') + '_vocab.json';
+                var vocabFile = '/public/cet' + (IS_CET6 ? '6' : '4') + '_vocab.json';
                 fetch(vocabFile + '?v=' + Date.now())
                     .then(function(response) { return response.json(); })
                     .then(function(data) {
