@@ -1418,6 +1418,9 @@ function initApp() {
             html += '<button class="action-btn master-btn" onclick="event.stopPropagation(); markAsMastered(\'' + q.id + '\')">';
             html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>';
             html += '已掌握</button>';
+            html += '<button class="wrong-redo-btn" onclick="event.stopPropagation(); startRedo(\'' + q.id + '\')">';
+            html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>';
+            html += '重做</button>';
             html += '</div>';
             html += '</div>';
             html += '</div>';
@@ -1444,7 +1447,163 @@ function toggleWrongDetail(card) {
             }
         }
         
-        function explainWithAI(id) {
+        
+
+        // ===== 错题重做功能 =====
+        var redoState = {
+            questionId: null,
+            question: null,
+            mode: false
+        };
+        
+        // 开始重做某道错题
+        function startRedo(questionId) {
+            var questions = getWrongQuestions();
+            var q = questions.find(function(item) { return item.id === questionId; });
+            if (!q) return;
+            
+            redoState = {
+                questionId: questionId,
+                question: q,
+                mode: true
+            };
+            
+            showRedoQuiz(q);
+        }
+        
+        // 显示重做界面
+        function showRedoQuiz(q) {
+            var options = ['A', 'B', 'C', 'D'].map(function(key) {
+                return {
+                    key: key,
+                    val: q['option' + key]
+                };
+            }).filter(function(opt) { return opt.val; });
+            
+            var html = '<div class="quiz-page" id="quiz-page" style="display:block">';
+            html += '<div class="quiz-header">';
+            html += '<button class="quiz-back" onclick="closeRedoQuiz()">';
+            html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>';
+            html += '</button>';
+            html += '<div class="quiz-header-title">错题重做</div>';
+            html += '<div class="quiz-header-spacer"></div>';
+            html += '</div>';
+            
+            html += '<div class="quiz-content">';
+            html += '<div class="quiz-type-tag">' + (q.type || '阅读') + '</div>';
+            html += '<div class="quiz-question">' + escapeHtml(q.question || '') + '</div>';
+            html += '<div class="quiz-options">';
+            
+            options.forEach(function(opt) {
+                html += '<div class="quiz-option" onclick="selectRedoOption(\'' + opt.key + '\')" id="redo-opt-' + opt.key + '">';
+                html += '<span class="option-letter">' + opt.key + '</span>';
+                html += '<span class="option-text">' + escapeHtml(opt.val) + '</span>';
+                html += '</div>';
+            });
+            
+            html += '</div>';
+            html += '</div>';
+            
+            html += '<div class="quiz-footer">';
+            html += '<div class="quiz-hint">选择正确答案</div>';
+            html += '</div>';
+            
+            html += '<div class="quiz-result" id="quiz-result" style="display:none"></div>';
+            html += '</div>';
+            
+            // 关闭其他弹窗，显示重做界面
+            closeAllModals();
+            var quizPage = document.getElementById('quiz-page') || document.createElement('div');
+            quizPage.innerHTML = html;
+            quizPage.id = 'quiz-page';
+            quizPage.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:#fff;z-index:1000;overflow-y:auto';
+            document.body.appendChild(quizPage);
+            
+            // 隐藏底部导航
+            var nav = document.querySelector('.bottom-nav');
+            if (nav) nav.style.display = 'none';
+        }
+        
+        // 选择重做选项
+        function selectRedoOption(selectedKey) {
+            if (!redoState.question) return;
+            var q = redoState.question;
+            var correctAnswer = q.answer;
+            var isCorrect = selectedKey === correctAnswer;
+            
+            // 禁用所有选项
+            ['A', 'B', 'C', 'D'].forEach(function(key) {
+                var optEl = document.getElementById('redo-opt-' + key);
+                if (optEl) {
+                    optEl.style.pointerEvents = 'none';
+                    if (key === correctAnswer) {
+                        optEl.classList.add('correct');
+                    } else if (key === selectedKey && !isCorrect) {
+                        optEl.classList.add('wrong');
+                    }
+                }
+            });
+            
+            // 显示结果
+            var resultDiv = document.getElementById('quiz-result');
+            if (resultDiv) {
+                resultDiv.style.display = 'block';
+                
+                if (isCorrect) {
+                    // 答对了：从待复习列表移除，更新复习间隔
+                    resultDiv.innerHTML = '<div class="quiz-result-correct">✅ 回答正确！</div>';
+                    resultDiv.innerHTML += '<div class="quiz-result-tip" style="margin-top:12px">这道错题已从复习列表移除</div>';
+                    resultDiv.innerHTML += '<button class="quiz-continue-btn" onclick="closeRedoQuiz(); renderWrongBook();">完成</button>';
+                    
+                    // 更新错题复习状态
+                    var questions = getWrongQuestions();
+                    var idx = questions.findIndex(function(item) { return item.id === q.id; });
+                    if (idx !== -1) {
+                        questions[idx].reviewedAt = new Date().toISOString();
+                        questions[idx].reviewCount = (questions[idx].reviewCount || 0) + 1;
+                        safeSetItem('cet_wrong_questions', questions);
+                    }
+                } else {
+                    // 答错了：重置复习间隔
+                    resultDiv.innerHTML = '<div class="quiz-result-wrong">❌ 回答错误</div>';
+                    resultDiv.innerHTML += '<div class="quiz-result-tip">正确答案是 ' + correctAnswer + '：' + escapeHtml(q['option' + correctAnswer] || '') + '</div>';
+                    resultDiv.innerHTML += '<div class="quiz-result-tip" style="margin-top:12px">复习间隔已重置为1天</div>';
+                    resultDiv.innerHTML += '<button class="quiz-continue-btn" onclick="closeRedoQuiz(); renderWrongBook();">完成</button>';
+                    
+                    // 重置复习间隔
+                    var questions = getWrongQuestions();
+                    var idx = questions.findIndex(function(item) { return item.id === q.id; });
+                    if (idx !== -1) {
+                        questions[idx].reviewedAt = new Date().toISOString();
+                        questions[idx].reviewCount = 0; // 重置为1天间隔
+                        safeSetItem('cet_wrong_questions', questions);
+                    }
+                }
+                
+                // 显示解析
+                resultDiv.innerHTML += '<div class="quiz-explanation" style="margin-top:16px;padding:12px;background:#f8f9fa;border-radius:8px;">';
+                resultDiv.innerHTML += '<div style="font-weight:600;margin-bottom:8px;">解析</div>';
+                resultDiv.innerHTML += '<div>' + escapeHtml(q.explanation || '暂无解析') + '</div>';
+                resultDiv.innerHTML += '</div>';
+            }
+        }
+        
+        // 关闭重做界面
+        function closeRedoQuiz() {
+            var quizPage = document.getElementById('quiz-page');
+            if (quizPage) {
+                quizPage.remove();
+            }
+            redoState = {
+                questionId: null,
+                question: null,
+                mode: false
+            };
+            // 恢复底部导航
+            var nav = document.querySelector('.bottom-nav');
+            if (nav) nav.style.display = '';
+        }
+function explainWithAI(id) {
             var questions = getWrongQuestions();
             var q = questions.find(function(item) { return item.id === id; });
             if (!q) return;
@@ -1582,6 +1741,48 @@ function toggleWrongDetail(card) {
             html += '<div class="dashboard-hero-divider"></div>';
 
             html += '</div>';
+            
+            // ===== 训练建议区域（基于能力维度分析）=====
+            if (hasDimData && weakDims.length > 0) {
+                html += '<div class="dashboard-training-tips">';
+                html += '<div class="dashboard-training-tips-title">';
+                html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M12 2c.5 4-2 7-4 9.5C6 14 5.5 16 6 18c.7 3 3.5 4 6 4s5.3-1 6-4c.5-2 0-4-2-6.5C14 9 11.5 6 12 2z"/></svg>';
+                html += '个性化训练建议';
+                html += '</div>';
+                
+                // 只显示最弱的2个维度
+                var tipDims = weakDims.slice(0, 2);
+                var tipAdvices = {
+                    '细节定位': { tip: '细节定位较弱，建议每天做2组限时阅读，重点练定位题', action: 'openTimedReading()', actionText: '练阅读' },
+                    '推理判断': { tip: '推理判断较弱，建议每天做2组阅读，重点练推理题', action: 'openTimedReading()', actionText: '练阅读' },
+                    '同义替换': { tip: '同义替换一般，建议积累同义替换词组，多做真题', action: "sendSuggestion('给我一些同义替换的练习')", actionText: '同义替换' },
+                    '主旨归纳': { tip: '主旨归纳较弱，建议每天练1篇阅读，练习概括文章大意', action: 'openTimedReading()', actionText: '练阅读' },
+                    '态度判断': { tip: '态度判断较弱，建议每天练1组阅读，关注作者态度词', action: 'openTimedReading()', actionText: '练阅读' },
+                    '听力': { tip: '听力较弱，建议每天听一段四级听力材料', action: "sendSuggestion('陪我练四级听力')", actionText: '练听力' }
+                };
+                
+                tipDims.forEach(function(dim) {
+                    var advice = tipAdvices[dim] || { tip: dim + '较弱，需要针对性练习', action: 'openDailyTask()', actionText: '练习' };
+                    html += '<div class="dashboard-training-tip-item">';
+                    html += '<div class="dashboard-tip-text"><span class="dashboard-tip-dim">' + dim + '</span> ' + advice.tip + '</div>';
+                    html += '<button class="dashboard-tip-action" onclick="' + advice.action + '">' + advice.actionText + '</button>';
+                    html += '</div>';
+                });
+                
+                html += '</div>';
+            } else if (!hasDimData) {
+                // 没有诊断数据，显示引导
+                html += '<div class="dashboard-training-tips">';
+                html += '<div class="dashboard-training-tips-title">';
+                html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M12 2c.5 4-2 7-4 9.5C6 14 5.5 16 6 18c.7 3 3.5 4 6 4s5.3-1 6-4c.5-2 0-4-2-6.5C14 9 11.5 6 12 2z"/></svg>';
+                html += '个性化训练建议';
+                html += '</div>';
+                html += '<div class="dashboard-training-tip-item">';
+                html += '<div class="dashboard-tip-text">完成诊断后，系统会根据你的薄弱点给出针对性训练建议</div>';
+                html += '<button class="dashboard-tip-action" onclick="sendSuggestion(\'我想做一个AI诊断，帮我分析四级薄弱点\')">开始诊断</button>';
+                html += '</div>';
+                html += '</div>';
+            }
             
             // ===== 概览卡片 - 2大+2小布局 =====
             html += '<div class="dashboard-overview">';
@@ -3315,15 +3516,189 @@ function toggleWrongDetail(card) {
             if (calStreakNum) calStreakNum.textContent = streak.count;
         }
 
-        function updateHomeStatus() {
+        
+        // ===== 教练大脑 - 智能训练建议 =====
+        // 返回值: { show: bool, title: string, sub: string, action: string, actionText: string, goto: string }
+        function getCoachAdvice() {
+            var data = state.userData || {};
+            var examDate = new Date('2026-06-13');
+            var now = new Date();
+            var diffDays = Math.ceil((examDate - now) / (1000 * 60 * 60 * 24));
+            
+            // 获取能力分数
+            var abilityScores = getAbilityScores();
+            var dims = abilityScores && abilityScores.dims ? abilityScores.dims : {};
+            
+            // 计算阅读相关维度平均分（细节定位+推理判断+同义替换+主旨归纳）
+            var readingAvg = 0;
+            var readingDims = ['细节定位', '推理判断', '同义替换', '主旨归纳'];
+            var readingDimCount = 0;
+            readingDims.forEach(function(dim) {
+                if (dims[dim] !== undefined) {
+                    readingAvg += dims[dim];
+                    readingDimCount++;
+                }
+            });
+            if (readingDimCount > 0) readingAvg = Math.round(readingAvg / readingDimCount);
+            
+            // 判断是否做过诊断
+            var hasDiag = data.personality || (data.diagnosis && data.diagnosis.type);
+            
+            // 获取待复习错题数
+            var overdueCount = typeof getOverdueReviewCount === 'function' ? getOverdueReviewCount() : 0;
+            
+            // 获取听力分数
+            var listeningScore = dims['听力'] || 0;
+            var isWeakListening = listeningScore > 0 && listeningScore < 50;
+            
+            // 优先级判断
+            var examLabel = '四级';
+            try { var userData = safeGetItem('cet_user', {}); if (userData.isCet6) examLabel = '六级'; } catch(e) {}
+            
+            // 1. 没做过诊断
+            if (!hasDiag) {
+                return {
+                    show: true,
+                    title: '3分钟看看你哪里弱',
+                    sub: '找到' + examLabel + '备考的突破口',
+                    action: "sendSuggestion('我想做一个AI诊断，帮我分析" + examLabel + "薄弱点')",
+                    actionText: '开始诊断',
+                    goto: 'diagnosis'
+                };
+            }
+            
+            // 2. 有待复习错题
+            if (overdueCount > 0) {
+                return {
+                    show: true,
+                    title: '你有' + overdueCount + '道错题到复习时间了',
+                    sub: '艾宾浩斯记忆法，科学巩固薄弱点',
+                    action: 'showWrongBook()',
+                    actionText: '去复习',
+                    goto: 'wrongbook'
+                };
+            }
+            
+            // 3. 距考试<7天 - 考前冲刺
+            if (diffDays < 7 && diffDays > 0) {
+                return {
+                    show: true,
+                    title: '考前冲刺！做一套限时训练',
+                    sub: '模拟真实考试环境，提升应试能力',
+                    action: 'openTimedPractice()',
+                    actionText: '开始',
+                    goto: 'timed'
+                };
+            }
+            
+            // 4. 距考试<30天 + 阅读正确率<60%
+            if (diffDays < 30 && diffDays > 0 && readingAvg > 0 && readingAvg < 60) {
+                return {
+                    show: true,
+                    title: '今天练限时阅读 ⚡ 正确率才' + readingAvg + '%',
+                    sub: '阅读是你的薄弱项，需要重点突破',
+                    action: 'openTimedReading()',
+                    actionText: '开始训练',
+                    goto: 'reading'
+                };
+            }
+            
+            // 5. 距考试<30天 + 听力弱
+            if (diffDays < 30 && diffDays > 0 && isWeakListening) {
+                return {
+                    show: true,
+                    title: '今天练听力 ⚡',
+                    sub: '听力较弱，需要加强练习',
+                    action: "sendSuggestion('陪我练" + examLabel + "听力')",
+                    actionText: '听力训练',
+                    goto: 'listening'
+                };
+            }
+            
+            // 6. 距考试>=30天
+            if (diffDays >= 30) {
+                return {
+                    show: true,
+                    title: '先做诊断，了解你的薄弱点',
+                    sub: examLabel + '备考是个系统工程',
+                    action: "sendSuggestion('我想做一个AI诊断，帮我分析" + examLabel + "薄弱点')",
+                    actionText: '开始诊断',
+                    goto: 'diagnosis'
+                };
+            }
+            
+            // 7. 默认
+            return {
+                show: true,
+                title: '今天练一练',
+                sub: '保持手感，持续进步',
+                action: 'openDailyTask()',
+                actionText: '开始练习',
+                goto: 'practice'
+            };
+        }
+        
+        // 处理教练引导卡片点击
+        function handleCoachGuideClick() {
+            var advice = getCoachAdvice();
+            if (advice && advice.goto) {
+                switch(advice.goto) {
+                    case 'diagnosis':
+                        // 跳转到诊断页并触发诊断
+                        switchTab('diagnosis');
+                        setTimeout(function(){ sendSuggestion('我想做一个AI诊断，帮我分析四级薄弱点'); }, 300);
+                        break;
+                    case 'wrongbook':
+                        showWrongBook();
+                        break;
+                    case 'timed':
+                        openTimedPractice();
+                        break;
+                    case 'reading':
+                        openTimedReading();
+                        break;
+                    case 'listening':
+                        switchTab('chat');
+                        sendSuggestion('陪我练四级听力');
+                        break;
+                    case 'practice':
+                    default:
+                        openDailyTask();
+                        break;
+                }
+            }
+        }
+        
+function updateHomeStatus() {
             var data = state.userData || {};
             var homeCountdown = document.getElementById('home-countdown');
+            var examDate = new Date('2026-06-13');
+            var now = new Date();
+            var diff = Math.ceil((examDate - now) / (1000*60*60*24));
+            
             if (homeCountdown) {
-                var examDate = new Date('2026-06-13');
-                var now = new Date();
-                var diff = Math.ceil((examDate - now) / (1000*60*60*24));
                 homeCountdown.textContent = '距考试' + diff + '天';
             }
+            
+            // 更新教练引导卡片
+            var coachCard = document.getElementById('coach-guide-card');
+            var coachTitle = document.getElementById('coach-guide-title');
+            var coachSub = document.getElementById('coach-guide-sub');
+            var coachBtn = document.getElementById('coach-guide-btn');
+            var coachBtnText = document.getElementById('coach-guide-btn-text');
+            
+            if (coachCard && coachTitle && coachSub && coachBtnText) {
+                var advice = getCoachAdvice();
+                if (advice && advice.show) {
+                    coachCard.style.display = 'flex';
+                    coachTitle.textContent = advice.title;
+                    coachSub.textContent = advice.sub;
+                    coachBtnText.textContent = advice.actionText;
+                } else {
+                    coachCard.style.display = 'none';
+                }
+            }
+            
             var streakEl = document.getElementById('home-streak');
             var streak = getStreakData();
             if (streakEl) streakEl.textContent = streak.count > 0 ? '🔥' + streak.count : '打卡';
