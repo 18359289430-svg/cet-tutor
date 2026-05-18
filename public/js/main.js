@@ -3988,6 +3988,13 @@ function getAbilityTrend() {
                 streak.lastDate = today;
                 streak.todayChecked = true;
             }
+            // 记录打卡日期列表
+            if (!streak.checkedDates) streak.checkedDates = [];
+            if (streak.checkedDates.indexOf(today) === -1) {
+                streak.checkedDates.push(today);
+                // 只保留最近30天
+                if (streak.checkedDates.length > 30) streak.checkedDates = streak.checkedDates.slice(-30);
+            }
             saveStreakData(streak);
             var data = state.userData || {};
             var lastStudyDay = data.lastStudyDay || '';
@@ -4023,8 +4030,8 @@ function getAbilityTrend() {
                 var dateStr = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
                 var isToday = (i === 0);
                 var isChecked = false;
-                if (streak.lastDate === dateStr) isChecked = true;
-                if (streak.count > 0 && i > 0 && i <= streak.count) isChecked = true;
+                // 使用打卡日期列表判断
+                if (streak.checkedDates && streak.checkedDates.indexOf(dateStr) !== -1) isChecked = true;
                 if (isToday && streak.todayChecked) isChecked = true;
                 var cls = 'streak-day';
                 if (isToday) cls += ' today';
@@ -4039,6 +4046,11 @@ function getAbilityTrend() {
             container.innerHTML = html;
             var calStreakNum = document.getElementById('cal-streak-num');
             if (calStreakNum) calStreakNum.textContent = streak.count;
+            // 同步首页右上角和底部栏的streak数字
+            var streakNum = document.getElementById('streak-num');
+            if (streakNum) streakNum.textContent = streak.count;
+            var homeBarStreak = document.getElementById('home-bar-streak');
+            if (homeBarStreak) homeBarStreak.textContent = streak.count;
         }
 
         
