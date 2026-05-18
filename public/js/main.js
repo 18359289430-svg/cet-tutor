@@ -474,7 +474,6 @@ function getProgressHint(summary) {
 
             // Hero区域 - 和数据页一致
             html += '<div class="diag-hero">';
-            html += '<div class="diag-hero-title">诊断记录</div>';
             html += '<div class="diag-hero-sub">追踪学习进度，见证每一次进步</div>';
             html += '<div class="diag-hero-divider"></div>';
             html += '</div>';
@@ -1424,7 +1423,6 @@ function initApp() {
             
             // Hero区域 - 和数据页一致
             html += '<div class="wrongbook-hero">';
-            html += '<h2>错题本</h2>';
             html += '<div class="wrongbook-hero-sub">记录每一次失误，让进步更有方向</div>';
             html += '<div class="wrongbook-hero-divider"></div>';
             html += '</div>';
