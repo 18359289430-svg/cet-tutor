@@ -11581,6 +11581,50 @@ function closeDailyTaskModal() {
     if (modal) modal.classList.remove('show');
 }
 
+// 点击遮罩层关闭 + 下滑关闭
+(function() {
+    var modal = document.getElementById('daily-task-modal');
+    if (!modal) return;
+    // 点击遮罩关闭
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) closeDailyTaskModal();
+    });
+    // 下滑关闭
+    var sheet = modal.querySelector('.modal-sheet');
+    if (!sheet) return;
+    var startY = 0, currentY = 0, isDragging = false;
+    sheet.addEventListener('touchstart', function(e) {
+        // 只在顶部handle区域触发
+        var rect = sheet.getBoundingClientRect();
+        if (e.touches[0].clientY - rect.top < 50) {
+            startY = e.touches[0].clientY;
+            isDragging = true;
+        }
+    }, {passive: true});
+    sheet.addEventListener('touchmove', function(e) {
+        if (!isDragging) return;
+        currentY = e.touches[0].clientY;
+        var diff = currentY - startY;
+        if (diff > 0) {
+            sheet.style.transform = 'translateY(' + diff + 'px)';
+            sheet.style.transition = 'none';
+        }
+    }, {passive: true});
+    sheet.addEventListener('touchend', function() {
+        if (!isDragging) return;
+        isDragging = false;
+        sheet.style.transition = 'transform 0.3s ease';
+        var diff = currentY - startY;
+        if (diff > 80) {
+            closeDailyTaskModal();
+            setTimeout(function() { sheet.style.transform = ''; }, 300);
+        } else {
+            sheet.style.transform = '';
+        }
+        startY = 0; currentY = 0;
+    });
+})();
+
 // 渲染每日任务Modal内容
 function renderDailyTaskModal() {
     var questionsEl = document.getElementById('daily-task-questions');
