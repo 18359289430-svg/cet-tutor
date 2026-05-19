@@ -1767,424 +1767,224 @@ function explainWithAI(id) {
             showToast('已从错题本移除');
         }
 
+
+        // ===== 渲染数据页面 - 5个板块精简版 =====
         function renderDashboard() {
             try {
-            var container = document.getElementById('dashboard-content');
-            if (!container) return;
-            
-            var userData = state.userData || {};
-            var streak = getStreakData();
-            var practiceHistory = getPracticeHistory();
-            var abilityScores = getAbilityScores();
-            var userProfile = getUserProfile() || {};
-            
-            // 计算今日练习题数
-            var today = getTodayStr();
-            var todayCount = 0;
-            if (practiceHistory && practiceHistory.length) {
-                practiceHistory.forEach(function(item) {
-                    if (item.date === today) todayCount += (item.count || 1);
-                });
-            }
-            
-            // 计算累计练习和正确率
-            var totalPractice = 0;
-            var totalCorrect = 0;
-            if (practiceHistory && practiceHistory.length) {
-                practiceHistory.forEach(function(item) {
-                    totalPractice += (item.count || 1);
-                    totalCorrect += (item.correct || 0);
-                });
-            }
-            var accuracy = totalPractice > 0 ? Math.round((totalCorrect / totalPractice) * 100) : 0;
-            
-            // 计算距考试天数
-            var examDate = new Date('2026-06-13');
-            var now = new Date();
-            var daysToExam = Math.max(0, Math.ceil((examDate - now) / (1000 * 60 * 60 * 24)));
-            
-            // 计算冲刺计划进度（绑定实际完成度）
-            var sprintProgress = getSprintPlanProgress();
-            var planDays = sprintProgress.totalDays;
-            var planProgress = sprintProgress.progress;
-            var currentDay = sprintProgress.currentDay;
-            
-            // 获取五维分数
-            var dims = abilityScores && abilityScores.dims ? abilityScores.dims : {};
-            var hasDimData = Object.keys(dims).length > 0;
-            
-            // 计算综合水平
-            var estimatedScore = 0;
-            if (hasDimData) {
-                var weights = {
-                    '细节定位': 0.25,
-                    '推理判断': 0.25,
-                    '同义替换': 0.2,
-                    '主旨归纳': 0.15,
-                    '态度判断': 0.15
-                };
-                var weightedSum = 0;
-                var weightSum = 0;
-                Object.keys(weights).forEach(function(key) {
-                    if (dims[key]) {
-                        weightedSum += dims[key] * weights[key];
-                        weightSum += weights[key];
-                    }
-                });
-                if (weightSum > 0) {
-                    estimatedScore = Math.round((weightedSum / weightSum) * 7.1);
-                    estimatedScore = Math.max(425, Math.min(710, estimatedScore));
+                var container = document.getElementById('dashboard-content');
+                if (!container) return;
+                
+                var html = '';
+                
+                // ===== 变量准备 =====
+                var userData = safeGetItem('cet_user', {});
+                var streak = getStreak();
+                var todayCount = getTodayPracticeCount();
+                var accuracy = getAccuracy();
+                var totalPractice = getTotalPractice();
+                var sprintPlan = getSprintPlan();
+                var planDays = getPlanDuration();
+                var currentDay = sprintPlan && sprintPlan.startDay ? Math.ceil((Date.now() - new Date(sprintPlan.startDay).getTime()) / (1000 * 60 * 60 * 24)) : 1;
+                currentDay = Math.max(1, Math.min(currentDay, planDays));
+                var planProgress = Math.round((currentDay / planDays) * 100);
+                var daysToExam = getPlanDuration();
+                
+                // 诊断数据
+                var abilityData = getAbilityScores();
+                var hasDimData = abilityData && abilityData.dims && Object.keys(abilityData.dims).length > 0;
+                var dims = hasDimData ? abilityData.dims : {};
+                var estimatedScore = hasDimData ? calculateScore(dims) : 0;
+                var weakDims = hasDimData ? getWeakDims(dims) : [];
+                var heatmapData = getHeatmapData();
+                var abilityTrend = getAbilityTrend();
+                
+                // ===== 第1个板块: 学习进度 Hero =====
+                html += '<div class="dashboard-hero glass-card">';
+                html += '<div class="dashboard-hero-header">';
+                html += '<div class="dashboard-hero-title">' + icons.flame + '学习进度</div>';
+                html += '<div class="dashboard-hero-subtitle">距考试 ' + daysToExam + ' 天 · 冲刺备考</div>';
+                html += '</div>';
+                // 环形进度条
+                var circumference = 2 * Math.PI * 42;
+                var offset = circumference - (planProgress / 100) * circumference;
+                html += '<div class="dashboard-hero-circle-wrap">';
+                html += '<div class="dashboard-hero-circle">';
+                html += '<svg viewBox="0 0 100 100">';
+                html += '<defs><linearGradient id="planGradient" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#6C5CE7"/><stop offset="100%" stop-color="#A29BFE"/></linearGradient></defs>';
+                html += '<circle class="dashboard-plan-circle-bg" cx="50" cy="50" r="42"/>';
+                html += '<circle class="dashboard-plan-circle-progress" cx="50" cy="50" r="42" stroke-dasharray="' + circumference + '" stroke-dashoffset="' + offset + '"/>';
+                html += '</svg>';
+                html += '<div class="dashboard-hero-circle-text">';
+                html += '<div class="dashboard-hero-circle-day">' + planProgress + '%</div>';
+                html += '<div class="dashboard-hero-circle-label">完成度</div>';
+                html += '</div>';
+                html += '</div>';
+                html += '</div>';
+                html += '<div class="dashboard-hero-footer">';
+                html += '<span>第 ' + currentDay + ' 天 / ' + planDays + '天</span>';
+                html += '<span class="dashboard-plan-end">开始于 ' + formatDate((function(){ var p=getSprintPlan(); return p&&p.startDay?new Date(p.startDay):new Date(); })()) + '</span>';
+                html += '</div>';
+                html += '</div>';
+                
+                // ===== 第2个板块: 核心数据（4格卡片）=====
+                html += '<div class="dashboard-overview">';
+                // 大卡片1: 连续学习天数
+                html += '<div class="dashboard-overview-card large streak-card shimmer-card">';
+                html += '<div class="overview-icon" style="background:rgba(255,255,255,0.2)">' + icons.flame + '</div>';
+                html += '<div class="overview-num">' + streak.count + '</div>';
+                html += '<div class="overview-label">连续学习天数</div>';
+                html += '</div>';
+                // 大卡片2: 预估分数
+                html += '<div class="dashboard-overview-card large score-card shimmer-card">';
+                html += '<div class="overview-icon" style="background:rgba(255,255,255,0.2)">' + icons.target + '</div>';
+                if (hasDimData) {
+                    var passLine = 425;
+                    var diff = passLine - estimatedScore;
+                    html += '<div class="overview-num">' + estimatedScore + '分</div>';
+                    html += '<div class="overview-label score-label">';
+                    html += '<span class="pass-line">及格线' + passLine + '分</span>';
+                    html += '<span class="diff ' + (diff > 0 ? 'diff-warning' : 'diff-pass') + '">' + (diff > 0 ? '还差' + diff + '分' : '已过线✓') + '</span>';
+                    html += '</div>';
+                } else {
+                    html += '<div class="overview-num">--</div>';
+                    html += '<div class="overview-label">预估分数<span class="overview-label-hint">完成诊断后解锁</span></div>';
                 }
-            }
-            
-            // 生成热力图数据
-            var heatmapData = getHeatmapData();
-            
-            // 找到薄弱项
-            var weakDims = [];
-            if (hasDimData) {
-                var sortedDims = Object.keys(dims).sort(function(a, b) {
-                    return (dims[a] || 100) - (dims[b] || 100);
-                });
-                weakDims = sortedDims.slice(0, 2);
-            }
-            
-            // SVG图标定义
-            var icons = {
-                chart: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 21H3V3"/><path d="M21 9l-6 6-4-4-6 6"/></svg>',
-                flame: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z"/></svg>',
-                target: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>',
-                alert: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
-                calendar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>',
-                trending: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>',
-                list: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>',
-                stats: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>',
-                search: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>',
-                pencil: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 114 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>',
-                book: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>',
-                check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
-                arrow: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>'
-            };
-            
-            var html = '';
-            
-            // 添加渐变光晕背景
-            html += '<div class="dashboard-glow"></div>';
-            html += '<div class="dashboard-glow-2"></div>'; 
-            
-            // ===== Hero区域 - 优雅简洁 =====
-            html += '<div class="dashboard-hero">';
-            html += '<div class="dashboard-hero-title">学习进度</div>';
-            html += '<div class="dashboard-hero-sub">让你的进步看得见</div>';
-            html += '<div class="dashboard-hero-divider"></div>';
-
-            html += '</div>';
-            
-            // ===== 能力变化趋势 =====
-            var trend = getAbilityTrend();
-            if (trend) {
-                html += '<div class="dashboard-trend-section glass-card">';
-                html += '<div class="dashboard-trend-title">';
-                html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>';
-                html += '近7天能力变化</div>';
-                html += '<div class="dashboard-trend-list">';
+                html += '</div>';
+                // 小卡片1: 今日练习
+                html += '<div class="dashboard-overview-card small practice">';
+                html += '<div class="overview-icon" style="background:rgba(0,184,148,0.1)">' + icons.pencil + '</div>';
+                html += '<div class="overview-num">' + todayCount + '</div>';
+                html += '<div class="overview-label">今日练习</div>';
+                html += '</div>';
+                // 小卡片2: 正确率
+                html += '<div class="dashboard-overview-card small accuracy">';
+                html += '<div class="overview-icon" style="background:rgba(108,92,231,0.1)">' + icons.check + '</div>';
+                html += '<div class="overview-num">' + accuracy + '%</div>';
+                html += '<div class="overview-label">总正确率</div>';
+                html += '</div>';
+                html += '</div>';
                 
-                var dimColors = {
-                    '细节理解': '#6C5CE7',
-                    '推理判断': '#00B894',
-                    '同义替换': '#FDCB6E',
-                    '主旨归纳': '#E17055',
-                    '态度判断': '#74B9FF'
-                };
-                
-                for (var dim in trend) {
-                    var t = trend[dim];
-                    var color = dimColors[dim] || '#6C5CE7';
-                    var trendClass = t.trend === 'up' ? 'trend-up' : (t.trend === 'down' ? 'trend-down' : 'trend-stable');
-                    var diffText = t.diff > 0 ? '+' + t.diff : t.diff;
-                    
-                    html += '<div class="dashboard-trend-item">';
-                    html += '<div class="dashboard-trend-name" style="color:' + color + '">' + dim + '</div>';
-                    html += '<div class="dashboard-trend-value">' + t.current + '%</div>';
-                    html += '<div class="dashboard-trend-arrow ' + trendClass + '">' + t.arrow + '</div>';
-                    html += '<div class="dashboard-trend-diff ' + trendClass + '">' + diffText + '%</div>';
-                    html += '</div>';
+                // ===== 第3个板块: 五维能力分析（雷达图+趋势+薄弱项）=====
+                html += '<div class="dashboard-radar-section glass-card">';
+                html += '<div class="dashboard-radar-header">';
+                html += '<div class="dashboard-radar-title">' + icons.chart + '五维能力分析</div>';
+                if (weakDims.length > 0) {
+                    html += '<div class="dashboard-radar-tip">' + icons.alert + '最弱项: ' + weakDims[0] + '</div>';
                 }
-                
                 html += '</div>';
-                html += '</div>';
-            }
-            
-
-            // ===== 概览卡片 - 2大+2小布局 =====
-            html += '<div class="dashboard-overview">';
-            // 大卡片1: 连续学习天数
-            html += '<div class="dashboard-overview-card large streak-card shimmer-card">';
-            html += '<div class="overview-icon" style="background:rgba(255,255,255,0.2)">' + icons.flame + '</div>';
-            html += '<div class="overview-num">' + streak.count + '</div>';
-            html += '<div class="overview-label">连续学习天数</div>';
-            html += '</div>';
-            // 大卡片2: 综合水平
-            html += '<div class="dashboard-overview-card large score-card shimmer-card">';
-            html += '<div class="overview-icon" style="background:rgba(255,255,255,0.2)">' + icons.target + '</div>';
-            html += '<div class="overview-num">' + (hasDimData ? (estimatedScore >= 600 ? '掌握扎实' : estimatedScore >= 500 ? '较好掌握' : estimatedScore >= 425 ? '初步掌握' : '有待提高') : '--') + '</div>';
-            html += '<div class="overview-label">综合评估' + (hasDimData ? '' : '<span class="overview-label-hint">完成诊断后解锁</span>') + '</div>';
-            html += '</div>';
-            // 小卡片1: 今日练习
-            html += '<div class="dashboard-overview-card small practice">';
-            html += '<div class="overview-icon" style="background:rgba(0,184,148,0.1)">' + icons.pencil + '</div>';
-            html += '<div class="overview-num">' + todayCount + '</div>';
-            html += '<div class="overview-label">今日练习</div>';
-            html += '</div>';
-            // 小卡片2: 正确率
-            html += '<div class="dashboard-overview-card small accuracy">';
-            html += '<div class="overview-icon" style="background:rgba(108,92,231,0.1)">' + icons.check + '</div>';
-            html += '<div class="overview-num">' + accuracy + '%</div>';
-            html += '<div class="overview-label">总正确率</div>';
-            html += '</div>';
-            html += '</div>';
-            
-            // ===== 五维能力雷达图区域 =====
-            html += '<div class="dashboard-radar-section glass-card">';
-            html += '<div class="dashboard-radar-header">';
-            html += '<div class="dashboard-radar-title">' + icons.chart + '五维能力分析</div>';
-            if (weakDims.length > 0) {
-                html += '<div class="dashboard-radar-tip">' + icons.alert + '最弱项: ' + weakDims[0] + '</div>';
-            }
-            html += '</div>';
-            if (hasDimData) {
-                html += '<div class="dashboard-radar-canvas-wrap">';
-                html += '<canvas id="dashboard-radar-canvas" width="260" height="260"></canvas>';
-                html += '</div>';
-                // 维度标签
-                html += '<div class="dashboard-radar-dims">';
-                var dimNames = ['细节定位', '推理判断', '同义替换', '主旨归纳', '态度判断'];
-                dimNames.forEach(function(dim) {
-                    var score = dims[dim] || 0;
-                    var isWeak = weakDims.indexOf(dim) !== -1;
-                    html += '<div class="dashboard-radar-dim-tag' + (isWeak ? ' weak' : '') + '">';
-                    html += '<span class="dashboard-radar-dim-name">' + dim + '</span>';
-                    html += '<span class="dashboard-radar-dim-score">' + score + '</span>';
+                if (hasDimData) {
+                    html += '<div class="dashboard-radar-canvas-wrap">';
+                    html += '<canvas id="dashboard-radar-canvas" width="260" height="260"></canvas>';
                     html += '</div>';
-                });
-                html += '</div>';
-            } else {
-                html += '<div class="dashboard-radar-empty">';
-                html += '<div class="dashboard-radar-empty-icon">' + icons.search + '</div>';
-                html += '<div class="dashboard-radar-empty-text">完成首次诊断后解锁<br>AI将分析你的五维能力</div>';
-                html += '</div>';
-            }
-            html += '</div>';
-            
-            // ===== 30天计划进度 - 环形进度条 =====
-            html += '<div class="dashboard-plan-section glass-card">';
-            html += '<div class="dashboard-plan-header">';
-            html += '<div class="dashboard-plan-title">' + icons.calendar + planDays + '天冲刺计划</div>';
-            html += '<div class="dashboard-plan-day">第 ' + currentDay + ' 天 / ' + planDays + '天</div>';
-            html += '</div>';
-            // SVG环形进度
-            var circumference = 2 * Math.PI * 42;
-            var offset = circumference - (planProgress / 100) * circumference;
-            html += '<div class="dashboard-plan-circle-wrap">';
-            html += '<div class="dashboard-plan-circle">';
-            html += '<svg viewBox="0 0 100 100">';
-            html += '<defs><linearGradient id="planGradient" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#6C5CE7"/><stop offset="100%" stop-color="#A29BFE"/></linearGradient></defs>';
-            html += '<circle class="dashboard-plan-circle-bg" cx="50" cy="50" r="42"/>';
-            html += '<circle class="dashboard-plan-circle-progress" cx="50" cy="50" r="42" stroke-dasharray="' + circumference + '" stroke-dashoffset="' + offset + '"/>';
-            html += '</svg>';
-            html += '<div class="dashboard-plan-circle-text">';
-            html += '<div class="dashboard-plan-circle-day">' + planProgress + '%</div>';
-            html += '<div class="dashboard-plan-circle-label">完成度</div>';
-            html += '</div>';
-            html += '</div>';
-            html += '</div>';
-            html += '<div class="dashboard-plan-footer">';
-            html += '<span>开始于 ' + formatDate((function(){ var p=getSprintPlan(); return p&&p.startDay?new Date(p.startDay):new Date(); })()) + '</span>';
-            html += '<span class="dashboard-plan-end">距考试 ' + daysToExam + ' 天</span>';
-            html += '</div>';
-            html += '</div>';
-            
-            // ===== 近7天热力图 =====
-            html += '<div class="dashboard-heatmap-section glass-card">';
-            html += '<div class="dashboard-heatmap-title">' + icons.trending + '近7天练习热力图</div>';
-            html += '<div class="dashboard-heatmap-grid">';
-            var dayLabels = ['一', '二', '三', '四', '五', '六', '日'];
-            var hasHeatmapData = false;
-            for (var i = 0; i < 7; i++) {
-                var dayData = heatmapData[i] || { count: 0, label: '' };
-                if (dayData.count > 0) hasHeatmapData = true;
-                var level = dayData.count === 0 ? '' : (dayData.count <= 3 ? 'level-1' : (dayData.count <= 7 ? 'level-2' : (dayData.count <= 12 ? 'level-3' : 'level-4')));
-                html += '<div class="dashboard-heatmap-cell ' + level + '">';
-                html += '<div class="dashboard-heatmap-tooltip">' + dayData.label + '<br>' + dayData.count + ' 题</div>';
-                html += '</div>';
-            }
-            html += '</div>';
-            html += '<div class="dashboard-heatmap-labels">';
-            for (var j = 0; j < 7; j++) {
-                html += '<div class="dashboard-heatmap-label">' + dayLabels[j] + '</div>';
-            }
-            html += '</div>';
-            // 全0时显示提示
-            if (!hasHeatmapData) {
-                html += '<div class="dashboard-heatmap-empty-tip">开始练习后记录你的学习轨迹</div>';
-            }
-            html += '</div>';
-            
-            // ===== 薄弱项卡片 - 左侧彩色竖条 =====
-            if (weakDims.length > 0) {
-                html += '<div class="dashboard-weak-section">';
-                html += '<div class="dashboard-section-title">' + icons.alert + '薄弱项专项提升</div>';
-                weakDims.forEach(function(dim) {
-                    var config = DIM_CONFIGS[dim] || {};
-                    var score = dims[dim] || 0;
-                    var actionText = getWeakActionText(dim, score);
-                    html += '<div class="dashboard-weak-card" onclick="doCheckIn()">';
-                    html += '<div class="dashboard-weak-icon">';
-                    html += '<svg viewBox="0 0 24 24" fill="none" stroke="' + (config.color || '#6C5CE7') + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>';
-                    html += '</div>';
-                    html += '<div class="dashboard-weak-info">';
-                    html += '<div class="dashboard-weak-name">' + dim + '</div>';
-                    html += '<div class="dashboard-weak-score">当前水平: ' + score + '%</div>';
-                    html += '<div class="dashboard-weak-bar"><div class="dashboard-weak-bar-fill" style="width:' + score + '%"></div></div>';
-                    html += '<div class="dashboard-weak-action">' + actionText + '</div>';
-                    html += '</div>';
-                    html += '<div class="dashboard-weak-arrow">' + icons.arrow + '</div>';
-                    html += '</div>';
-                });
-                html += '</div>';
-            }
-            
-            // ===== 综合水平卡 - 深色高亮 =====
-            if (hasDimData) {
-                var targetScore = 500;
-                var diff = targetScore - estimatedScore;
-                var scorePercent = Math.round((estimatedScore / 710) * 100);
-                html += '<div class="dashboard-score-section">';
-                html += '<div class="dashboard-score-header">';
-                html += '<div class="dashboard-score-title">' + icons.target + '综合评估</div>';
-                html += '<div class="dashboard-score-target">继续努力，稳步提升</div>';
-                html += '</div>';
-                html += '<div class="dashboard-score-main">';
-                html += '<span class="dashboard-score-num">' + (estimatedScore >= 600 ? '掌握扎实' : estimatedScore >= 500 ? '较好掌握' : estimatedScore >= 425 ? '初步掌握' : '有待提高') + '</span>';
-                html += '<span class="dashboard-score-unit"></span>';
-                html += '</div>';
-                html += '<div class="dashboard-score-bar">';
-                html += '<div class="dashboard-score-bar-fill" style="width:' + Math.min(100, scorePercent) + '%"></div>';
-                html += '</div>';
-                html += '<div class="dashboard-score-footer">';
-                html += '<span>诊断评估参考</span>';
-                html += '</div>';
-                html += '</div>';
-            }
-            
-            // ===== 学习记录统计 =====
-            html += '<div class="dashboard-stats-section glass-card">';
-            html += '<div class="dashboard-stats-title">' + icons.stats + '学习数据统计</div>';
-            html += '<div class="dashboard-stats-grid">';
-            html += '<div class="dashboard-stat-item">';
-            html += '<div class="dashboard-stat-num">' + streak.count + '</div>';
-            html += '<div class="dashboard-stat-label">连续学习天数</div>';
-            html += '</div>';
-            html += '<div class="dashboard-stat-item">';
-            html += '<div class="dashboard-stat-num">' + totalPractice + '</div>';
-            html += '<div class="dashboard-stat-label">累计练习题数</div>';
-            html += '</div>';
-            html += '<div class="dashboard-stat-item">';
-            html += '<div class="dashboard-stat-num">' + accuracy + '%</div>';
-            html += '<div class="dashboard-stat-label">总正确率</div>';
-            html += '</div>';
-            html += '<div class="dashboard-stat-item">';
-            html += '<div class="dashboard-stat-num">' + (userData.studyDays || 0) + '</div>';
-            html += '<div class="dashboard-stat-label">学习总天数</div>';
-            html += '</div>';
-            html += '</div>';
-            html += '</div>';
-            
-            // ===== 正确率趋势图 =====
-            var hasTrendData = totalPractice > 0;
-            html += '<div class="dashboard-trend-section glass-card">';
-            html += '<div class="dashboard-trend-header">';
-            html += '<div class="dashboard-trend-title">' + icons.trending + '正确率趋势</div>';
-            html += '<div class="dashboard-trend-period"><button class="active">近7天</button></div>';
-            html += '</div>';
-            html += '<div class="dashboard-trend-canvas-wrap">';
-            if (hasTrendData) {
-                html += '<canvas id="dashboard-trend-canvas"></canvas>';
-            } else {
-                html += '<div class="dashboard-trend-empty">';
-                html += '<div class="dashboard-trend-empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>';
-                html += '<div class="dashboard-trend-empty-text">完成练习后查看正确率趋势</div>';
-                html += '</div>';
-            }
-            html += '</div>';
-            html += '</div>';
-            
-            // ===== 诊断报告历史 - 时间线样式 =====
-            html += '<div class="dashboard-report-section">';
-            html += '<div class="dashboard-section-title">' + icons.list + '诊断报告历史</div>';
-            html += '<div class="dashboard-report-timeline">';
-            var reportHistory = getDiagnosisReports();
-            if (reportHistory && reportHistory.length > 0) {
-                reportHistory.forEach(function(report) {
-                    html += '<div class="dashboard-report-card glass-card">';
-                    html += '<div class="dashboard-report-header">';
-                    html += '<div class="dashboard-report-date">' + report.date + '</div>';
-                    html += '<div class="dashboard-report-score">' + report.score + '分</div>';
-                    html += '</div>';
-                    html += '<div class="dashboard-report-dims">';
+                    // 维度标签（带趋势箭头）
+                    html += '<div class="dashboard-radar-dims">';
                     var dimNames = ['细节定位', '推理判断', '同义替换', '主旨归纳', '态度判断'];
                     dimNames.forEach(function(dim) {
-                        var dimScore = report.dims && report.dims[dim] ? report.dims[dim] : '--';
+                        var score = dims[dim] || 0;
                         var isWeak = weakDims.indexOf(dim) !== -1;
-                        html += '<div class="dashboard-report-dim">';
-                        html += '<div class="dashboard-report-dim-name">' + dim + '</div>';
-                        html += '<div class="dashboard-report-dim-score' + (isWeak ? ' weak' : '') + '">' + (typeof dimScore === 'number' ? dimScore + '分' : dimScore) + '</div>';
+                        var trend = abilityTrend && abilityTrend[dim] ? abilityTrend[dim] : null;
+                        var trendArrow = trend ? trend.arrow : '';
+                        var trendClass = trend ? (trend.trend === 'up' ? ' trend-up' : (trend.trend === 'down' ? ' trend-down' : '')) : '';
+                        html += '<div class="dashboard-radar-dim-tag' + (isWeak ? ' weak' : '') + '"' + (isWeak ? ' onclick="startDimPractice(\'' + dim + '\')"' : '') + '>';
+                        html += '<span class="dashboard-radar-dim-name">' + dim + '</span>';
+                        html += '<span class="dashboard-radar-dim-score">' + score + '<span class="trend-arrow' + trendClass + '">' + trendArrow + '</span></span>';
                         html += '</div>';
                     });
                     html += '</div>';
-                    if (report.personality) {
-                        html += '<div class="dashboard-report-personality">' + report.personality + '</div>';
+                    if (weakDims.length > 0) {
+                        html += '<div class="dashboard-radar-weak-hint">点击薄弱维度开始专项练习 ↑</div>';
                     }
+                } else {
+                    html += '<div class="dashboard-radar-empty">';
+                    html += '<div class="dashboard-radar-empty-icon">' + icons.search + '</div>';
+                    html += '<div class="dashboard-radar-empty-text">完成首次诊断后解锁<br>AI将分析你的五维能力</div>';
                     html += '</div>';
-                });
-            } else {
-                html += '<div class="dashboard-report-empty">';
-                html += '<div class="dashboard-empty-icon">' + icons.pencil + '</div>';
-                html += '<div>暂无诊断记录</div>';
-                html += '<div style="font-size:12px;margin-top:4px">完成AI诊断后即可查看报告</div>';
+                }
                 html += '</div>';
-            }
-            html += '</div>'; // end timeline
-            html += '</div>';
-            
-            // ===== 底部安全区域 =====
-            html += '<div class="dashboard-bottom-spacer"></div>';
-            
-            container.innerHTML = html;
-            
-            // 启动CountUp数字动画
-            setTimeout(function() {
-                animateCountUp();
-            }, 300);
-            
-            // 启动环形进度条动画
-            setTimeout(function() {
-                animateRingProgress();
-            }, 500);
-            
-            
-            
-            // 绘制雷达图
-            if (hasDimData) {
+                
+                // ===== 第4个板块: 学习趋势（正确率折线图）=====
+                var hasTrendData = totalPractice > 0;
+                html += '<div class="dashboard-trend-section glass-card">';
+                html += '<div class="dashboard-trend-header">';
+                html += '<div class="dashboard-trend-title">' + icons.trending + '学习趋势</div>';
+                html += '<div class="dashboard-trend-period"><button class="active">近7天</button></div>';
+                html += '</div>';
+                html += '<div class="dashboard-trend-canvas-wrap">';
+                if (hasTrendData) {
+                    html += '<canvas id="dashboard-trend-canvas"></canvas>';
+                } else {
+                    html += '<div class="dashboard-trend-empty">';
+                    html += '<div class="dashboard-trend-empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>';
+                    html += '<div class="dashboard-trend-empty-text">完成练习后查看正确率趋势</div>';
+                    html += '</div>';
+                }
+                html += '</div>';
+                html += '</div>';
+                
+                // ===== 第5个板块: 诊断报告历史 =====
+                html += '<div class="dashboard-report-section">';
+                html += '<div class="dashboard-section-title">' + icons.list + '诊断报告历史</div>';
+                html += '<div class="dashboard-report-timeline">';
+                var reportHistory = getDiagnosisReports();
+                if (reportHistory && reportHistory.length > 0) {
+                    reportHistory.forEach(function(report) {
+                        html += '<div class="dashboard-report-card glass-card">';
+                        html += '<div class="dashboard-report-header">';
+                        html += '<div class="dashboard-report-date">' + report.date + '</div>';
+                        html += '<div class="dashboard-report-score">' + report.score + '分</div>';
+                        html += '</div>';
+                        html += '<div class="dashboard-report-dims">';
+                        var dimNames = ['细节定位', '推理判断', '同义替换', '主旨归纳', '态度判断'];
+                        dimNames.forEach(function(dim) {
+                            var dimScore = report.dims && report.dims[dim] ? report.dims[dim] : '--';
+                            var isWeak = weakDims.indexOf(dim) !== -1;
+                            html += '<div class="dashboard-report-dim">';
+                            html += '<div class="dashboard-report-dim-name">' + dim + '</div>';
+                            html += '<div class="dashboard-report-dim-score' + (isWeak ? ' weak' : '') + '">' + (typeof dimScore === 'number' ? dimScore + '分' : dimScore) + '</div>';
+                            html += '</div>';
+                        });
+                        html += '</div>';
+                        if (report.personality) {
+                            html += '<div class="dashboard-report-personality">' + report.personality + '</div>';
+                        }
+                        html += '</div>';
+                    });
+                } else {
+                    html += '<div class="dashboard-report-empty">';
+                    html += '<div class="dashboard-empty-icon">' + icons.pencil + '</div>';
+                    html += '<div>暂无诊断记录</div>';
+                    html += '<div style="font-size:12px;margin-top:4px">完成AI诊断后即可查看报告</div>';
+                    html += '</div>';
+                }
+                html += '</div>'; // end timeline
+                html += '</div>';
+                
+                // ===== 底部安全区域 =====
+                html += '<div class="dashboard-bottom-spacer"></div>';
+                
+                container.innerHTML = html;
+                
+                // 启动CountUp数字动画
                 setTimeout(function() {
-                    drawDashboardRadar(dims);
-                }, 100);
-            }
-            
-            // 绘制正确率趋势图
-            setTimeout(function() {
-                drawDashboardTrend();
-            }, 150);
+                    animateCountUp();
+                }, 300);
+                
+                // 启动环形进度条动画
+                setTimeout(function() {
+                    animateRingProgress();
+                }, 500);
+                
+                // 绘制雷达图
+                if (hasDimData) {
+                    setTimeout(function() {
+                        drawDashboardRadar(dims);
+                    }, 100);
+                }
+                
+                // 绘制正确率趋势图
+                setTimeout(function() {
+                    drawDashboardTrend();
+                }, 150);
             } catch(e) { 
                 console.error('renderDashboard error:', e); 
                 var c = document.getElementById('dashboard-content');
@@ -2193,7 +1993,6 @@ function explainWithAI(id) {
         }
 
 
-        // ===== CountUp数字滚动动画 =====
         function animateCountUp() {
             var elements = document.querySelectorAll('.dashboard-overview-card.large .overview-num, .dashboard-overview-card.small .overview-num, .dashboard-stat-num, .dashboard-score-num');
             elements.forEach(function(el) {
