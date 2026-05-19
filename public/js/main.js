@@ -988,7 +988,7 @@ function initApp() {
 
         function loadUserData() {
             try {
-                var data = localStorage.getItem('cet_user');
+                var data = localStorage.getItem(examKey('user'));
                 if (data) state.userData = JSON.parse(data);
             } catch(e) {}
         }
@@ -1282,6 +1282,11 @@ function initApp() {
         // ===== 快捷操作函数 =====
         // ===== 考试类型切换函数 =====
         function switchExamType(type) {
+            state.chatHistory = [];
+            state.conversations = [];
+            state.currentConversationId = null;
+            var chatBox = document.getElementById('chat-messages');
+            if (chatBox) chatBox.innerHTML = '';
             if (type === 'cet6') {
                 window.location.href = window.location.pathname + '?type=cet6';
             } else {
@@ -1786,7 +1791,7 @@ function renderDashboard() {
                 var html = '';
                 
                 // ===== 变量准备 =====
-                var userData = safeGetItem('cet_user', {});
+                var userData = safeGetItem(examKey('user'), {});
                 var streak = getStreakData();
                 var todayCount=(state.userData&&state.userData.todayPracticeCount)||0;
                 var accuracy=(state.userData&&state.userData.accuracy)||0;
@@ -2176,7 +2181,7 @@ function renderDashboard() {
                 if (data) return JSON.parse(data);
                 
                 // 兼容旧数据：从cet_user中读取诊断数据作为最近一次报告
-                var userData = safeGetItem('cet_user', {});
+                var userData = safeGetItem(examKey('user'), {});
                 if (userData && userData.diagnosis && userData.diagnosis.type) {
                     // 估算一个诊断日期
                     var diagDate = userData.diagnosedAt ? new Date(userData.diagnosedAt) : new Date();
@@ -2420,7 +2425,7 @@ function renderDashboard() {
                 var data = localStorage.getItem(examKey('ability_scores'));
                 if (data) return JSON.parse(data);
                 // 兼容旧数据: 从cet_user中读取诊断数据
-                var userData = safeGetItem('cet_user', {});
+                var userData = safeGetItem(examKey('user'), {});
                 if (userData && userData.diagnosis) {
                     return { dims: userData.diagnosis };
                 }
@@ -2551,7 +2556,7 @@ function getAbilityTrend() {
                 var data = localStorage.getItem(examKey('user_profile'));
                 if (data) return JSON.parse(data);
                 // 兼容旧数据
-                var userData = safeGetItem('cet_user', {});
+                var userData = safeGetItem(examKey('user'), {});
                 if (userData && userData.startDate) {
                     return { startDate: userData.startDate };
                 }
@@ -2863,6 +2868,7 @@ function getAbilityTrend() {
 
         // 创建新对话
         function createNewChat(mode) {
+            var data=state.userData||{};
             var data=state.userData||{};
             mode = mode || 'companion';
             hideNewChatModal();
@@ -4408,7 +4414,7 @@ function getAbilityTrend() {
             
             // 优先级判断
             var examLabel = '四级';
-            try { var userData = safeGetItem('cet_user', {}); if (userData.isCet6) examLabel = '六级'; } catch(e) {}
+            try { var userData = safeGetItem(examKey('user'), {}); if (userData.isCet6) examLabel = '六级'; } catch(e) {}
             
             // 1. 没做过诊断
             if (!hasDiag) {
@@ -7384,7 +7390,7 @@ function updateDimScore(ability, delta) {
     
     // 如果没有分数数据，从诊断数据中读取
     if (Object.keys(scores).length === 0) {
-        var userData = safeGetItem('cet_user', {});
+        var userData = safeGetItem(examKey('user'), {});
         if (userData && userData.diagnosis) {
             scores = userData.diagnosis;
         }
@@ -8498,7 +8504,7 @@ function renderDiagLoading(text) {
 
 // 判断是否为六级用户
 function isCET6User() {
-    var userData = safeGetItem('cet_user', {});
+    var userData = safeGetItem(examKey('user'), {});
     var uid = userData.uid || '';
     // 六级UID以CET6开头
     return uid.startsWith('CET6') || uid.startsWith('6');
@@ -9228,8 +9234,10 @@ function showCurrentQuestion() {
     
     // 判断题目类型，显示对应的Part标题
     var qType = q.type || q.category || '';
-    var isLC = qType.indexOf('LC') >= 0 || qType.indexOf('听力') >= 0 || dimName === '听力';
-    var partTitle = isLC ? 'Part I Listening Comprehension' : 'Part II Reading Comprehension';
+    var dimName = q.ability || '细节理解';
+    var isLC = qType.indexOf('LC') >= 0 || qType.indexOf('听力') >= 0 || dimName === '听力' || dimName === '听力理解';
+    var isRD = qType.indexOf('RC') >= 0 || qType.indexOf('阅读') >= 0 || dimName === '阅读' || dimName === '阅读理解';
+    var partTitle = isLC ? 'Part I Listening Comprehension' : (isRD ? 'Part II Reading Comprehension' : 'Part III Language Knowledge');
     var sectionLabel = isLC ? 'Section A' : '';
     
     // 试卷格式头部
@@ -9240,7 +9248,6 @@ function showCurrentQuestion() {
     
     html += '<div class="exam-divider"></div>';
     
-    var dimName = q.ability || '细节理解';
     var tipInfo = getTipInfo(dimName);
     html += '<div class="diag-dim-tag">' + tipInfo.tag + '</div>' +
         '<div class="diag-question-num">Q' + (diagState.currentQIndex + 1) + '</div>' +
@@ -9360,6 +9367,24 @@ function showSelfEval() {
                     '</div>' +
                     '<div class="diag-eval-btn" onclick="selectEval(this, \'听力\', \'D\')">' +
                         '<div class="eval-letter">D</div><div class="eval-desc">薄弱</div><div class="eval-sub">基本听不懂在说什么</div>' +
+                    '</div>' +
+                '</div>' +
+            '</div>' +
+            
+            '<div class="diag-eval-item">' +
+                '<div class="diag-eval-label">📖 阅读能力</div>' +
+                '<div class="diag-eval-options">' +
+                    '<div class="diag-eval-btn" onclick="selectEval(this, \'阅读\', \'A\')">' +
+                        '<div class="eval-letter">A</div><div class="eval-desc">较好</div><div class="eval-sub">能读懂长文并准确答题</div>' +
+                    '</div>' +
+                    '<div class="diag-eval-btn" onclick="selectEval(this, \'阅读\', \'B\')">' +
+                        '<div class="eval-letter">B</div><div class="eval-desc">一般</div><div class="eval-sub">能理解大意，细节易错</div>' +
+                    '</div>' +
+                    '<div class="diag-eval-btn" onclick="selectEval(this, \'阅读\', \'C\')">' +
+                        '<div class="eval-letter">C</div><div class="eval-desc">较弱</div><div class="eval-sub">词汇量不够，读得很慢</div>' +
+                    '</div>' +
+                    '<div class="diag-eval-btn" onclick="selectEval(this, \'阅读\', \'D\')">' +
+                        '<div class="eval-letter">D</div><div class="eval-desc">薄弱</div><div class="eval-sub">基本读不懂文章内容</div>' +
                     '</div>' +
                 '</div>' +
             '</div>' +
