@@ -2862,7 +2862,7 @@ function getAbilityTrend() {
 
         // 创建新对话
         function createNewChat(mode) {
-            mode = mode || 'diagnosis';
+            mode = mode || 'companion';
             hideNewChatModal();
             
             // 重置聊天状态（新建对话）
@@ -14319,7 +14319,7 @@ function doHelpAction(type) {
     if (type === 'diagnosis') {
         startPractice();
     } else if (type === 'companion') {
-        createNewChat();
+        createNewChat('companion');
     } else if (type === 'wrongbook') {
         switchTab('wrongbook');
         renderWrongBook();
