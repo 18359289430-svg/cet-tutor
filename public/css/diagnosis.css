@@ -1669,3 +1669,103 @@
     border-top: 1px dashed #cbd5e1;
     margin: 10px 0;
 }
+
+/* ========== 诊断做题界面 ========== */
+.diag-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #F8FAFC;
+    z-index: 1000;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+}
+.diag-overlay.active {
+    display: flex;
+}
+.diag-header {
+    padding: 16px 20px;
+    padding-top: calc(16px + var(--safe-top, 20px));
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: white;
+    flex-shrink: 0;
+    border-bottom: 1px solid #F1F5F9;
+}
+.diag-back-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #F1F5F9;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.diag-back-btn svg {
+    width: 20px;
+    height: 20px;
+}
+.diag-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1E293B;
+}
+.diag-progress-wrap {
+    padding: 12px 20px;
+    background: white;
+    border-bottom: 1px solid #F1F5F9;
+}
+.diag-progress-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: #64748B;
+    margin-bottom: 8px;
+}
+.diag-progress-bar {
+    height: 4px;
+    background: #E2E8F0;
+    border-radius: 2px;
+    overflow: hidden;
+}
+.diag-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #6C5CE7, #A29BFE);
+    border-radius: 2px;
+    transition: width 0.3s ease;
+}
+.diag-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    -webkit-overflow-scrolling: touch;
+}
+.diag-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #94A3B8;
+}
+.diag-loading-icon {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #E2E8F0;
+    border-top-color: #6C5CE7;
+    border-radius: 50%;
+    animation: diagSpin 0.8s linear infinite;
+    margin-bottom: 16px;
+}
+@keyframes diagSpin {
+    to { transform: rotate(360deg); }
+}
+.diag-loading-text {
+    font-size: 14px;
+}
