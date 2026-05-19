@@ -233,7 +233,7 @@
     left: 0; 
     right: 0; 
     bottom: 0;
-    background: linear-gradient(180deg, #FAFAFB 0%, #FFFFFF 100%);
+    background: #F5F6F8;
     overflow: hidden; 
     z-index: 5;
     padding-bottom: 0 !important;
@@ -351,6 +351,7 @@
     flex: 1; 
     overflow-y: auto; 
     padding: 28px 20px 16px; 
+    background: #F5F6F8; 
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none; 
     -ms-overflow-style: none; 
@@ -466,12 +467,12 @@
 }
 /* AI气泡 - 白色背景带边框 */
 .custom-chat-msg.ai .custom-chat-bubble {
-    background: #fff;
+    background: transparent;
     color: #1E293B; 
     border: none;
     box-shadow: none;
     max-width: 95%;
-    border-radius: 4px 18px 18px 18px;
+    border-radius: 0;
     padding: 14px 18px;
     font-size: 15px;
     line-height: 1.75;
@@ -1110,7 +1111,7 @@
     display: none;
     flex-direction: column;
     height: 100%;
-    background: linear-gradient(180deg, #FAFAFB 0%, #FFFFFF 100%);
+    background: #F5F6F8;
 }
 .chat-list-view.active {
     display: flex;
@@ -1779,3 +1780,4 @@
     color: #1a2744;
     font-weight: 600;
 }
+
