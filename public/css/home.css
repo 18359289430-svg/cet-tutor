@@ -2123,3 +2123,157 @@
     color: #CBD5E1;
     font-weight: 300;
 }
+
+/* ===== 使用帮助页面样式 ===== */
+.help-guide-badge {
+    display: none;
+    width: 8px;
+    height: 8px;
+    background: #EF4444;
+    border-radius: 50%;
+    margin-left: 4px;
+    vertical-align: middle;
+}
+
+.help-guide-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #F8FAFC;
+    z-index: 1100;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.help-guide-header {
+    padding: 16px 20px;
+    padding-top: calc(16px + var(--safe-top));
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #FFFFFF;
+    flex-shrink: 0;
+    border-bottom: 1px solid #F1F5F9;
+}
+
+.help-guide-back {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #F1F5F9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: none;
+    transition: background 0.2s;
+}
+.help-guide-back:active { background: #E2E8F0; }
+.help-guide-back svg { width: 20px; height: 20px; stroke: #475569; stroke-width: 2; }
+
+.help-guide-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #1E293B;
+    letter-spacing: -0.3px;
+}
+
+.help-guide-content {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 20px 16px;
+    padding-bottom: calc(40px + var(--safe-bottom));
+}
+
+.help-guide-list {
+    background: #FFFFFF;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.help-item {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    cursor: pointer;
+    transition: background 0.2s;
+    border-bottom: 1px solid #F1F5F9;
+}
+.help-item:last-child { border-bottom: none; }
+.help-item:active { background: #F8FAFC; }
+
+.help-item-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-right: 14px;
+}
+.help-item-icon svg { width: 22px; height: 22px; stroke-width: 1.8; }
+.help-item-icon.purple { background: rgba(108,92,231,0.1); }
+.help-item-icon.purple svg { stroke: #6C5CE7; }
+.help-item-icon.blue { background: rgba(59,130,246,0.1); }
+.help-item-icon.blue svg { stroke: #3B82F6; }
+.help-item-icon.teal { background: rgba(0,188,212,0.1); }
+.help-item-icon.teal svg { stroke: #00BCD4; }
+.help-item-icon.orange { background: rgba(243,156,18,0.1); }
+.help-item-icon.orange svg { stroke: #F39C12; }
+.help-item-icon.red { background: rgba(239,68,68,0.1); }
+.help-item-icon.red svg { stroke: #EF4444; }
+.help-item-icon.green { background: rgba(0,184,148,0.1); }
+.help-item-icon.green svg { stroke: #00B894; }
+
+.help-item-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.help-item-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1E293B;
+    margin-bottom: 4px;
+}
+
+.help-item-desc {
+    font-size: 13px;
+    color: #64748B;
+    line-height: 1.4;
+}
+
+.help-item-arrow {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    margin-left: 8px;
+}
+.help-item-arrow svg { width: 20px; height: 20px; stroke: #CBD5E1; stroke-width: 2; }
+
+.help-guide-footer {
+    margin-top: 32px;
+    text-align: center;
+    padding: 20px;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-radius: 16px;
+    border: 1px solid #E2E8F0;
+}
+
+.help-guide-contact {
+    font-size: 14px;
+    color: #64748B;
+    margin-bottom: 8px;
+}
+
+.help-guide-contact-info {
+    font-size: 15px;
+    font-weight: 600;
+    color: #6C5CE7;
+}

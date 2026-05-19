@@ -14423,6 +14423,130 @@ function updateProfileUserId() {
         var userId = getCloudUserId();
         userIdElem.textContent = userId.substring(0, 8) + '...';
     }
+    // 更新使用帮助红点状态
+    updateHelpGuideBadge();
+}
+
+// 更新使用帮助红点状态
+function updateHelpGuideBadge() {
+    var badge = document.getElementById('help-guide-badge');
+    if (!badge) return;
+    var hasSeenHelp = localStorage.getItem(examKey('has_seen_help_guide'));
+    badge.style.display = hasSeenHelp ? 'none' : 'inline-block';
+}
+
+// 显示使用帮助页面
+function showHelpGuide() {
+    // 标记已看过
+    localStorage.setItem(examKey('has_seen_help_guide'), '1');
+    updateHelpGuideBadge();
+    
+    var overlay = document.getElementById('help-guide-overlay');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'help-guide-overlay';
+        overlay.className = 'help-guide-overlay';
+        
+        var html = '<div class="help-guide-header">' +
+            '<button class="help-guide-back" onclick="closeHelpGuide()">' +
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>' +
+            '</button>' +
+            '<div class="help-guide-title">使用帮助</div>' +
+            '<div style="width:36px"></div>' +
+        '</div>' +
+        '<div class="help-guide-content">' +
+            '<div class="help-guide-list">' +
+                '<div class="help-item" onclick="startNewDiagnosis();closeHelpGuide();">' +
+                    '<div class="help-item-icon purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>' +
+                    '<div class="help-item-content">' +
+                        '<div class="help-item-title">🎯 AI智能诊断</div>' +
+                        '<div class="help-item-desc">5分钟测出你的薄弱项，精准定位需要加强的能力</div>' +
+                    '</div>' +
+                    '<div class="help-item-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>' +
+                '</div>' +
+                '<div class="help-item" onclick="doHelpAction(\'diagnosis\');">' +
+                    '<div class="help-item-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>' +
+                    '<div class="help-item-content">' +
+                        '<div class="help-item-title">📝 每日一练</div>' +
+                        '<div class="help-item-desc">根据薄弱项智能推题，每天练最有价值的题</div>' +
+                    '</div>' +
+                    '<div class="help-item-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>' +
+                '</div>' +
+                '<div class="help-item" onclick="doHelpAction(\'companion\');">' +
+                    '<div class="help-item-icon teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>' +
+                    '<div class="help-item-content">' +
+                        '<div class="help-item-title">💬 AI陪练</div>' +
+                        '<div class="help-item-desc">随时出题随时问，像私教一样1对1练习</div>' +
+                    '</div>' +
+                    '<div class="help-item-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>' +
+                '</div>' +
+                '<div class="help-item" onclick="openEssayOverlay();closeHelpGuide();">' +
+                    '<div class="help-item-icon orange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>' +
+                    '<div class="help-item-content">' +
+                        '<div class="help-item-title">✍️ 作文批改</div>' +
+                        '<div class="help-item-desc">逐句精修+评分，不只给分数还给方法</div>' +
+                    '</div>' +
+                    '<div class="help-item-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>' +
+                '</div>' +
+                '<div class="help-item" onclick="doHelpAction(\'wrongbook\');">' +
+                    '<div class="help-item-icon red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div>' +
+                    '<div class="help-item-content">' +
+                        '<div class="help-item-title">📖 错题本</div>' +
+                        '<div class="help-item-desc">自动归集+智能复习提醒，艾宾浩斯记忆法巩固</div>' +
+                    '</div>' +
+                    '<div class="help-item-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>' +
+                '</div>' +
+                '<div class="help-item" onclick="doHelpAction(\'progress\');">' +
+                    '<div class="help-item-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg></div>' +
+                    '<div class="help-item-content">' +
+                        '<div class="help-item-title">📊 学习数据</div>' +
+                        '<div class="help-item-desc">五维能力雷达图+进步趋势，一目了然</div>' +
+                    '</div>' +
+                    '<div class="help-item-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>' +
+                '</div>' +
+            '</div>' +
+            '<div class="help-guide-footer">' +
+                '<div class="help-guide-contact">遇到问题？联系我们</div>' +
+                '<div class="help-guide-contact-info">微信：cet4fanyi</div>' +
+            '</div>' +
+        '</div>';
+        
+        overlay.innerHTML = html;
+        document.body.appendChild(overlay);
+    }
+    
+    overlay.style.display = 'flex';
+    overlay.style.opacity = '0';
+    overlay.style.transition = 'opacity 0.3s';
+    requestAnimationFrame(function() {
+        overlay.style.opacity = '1';
+    });
+}
+
+// 帮助页面动作处理
+function doHelpAction(type) {
+    closeHelpGuide();
+    if (type === 'diagnosis') {
+        startPractice();
+    } else if (type === 'companion') {
+        createNewChat();
+    } else if (type === 'wrongbook') {
+        switchTab('wrongbook');
+        renderWrongBook();
+    } else if (type === 'progress') {
+        switchTab('progress');
+    }
+}
+
+// 关闭使用帮助页面
+function closeHelpGuide() {
+    var overlay = document.getElementById('help-guide-overlay');
+    if (overlay) {
+        overlay.style.opacity = '0';
+        setTimeout(function() {
+            overlay.style.display = 'none';
+        }, 300);
+    }
 }
 
 // 打开恢复数据模态框
