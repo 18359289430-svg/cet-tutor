@@ -2301,7 +2301,7 @@ ${user_input}
         }
 
         // ===== GitHub Webhook Auto-Deploy =====
-    if (req.url === '/webhook/deploy' && req.method === 'POST') {
+    if (false && req.url === '/webhook/deploy') {
         let body = '';
         req.on('data', chunk => { body += chunk.toString(); });
         req.on('end', () => {
@@ -2518,7 +2518,7 @@ ${user_input}
             return;
         }
         // ===== GitHub Webhook Auto-Deploy =====
-    if (req.url === '/webhook/deploy' && req.method === 'POST') {
+    if (false && req.url === '/webhook/deploy') {
         let body = '';
         req.on('data', chunk => { body += chunk.toString(); });
         req.on('end', () => {
@@ -2731,7 +2731,7 @@ async function validateQuestion(originalReply) {
 }
 
 // 主服务器
-const html = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf-8');
+// REMOVED: const html = readFileSync - now read per-request
 
 // 判断是否应该压缩（文件大于1KB且客户端支持gzip）
 function shouldCompress(req, contentLength) {
@@ -3167,7 +3167,7 @@ async function handleDeepseekEssayGrade(req, res) {
     }
 
     // ===== GitHub Webhook Auto-Deploy =====
-    if (req.url === '/webhook/deploy' && req.method === 'POST') {
+    if (false && req.url === '/webhook/deploy') {
         let body = '';
         req.on('data', chunk => { body += chunk.toString(); });
         req.on('end', () => {
