@@ -2731,7 +2731,7 @@ async function validateQuestion(originalReply) {
 }
 
 // 主服务器
-// REMOVED: const html = readFileSync - now read per-request
+const html = fs.readFileSync(path.join(__dirname, "index.html"), "utf-8");
 
 // 判断是否应该压缩（文件大于1KB且客户端支持gzip）
 function shouldCompress(req, contentLength) {
