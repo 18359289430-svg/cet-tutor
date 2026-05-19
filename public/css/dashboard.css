@@ -623,18 +623,19 @@
 
 /* 去掉左侧彩色竖条 */
 .dashboard-weak-icon {
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    background: rgba(108, 92, 231, 0.1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 .dashboard-weak-icon svg {
-    width: 22px;
-    height: 22px;
+    width: 20px;
+    height: 20px;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1));
 }
 .dashboard-weak-info {
     flex: 1;
@@ -652,9 +653,9 @@
 
 /* 薄弱项进度条 - 紫色渐变 */
 .dashboard-weak-bar {
-    height: 4px;
+    height: 3px;
     background: #F1F5F9;
-    border-radius: 2px;
+    border-radius: 1.5px;
     margin-top: 8px;
     overflow: hidden;
 }
@@ -1607,4 +1608,58 @@
 
 .dashboard-trend-diff.trend-stable {
     color: #94a3b8;
+}
+
+/* ===== 个性化训练建议 ===== */
+.dashboard-training-tips {
+    padding: 16px 18px;
+    margin-bottom: 16px;
+}
+.dashboard-training-tips-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #1E293B;
+    margin-bottom: 14px;
+}
+.dashboard-training-tip-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    background: rgba(108, 92, 231, 0.04);
+    border-radius: 12px;
+    margin-bottom: 10px;
+    gap: 12px;
+}
+.dashboard-training-tip-item:last-child {
+    margin-bottom: 0;
+}
+.dashboard-tip-text {
+    flex: 1;
+    font-size: 13px;
+    color: #475569;
+    line-height: 1.5;
+}
+.dashboard-tip-dim {
+    font-weight: 600;
+    color: #6C5CE7;
+}
+.dashboard-tip-action {
+    flex-shrink: 0;
+    padding: 6px 14px;
+    background: linear-gradient(135deg, #6C5CE7, #A29BFE);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.dashboard-tip-action:active {
+    transform: scale(0.96);
+    opacity: 0.9;
 }

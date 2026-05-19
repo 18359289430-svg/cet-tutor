@@ -539,3 +539,218 @@
     transform: scale(0.97);
     box-shadow: 0 2px 8px rgba(108, 92, 231, 0.3);
 }
+
+/* Quiz Stats 增强样式 */
+
+/* 维度分布条形图 */
+.quiz-stats-dims {
+    width: 100%;
+    margin: 16px 0;
+    padding: 14px 16px;
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: 12px;
+    border: 1px solid rgba(229,229,234,0.3);
+}
+.quiz-dim-bar {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.quiz-dim-bar:last-child {
+    margin-bottom: 0;
+}
+.quiz-dim-bar-label {
+    width: 70px;
+    font-size: 12px;
+    color: #666;
+    flex-shrink: 0;
+}
+.quiz-dim-bar-track {
+    flex: 1;
+    height: 8px;
+    background: #e5e7eb;
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 0 8px;
+}
+.quiz-dim-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 1s ease-out;
+}
+.quiz-dim-bar-fill.green {
+    background: linear-gradient(90deg, #10B981, #34D399);
+}
+.quiz-dim-bar-fill.orange {
+    background: linear-gradient(90deg, #F59E0B, #FBBF24);
+}
+.quiz-dim-bar-fill.red {
+    background: linear-gradient(90deg, #EF4444, #F87171);
+}
+.quiz-dim-bar-rate {
+    width: 80px;
+    font-size: 11px;
+    color: #94a3b8;
+    text-align: right;
+    flex-shrink: 0;
+}
+
+/* 能力值变化提示 */
+.quiz-stats-change {
+    width: 100%;
+    padding: 10px 14px;
+    background: linear-gradient(135deg, rgba(108,92,231,0.1), rgba(162,155,254,0.1));
+    border-radius: 10px;
+    font-size: 12px;
+    color: #6C5CE7;
+    margin: 8px 0 16px;
+    text-align: center;
+}
+
+/* 推荐下一步 */
+.quiz-stats-recommend {
+    width: 100%;
+    margin-bottom: 16px;
+    padding: 14px 16px;
+    background: linear-gradient(135deg, rgba(16,185,129,0.08), rgba(52,211,153,0.08));
+    border-radius: 12px;
+    border: 1px solid rgba(16,185,129,0.2);
+}
+.quiz-stats-recommend-text {
+    font-size: 13px;
+    color: #059669;
+    margin-bottom: 10px;
+}
+.quiz-stats-btn.recommend {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, #10B981, #34D399);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.quiz-stats-btn.recommend:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(16,185,129,0.3);
+}
+
+/* ========== 每日一练听力播放器样式 ========== */
+.quiz-listening-player {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
+    border-radius: 12px;
+    margin-bottom: 16px;
+    color: white;
+    box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+}
+
+.quiz-listening-wave {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    height: 32px;
+    opacity: 0.7;
+}
+
+.quiz-listening-wave span {
+    display: block;
+    width: 3px;
+    background: white;
+    border-radius: 2px;
+    animation: quiz-wave 1s ease-in-out infinite;
+}
+
+.quiz-listening-wave span:nth-child(1) { height: 8px; animation-delay: 0s; }
+.quiz-listening-wave span:nth-child(2) { height: 16px; animation-delay: 0.1s; }
+.quiz-listening-wave span:nth-child(3) { height: 24px; animation-delay: 0.2s; }
+.quiz-listening-wave span:nth-child(4) { height: 16px; animation-delay: 0.3s; }
+.quiz-listening-wave span:nth-child(5) { height: 8px; animation-delay: 0.4s; }
+
+@keyframes quiz-wave {
+    0%, 100% { transform: scaleY(0.5); }
+    50% { transform: scaleY(1.2); }
+}
+
+.quiz-listening-play-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    flex-shrink: 0;
+}
+
+.quiz-listening-play-btn:active {
+    transform: scale(0.95);
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.quiz-listening-play-btn .play-icon {
+    font-size: 16px;
+    color: white;
+}
+
+.quiz-listening-play-btn .wave-container {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.quiz-listening-play-btn .wave-container span {
+    display: block;
+    width: 3px;
+    background: white;
+    border-radius: 2px;
+    animation: quiz-wave 0.6s ease-in-out infinite;
+}
+
+.quiz-listening-play-btn .wave-container span:nth-child(1) { height: 6px; animation-delay: 0s; }
+.quiz-listening-play-btn .wave-container span:nth-child(2) { height: 12px; animation-delay: 0.1s; }
+.quiz-listening-play-btn .wave-container span:nth-child(3) { height: 6px; animation-delay: 0.2s; }
+
+.quiz-listening-play-btn.playing .play-icon {
+    display: none;
+}
+
+.quiz-listening-hint {
+    font-size: 14px;
+    opacity: 0.9;
+    flex: 1;
+}
+
+.quiz-listening-progress {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2px;
+    margin-bottom: 12px;
+    overflow: hidden;
+}
+
+.quiz-listening-progress-bar {
+    height: 100%;
+    background: white;
+    border-radius: 2px;
+    transition: width 0.1s linear;
+    width: 0%;
+}
+
+.quiz-listening-replay-hint {
+    font-size: 12px;
+    opacity: 0.7;
+    text-align: center;
+    margin-top: 4px;
+}

@@ -1307,3 +1307,465 @@
     opacity: 0.9;
     line-height: 1.5;
 }
+
+/* ========== 听力播放器样式 ========== */
+.listening-section {
+    padding: 16px;
+}
+
+.listening-passage-card {
+    background: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 16px;
+    color: white;
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+}
+
+.listening-passage-type {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    opacity: 0.9;
+}
+
+.listening-player {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.listening-wave {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    height: 40px;
+    opacity: 0.7;
+}
+
+.listening-wave span {
+    display: block;
+    width: 4px;
+    background: white;
+    border-radius: 2px;
+    animation: wave 1s ease-in-out infinite;
+}
+
+.listening-wave span:nth-child(1) { height: 10px; animation-delay: 0s; }
+.listening-wave span:nth-child(2) { height: 20px; animation-delay: 0.1s; }
+.listening-wave span:nth-child(3) { height: 30px; animation-delay: 0.2s; }
+.listening-wave span:nth-child(4) { height: 20px; animation-delay: 0.3s; }
+.listening-wave span:nth-child(5) { height: 10px; animation-delay: 0.4s; }
+
+@keyframes wave {
+    0%, 100% { transform: scaleY(0.5); }
+    50% { transform: scaleY(1.2); }
+}
+
+.listening-play-btn {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    flex-shrink: 0;
+}
+
+.listening-play-btn:active {
+    transform: scale(0.95);
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.listening-play-btn .play-icon {
+    font-size: 20px;
+    color: white;
+}
+
+.listening-play-btn .wave-container {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.listening-play-btn .wave-container span {
+    display: block;
+    width: 3px;
+    background: white;
+    border-radius: 2px;
+    animation: wave 0.6s ease-in-out infinite;
+}
+
+.listening-play-btn .wave-container span:nth-child(1) { height: 8px; animation-delay: 0s; }
+.listening-play-btn .wave-container span:nth-child(2) { height: 16px; animation-delay: 0.1s; }
+.listening-play-btn .wave-container span:nth-child(3) { height: 8px; animation-delay: 0.2s; }
+
+.listening-play-btn.playing .play-icon {
+    display: none;
+}
+
+.listening-hint {
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+.listening-progress-container {
+    margin-bottom: 16px;
+}
+
+.listening-progress-bar-wrapper {
+    position: relative;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.listening-progress-bar-wrapper progress {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+}
+
+.listening-progress-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: white;
+    border-radius: 3px;
+    transition: width 0.3s;
+}
+
+.listening-progress-text {
+    font-size: 12px;
+    opacity: 0.8;
+    text-align: center;
+    margin-top: 8px;
+}
+
+.listening-round-indicator {
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    margin-bottom: 16px;
+}
+
+.listening-round-indicator.round-1 { background: rgba(255, 255, 255, 0.2); }
+.listening-round-indicator.round-waiting { background: rgba(255, 193, 7, 0.4); color: #FFE082; }
+.listening-round-indicator.round-2 { background: rgba(255, 255, 255, 0.25); }
+
+.listening-replay-btn {
+    width: 100%;
+    padding: 12px 20px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s;
+}
+
+.listening-replay-btn:active {
+    transform: scale(0.98);
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.listening-replay-btn.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.listening-replay-btn .replay-count {
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+.listening-replay-btn .replay-tip {
+    font-size: 12px;
+    opacity: 0.7;
+}
+
+.listening-play-hint {
+    font-size: 12px;
+    opacity: 0.7;
+    text-align: center;
+    margin-top: 12px;
+}
+
+/* 听力题目卡片 */
+.listening-question-card {
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.diag-question-num {
+    font-size: 13px;
+    color: #6C5CE7;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.diag-question-text {
+    font-size: 15px;
+    color: #1E293B;
+    line-height: 1.6;
+    margin-bottom: 16px;
+}
+
+.diag-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.diag-option-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: #F8FAFC;
+    border: 2px solid #E2E8F0;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.diag-option-btn:active {
+    transform: scale(0.98);
+}
+
+.diag-option-btn:hover {
+    border-color: #CBD5E1;
+    background: #F1F5F9;
+}
+
+.diag-option-btn.correct {
+    background: #D1FAE5;
+    border-color: #059669;
+}
+
+.diagnosis-test-btn.wrong,
+.diag-option-btn.wrong {
+    background: #FEE2E2;
+    border-color: #DC2626;
+}
+
+.diag-option-btn.disabled {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.diag-option-letter {
+    width: 28px;
+    height: 28px;
+    background: #6C5CE7;
+    color: white;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.diag-option-btn.correct .diag-option-letter {
+    background: #059669;
+}
+
+.diag-option-btn.wrong .diag-option-letter {
+    background: #DC2626;
+}
+
+.diag-option-text {
+    flex: 1;
+    font-size: 14px;
+    color: #334155;
+    line-height: 1.5;
+}
+
+/* 四六级试卷格式样式 */
+.exam-paper-header {
+    text-align: center;
+    margin-bottom: 12px;
+}
+.exam-part-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1a2744;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+.exam-section-label {
+    font-size: 13px;
+    color: #64748B;
+    margin-top: 4px;
+}
+.exam-divider {
+    border: none;
+    border-top: 1.5px dashed #cbd5e1;
+    margin: 16px 0;
+}
+.diag-question-card .diag-question-num {
+    font-size: 13px;
+    color: #6C5CE7;
+    font-weight: 600;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+}
+.diag-passage-wrap {
+    margin-bottom: 16px;
+}
+.diag-passage-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 14px;
+    background: #f0f4ff;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #4338ca;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+.diag-passage-toggle:hover {
+    background: #e0e7ff;
+}
+.diag-passage-content {
+    background: #fafbfc;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 14.5px;
+    line-height: 1.85;
+    color: #334155;
+}
+.diag-passage-title {
+    font-weight: 600;
+    color: #1a2744;
+    margin-bottom: 10px;
+    font-size: 15px;
+}
+.diag-passage-divider {
+    border-top: 1px dashed #cbd5e1;
+    margin: 10px 0;
+}
+
+/* ========== 诊断做题界面 ========== */
+.diag-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #F8FAFC;
+    z-index: 1000;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+}
+.diag-overlay.active {
+    display: flex;
+}
+.diag-header {
+    padding: 16px 20px;
+    padding-top: calc(16px + var(--safe-top, 20px));
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: white;
+    flex-shrink: 0;
+    border-bottom: 1px solid #F1F5F9;
+}
+.diag-back-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #F1F5F9;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.diag-back-btn svg {
+    width: 20px;
+    height: 20px;
+}
+.diag-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1E293B;
+}
+.diag-progress-wrap {
+    padding: 12px 20px;
+    background: white;
+    border-bottom: 1px solid #F1F5F9;
+}
+.diag-progress-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: #64748B;
+    margin-bottom: 8px;
+}
+.diag-progress-bar {
+    height: 4px;
+    background: #E2E8F0;
+    border-radius: 2px;
+    overflow: hidden;
+}
+.diag-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #6C5CE7, #A29BFE);
+    border-radius: 2px;
+    transition: width 0.3s ease;
+}
+.diag-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    -webkit-overflow-scrolling: touch;
+}
+.diag-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #94A3B8;
+}
+.diag-loading-icon {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #E2E8F0;
+    border-top-color: #6C5CE7;
+    border-radius: 50%;
+    animation: diagSpin 0.8s linear infinite;
+    margin-bottom: 16px;
+}
+@keyframes diagSpin {
+    to { transform: rotate(360deg); }
+}
+.diag-loading-text {
+    font-size: 14px;
+}

@@ -907,6 +907,9 @@ function initApp() {
             initCountdown();
             renderPersonalities();
             renderHomePersonalityPreview();
+            // renderTodayTaskCard(); // 已移除今日待办卡片
+            renderHomeReviewReminder();  // 渲染首页待复习提醒卡片
+            setTimeout(checkReviewToastReminder, 100);  // 检查是否需要toast提醒
             initTabEvents();
             updateProfileStats();
             updateProfileUserId();
@@ -1525,6 +1528,10 @@ function initApp() {
                 html += '<span class="wrong-reviewed-badge">已复习</span>';
             }
             html += '<span class="wrong-date">' + dateStr + '</span>';
+            // 显示下次复习时间
+            if (reviewTimeDesc && reviewTimeDesc !== '已掌握') {
+                html += '<span class="wrong-review-time">' + reviewTimeDesc + '</span>';
+            }
             html += '</div>';
             html += '<div class="wrong-question">' + escapeHtml(q.question || '') + '</div>';
             html += '<div class="wrong-answer-compare">';
@@ -1876,8 +1883,231 @@ function explainWithAI(id) {
                     html += '<div class="dashboard-radar-canvas-wrap">';
                     html += '<canvas id="dashboard-radar-canvas" width="260" height="260"></canvas>';
                     html += '</div>';
+
+        // ===== 渲染数据页面 - 5个板块精简版 =====
+        function renderDashboard() {
+            try {
+                var container = document.getElementById('dashboard-content');
+                if (!container) return;
+                
+                var html = '';
+                
+                // ===== 变量准备 =====
+                var userData = safeGetItem('cet_user', {});
+                var streak = getStreak();
+                var todayCount = getTodayPracticeCount();
+                var accuracy = getAccuracy();
+                var totalPractice = getTotalPractice();
+                var sprintPlan = getSprintPlan();
+                var planDays = getPlanDuration();
+                var currentDay = sprintPlan && sprintPlan.startDay ? Math.ceil((Date.now() - new Date(sprintPlan.startDay).getTime()) / (1000 * 60 * 60 * 24)) : 1;
+                currentDay = Math.max(1, Math.min(currentDay, planDays));
+                var planProgress = Math.round((currentDay / planDays) * 100);
+                var daysToExam = getPlanDuration();
+                
+                // 诊断数据
+                var abilityData = getAbilityScores();
+                var hasDimData = abilityData && abilityData.dims && Object.keys(abilityData.dims).length > 0;
+                var dims = hasDimData ? abilityData.dims : {};
+                var estimatedScore = hasDimData ? calculateScore(dims) : 0;
+                var weakDims = hasDimData ? getWeakDims(dims) : [];
+                var heatmapData = getHeatmapData();
+                var abilityTrend = getAbilityTrend();
+                
+                // ===== 第1个板块: 学习进度 Hero =====
+                html += '<div class="dashboard-hero glass-card">';
+                html += '<div class="dashboard-hero-header">';
+                html += '<div class="dashboard-hero-title">' + icons.flame + '学习进度</div>';
+                html += '<div class="dashboard-hero-subtitle">距考试 ' + daysToExam + ' 天 · 冲刺备考</div>';
+                html += '</div>';
+                // 环形进度条
+                var circumference = 2 * Math.PI * 42;
+                var offset = circumference - (planProgress / 100) * circumference;
+                html += '<div class="dashboard-hero-circle-wrap">';
+                html += '<div class="dashboard-hero-circle">';
+                html += '<svg viewBox="0 0 100 100">';
+                html += '<defs><linearGradient id="planGradient" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#6C5CE7"/><stop offset="100%" stop-color="#A29BFE"/></linearGradient></defs>';
+                html += '<circle class="dashboard-plan-circle-bg" cx="50" cy="50" r="42"/>';
+                html += '<circle class="dashboard-plan-circle-progress" cx="50" cy="50" r="42" stroke-dasharray="' + circumference + '" stroke-dashoffset="' + offset + '"/>';
+                html += '</svg>';
+                html += '<div class="dashboard-hero-circle-text">';
+                html += '<div class="dashboard-hero-circle-day">' + planProgress + '%</div>';
+                html += '<div class="dashboard-hero-circle-label">完成度</div>';
+                html += '</div>';
+                html += '</div>';
+                html += '</div>';
+                html += '<div class="dashboard-hero-footer">';
+                html += '<span>第 ' + currentDay + ' 天 / ' + planDays + '天</span>';
+                html += '<span class="dashboard-plan-end">开始于 ' + formatDate((function(){ var p=getSprintPlan(); return p&&p.startDay?new Date(p.startDay):new Date(); })()) + '</span>';
+                html += '</div>';
+                html += '</div>';
+                
+                // ===== 第2个板块: 核心数据（4格卡片）=====
+                html += '<div class="dashboard-overview">';
+                // 大卡片1: 连续学习天数
+                html += '<div class="dashboard-overview-card large streak-card shimmer-card">';
+                html += '<div class="overview-icon" style="background:rgba(255,255,255,0.2)">' + icons.flame + '</div>';
+                html += '<div class="overview-num">' + streak.count + '</div>';
+                html += '<div class="overview-label">连续学习天数</div>';
+                html += '</div>';
+                // 大卡片2: 预估分数
+                html += '<div class="dashboard-overview-card large score-card shimmer-card">';
+                html += '<div class="overview-icon" style="background:rgba(255,255,255,0.2)">' + icons.target + '</div>';
+                if (hasDimData) {
+                    var passLine = 425;
+                    var diff = passLine - estimatedScore;
+                    html += '<div class="overview-num">' + estimatedScore + '分</div>';
+                    html += '<div class="overview-label score-label">';
+                    html += '<span class="pass-line">及格线' + passLine + '分</span>';
+                    html += '<span class="diff ' + (diff > 0 ? 'diff-warning' : 'diff-pass') + '">' + (diff > 0 ? '还差' + diff + '分' : '已过线✓') + '</span>';
+                    html += '</div>';
+                } else {
+                    html += '<div class="overview-num">--</div>';
+                    html += '<div class="overview-label">预估分数<span class="overview-label-hint">完成诊断后解锁</span></div>';
+                }
+                html += '</div>';
+                // 小卡片1: 今日练习
+                html += '<div class="dashboard-overview-card small practice">';
+                html += '<div class="overview-icon" style="background:rgba(0,184,148,0.1)">' + icons.pencil + '</div>';
+                html += '<div class="overview-num">' + todayCount + '</div>';
+                html += '<div class="overview-label">今日练习</div>';
+                html += '</div>';
+                // 小卡片2: 正确率
+                html += '<div class="dashboard-overview-card small accuracy">';
+                html += '<div class="overview-icon" style="background:rgba(108,92,231,0.1)">' + icons.check + '</div>';
+                html += '<div class="overview-num">' + accuracy + '%</div>';
+                html += '<div class="overview-label">总正确率</div>';
+                html += '</div>';
+                html += '</div>';
+                
+                // ===== 第3个板块: 五维能力分析（雷达图+趋势+薄弱项）=====
+                html += '<div class="dashboard-radar-section glass-card">';
+                html += '<div class="dashboard-radar-header">';
+                html += '<div class="dashboard-radar-title">' + icons.chart + '五维能力分析</div>';
+                if (weakDims.length > 0) {
+                    html += '<div class="dashboard-radar-tip">' + icons.alert + '最弱项: ' + weakDims[0] + '</div>';
+                }
+                html += '</div>';
+                if (hasDimData) {
+                    html += '<div class="dashboard-radar-canvas-wrap">';
+                    html += '<canvas id="dashboard-radar-canvas" width="260" height="260"></canvas>';
+                    html += '</div>';
                     // 维度标签（带趋势箭头）
                     html += '<div class="dashboard-radar-dims">';
+                    var dimNames = ['细节定位', '推理判断', '同义替换', '主旨归纳', '态度判断'];
+                    dimNames.forEach(function(dim) {
+                        var score = dims[dim] || 0;
+                        var isWeak = weakDims.indexOf(dim) !== -1;
+                        var trend = abilityTrend && abilityTrend[dim] ? abilityTrend[dim] : null;
+                        var trendArrow = trend ? trend.arrow : '';
+                        var trendClass = trend ? (trend.trend === 'up' ? ' trend-up' : (trend.trend === 'down' ? ' trend-down' : '')) : '';
+                        html += '<div class="dashboard-radar-dim-tag' + (isWeak ? ' weak' : '') + '"' + (isWeak ? ' onclick="startDimPractice(\'' + dim + '\')"' : '') + '>';
+                        html += '<span class="dashboard-radar-dim-name">' + dim + '</span>';
+                        html += '<span class="dashboard-radar-dim-score">' + score + '<span class="trend-arrow' + trendClass + '">' + trendArrow + '</span></span>';
+                        html += '</div>';
+                    });
+                    html += '</div>';
+                    if (weakDims.length > 0) {
+                        html += '<div class="dashboard-radar-weak-hint">点击薄弱维度开始专项练习 ↑</div>';
+                    }
+                } else {
+                    html += '<div class="dashboard-radar-empty">';
+                    html += '<div class="dashboard-radar-empty-icon">' + icons.search + '</div>';
+                    html += '<div class="dashboard-radar-empty-text">完成首次诊断后解锁<br>AI将分析你的五维能力</div>';
+                    html += '</div>';
+                }
+                html += '</div>';
+                
+                // ===== 第4个板块: 学习趋势（正确率折线图）=====
+                var hasTrendData = totalPractice > 0;
+                html += '<div class="dashboard-trend-section glass-card">';
+                html += '<div class="dashboard-trend-header">';
+                html += '<div class="dashboard-trend-title">' + icons.trending + '学习趋势</div>';
+                html += '<div class="dashboard-trend-period"><button class="active">近7天</button></div>';
+                html += '</div>';
+                html += '<div class="dashboard-trend-canvas-wrap">';
+                if (hasTrendData) {
+                    html += '<canvas id="dashboard-trend-canvas"></canvas>';
+                } else {
+                    html += '<div class="dashboard-trend-empty">';
+                    html += '<div class="dashboard-trend-empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>';
+                    html += '<div class="dashboard-trend-empty-text">完成练习后查看正确率趋势</div>';
+                    html += '</div>';
+                }
+                html += '</div>';
+                html += '</div>';
+                
+                // ===== 第5个板块: 诊断报告历史 =====
+                html += '<div class="dashboard-report-section">';
+                html += '<div class="dashboard-section-title">' + icons.list + '诊断报告历史</div>';
+                html += '<div class="dashboard-report-timeline">';
+                var reportHistory = getDiagnosisReports();
+                if (reportHistory && reportHistory.length > 0) {
+                    reportHistory.forEach(function(report) {
+                        html += '<div class="dashboard-report-card glass-card">';
+                        html += '<div class="dashboard-report-header">';
+                        html += '<div class="dashboard-report-date">' + report.date + '</div>';
+                        html += '<div class="dashboard-report-score">' + report.score + '分</div>';
+                        html += '</div>';
+                        html += '<div class="dashboard-report-dims">';
+                        var dimNames = ['细节定位', '推理判断', '同义替换', '主旨归纳', '态度判断'];
+                        dimNames.forEach(function(dim) {
+                            var dimScore = report.dims && report.dims[dim] ? report.dims[dim] : '--';
+                            var isWeak = weakDims.indexOf(dim) !== -1;
+                            html += '<div class="dashboard-report-dim">';
+                            html += '<div class="dashboard-report-dim-name">' + dim + '</div>';
+                            html += '<div class="dashboard-report-dim-score' + (isWeak ? ' weak' : '') + '">' + (typeof dimScore === 'number' ? dimScore + '分' : dimScore) + '</div>';
+                            html += '</div>';
+                        });
+                        html += '</div>';
+                        if (report.personality) {
+                            html += '<div class="dashboard-report-personality">' + report.personality + '</div>';
+                        }
+                        html += '</div>';
+                    });
+                } else {
+                    html += '<div class="dashboard-report-empty">';
+                    html += '<div class="dashboard-empty-icon">' + icons.pencil + '</div>';
+                    html += '<div>暂无诊断记录</div>';
+                    html += '<div style="font-size:12px;margin-top:4px">完成AI诊断后即可查看报告</div>';
+                    html += '</div>';
+                }
+                html += '</div>'; // end timeline
+                html += '</div>';
+                
+                // ===== 底部安全区域 =====
+                html += '<div class="dashboard-bottom-spacer"></div>';
+                
+                container.innerHTML = html;
+                
+                // 启动CountUp数字动画
+                setTimeout(function() {
+                    animateCountUp();
+                }, 300);
+                
+                // 启动环形进度条动画
+                setTimeout(function() {
+                    animateRingProgress();
+                }, 500);
+                
+                // 绘制雷达图
+                if (hasDimData) {
+                    setTimeout(function() {
+                        drawDashboardRadar(dims);
+                    }, 100);
+                }
+                
+                // 绘制正确率趋势图
+                setTimeout(function() {
+                    drawDashboardTrend();
+                }, 150);
+            } catch(e) { 
+                console.error('renderDashboard error:', e); 
+                var c = document.getElementById('dashboard-content');
+                if(c) c.innerHTML = '<div style="padding:40px 20px;text-align:center"><div style="font-size:40px;margin-bottom:12px">📊</div><div style="font-size:16px;font-weight:600">数据页面加载失败</div><div style="font-size:13px;color:#64748B;margin-top:8px">请刷新页面重试</div><div style="font-size:11px;color:#94A3B8;margin-top:4px;word-break:break-all">' + (e && e.message ? e.message : '') + '</div></div>';
+            }
+        }
+
                     var dimNames = ['细节定位', '推理判断', '同义替换', '主旨归纳', '态度判断'];
                     dimNames.forEach(function(dim) {
                         var score = dims[dim] || 0;
@@ -3877,6 +4107,231 @@ function getAbilityTrend() {
                 localStorage.setItem(getDailyTasksKey(), JSON.stringify(tasks));
             } catch(e) {}
         }
+        // ===== 今日待办卡片 - 从 cet_today_tasks 读取 =====
+        function getTodayTaskData() {
+            try {
+                var data = localStorage.getItem('cet_today_tasks');
+                if (!data) return null;
+                var taskData = JSON.parse(data);
+                var today = getTodayStr();
+                // 如果日期不是今天，返回 null
+                if (taskData.date !== today) return null;
+                return taskData;
+            } catch(e) {
+                return null;
+            }
+        }
+        
+        // 获取任务类型图标
+        function getTaskTypeIcon(type) {
+            var icons = {
+                'quiz': '📝',
+                'essay': '✍️',
+                'translation': '🔄',
+                'review': '📖',
+                'chat': '💬',
+                'listening': '🎧',
+                'vocab': '📚'
+            };
+            return icons[type] || '📋';
+        }
+        
+        // 获取任务类型名称
+        function getTaskTypeName(type) {
+            var names = {
+                'quiz': '练习',
+                'essay': '作文',
+                'translation': '翻译',
+                'review': '复习',
+                'chat': '对话',
+                'listening': '听力',
+                'vocab': '词汇'
+            };
+            return names[type] || '任务';
+        }
+        
+        // 渲染今日待办卡片
+        function renderTodayTaskCard() {
+            var card = document.getElementById('today-task-card');
+            if (!card) return;
+            
+            var taskData = getTodayTaskData();
+            var listContainer = document.getElementById('today-task-list');
+            var progressEl = document.getElementById('today-task-progress');
+            var doneEl = document.getElementById('today-task-all-done');
+            var emptyEl = document.getElementById('today-task-empty');
+            
+            if (!listContainer || !progressEl) return;
+            
+            // 如果没有任务数据，隐藏整个卡片（不占位）
+            if (!taskData || !taskData.tasks || taskData.tasks.length === 0) {
+                card.style.display = 'none';
+                return;
+            }
+            
+            // 显示卡片
+            card.style.display = 'block';
+            if (emptyEl) emptyEl.style.display = 'none';
+            
+            var tasks = taskData.tasks;
+            var completedCount = tasks.filter(function(t) { return t.completed; }).length;
+            var totalCount = tasks.length;
+            var allCompleted = completedCount === totalCount;
+            
+            // 更新进度
+            progressEl.textContent = completedCount + '/' + totalCount;
+            
+            // 渲染任务列表
+            var html = '';
+            tasks.forEach(function(task, idx) {
+                var isCompleted = task.completed;
+                var icon = getTaskTypeIcon(task.type);
+                var typeName = getTaskTypeName(task.type);
+                
+                html += '<div class="today-task-item' + (isCompleted ? ' completed' : '') + '" ';
+                html += 'data-task-id="' + task.id + '" ';
+                html += 'data-task-type="' + task.type + '" ';
+                html += 'data-task-dim="' + (task.dim || '') + '" ';
+                html += 'onclick="handleTodayTaskClick(' + task.id + ', \'' + task.type + '\', \'' + (task.dim || '') + '\', ' + isCompleted + ')"';
+                html += '>';
+                html += '<div class="today-task-icon' + (isCompleted ? ' completed' : '') + '">' + (isCompleted ? '✓' : icon) + '</div>';
+                html += '<div class="today-task-text' + (isCompleted ? ' completed' : '') + '">' + task.title + '</div>';
+                if (task.dim) {
+                    html += '<div class="today-task-dim">' + task.dim + '</div>';
+                }
+                html += '</div>';
+            });
+            
+            listContainer.innerHTML = html;
+            
+            // 如果全部完成，显示鼓励文案
+            if (doneEl) {
+                doneEl.style.display = allCompleted ? 'block' : 'none';
+            }
+        }
+        
+        // ===== 首页待复习错题提醒 =====
+        function renderHomeReviewReminder() {
+            var reminder = document.getElementById('home-review-reminder');
+            if (!reminder) return;
+            
+            var overdueCount = typeof getOverdueReviewCount === 'function' ? getOverdueReviewCount() : 0;
+            var titleEl = document.getElementById('home-review-title');
+            var descEl = document.getElementById('home-review-desc');
+            
+            if (overdueCount > 0) {
+                reminder.style.display = 'flex';
+                if (titleEl) titleEl.textContent = '📖 待复习错题';
+                if (descEl) descEl.textContent = '有 ' + overdueCount + ' 道错题到了复习时间';
+            } else {
+                reminder.style.display = 'none';
+            }
+        }
+        
+        // 检查是否需要显示打开APP时的toast提醒
+        function checkReviewToastReminder() {
+            var overdueCount = typeof getOverdueReviewCount === 'function' ? getOverdueReviewCount() : 0;
+            if (overdueCount <= 3) return; // 少于等于3道不提醒
+            
+            var today = new Date().toDateString();
+            var lastRemindDate = localStorage.getItem('cet_review_remind_date');
+            
+            // 每天只提醒一次
+            if (lastRemindDate === today) return;
+            
+            localStorage.setItem('cet_review_remind_date', today);
+            
+            setTimeout(function() {
+                if (typeof showToast === 'function') {
+                    showToast('📖 你有 ' + overdueCount + ' 道错题该复习了');
+                }
+            }, 1500);
+        }
+        
+        // 处理今日任务点击
+        function handleTodayTaskClick(taskId, taskType, taskDim, isCompleted) {
+            // 如果已完成，无操作
+            if (isCompleted) return;
+            
+            // 根据任务类型执行对应操作
+            switch(taskType) {
+                case 'quiz':
+                    // 跳转到诊断页并开始练习
+                    switchTab('diagnosis');
+                    if (taskDim) {
+                        setTimeout(function() {
+                            if (typeof startPractice === 'function') {
+                                startPractice([taskDim]);
+                            }
+                        }, 300);
+                    }
+                    break;
+                case 'essay':
+                    // 打开作文批改
+                    if (typeof openEssayOverlay === 'function') {
+                        openEssayOverlay();
+                    } else {
+                        switchTab('diagnosis');
+                        setTimeout(function() {
+                            if (typeof sendSuggestion === 'function') {
+                                sendSuggestion('帮我批改作文');
+                            }
+                        }, 300);
+                    }
+                    break;
+                case 'translation':
+                    // 打开翻译练习
+                    switchTab('diagnosis');
+                    setTimeout(function() {
+                        if (typeof sendSuggestion === 'function') {
+                            sendSuggestion('翻译练习');
+                        }
+                    }, 300);
+                    break;
+                case 'review':
+                    // 跳转到错题本
+                    switchTab('wrongbook');
+                    break;
+                case 'chat':
+                    // 打开聊天
+                    switchTab('diagnosis');
+                    if (taskDim) {
+                        setTimeout(function() {
+                            if (typeof sendSuggestion === 'function') {
+                                sendSuggestion(taskDim);
+                            }
+                        }, 300);
+                    }
+                    break;
+                case 'listening':
+                    // 打开听力练习
+                    switchTab('diagnosis');
+                    setTimeout(function() {
+                        if (typeof sendSuggestion === 'function') {
+                            sendSuggestion('听力练习');
+                        }
+                    }, 300);
+                    break;
+                case 'vocab':
+                    // 打开词汇诊断
+                    switchTab('vocab');
+                    break;
+                default:
+                    // 默认跳转到诊断页
+                    switchTab('diagnosis');
+            }
+        }
+        
+        // 生成今日学习计划（跳转到聊天让AI生成）
+        function generateTodayPlan() {
+            switchTab('diagnosis');
+            setTimeout(function() {
+                if (typeof sendSuggestion === 'function') {
+                    sendSuggestion('帮我生成今日学习计划');
+                }
+            }, 300);
+        }
+
         
         // 生成每日任务
         function generateDailyTasks() {
@@ -4001,6 +4456,38 @@ function getAbilityTrend() {
             return tasks.slice(0, 3); // 最多3个任务
         }
         
+        // ===== CET每日任务系统（计划tab使用） =====
+        function getCETTodayTasks() {
+            try {
+                var data = localStorage.getItem('cet_today_tasks');
+                if (!data) return null;
+                var parsed = JSON.parse(data);
+                // 检查日期
+                var today = new Date().toISOString().split('T')[0];
+                if (parsed.date !== today) return null;
+                return parsed;
+            } catch(e) { return null; }
+        }
+        
+        function saveCETTodayTasks(taskData) {
+            localStorage.setItem('cet_today_tasks', JSON.stringify(taskData));
+        }
+        
+        function markCETTaskComplete(taskId) {
+            var data = getCETTodayTasks();
+            if (!data || !data.tasks) return false;
+            var found = false;
+            data.tasks.forEach(function(task) {
+                if (task.id === taskId && !task.completed) {
+                    task.completed = true;
+                    task.completedAt = Date.now();
+                    found = true;
+                }
+            });
+            if (found) saveCETTodayTasks(data);
+            return found;
+        }
+        
         // 标记任务完成
         function markTaskComplete(taskId) {
             var tasks = getTodayTasks();
@@ -4015,6 +4502,23 @@ function getAbilityTrend() {
             
             saveTodayTasks(tasks);
             updateDailyTaskCard();
+            
+            // 同时标记CET任务系统中的任务完成
+            // quiz类型任务 -> 找第一个quiz类型的未完成任务
+            if (taskId === 'quiz' || (typeof taskId === 'string' && taskId.startsWith('dim_'))) {
+                var cetTaskData = getCETTodayTasks();
+                if (cetTaskData && cetTaskData.tasks) {
+                    cetTaskData.tasks.forEach(function(task) {
+                        if (task.type === 'quiz' && !task.completed) {
+                            // 找到quiz类型任务，标记完成
+                            var marked = markCETTaskComplete(task.id);
+                            if (marked) {
+                                console.log('[CET任务] 标记quiz任务完成:', task.title);
+                            }
+                        }
+                    });
+                }
+            }
         }
         
         // 初始化或更新任务卡
@@ -4848,6 +5352,8 @@ function updateHomeStatus() {
                             checkAndParseEssayResponse(fullText);
                         }
                         onBotReply();
+                    // 检测薄弱项引导词，显示快捷入口
+                    checkAndShowWeakDimQuickLink(fullText, aiDiv);
                     } else {
                         removeTypingIndicator();
                         if (aiDiv && aiDiv.parentNode) aiDiv.remove();
@@ -4863,6 +5369,8 @@ function updateHomeStatus() {
                     chatState.chatHistory.push({ role: 'assistant', content: fullText, content_type: 'text' });
                     saveMessagesToLocal(chatState.conversationId);
                     try { onBotReply(); } catch(e2) { console.error('[Stream] onBotReply error in catch:', e2.message); }
+                        // 检测薄弱项引导词，显示快捷入口（fallback分支）
+                        checkAndShowWeakDimQuickLink(fullText, aiDiv);
                 } else {
                     removeTypingIndicator();
                     appendMessage('ai', '网络异常，请重试');
@@ -4929,6 +5437,115 @@ function updateHomeStatus() {
                 console.error('[onBotReply] Error (non-fatal):', e.message);
             }
         }
+
+        // ===== 薄弱项快捷入口检测 =====
+        var lastWeakDimPromptTime = 0;
+        var WEAK_DIM_COOLDOWN = 3; // 每3轮对话最多提1次
+
+        function checkAndShowWeakDimQuickLink(aiText, msgDiv) {
+            if (!aiText || !msgDiv) return;
+            // 非陪练模式不显示
+            if (chatState.currentMode !== 'companion') return;
+            
+            // 冷却检测：每3轮最多提1次
+            var rounds = chatState.chatRounds || 0;
+            if (rounds - lastWeakDimPromptTime < WEAK_DIM_COOLDOWN) return;
+            
+            // 五维维度关键词
+            var dimKeywords = [
+                { dim: '同义替换', patterns: [/同义替换/g, /词汇替换/g, /paraphrase/gi] },
+                { dim: '主旨归纳', patterns: [/主旨归纳/g, /主旨大意/g, /main idea/g, /中心思想/g] },
+                { dim: '推理判断', patterns: [/推理判断/g, /推理题/g, /推断/g, /inference/gi] },
+                { dim: '细节定位', patterns: [/细节定位/g, /细节题/g, /定位/g, /细节理解/g] },
+                { dim: '态度判断', patterns: [/态度判断/g, /态度题/g, /作者态度/g, /attitude/gi] }
+            ];
+            
+            var matchedDim = null;
+            for (var i = 0; i < dimKeywords.length; i++) {
+                var item = dimKeywords[i];
+                for (var j = 0; j < item.patterns.length; j++) {
+                    if (item.patterns[j].test(aiText)) {
+                        matchedDim = item.dim;
+                        break;
+                    }
+                }
+                if (matchedDim) break;
+            }
+            
+            // 同时检查是否有练习建议
+            var hasPracticeSuggestion = /练习|做题|专项|强化|巩固/g.test(aiText);
+            if (!matchedDim || !hasPracticeSuggestion) return;
+            
+            // 检查是否在推荐专项练习（只有提到薄弱项+练习建议才显示按钮）
+            var dimPracticePatterns = [
+                /同义替换.*练习|练习.*同义替换|做.*同义替换|同义替换.*题/,
+                /主旨.*练习|练习.*主旨|做.*主旨|主旨.*题/,
+                /推理.*练习|练习.*推理|做.*推理|推理.*题/,
+                /细节.*练习|练习.*细节|做.*细节|细节.*题/,
+                /态度.*练习|练习.*态度|做.*态度|态度.*题/
+            ];
+            
+            var shouldShow = false;
+            for (var k = 0; k < dimPracticePatterns.length; k++) {
+                if (dimPracticePatterns[k].test(aiText)) {
+                    shouldShow = true;
+                    break;
+                }
+            }
+            if (!shouldShow) return;
+            
+            // 更新冷却时间
+            lastWeakDimPromptTime = rounds;
+            
+            // 获取维度对应的练习类型
+            var dimTypeMap = {
+                '同义替换': '阅读理解-仔细阅读',
+                '主旨归纳': '阅读理解-仔细阅读',
+                '推理判断': '阅读理解-仔细阅读',
+                '细节定位': '阅读理解-仔细阅读',
+                '态度判断': '阅读理解-仔细阅读'
+            };
+            
+            var practiceType = dimTypeMap[matchedDim] || '阅读理解-仔细阅读';
+            var btnText = '去练' + matchedDim;
+            
+            // 创建快捷入口按钮
+            var quickLink = document.createElement('div');
+            quickLink.className = 'weak-dim-quick-link';
+            quickLink.innerHTML = '<button class="weak-dim-btn" onclick="startDimPractice(\'' + matchedDim + '\', \'' + practiceType + '\')">' + btnText + '</button>';
+            
+            // 插入到消息div后面
+            var container = document.getElementById('chat-messages');
+            if (container && msgDiv.parentNode === container) {
+                var insertPos = Array.prototype.indexOf.call(container.children, msgDiv) + 1;
+                if (insertPos < container.children.length) {
+                    container.insertBefore(quickLink, container.children[insertPos]);
+                } else {
+                    container.appendChild(quickLink);
+                }
+                scrollChatToBottom();
+            }
+        }
+        
+        // 开始维度专项练习
+        function startDimPractice(dimName, practiceType) {
+            // 隐藏快捷入口
+            var quickLinks = document.querySelectorAll('.weak-dim-quick-link');
+            quickLinks.forEach(function(el) { el.remove(); });
+            
+            // 切换到练习模式
+            if (typeof showQuizMode === 'function') {
+                showQuizMode(practiceType, dimName);
+            } else {
+                // 如果没有练习模式，通过对话引导
+                var input = document.getElementById('chat-input');
+                if (input) {
+                    input.value = '我要练习' + dimName;
+                    sendMessage();
+                }
+            }
+        }
+
 
         function updateRoundInfo() {}
 
@@ -5238,9 +5855,8 @@ function showClearChatModal() {
                 '<p>4. 您对通过本产品提交的内容（作文、翻译等）拥有著作权，同时授权我们为提供服务之必要使用该内容。</p>' +
                 '<p><b>三、付费服务</b></p>' +
                 '<p>1. 付费服务通过面包多平台购买，支付信息由面包多处理。</p>' +
-                '<p>2. 购买后7天内，未使用AI批改、智能诊断等核心功能，可申请全额退款。</p>' +
-                '<p>3. 已使用核心功能（包括但不限于AI批改、诊断报告生成、错题本等）后不支持退款。</p>' +
-                '<p>4. 退款通过面包多订单页申请，我们将在3个工作日内处理。</p>' +
+                '<p>2. 虚拟商品一经开通不支持退款，请先体验免费版确认功能满足需求。</p>' +
+                '<p>3. 如有特殊情况，可通过面包多订单页与我们沟通。</p>' +
                 '<p><b>四、知识产权</b></p>' +
                 '<p>1. 本产品的界面设计、题库内容、AI生成内容等知识产权归我们所有。</p>' +
                 '<p>2. 未经授权，禁止复制、传播本产品的任何内容用于商业目的。</p>' +
@@ -5405,7 +6021,7 @@ function openPayment(plan) {
     };
     // 面包多商品链接（冲刺营¥29.9）
     var mbdLinks = {
-        sprint: 'https://mbd.pub/o/bread/mbd-YZaTk5tsbA=='
+        sprint: 'https://mbd.pub/o/bread/YZaTk5tsbA=='
     };
 
     var existing = document.getElementById('pay-modal');
@@ -5882,6 +6498,8 @@ var quizState = {
     startTime: null,
     answeredTypes: { '词汇': 0, '语法': 0, '阅读': 0, '听力': 0 },
     wrongTypes: { '词汇': 0, '语法': 0, '阅读': 0, '听力': 0 },
+    // 维度答题记录: {ability: '同义替换', correct: true/false}
+    dimResults: [],
     // 限时训练相关
     timerActive: false,
     timerRemaining: 0,
@@ -5944,6 +6562,7 @@ function openQuiz() {
     quizState.answeredTypes = { '词汇': 0, '语法': 0, '阅读': 0, '听力': 0 };
     quizState.wrongTypes = { '词汇': 0, '语法': 0, '阅读': 0, '听力': 0 };
     quizState.startTime = Date.now();
+    quizState.dimResults = []; // 重置维度记录
     
     var overlay = document.getElementById('quiz-overlay');
     var body = document.getElementById('quiz-body');
@@ -6009,7 +6628,93 @@ function startQuizWithDim() {
 }
 
 // 请求题目（支持维度筛选）
+// 批量题目缓存
+var quizBatchCache = {
+    questions: [],
+    currentIdx: 0,
+    dimDistribution: {},
+    totalCount: 0
+};
+
 async function requestQuizQuestion() {
+    var user = state.userData || {};
+    var plan = user.plan || 'free';
+    var types = ['词汇', '语法', '阅读', '听力'];
+    
+    // 如果缓存中有题目，直接取下一题
+    if (quizBatchCache.questions && quizBatchCache.questions.length > 0 && quizBatchCache.currentIdx < quizBatchCache.questions.length) {
+        var q = quizBatchCache.questions[quizBatchCache.currentIdx];
+        quizBatchCache.currentIdx++;
+        renderRealQuiz(q);
+        return;
+    }
+    
+    // 缓存用完或为空，需要获取新批次
+    var subtitle = document.getElementById('quiz-subtitle');
+    if (subtitle) subtitle.textContent = '正在加载题目...';
+    
+    // 构造批量获取URL
+    var batchUrl = '/api/quiz/batch';
+    var dimsParts = [];
+    
+    // 传递用户五维分数用于自适应推题
+    var diag = user.diagnosis || {};
+    if (diag['细节定位'] || diag['推理判断'] || diag['同义替换'] || diag['主旨归纳'] || diag['态度判断']) {
+        if (diag['细节定位']) dimsParts.push('细节定位:' + diag['细节定位']);
+        if (diag['推理判断']) dimsParts.push('推理判断:' + diag['推理判断']);
+        if (diag['同义替换']) dimsParts.push('同义替换:' + diag['同义替换']);
+        if (diag['主旨归纳']) dimsParts.push('主旨归纳:' + diag['主旨归纳']);
+        if (diag['态度判断']) dimsParts.push('态度判断:' + diag['态度判断']);
+    }
+    
+    if (dimsParts.length > 0) {
+        batchUrl += '?dims=' + encodeURIComponent(dimsParts.join(','));
+    }
+    
+    // 支持按维度筛选（专项练习）
+    if (quizDimState.selectedDim) {
+        var dimConfig = quizDimState.dimList.find(function(d) { return d.key === quizDimState.selectedDim; });
+        if (dimConfig && dimConfig.abilityKey) {
+            batchUrl += (dimsParts.length > 0 ? '&' : '?') + 'ability=' + encodeURIComponent(dimConfig.abilityKey);
+        }
+    }
+    
+    try {
+        var resp = await fetch(batchUrl);
+        var data = await resp.json();
+        
+        if (data.code === 0 && data.data && data.data.questions && data.data.questions.length > 0) {
+            // 成功获取批量题目
+            quizBatchCache.questions = data.data.questions;
+            quizBatchCache.currentIdx = 1;
+            quizBatchCache.dimDistribution = data.data.dimDistribution || {};
+            quizBatchCache.totalCount = data.data.totalCount || data.data.questions.length;
+            quizState.totalQuestions = quizBatchCache.totalCount;
+            
+            // 显示分配信息
+            if (subtitle) {
+                var dimInfo = Object.entries(quizBatchCache.dimDistribution)
+                    .map(function(e) { return e[0] + ':' + e[1]; })
+                    .join(' / ');
+                subtitle.textContent = '已加载' + quizBatchCache.totalCount + '题';
+            }
+            
+            // 渲染第一题
+            var q = quizBatchCache.questions[0];
+            renderRealQuiz(q);
+        } else {
+            // fallback: 单题获取
+            console.warn('[批量获取失败，降级到单题模式]');
+            requestQuizQuestionSingle();
+        }
+    } catch(e) {
+        console.error('[批量获取题目失败]', e);
+        requestQuizQuestionSingle();
+    }
+}
+
+// 单题获取（降级方案）
+async function requestQuizQuestionSingle() {
     var user = state.userData || {};
     var plan = user.plan || 'free';
     var types = ['词汇', '语法', '阅读', '听力'];
@@ -6437,6 +7142,31 @@ function renderQuizQuestion(question) {
     tagHtml += '</div>';
     
     var html = '<div class="quiz-type-badge">' + tagHtml + '</div>';
+    
+    // 听力题：添加播放按钮
+    var isListeningQuestion = (dimension === '听力' || question.type === '听力' || question.category === 'LC');
+    if (isListeningQuestion && question.passage) {
+        // 保存当前听力文本到quizState
+        quizState.currentListeningText = question.passage;
+        quizState.currentListeningIsConv = (question.passage_type === 'conversation');
+        quizState.listeningPlayed = false;
+        quizState.listeningReplayCount = 0;
+        
+        html += '<div class="quiz-listening-player">';
+        html += '<div class="quiz-listening-wave" id="quiz-listening-wave">';
+        html += '<span></span><span></span><span></span><span></span><span></span>';
+        html += '</div>';
+        html += '<button class="quiz-listening-play-btn" id="quiz-listening-play-btn" onclick="handleQuizPlayClick()">';
+        html += '<span class="play-icon">▶</span>';
+        html += '</button>';
+        html += '<div class="quiz-listening-hint" id="quiz-listening-hint">点击播放听力</div>';
+        html += '</div>';
+        html += '<div class="quiz-listening-progress" id="quiz-listening-progress" style="display:none;">';
+        html += '<div class="quiz-listening-progress-bar"></div>';
+        html += '</div>';
+        html += '<div class="quiz-listening-replay-hint" id="quiz-listening-replay-hint"></div>';
+    }
+    
     html += '<div class="quiz-question">' + question.question + '</div>';
     html += '<div class="quiz-options">';
     
@@ -6466,11 +7196,115 @@ function renderQuizQuestion(question) {
 }
 
 // 选择答案
+// 每日一练听力播放处理
+var quizListeningPlayer = {
+    isPlaying: false,
+    isPaused: false,
+    text: '',
+    onComplete: null
+};
+
+function handleQuizPlayClick() {
+    var text = quizState.currentListeningText;
+    if (!text) return;
+    
+    if (quizListeningPlayer.isPlaying) {
+        // 停止播放
+        stopQuizListening();
+        return;
+    }
+    
+    // 开始播放
+    quizListeningPlayer.isPlaying = true;
+    quizListeningPlayer.text = text;
+    
+    var playBtn = document.getElementById('quiz-listening-play-btn');
+    var hint = document.getElementById('quiz-listening-hint');
+    var progress = document.getElementById('quiz-listening-progress');
+    
+    if (playBtn) {
+        playBtn.classList.add('playing');
+        playBtn.innerHTML = '<span class="wave-container"><span></span><span></span><span></span></span>';
+    }
+    if (hint) hint.textContent = '听力播放中...';
+    if (progress) progress.style.display = 'block';
+    
+    // 估算播放时长
+    var duration = Math.max(15, text.split(/\s+/).length / 2);
+    animateQuizProgress(duration);
+    
+    // 使用SpeechSynthesis播放
+    playListeningFull(text, quizState.currentListeningIsConv, function() {
+        stopQuizListening();
+        quizState.listeningPlayed = true;
+        var hint = document.getElementById('quiz-listening-hint');
+        var replayHint = document.getElementById('quiz-listening-replay-hint');
+        if (hint) hint.textContent = '✅ 播放完毕，请答题';
+        if (replayHint) replayHint.textContent = '';
+        quizListeningPlayer.isPlaying = false;
+    });
+}
+
+function stopQuizListening() {
+    stopListeningPlayback();
+    quizListeningPlayer.isPlaying = false;
+    quizListeningPlayer.isPaused = false;
+    
+    var playBtn = document.getElementById('quiz-listening-play-btn');
+    var hint = document.getElementById('quiz-listening-hint');
+    var progress = document.getElementById('quiz-listening-progress');
+    
+    if (playBtn) {
+        playBtn.classList.remove('playing');
+        playBtn.innerHTML = '<span class="play-icon">▶</span>';
+    }
+    if (progress) {
+        progress.style.display = 'none';
+        var bar = progress.querySelector('.quiz-listening-progress-bar');
+        if (bar) bar.style.width = '0%';
+    }
+}
+
+function animateQuizProgress(duration) {
+    var progress = document.getElementById('quiz-listening-progress');
+    if (!progress) return;
+    
+    var bar = progress.querySelector('.quiz-listening-progress-bar');
+    if (!bar) return;
+    
+    var startTime = Date.now();
+    var totalDuration = duration * 1000;
+    
+    function update() {
+        if (!quizListeningPlayer.isPlaying) {
+            bar.style.width = '0%';
+            return;
+        }
+        
+        var elapsed = Date.now() - startTime;
+        var pct = Math.min(100, (elapsed / totalDuration) * 100);
+        bar.style.width = pct + '%';
+        
+        if (elapsed < totalDuration && quizListeningPlayer.isPlaying) {
+            requestAnimationFrame(update);
+        }
+    }
+    
+    requestAnimationFrame(update);
+}
+
 function selectQuizOption(el, option) {
     if (el.classList.contains('disabled')) return;
     
     var question = quizState.currentQuestion;
     var isCorrect = option === question.answer;
+    
+    // 记录维度答题结果（用于更新五维分数）
+    var ability = question.ability || '细节理解'; // 题目中的能力维度
+    quizState.dimResults.push({
+        ability: ability,
+        correct: isCorrect
+    });
     
     // 禁用所有选项
     var options = document.querySelectorAll('.quiz-option');
@@ -6593,6 +7427,91 @@ function showQuizStats() {
         }
     }
     
+    // 生成维度分布HTML
+    var dimDistHtml = '';
+    var results = quizState.dimResults || [];
+    if (results.length > 0) {
+        // 统计每个维度的正确率
+        var dimStats = {};
+        results.forEach(function(r) {
+            if (!dimStats[r.ability]) {
+                dimStats[r.ability] = { correct: 0, total: 0 };
+            }
+            dimStats[r.ability].total++;
+            if (r.correct) dimStats[r.ability].correct++;
+        });
+        
+        // 生成维度条形图
+        var dimBarsHtml = '';
+        var weakDimList = [];
+        var dimOrder = ['细节理解', '推理判断', '同义替换', '主旨归纳', '态度判断'];
+        
+        for (var i = 0; i < dimOrder.length; i++) {
+            var dim = dimOrder[i];
+            if (!dimStats[dim]) continue;
+            
+            var stat = dimStats[dim];
+            var dimRate = Math.round((stat.correct / stat.total) * 100);
+            var barWidth = dimRate;
+            var barColor = 'green';
+            if (dimRate < 40) {
+                barColor = 'red';
+                weakDimList.push(dim);
+            } else if (dimRate < 60) {
+                barColor = 'orange';
+                weakDimList.push(dim);
+            }
+            
+            dimBarsHtml += '<div class="quiz-dim-bar">';
+            dimBarsHtml += '<div class="quiz-dim-bar-label">' + dim + '</div>';
+            dimBarsHtml += '<div class="quiz-dim-bar-track"><div class="quiz-dim-bar-fill ' + barColor + '" style="width:' + barWidth + '%"></div></div>';
+            dimBarsHtml += '<div class="quiz-dim-bar-rate">' + dimRate + '%（' + stat.correct + '/' + stat.total + '）</div>';
+            dimBarsHtml += '</div>';
+        }
+        
+        if (dimBarsHtml) {
+            dimDistHtml = '<div class="quiz-stats-dims">' + dimBarsHtml + '</div>';
+        }
+    }
+    
+    // 生成能力值变化HTML
+    var dimChangeHtml = '';
+    var dimChanges = quizState.dimChanges || {};
+    var dimChangeList = [];
+    for (var dim in dimChanges) {
+        var change = dimChanges[dim];
+        if (change !== 0) {
+            var arrow = change > 0 ? '↑' : '↓';
+            var sign = change > 0 ? '+' : '';
+            dimChangeList.push(dim + ' ' + sign + change + ' ' + arrow);
+        }
+    }
+    if (dimChangeList.length > 0) {
+        dimChangeHtml = '<div class="quiz-stats-change">' + dimChangeList.join(' &nbsp;|&nbsp; ') + '</div>';
+    }
+    
+    // 生成推荐下一步HTML
+    var recommendHtml = '';
+    var dimChanges2 = quizState.dimChanges || {};
+    var weakDims = [];
+    for (var dim in dimChanges2) {
+        // 找出变化为负或正确率低的维度
+        if (dimChanges2[dim] < 0) {
+            weakDims.push(dim);
+        }
+    }
+    // 如果没有负变化但有薄弱项，使用薄弱项
+    if (weakDims.length === 0 && weakDimList && weakDimList.length > 0) {
+        weakDims = weakDimList.slice(0, 2); // 最多取2个
+    }
+    if (weakDims.length > 0) {
+        var firstWeakDim = weakDims[0];
+        recommendHtml = '<div class="quiz-stats-recommend">';
+        recommendHtml += '<div class="quiz-stats-recommend-text">' + firstWeakDim + '正确率较低，建议做专项练习</div>';
+        recommendHtml += '<button class="quiz-stats-btn recommend" onclick="startDimPractice(\'' + firstWeakDim + '\')">去练薄弱项</button>';
+        recommendHtml += '</div>';
+    }
+    
     var html = '<div class="quiz-stats show">';
     html += '<div class="quiz-stats-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>';
     html += '<div class="quiz-stats-title">' + titleText + '</div>';
@@ -6602,6 +7521,9 @@ function showQuizStats() {
     html += '<div class="quiz-stats-item"><div class="quiz-stats-item-value">' + quizState.wrongCount + '</div><div class="quiz-stats-item-label">错误</div></div>';
     html += '<div class="quiz-stats-item"><div class="quiz-stats-item-value">' + timeStr + '</div><div class="quiz-stats-item-label">用时</div></div>';
     html += '</div>';
+    html += dimDistHtml; // 新增：维度分布
+    html += dimChangeHtml; // 新增：能力值变化
+    html += recommendHtml; // 新增：推荐下一步
     html += weakHtml;
     html += '<button class="quiz-stats-btn primary" onclick="restartQuiz()">再练一组</button>';
     html += '<button class="quiz-stats-btn secondary" onclick="closeQuiz()">返回</button>';
@@ -6629,12 +7551,130 @@ function showQuizStats() {
     // 记录能力变化趋势
     recordQuizAbility();
     
+    // 更新五维能力分数（练习闭环）
+    updateDimScoresFromQuiz();
+    
     // 标记任务完成
     markTaskComplete('quiz');
     // 如果选择了维度，标记维度任务完成
     if (quizDimState.selectedDim) {
         markTaskComplete('dim_' + quizDimState.selectedDim);
     }
+    
+    // 清空能力值变化记录
+    quizState.dimChanges = null;
+}
+
+// 开始薄弱维度练习
+function startDimPractice(dim) {
+    // 关闭当前练习结果
+    closeQuiz();
+    // 延迟打开新的练习
+    setTimeout(function() {
+        openQuizWithDim(dim);
+    }, 300);
+}
+
+// === 五维能力分数更新系统 ===
+
+// 统一更新维度分数的函数
+// ability: 题目中的能力维度（如"细节理解"、"推理判断"等）
+// delta: 分数变化（正数加分，负数减分）
+// 维度映射：题目中的"细节理解"对应存储的"细节定位"
+function updateDimScore(ability, delta) {
+    // 维度名称映射（题目ability -> 存储key）
+    var dimMapping = {
+        '细节理解': '细节定位',
+        '推理判断': '推理判断',
+        '同义替换': '同义替换',
+        '主旨归纳': '主旨归纳',
+        '态度判断': '态度判断'
+    };
+    
+    var dimKey = dimMapping[ability] || ability;
+    
+    // 获取当前分数
+    var scores = {};
+    try {
+        var data = localStorage.getItem(examKey('ability_scores'));
+        if (data) {
+            scores = JSON.parse(data);
+        }
+    } catch(e) {}
+    
+    // 如果没有分数数据，从诊断数据中读取
+    if (Object.keys(scores).length === 0) {
+        var userData = safeGetItem('cet_user', {});
+        if (userData && userData.diagnosis) {
+            scores = userData.diagnosis;
+        }
+    }
+    
+    // 如果还是没有，初始化为50分
+    if (Object.keys(scores).length === 0) {
+        scores = { '细节定位': 50, '推理判断': 50, '同义替换': 50, '主旨归纳': 50, '态度判断': 50 };
+    }
+    
+    // 计算新分数（0-100范围限制）
+    var current = parseInt(scores[dimKey]) || 50;
+    var newScore = Math.max(0, Math.min(100, current + delta));
+    scores[dimKey] = newScore;
+    
+    // 记录能力值变化（用于报告显示）
+    if (!quizState.dimChanges) quizState.dimChanges = {};
+    var change = delta;
+    // 由于分数限制，可能实际变化与delta不同
+    if (current + delta !== newScore) {
+        // 被限制在边界，实际变化可能更小
+        change = newScore - current;
+    }
+    quizState.dimChanges[ability] = Math.round(change * 10) / 10; // 保留1位小数
+    
+    // 保存分数
+    localStorage.setItem(examKey('ability_scores'), JSON.stringify(scores));
+    
+    // 如果在数据页，刷新显示
+    if (document.getElementById('tab-progress') && document.getElementById('tab-progress').classList.contains('active')) {
+        try { renderDashboard(); } catch(e) { console.error('renderDashboard error:', e); }
+    }
+    
+    return newScore;
+}
+
+// 根据练习答题结果更新五维分数
+function updateDimScoresFromQuiz() {
+    var results = quizState.dimResults || [];
+    if (results.length === 0) return;
+    
+    // 统计每个维度的正确率和答题数
+    var dimStats = {};
+    results.forEach(function(r) {
+        if (!dimStats[r.ability]) {
+            dimStats[r.ability] = { correct: 0, total: 0 };
+        }
+        dimStats[r.ability].total++;
+        if (r.correct) {
+            dimStats[r.ability].correct++;
+        }
+    });
+    
+    // 更新每个维度的分数
+    var dimWeights = {
+        '正确': 2.5,    // 答对+2.5分
+        '错误': -1      // 答错-1分
+    };
+    
+    for (var ability in dimStats) {
+        var stat = dimStats[ability];
+        var correctRate = stat.total > 0 ? stat.correct / stat.total : 0;
+        
+        // 每答对一题+2.5分，答错-1分
+        var delta = stat.correct * 2.5 - (stat.total - stat.correct) * 1;
+        updateDimScore(ability, delta);
+    }
+    
+    // 清空答题记录
+    quizState.dimResults = [];
 }
 
 // 记录练习后的能力数据
@@ -6669,6 +7709,7 @@ function restartQuiz() {
     quizState.wrongCount = 0;
     quizState.answeredTypes = { '词汇': 0, '语法': 0, '阅读': 0, '听力': 0 };
     quizState.wrongTypes = { '词汇': 0, '语法': 0, '阅读': 0, '听力': 0 };
+    quizState.dimResults = []; // 重置维度记录
     quizState.startTime = Date.now();
     
     var body = document.getElementById('quiz-body');
@@ -8405,10 +9446,24 @@ function showCurrentQuestion() {
         '</div>';
     }
     
+    // 判断题目类型，显示对应的Part标题
+    var qType = q.type || q.category || '';
+    var isLC = qType.indexOf('LC') >= 0 || qType.indexOf('听力') >= 0 || dimName === '听力';
+    var partTitle = isLC ? 'Part I Listening Comprehension' : 'Part II Reading Comprehension';
+    var sectionLabel = isLC ? 'Section A' : '';
+    
+    // 试卷格式头部
+    html += '<div class="exam-paper-header">' +
+        '<div class="exam-part-title">' + partTitle + '</div>' +
+        (sectionLabel ? '<div class="exam-section-label">' + sectionLabel + '</div>' : '') +
+    '</div>';
+    
+    html += '<div class="exam-divider"></div>';
+    
     var dimName = q.ability || '细节理解';
     var tipInfo = getTipInfo(dimName);
     html += '<div class="diag-dim-tag">' + tipInfo.tag + '</div>' +
-        '<div class="diag-question-num">第 ' + (diagState.currentQIndex + 1) + ' / ' + totalQuestions + ' 题</div>' +
+        '<div class="diag-question-num">Q' + (diagState.currentQIndex + 1) + '</div>' +
         '<div class="diag-question-text">' + escapeHtml(q.question) + '</div>' +
         '<div class="diag-options">' +
             renderOptionBtn('A', q.optionA, 'A') +
@@ -8416,6 +9471,7 @@ function showCurrentQuestion() {
             renderOptionBtn('C', q.optionC, 'C') +
             renderOptionBtn('D', q.optionD, 'D') +
         '</div>' +
+        '<div class="exam-divider"></div>' +
     '</div>';
     
     document.getElementById('diag-body').innerHTML = html;
@@ -8870,6 +9926,16 @@ function skipTranslationTest() {
 
 // 提交翻译实测
 async function submitTranslationTest() {
+        // 保存练习记录前先标记CET任务
+        var cetTaskData = getCETTodayTasks();
+        if (cetTaskData && cetTaskData.tasks) {
+            cetTaskData.tasks.forEach(function(task) {
+                if (task.type === 'translation' && !task.completed) {
+                    markCETTaskComplete(task.id);
+                }
+            });
+        }
+    
     var input = document.getElementById('translation-input');
     if (!input || input.value.length < 10) {
         showToast('请至少写10个字');
@@ -9671,6 +10737,7 @@ function buildTranslationFeedbackSection() {
         html += '<div class="report-translation-comment">💬 ' + fb.comment + '</div>';
     }
     
+    html += '<button class="report-similar-btn" onclick="practiceSimilarTranslation()">🎯 练同类题（推理+态度）</button>';
     html += '</div>';
     return html;
 }
@@ -9706,6 +10773,17 @@ function startPracticeChallenge() {
             sendSuggestion(msg);
         }, 500);
     }, 350);
+}
+
+// 练同类题 - 翻译主要考推理判断和态度判断
+function practiceSimilarTranslation() {
+    closeReportPage();
+    // 翻译主要考推理判断和态度判断，跳转到每日一练筛选推理判断维度
+    if (typeof openQuizWithDim === 'function') {
+        openQuizWithDim('推理判断');
+    } else if (typeof openQuiz === 'function') {
+        openQuiz();
+    }
 }
 
 // 绘制报告页雷达图
@@ -11695,8 +12773,8 @@ function showLearningPlan() {
 }
 
 // 确保switchTab支持plan tab
-var originalSwitchTab = switchTab;
-switchTab = function(tab) {
+var originalSwitchTab = window.switchTab || function(){};
+window.switchTab = function(tab) {
     originalSwitchTab(tab);
     
     if (tab === 'plan') {
@@ -13357,6 +14435,130 @@ function updateProfileUserId() {
         var userId = getCloudUserId();
         userIdElem.textContent = userId.substring(0, 8) + '...';
     }
+    // 更新使用帮助红点状态
+    updateHelpGuideBadge();
+}
+
+// 更新使用帮助红点状态
+function updateHelpGuideBadge() {
+    var badge = document.getElementById('help-guide-badge');
+    if (!badge) return;
+    var hasSeenHelp = localStorage.getItem(examKey('has_seen_help_guide'));
+    badge.style.display = hasSeenHelp ? 'none' : 'inline-block';
+}
+
+// 显示使用帮助页面
+function showHelpGuide() {
+    // 标记已看过
+    localStorage.setItem(examKey('has_seen_help_guide'), '1');
+    updateHelpGuideBadge();
+    
+    var overlay = document.getElementById('help-guide-overlay');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'help-guide-overlay';
+        overlay.className = 'help-guide-overlay';
+        
+        var html = '<div class="help-guide-header">' +
+            '<button class="help-guide-back" onclick="closeHelpGuide()">' +
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>' +
+            '</button>' +
+            '<div class="help-guide-title">使用帮助</div>' +
+            '<div style="width:36px"></div>' +
+        '</div>' +
+        '<div class="help-guide-content">' +
+            '<div class="help-guide-list">' +
+                '<div class="help-item" onclick="startNewDiagnosis();closeHelpGuide();">' +
+                    '<div class="help-item-icon purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>' +
+                    '<div class="help-item-content">' +
+                        '<div class="help-item-title">🎯 AI智能诊断</div>' +
+                        '<div class="help-item-desc">5分钟测出你的薄弱项，精准定位需要加强的能力</div>' +
+                    '</div>' +
+                    '<div class="help-item-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>' +
+                '</div>' +
+                '<div class="help-item" onclick="doHelpAction(\'diagnosis\');">' +
+                    '<div class="help-item-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>' +
+                    '<div class="help-item-content">' +
+                        '<div class="help-item-title">📝 每日一练</div>' +
+                        '<div class="help-item-desc">根据薄弱项智能推题，每天练最有价值的题</div>' +
+                    '</div>' +
+                    '<div class="help-item-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>' +
+                '</div>' +
+                '<div class="help-item" onclick="doHelpAction(\'companion\');">' +
+                    '<div class="help-item-icon teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>' +
+                    '<div class="help-item-content">' +
+                        '<div class="help-item-title">💬 AI陪练</div>' +
+                        '<div class="help-item-desc">随时出题随时问，像私教一样1对1练习</div>' +
+                    '</div>' +
+                    '<div class="help-item-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>' +
+                '</div>' +
+                '<div class="help-item" onclick="openEssayOverlay();closeHelpGuide();">' +
+                    '<div class="help-item-icon orange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>' +
+                    '<div class="help-item-content">' +
+                        '<div class="help-item-title">✍️ 作文批改</div>' +
+                        '<div class="help-item-desc">逐句精修+评分，不只给分数还给方法</div>' +
+                    '</div>' +
+                    '<div class="help-item-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>' +
+                '</div>' +
+                '<div class="help-item" onclick="doHelpAction(\'wrongbook\');">' +
+                    '<div class="help-item-icon red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div>' +
+                    '<div class="help-item-content">' +
+                        '<div class="help-item-title">📖 错题本</div>' +
+                        '<div class="help-item-desc">自动归集+智能复习提醒，艾宾浩斯记忆法巩固</div>' +
+                    '</div>' +
+                    '<div class="help-item-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>' +
+                '</div>' +
+                '<div class="help-item" onclick="doHelpAction(\'progress\');">' +
+                    '<div class="help-item-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg></div>' +
+                    '<div class="help-item-content">' +
+                        '<div class="help-item-title">📊 学习数据</div>' +
+                        '<div class="help-item-desc">五维能力雷达图+进步趋势，一目了然</div>' +
+                    '</div>' +
+                    '<div class="help-item-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>' +
+                '</div>' +
+            '</div>' +
+            '<div class="help-guide-footer">' +
+                '<div class="help-guide-contact">遇到问题？联系我们</div>' +
+                '<div class="help-guide-contact-info">微信：cet4fanyi</div>' +
+            '</div>' +
+        '</div>';
+        
+        overlay.innerHTML = html;
+        document.body.appendChild(overlay);
+    }
+    
+    overlay.style.display = 'flex';
+    overlay.style.opacity = '0';
+    overlay.style.transition = 'opacity 0.3s';
+    requestAnimationFrame(function() {
+        overlay.style.opacity = '1';
+    });
+}
+
+// 帮助页面动作处理
+function doHelpAction(type) {
+    closeHelpGuide();
+    if (type === 'diagnosis') {
+        startPractice();
+    } else if (type === 'companion') {
+        createNewChat();
+    } else if (type === 'wrongbook') {
+        switchTab('wrongbook');
+        renderWrongBook();
+    } else if (type === 'progress') {
+        switchTab('progress');
+    }
+}
+
+// 关闭使用帮助页面
+function closeHelpGuide() {
+    var overlay = document.getElementById('help-guide-overlay');
+    if (overlay) {
+        overlay.style.opacity = '0';
+        setTimeout(function() {
+            overlay.style.display = 'none';
+        }, 300);
+    }
 }
 
 // 打开恢复数据模态框
@@ -13434,7 +14636,6 @@ async function doRestoreData() {
 }
 
 // ===== 暴露函数到全局作用域（HTML onclick需要）=====
-window.switchTab = switchTab;
 window.switchExamType = switchExamType;
 window.handleQuickAction = handleQuickAction;
 window.handleHomeCta = handleHomeCta;
@@ -13442,6 +14643,9 @@ window.handleEssayClick = handleEssayClick;
 window.handleReviewClick = handleReviewClick;
 window.handleModeTag = handleModeTag;
 window.openDailyTask = openDailyTask;
+window.handleTodayTaskClick = handleTodayTaskClick;
+window.generateTodayPlan = generateTodayPlan;
+window.markTaskComplete = markTaskComplete;
 window.handleCapsuleClick = handleCapsuleClick;
 window.createNewChat = createNewChat;
 window.sendMessage = sendMessage;
@@ -13472,9 +14676,6 @@ window.openReportPayModal = openReportPayModal;
 window.closeReportPage = closeReportPage;
 window.exitDiagnosis = exitDiagnosis;
 window.closeReportShare = closeReportShare;
-window.submitEssay = submitEssay;
-window.closeEssayOverlay = closeEssayOverlay;
-window.showEssayTemplate = showEssayTemplate;
 window.showLearningPlan = showLearningPlan;
 window.closeSpecialPlan = closeSpecialPlan;
 window.regeneratePlan = regeneratePlan;
@@ -13482,3 +14683,60 @@ window.openRestoreDataModal = openRestoreDataModal;
 window.copyUserId = copyUserId;
 window.toggleFaq = toggleFaq;
 window.showStudyHistory = showStudyHistory;
+window.doCheckIn = doCheckIn;
+window.filterWrongbook = filterWrongbook;
+window.speakWord = speakWord;
+window.startDimPractice = startDimPractice;
+window.showPersonalityDetail = showPersonalityDetail;
+window.toggleDiagRecordDetail = toggleDiagRecordDetail;
+window.confirmRediag = confirmRediag;
+window.closeRediagModal = closeRediagModal;
+window.closeDiagHistory = closeDiagHistory;
+window.closeClearChatModal = closeClearChatModal;
+window.openConversation = openConversation;
+window.selectOption = selectOption;
+window.selectQuizOption = selectQuizOption;
+window.selectQuizDim = selectQuizDim;
+window.selectRedoOption = selectRedoOption;
+window.selectDailyTaskAnswer = selectDailyTaskAnswer;
+window.navigateToWrongBook = navigateToWrongBook;
+window.handlePlayClick = handlePlayClick;
+window.handleReplayClick = handleReplayClick;
+window.selectListeningOption = selectListeningOption;
+window.startQuizWithDim = startQuizWithDim;
+window.startPathPractice = startPathPractice;
+window.showSelfEval = showSelfEval;
+window.selectEval = selectEval;
+window.showNodeDetail = showNodeDetail;
+window.toggleWrongDetail = toggleWrongDetail;
+window.togglePassage = togglePassage;
+window.toggleModule = toggleModule;
+window.closePayModal = closePayModal;
+window.closeModal = closeModal;
+window.closeRestoreModal = closeRestoreModal;
+window.closePlanOverlay = closePlanOverlay;
+window.activateWithCode = activateWithCode;
+window.switchPayTab = switchPayTab;
+window.closeEssayOverlay = closeEssayOverlay;
+window.showEssayTemplate = showEssayTemplate;
+window.submitEssay = submitEssay;
+window.practiceSimilarTranslation = practiceSimilarTranslation;
+window.closeUpgradeCard = closeUpgradeCard;
+window.restartQuiz = restartQuiz;
+window.generateDiagReport = generateDiagReport;
+window.handleDailyTaskClick = handleDailyTaskClick;
+window.doTodayTask = doTodayTask;
+window.doHelpAction = doHelpAction;
+window.doRestoreData = doRestoreData;
+window.showReportShare = showReportShare;
+window.showSpecialPlan = showSpecialPlan;
+window.renderDimensionWords = renderDimensionWords;
+window.renderAllDimensionWords = renderAllDimensionWords;
+window.skipTranslationTest = skipTranslationTest;
+window.skipWritingTest = skipWritingTest;
+window.startTranslationTest = startTranslationTest;
+window.submitTranslationTest = submitTranslationTest;
+window.startPracticeChallenge = startPracticeChallenge;
+window.submitWritingTest = submitWritingTest;
+window.upgradeToUnlockPlan = upgradeToUnlockPlan;
+window.openDayPlan = openDayPlan;

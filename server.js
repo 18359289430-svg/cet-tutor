@@ -711,20 +711,33 @@ B. Education reform requires comprehensive approach
 ### 【第一步-只发送题目】（发送给用户）
 **绝对不要在这里发送原文！**
 
-【听力题】
-请听以下材料，回答问题：
+━━━━━━━━━━━━━━━━━━━━
+Part I Listening Comprehension
+━━━━━━━━━━━━━━━━━━━━
 
-问题：题目内容
-A. 选项A 
-B. 选项B 
-C. 选项C 
-D. 选项D
+Section [A/B/C]
+
+Directions: [听力要求说明]
+
+[Q题号]. [题目内容]
+A) [选项A]
+B) [选项B]
+C) [选项C]
+D) [选项D]
+
+━━━━━━━━━━━━━━━━━━━━
+🎧 点击播放听力 | 请回答A/B/C/D
 
 ### 【第二步-用户答题后才发送原文】
 用户回复答案后，再发送：
 
+━━━━━━━━━━━━━━━━━━━━
 📖 听力原文：
-"原文内容..."
+━━━━━━━━━━━━━━━━━━━━
+
+[原文内容...]
+
+━━━━━━━━━━━━━━━━━━━━
 
 解析：...
 
@@ -737,13 +750,18 @@ D. 选项D
 **第一步**：让用户发送作文内容和题目要求
 **第二步**：收到后按四级评分标准批改，返回格式：
 \`\`\`
-📝 作文批改结果：
-总分：X/15
-- 内容：X/5 - 简评
-- 结构：X/5 - 简评  
-- 语言：X/5 - 简评
+━━━━━━━━━━━━━━━━━━━━
+📝 作文批改结果
+━━━━━━━━━━━━━━━━━━━━
 
-🔧 改前→改后（让用户直接看到提升）：
+总分：X/15
+┌─────────────────┐
+│ 内容  X/5  简评  │
+│ 结构  X/5  简评  │
+│ 语言  X/5  简评  │
+└─────────────────┘
+
+🔧 逐句修改：
 1. 原："I very like reading books."
    改："I really enjoy reading books."
    因：very不能修饰动词，用enjoy更地道
@@ -753,18 +771,23 @@ D. 选项D
    因：形容词作主语不对，需用名词形式
 
 💡 总评：一句话
+━━━━━━━━━━━━━━━━━━━━
 \`\`\`
 
 ## 翻译批改格式
 **用户发送**："翻译原文 + 自己的译文"
 **AI批改格式**：
 \`\`\`
-📝 翻译批改：
+━━━━━━━━━━━━━━━━━━━━
+📝 翻译批改
+━━━━━━━━━━━━━━━━━━━━
+
 预估分数：X/15
 ✅ 命中关键词：xxx, xxx
 ❌ 遗漏关键词：xxx, xxx
 🔧 语法修正：xxx → yyy
 💡 建议：一句话
+━━━━━━━━━━━━━━━━━━━━
 \`\`\`
 
 ## 错题分析指引
@@ -786,11 +809,80 @@ D. 选项D
 - 用户说"下一题"或"懂了" → 立即继续，不强制等待
 - 每次回复控制在200字内，简洁有力
 
-## 出题格式（阅读理解，严格）
-【题目】题干内容
-A. 选项A B. 选项B C. 选项C D. 选项D
-难度：⭐基础 / ⭐⭐中等 / ⭐⭐⭐进阶 | 考点：xxx
+## 出题格式（严格按四六级试卷格式）
+
+**阅读理解题必须按以下格式输出，模拟真实试卷：**
+
+\`\`\`
+━━━━━━━━━━━━━━━━━━━━
+Part II Reading Comprehension
+━━━━━━━━━━━━━━━━━━━━
+
+Passage [X]
+
+[这里放阅读文章原文，150-300词，模拟真题长度]
+
+[Q1题号]. [题干内容]
+A) [选项A]
+B) [选项B]  
+C) [选项C]
+D) [选项D]
+
+━━━━━━━━━━━━━━━━━━━━
+难度：⭐基础/⭐⭐中等/⭐⭐⭐进阶 | 考点：xxx
 请回答A/B/C/D
+\`\`\`
+
+**词汇题/语法题格式：**
+\`\`\`
+━━━━━━━━━━━━━━━━━━━━
+Part III Vocabulary & Structure
+━━━━━━━━━━━━━━━━━━━━
+
+[Q题号]. [题干内容]
+A) [选项A]
+B) [选项B]
+C) [选项C]
+D) [选项D]
+
+━━━━━━━━━━━━━━━━━━━━
+难度：⭐⭐ | 考点：词汇理解
+请回答A/B/C/D
+\`\`\`
+
+**翻译题格式：**
+\`\`\`
+━━━━━━━━━━━━━━━━━━━━
+Part IV Translation
+━━━━━━━━━━━━━━━━━━━━
+
+请将以下中文翻译成英语：
+
+[中文原文]
+
+━━━━━━━━━━━━━━━━━━━━
+\`\`\`
+
+**作文题格式：**
+\`\`\`
+━━━━━━━━━━━━━━━━━━━━
+Part V Writing
+━━━━━━━━━━━━━━━━━━━━
+
+Directions: [作文要求]
+
+[题目/话题]
+
+━━━━━━━━━━━━━━━━━━━━
+\`\`\`
+
+**格式要求：**
+1. 每道题必须有Part标题和分隔线，模拟真实试卷
+2. 阅读题必须先给文章再给题目，文章长度对标真题
+3. 选项用A) B) C) D)格式（真题格式，不是A. B.）
+4. 每题之间用分隔线隔开
+5. 题号连续编号（Q1, Q2, Q3...）
+6. 难度标注放在分隔线内，不影响做题体验
 
 ## Few-shot示例
 
@@ -2037,7 +2129,51 @@ ${user_input}
                 var lastMsgChat = messages[messages.length-1] ? messages[messages.length-1].content : '';
                 var isCet6Chat = detectExamType(lastMsgChat, userPersonality);
                 var examCtxChat = getExamContext(isCet6Chat);
-                var systemContent = COMPANION_SYSTEM_PROMPT + (ragCtx || '') + examCtxChat.systemPrompt;
+                
+                // 追加薄弱项主动引导信息（注入到system prompt）
+                var weakGuidePrompt = '';
+                if (weakDims && weakDims.length > 0) {
+                    // 解析薄弱项和强项
+                    var dimScoresMap = {};
+                    try {
+                        var scoresObj = JSON.parse(body.dim_scores || '{}');
+                        for (var k in scoresObj) dimScoresMap[k] = parseInt(scoresObj[k]) || 0;
+                    } catch(e) {}
+                    
+                    // 提取薄弱项（<50%）和强项（>80%）
+                    var weakItems = weakDims.filter(function(d) {
+                        var name = d.replace(/\(.*?\)/, '').trim();
+                        return (dimScoresMap[name] || 0) < 50;
+                    });
+                    var strongItems = Object.keys(dimScoresMap).filter(function(k) {
+                        return dimScoresMap[k] >= 80;
+                    });
+                    
+                    if (weakItems.length > 0 || strongItems.length > 0) {
+                        weakGuidePrompt = '\n\n## 【薄弱项主动引导规则】\n';
+                        if (weakItems.length > 0) {
+                            weakGuidePrompt += '- 当前用户薄弱项：' + weakItems.join('、') + '\n';
+                            weakGuidePrompt += '- 请在对话中适时（每3-5轮最多提1次）引导用户练习薄弱项，如推荐专项练习、讲解技巧。\n';
+                        }
+                        if (strongItems.length > 0) {
+                            weakGuidePrompt += '- 当前用户强项：' + strongItems.join('、') + '（练习时可穿插巩固）\n';
+                        }
+                        weakGuidePrompt += '- 语气要自然，像朋友聊天，不是推销员。\n';
+                        weakGuidePrompt += '- 不要每句话都提薄弱项，会让用户烦。\n';
+                    }
+                }
+                
+                // 新对话开场检测：如果用户刚发起对话（messages只有1-2条），且有薄弱项，主动提及
+                var isNewConversation = messages.length <= 2;
+                if (isNewConversation && weakDims && weakDims.length > 0) {
+                    var firstWeak = weakDims[0].replace(/\(.*?\)/, '').trim();
+                    weakGuidePrompt += '\n\n## 【新对话开场引导】\n';
+                    weakGuidePrompt += '- 用户开启新对话，请根据薄弱项主动建议练习方向。\n';
+                    weakGuidePrompt += '- 例如："你的' + firstWeak + '还有提升空间，要不要做几道专项题练练？"\n';
+                    weakGuidePrompt += '- 语气亲切自然，像朋友间的学习交流。\n';
+                }
+                
+                var systemContent = COMPANION_SYSTEM_PROMPT + (ragCtx || '') + weakGuidePrompt + examCtxChat.systemPrompt;
                 const payload = {
                     model: 'deepseek-chat',
                     messages: [{ role: 'system', content: systemContent }, ...messages.slice(-10)],
@@ -2195,6 +2331,7 @@ ${user_input}
 
     // 404
         // GET /api/quiz/random - 随机获取真题（每日一练用，支持自适应推题）
+        // GET /api/quiz/batch - 批量获取题目（每日一练全套，根据五维能力智能分配）
         if (pathname === '/api/quiz/random' && req.method === 'GET') {
             try {
                 // 检测考试类型参数
@@ -2204,7 +2341,6 @@ ${user_input}
                 const csvPath = path.join(__dirname, 'data', quizFileName);
                 var questions;
                 if (!fs.existsSync(csvPath)) {
-                    // 如果六级题库不存在，fallback到四级题库
                     const fallbackPath = path.join(__dirname, 'data', 'quiz_questions.json');
                     if (!fs.existsSync(fallbackPath)) {
                         return sendJson(res, 200, { code: 0, data: null, msg: '题库文件不存在' });
@@ -2213,72 +2349,174 @@ ${user_input}
                 } else {
                     questions = JSON.parse(fs.readFileSync(csvPath, 'utf-8'));
                 }
-                const type = url.searchParams.get('type'); // 可选：按题型筛选
-                // 自适应推题：接收用户五维分数
-                const dimsParam = url.searchParams.get('dims'); // 格式: 细节定位:60,推理判断:50,同义替换:70,主旨归纳:55,态度判断:45
                 
-                let pool = questions;
-                
-                // 如果指定了type，优先按type筛选
-                if (type) {
-                    pool = questions.filter(q => q.type === type);
-                }
-                
-                // 自适应推题逻辑：根据薄弱维度优先抽题
-                if (dimsParam && !type) {
-                    try {
-                        const dimPairs = dimsParam.split(',');
-                        const dimScores = {};
-                        dimPairs.forEach(pair => {
-                            const [key, val] = pair.split(':');
-                            if (key && val) dimScores[key.trim()] = parseInt(val) || 50;
-                        });
-                        
-                        // 排序找出薄弱维度
-                        const sortedDims = Object.entries(dimScores)
-                            .sort((a, b) => a[1] - b[1])
-                            .map(([key]) => key);
-                        
-                        // 按薄弱程度尝试匹配题目
-                        let matchedPool = [];
-                        for (const weakDim of sortedDims) {
-                            // 根据薄弱维度映射到题目type
-                            const dimTypeMap = {
-                                '细节定位': ['阅读理解-仔细阅读'],
-                                '推理判断': ['阅读理解-仔细阅读'],
-                                '同义替换': ['阅读理解-仔细阅读'],
-                                '主旨归纳': ['阅读理解-仔细阅读'],
-                                '态度判断': ['听力理解-篇章', '阅读理解-仔细阅读']
-                            };
-                            const targetTypes = dimTypeMap[weakDim] || [];
-                            
-                            for (const t of targetTypes) {
-                                const found = questions.filter(q => q.type === t);
-                                if (found.length > 0) {
-                                    matchedPool = found;
-                                    break;
-                                }
-                            }
-                            if (matchedPool.length > 0) break;
-                        }
-                        
-                        if (matchedPool.length > 0) {
-                            pool = matchedPool;
-                        }
-                    } catch(e) {
-                        console.error('[自适应推题解析失败]', e);
+                // 支持按ability筛选（维度筛选）
+                const ability = url.searchParams.get('ability');
+                if (ability) {
+                    const filtered = questions.filter(q => q.ability === ability);
+                    if (filtered.length > 0) {
+                        const idx = Math.floor(Math.random() * filtered.length);
+                        return sendJson(res, 200, { code: 0, data: filtered[idx] });
                     }
                 }
                 
-                if (pool.length === 0) pool = questions;
-                const idx = Math.floor(Math.random() * pool.length);
-                sendJson(res, 200, { code: 0, data: pool[idx] });
+                // 默认随机返回一题
+                const idx = Math.floor(Math.random() * questions.length);
+                sendJson(res, 200, { code: 0, data: questions[idx] });
             } catch(e) {
                 sendJson(res, 500, { code: 1, msg: '获取题目失败', error: e.message });
             }
             return;
         }
-
+        
+        // GET /api/quiz/batch - 批量获取题目（根据五维能力智能分配）
+        if (pathname === '/api/quiz/batch' && req.method === 'GET') {
+            try {
+                // 检测考试类型
+                const examTypeParam = url.searchParams.get('type') || '';
+                const isCet6Quiz = examTypeParam === 'cet6' || examTypeParam.includes('六级');
+                const quizFileName = isCet6Quiz ? 'cet6_quiz_questions.json' : 'quiz_questions.json';
+                const csvPath = path.join(__dirname, 'data', quizFileName);
+                var questions;
+                if (!fs.existsSync(csvPath)) {
+                    const fallbackPath = path.join(__dirname, 'data', 'quiz_questions.json');
+                    if (!fs.existsSync(fallbackPath)) {
+                        return sendJson(res, 200, { code: 0, data: [], msg: '题库文件不存在' });
+                    }
+                    questions = JSON.parse(fs.readFileSync(fallbackPath, 'utf-8'));
+                } else {
+                    questions = JSON.parse(fs.readFileSync(csvPath, 'utf-8'));
+                }
+                
+                // 解析用户五维分数
+                const dimsParam = url.searchParams.get('dims'); // 格式: 细节定位:60,推理判断:50,同义替换:70,主旨归纳:55,态度判断:45
+                
+                // 五维能力映射（前端诊断字段 -> 题库ability字段）
+                const dimToAbility = {
+                    '细节定位': '细节理解',
+                    '推理判断': '推理判断',
+                    '同义替换': '同义替换',
+                    '主旨归纳': '主旨归纳',
+                    '态度判断': '态度判断'
+                };
+                
+                // 计算每个维度的权重（分数越低，权重越高，弱项多出题）
+                const dims = ['细节定位', '推理判断', '同义替换', '主旨归纳', '态度判断'];
+                const dimScores = {};
+                const inverseScores = {};
+                let totalInverse = 0;
+                
+                if (dimsParam) {
+                    try {
+                        const dimPairs = dimsParam.split(',');
+                        dimPairs.forEach(pair => {
+                            const [key, val] = pair.split(':');
+                            if (key && val) {
+                                const score = parseInt(val) || 50;
+                                dimScores[key.trim()] = score;
+                                // 分数越低，inverse越高
+                                inverseScores[key.trim()] = 101 - score;
+                                totalInverse += inverseScores[key.trim()];
+                            }
+                        });
+                    } catch(e) {
+                        console.error('[五维分数解析失败]', e);
+                    }
+                }
+                
+                // 如果没有诊断数据（新用户），平均分配
+                let dimWeights = {};
+                if (Object.keys(dimScores).length === 0) {
+                    dims.forEach(d => { dimWeights[d] = 1 / dims.length; });
+                } else {
+                    // 归一化权重
+                    dims.forEach(d => {
+                        if (inverseScores[d]) {
+                            dimWeights[d] = inverseScores[d] / totalInverse;
+                        } else {
+                            // 没有分数的维度，默认中等权重
+                            dimWeights[d] = 0.2;
+                        }
+                    });
+                }
+                
+                // 计算每个维度应该出的题数（总共12题左右）
+                const totalQuestions = 12;
+                const questionsPerDim = {};
+                let assignedCount = 0;
+                
+                // 按权重分配
+                dims.forEach((dim, idx) => {
+                    if (idx < dims.length - 1) {
+                        questionsPerDim[dim] = Math.round(dimWeights[dim] * totalQuestions);
+                        assignedCount += questionsPerDim[dim];
+                    } else {
+                        // 最后一个维度补足总数
+                        questionsPerDim[dim] = totalQuestions - assignedCount;
+                    }
+                });
+                
+                // 确保每个维度至少1题
+                dims.forEach(dim => {
+                    if (questionsPerDim[dim] < 1) questionsPerDim[dim] = 1;
+                });
+                
+                // 调整总数到合理范围（10-15题）
+                let currentTotal = Object.values(questionsPerDim).reduce((a, b) => a + b, 0);
+                if (currentTotal < 10) {
+                    // 补足到10题
+                    dims.forEach(dim => {
+                        questionsPerDim[dim] += 1;
+                        currentTotal++;
+                        if (currentTotal >= 10) return;
+                    });
+                }
+                
+                // 按维度抽取题目
+                const selectedQuestions = [];
+                const usedIds = new Set();
+                
+                dims.forEach(dim => {
+                    const ability = dimToAbility[dim];
+                    if (!ability) return;
+                    
+                    const dimQuestions = questions.filter(q => q.ability === ability);
+                    if (dimQuestions.length === 0) return;
+                    
+                    const count = Math.min(questionsPerDim[dim], dimQuestions.length);
+                    
+                    // 随机抽取不重复的题目
+                    const shuffled = [...dimQuestions].sort(() => Math.random() - 0.5);
+                    let added = 0;
+                    for (const q of shuffled) {
+                        if (added >= count) break;
+                        if (!usedIds.has(q.id)) {
+                            selectedQuestions.push(q);
+                            usedIds.add(q.id);
+                            added++;
+                        }
+                    }
+                });
+                
+                // 打乱最终顺序
+                selectedQuestions.sort(() => Math.random() - 0.5);
+                
+                // 返回结果（包含权重信息，方便前端显示）
+                sendJson(res, 200, { 
+                    code: 0, 
+                    data: {
+                        questions: selectedQuestions,
+                        dimDistribution: questionsPerDim,
+                        dimWeights: dimWeights,
+                        totalCount: selectedQuestions.length
+                    }
+                });
+            } catch(e) {
+                console.error('[批量获取题目失败]', e);
+                sendJson(res, 500, { code: 1, msg: '获取题目失败', error: e.message });
+            }
+            return;
+        }
         // ===== GitHub Webhook Auto-Deploy =====
     if (req.url === '/webhook/deploy' && req.method === 'POST') {
         let body = '';
@@ -2955,6 +3193,130 @@ async function handleDeepseekEssayGrade(req, res) {
             }
         });
         return;
+    }
+
+
+    // ===== 每日任务生成 API =====
+    if (pathname === '/api/daily-tasks' && req.method === 'GET') {
+        try {
+            const dimsParam = url.searchParams.get('dims'); // 格式: 细节定位:60,推理判断:50
+            const weakParam = url.searchParams.get('weak'); // 薄弱维度，逗号分隔
+            
+            // 解析维度分数
+            const dimScores = {};
+            if (dimsParam) {
+                try {
+                    const dimPairs = dimsParam.split(',');
+                    dimPairs.forEach(pair => {
+                        const [key, val] = pair.split(':');
+                        if (key && val) {
+                            dimScores[key.trim()] = parseInt(val) || 50;
+                        }
+                    });
+                } catch(e) {
+                    console.error('[维度分数解析失败]', e);
+                }
+            }
+            
+            // 解析薄弱维度
+            const weakDims = weakParam ? weakParam.split(',').map(d => d.trim()).filter(d => d) : [];
+            
+            // 计算薄弱维度（分数低于60的）
+            let priorityDims = weakDims.slice();
+            if (priorityDims.length === 0) {
+                for (const [key, val] of Object.entries(dimScores)) {
+                    if (val < 60) {
+                        priorityDims.push(key);
+                    }
+                }
+            }
+            
+            // 如果没有薄弱维度，取最低的2个
+            if (priorityDims.length === 0 && Object.keys(dimScores).length > 0) {
+                const sorted = Object.entries(dimScores).sort((a, b) => a[1] - b[1]);
+                priorityDims = sorted.slice(0, 2).map(([k]) => k);
+            }
+            
+            // 任务类型映射
+            const dimTaskTitles = {
+                '细节定位': '做5道细节定位题',
+                '推理判断': '做5道推理判断题',
+                '同义替换': '做5道同义替换题',
+                '主旨归纳': '做5道主旨归纳题',
+                '态度判断': '做5道态度判断题'
+            };
+            
+            // 生成3个任务
+            const tasks = [];
+            const usedDims = new Set();
+            
+            // 任务1: 优先从薄弱维度出题
+            if (priorityDims.length > 0) {
+                const targetDim = priorityDims[Math.floor(Math.random() * priorityDims.length)];
+                tasks.push({
+                    id: 1,
+                    title: dimTaskTitles[targetDim] || '做5道阅读理解题',
+                    type: 'quiz',
+                    dim: targetDim,
+                    estimated: '10分钟'
+                });
+                usedDims.add(targetDim);
+            } else {
+                tasks.push({
+                    id: 1,
+                    title: '做5道阅读理解题',
+                    type: 'quiz',
+                    dim: null,
+                    estimated: '10分钟'
+                });
+            }
+            
+            // 任务2: 作文或翻译
+            const task2Options = [
+                { id: 2, title: '完成一篇作文批改', type: 'essay', dim: null, estimated: '15分钟' },
+                { id: 2, title: '完成一段翻译练习', type: 'translation', dim: null, estimated: '10分钟' }
+            ];
+            tasks.push(task2Options[Math.floor(Math.random() * task2Options.length)]);
+            
+            // 任务3: 错题复习或AI对话
+            if (Math.random() > 0.5) {
+                tasks.push({
+                    id: 3,
+                    title: '复习3道错题',
+                    type: 'review',
+                    dim: usedDims.size > 0 ? Array.from(usedDims)[0] : null,
+                    estimated: '8分钟'
+                });
+            } else {
+                tasks.push({
+                    id: 3,
+                    title: '进行AI对话练习',
+                    type: 'chat',
+                    dim: null,
+                    estimated: '8分钟'
+                });
+            }
+            
+            // 随机打乱任务顺序（保持id正确）
+            const shuffledTasks = tasks.sort(() => Math.random() - 0.5).map((t, idx) => ({
+                ...t,
+                id: idx + 1
+            }));
+            
+            console.log('[每日任务生成]', { dimScores, weakDims: priorityDims, taskCount: shuffledTasks.length });
+            
+            return sendJson(res, 200, {
+                code: 0,
+                data: {
+                    tasks: shuffledTasks,
+                    generatedAt: new Date().toISOString(),
+                    priorityDims: priorityDims
+                }
+            });
+        } catch(e) {
+            console.error('[每日任务生成失败]', e);
+            return sendJson(res, 500, { code: 1, error: '生成任务失败' });
+        }
     }
 
     // 404

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -32,21 +33,21 @@
     <!-- CSS -->
     <link rel="stylesheet" href="/css/variables.css?v=202605142349">
     <link rel="stylesheet" href="/css/base.css?v=20260516m">
-    <link rel="stylesheet" href="/css/home.css?v=202605142349">
+    <link rel="stylesheet" href="/css/home.css?v=202605190032">
     <link rel="stylesheet" href="/css/study.css?v=202605142349">
-    <link rel="stylesheet" href="/css/chat.css?v=202605152043">
+    <link rel="stylesheet" href="/css/chat.css?v=20260519v2">
     <link rel="stylesheet" href="/css/personality.css?v=202605142349">
     <link rel="stylesheet" href="/css/components.css?v=202605142349">
-    <link rel="stylesheet" href="/css/quiz.css?v=202605142349">
+    <link rel="stylesheet" href="/css/quiz.css?v=202605190038">
     <link rel="stylesheet" href="/css/payment.css?v=20260516g">
     <link rel="stylesheet" href="/css/profile.css?v=202605142349">
     <link rel="stylesheet" href="/css/dashboard.css?v=202605142349">
-    <link rel="stylesheet" href="/css/diagnosis.css?v=202605142349">
+    <link rel="stylesheet" href="/css/diagnosis.css?v=20260519v2">
     <link rel="stylesheet" href="/css/essay.css?v=202605142349">
     <link rel="stylesheet" href="/css/review.css?v=202605142349">
     <link rel="stylesheet" href="/css/plan.css?v=202605162000">
     <link rel="stylesheet" href="/css/plan-page.css?v=202605162000">
-    <link rel="stylesheet" href="/css/wrongbook.css?v=202605162100">
+    <link rel="stylesheet" href="/css/wrongbook.css?v=202605190032">
     <link rel="stylesheet" href="/css/learning-path.css?v=202605170000">
     <link rel="stylesheet" href="/css/vocab.css?v=202605180000">
     <!-- Clarity -->
@@ -118,18 +119,14 @@
                     <span>陪你冲刺<span class="social-proof-num">备考</span></span>
                 </div>
 
-                <!-- 每日任务卡 -->
-                <div class="daily-task-card" id="daily-task-card" style="display:none">
-                    <div class="daily-task-card-header">
-                        <div class="daily-task-card-title">🎯 今日任务</div>
-                        <div class="daily-task-complete-badge" id="daily-task-badge">0/0</div>
+                <!-- 待复习错题提醒卡片 -->
+                <div class="home-review-reminder" id="home-review-reminder" style="display:none" onclick="switchTab('wrongbook')">
+                    <div class="home-review-icon">📖</div>
+                    <div class="home-review-info">
+                        <div class="home-review-title" id="home-review-title">待复习错题</div>
+                        <div class="home-review-desc" id="home-review-desc">有 0 道错题到了复习时间</div>
                     </div>
-                    <div class="daily-task-list" id="daily-task-list">
-                        <!-- JS动态渲染 -->
-                    </div>
-                    <div class="daily-task-all-done" style="display:none">
-                        🎉 今日任务已完成！
-                    </div>
+                    <div class="home-review-arrow">›</div>
                 </div>
 
                 <!-- 打卡日历（百词斩风格） -->
@@ -244,7 +241,8 @@
                     </div>
                     
                     <!-- 每日任务卡片 -->
-                    <div class="daily-task-card" id="daily-task-card" onclick="openDailyTask()">
+                    <!-- 旧的每日任务卡片已由today-task-card替代，隐藏 -->
+<div class="daily-task-card" id="daily-task-card" onclick="openDailyTask()" style="display:none">
                         <div class="daily-task-header">
                             <div class="daily-task-icon">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
@@ -518,33 +516,21 @@
                         </ul>
                         <button class="coze-card-btn primary">立即购买</button>
                     </div>
-                    <!-- 旗舰版 即将推出 -->
-                    <div class="coze-card" data-plan="flagship" style="opacity:0.5;pointer-events:none">
-                        <div class="coze-card-top">
-                            <div class="coze-card-name">旗舰版</div>
-                            <div class="coze-card-price"><span class="coze-price-num">—</span></div>
-                        </div>
-                        <div class="coze-card-tag">即将推出</div>
-                        <ul class="coze-card-features">
-                            <li>✓ AI对话 无限</li>
-                            <li>✓ 深度精讲+作文精批</li>
-                            <li>✓ 翻译精批 无限</li>
-                            <li>✓ 错题归类+进步预测</li>
-                            <li>✓ 更多功能，敬请期待</li>
-                        </ul>
-                        <button class="coze-card-btn outline" disabled>即将推出</button>
-                    </div>
+
                 </div>
                 
                 <!-- FAQ -->
                 <div class="coze-faq">
                     <h3 class="coze-faq-title">常见问题</h3>
-                    <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span>购买后可以退款吗？</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-answer"><p>7天内未使用核心功能（AI批改、学习计划等）可申请全额退款。已使用核心功能后不支持退款，但你可以继续使用到套餐到期。退款请通过面包多订单页面申请，我们会在3个工作日内处理。</p></div></div>
-                    <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span>到考试前可以一直用吗？</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-answer"><p>冲刺营有效期30天，从开通之日起计算。建议在考前30天内开通，这样可以一直用到考试前。提前开通的话，到期后免费版功能仍可继续使用，每天坚持练习，薄弱项会有明显改善。</p></div></div>
+                    <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span>购买后可以退款吗？</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-answer"><p>虚拟商品一经开通不支持退款，开通前请先体验免费版确认功能满足需求。如有特殊情况请联系面包多订单页面与我们沟通。</p></div></div>
+                    <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span>到考试前可以一直用吗？</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-answer"><p>冲刺营有效期30天，从开通之日起计算。建议在考前30天内开通，刚好用到考试前。到期后免费版功能仍可继续使用。</p></div></div>
                     <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span>AI批改靠谱吗？</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-answer"><p>AI批改基于大语言模型，能指出语法错误、逻辑问题和表达不当之处，并给出修改建议和参考范文。但AI评分与实际考试评分可能存在差异，批改结果仅供参考学习，不作为考试评分依据。本产品为辅助学习工具，不保证考试结果。</p></div></div>
-                    <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span>免费版和冲刺营有什么区别？</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-answer"><p>免费版包含：AI五维诊断+人格卡、每日一练（通用轮换）、AI对话20轮/天、作文翻译基础评分+问题标注。冲刺营在此基础上增加：AI对话不限次数、30天个性化学习计划、作文逐句改写、翻译参考译文、短板定制每日一练，每天坚持练习，薄弱项会有明显改善。</p></div></div>
+                    <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span>免费版和冲刺营有什么区别？</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-answer"><p>免费版包含：AI五维诊断+人格卡、每日一练（通用轮换）、AI对话20轮/天、作文/翻译基础评分。冲刺营在此基础上增加：AI对话不限次数、30天个性化学习计划、作文批改每日1次、翻译批改每日1次、针对短板的每日一练。</p></div></div>
                     <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span>换手机/浏览器数据会丢吗？</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-answer"><p>学习数据保存在当前浏览器中，换设备不会自动同步。你可以在"我的"页面复制用户ID，在新设备上输入ID恢复数据。建议重要数据及时备份。</p></div></div>
                     <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span>隐私安全吗？</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-answer"><p>你的学习数据仅保存在本地浏览器中，我们不会收集或上传你的个人信息。AI对话内容仅在对话期间用于生成回复，不会被存储或用于其他用途。支付由面包多平台处理，我们不接触你的支付信息。</p></div></div>
+                    <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span>怎么购买和激活？</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-answer"><p>点击「立即购买」跳转到面包多完成支付，然后复制订单号，回到本网站粘贴订单号即可激活，全程约1分钟。激活后立即生效，无需等待。</p></div></div>
+                    <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span>支持六级吗？</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-answer"><p>支持！点击首页的「切换六级」即可切换到六级模式，AI诊断、对话陪练、批改等功能均适配六级。四级和六级可随时切换。</p></div></div>
+                    <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span>到期后怎么续费？</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-answer"><p>套餐到期后会自动回到免费版，学习数据不会丢失。如需继续使用冲刺营功能，重新购买即可，新套餐从激活时重新计算30天。</p></div></div>
                 </div>
             </div>
                         <div class="tab-page" id="tab-wrongbook">
@@ -652,6 +638,12 @@
                     <div class="menu-item-new" onclick="openRestoreDataModal()">
                         <div class="menu-icon-new green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 15v4c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
                         <span class="menu-text-new">恢复数据</span>
+                        <span class="menu-arrow-new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"/></svg></span>
+                    </div>
+                    <div class="menu-item-new" onclick="showHelpGuide()">
+                        <div class="menu-icon-new purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+                        <span class="menu-text-new">使用帮助</span>
+                        <span class="help-guide-badge" id="help-guide-badge"></span>
                         <span class="menu-arrow-new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"/></svg></span>
                     </div>
                 </div>
@@ -902,7 +894,7 @@
     </div>
 
     <!-- JS -->
-    <script src="/js/main.js?v=20260518v"></script>
-    <script src="/js/essay.js?v=202605142349"></script>
+    <script src="/js/main.js?v=20260518v2"></script>
+    <script src="/js/essay.js?v=20260518v2"></script>
 </body>
 

@@ -1935,3 +1935,345 @@
     min-width: 32px;
 }
 
+
+/* 今日待办卡片样式 */
+.today-task-card {
+    margin: 12px 16px;
+    padding: 16px;
+    background: linear-gradient(135deg, #6C5CE7, #a29bfe);
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(108, 92, 231, 0.25);
+    animation: fadeInUp 0.4s ease;
+}
+
+.today-task-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.today-task-title {
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.today-task-progress {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.25);
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 12px;
+    min-width: 36px;
+}
+
+.today-task-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.today-task-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.today-task-item:active {
+    transform: scale(0.98);
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.today-task-item.completed {
+    opacity: 0.7;
+    cursor: default;
+}
+
+.today-task-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    flex-shrink: 0;
+}
+
+.today-task-icon.completed {
+    background: #10B981;
+}
+
+.today-task-text {
+    flex: 1;
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.today-task-text.completed {
+    text-decoration: line-through;
+    opacity: 0.8;
+}
+
+.today-task-dim {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 11px;
+    font-weight: 500;
+    flex-shrink: 0;
+}
+
+.today-task-all-done {
+    text-align: center;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 12px;
+    background: rgba(16, 185, 129, 0.3);
+    border-radius: 10px;
+    margin-top: 8px;
+}
+
+.today-task-empty {
+    text-align: center;
+    padding: 8px 0;
+}
+
+.today-task-generate-btn {
+    width: 100%;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px dashed rgba(255, 255, 255, 0.5);
+    border-radius: 10px;
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.today-task-generate-btn:active {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(0.98);
+}
+
+/* ===== 首页待复习错题提醒卡片 ===== */
+.home-review-reminder {
+    display: flex;
+    align-items: center;
+    padding: 14px 16px;
+    background: linear-gradient(135deg, #FFF8F0 0%, #FFF3E6 100%);
+    border: 1px solid #FFDDB0;
+    border-radius: 14px;
+    margin: 0 16px 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.home-review-reminder:active {
+    transform: scale(0.98);
+    background: linear-gradient(135deg, #FFE8D0 0%, #FFDCC0 100%);
+}
+
+.home-review-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #FF8C42 0%, #FF6B35 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    margin-right: 12px;
+    box-shadow: 0 2px 8px rgba(255, 107, 53, 0.3);
+}
+
+.home-review-info {
+    flex: 1;
+}
+
+.home-review-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 2px;
+}
+
+.home-review-desc {
+    font-size: 12px;
+    color: #64748B;
+}
+
+.home-review-arrow {
+    font-size: 22px;
+    color: #CBD5E1;
+    font-weight: 300;
+}
+
+/* ===== 使用帮助页面样式 ===== */
+.help-guide-badge {
+    display: none;
+    width: 8px;
+    height: 8px;
+    background: #EF4444;
+    border-radius: 50%;
+    margin-left: 4px;
+    vertical-align: middle;
+}
+
+.help-guide-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #F8FAFC;
+    z-index: 1100;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.help-guide-header {
+    padding: 16px 20px;
+    padding-top: calc(16px + var(--safe-top));
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #FFFFFF;
+    flex-shrink: 0;
+    border-bottom: 1px solid #F1F5F9;
+}
+
+.help-guide-back {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #F1F5F9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: none;
+    transition: background 0.2s;
+}
+.help-guide-back:active { background: #E2E8F0; }
+.help-guide-back svg { width: 20px; height: 20px; stroke: #475569; stroke-width: 2; }
+
+.help-guide-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #1E293B;
+    letter-spacing: -0.3px;
+}
+
+.help-guide-content {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 20px 16px;
+    padding-bottom: calc(40px + var(--safe-bottom));
+}
+
+.help-guide-list {
+    background: #FFFFFF;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.help-item {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    cursor: pointer;
+    transition: background 0.2s;
+    border-bottom: 1px solid #F1F5F9;
+}
+.help-item:last-child { border-bottom: none; }
+.help-item:active { background: #F8FAFC; }
+
+.help-item-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-right: 14px;
+}
+.help-item-icon svg { width: 22px; height: 22px; stroke-width: 1.8; }
+.help-item-icon.purple { background: rgba(108,92,231,0.1); }
+.help-item-icon.purple svg { stroke: #6C5CE7; }
+.help-item-icon.blue { background: rgba(59,130,246,0.1); }
+.help-item-icon.blue svg { stroke: #3B82F6; }
+.help-item-icon.teal { background: rgba(0,188,212,0.1); }
+.help-item-icon.teal svg { stroke: #00BCD4; }
+.help-item-icon.orange { background: rgba(243,156,18,0.1); }
+.help-item-icon.orange svg { stroke: #F39C12; }
+.help-item-icon.red { background: rgba(239,68,68,0.1); }
+.help-item-icon.red svg { stroke: #EF4444; }
+.help-item-icon.green { background: rgba(0,184,148,0.1); }
+.help-item-icon.green svg { stroke: #00B894; }
+
+.help-item-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.help-item-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1E293B;
+    margin-bottom: 4px;
+}
+
+.help-item-desc {
+    font-size: 13px;
+    color: #64748B;
+    line-height: 1.4;
+}
+
+.help-item-arrow {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    margin-left: 8px;
+}
+.help-item-arrow svg { width: 20px; height: 20px; stroke: #CBD5E1; stroke-width: 2; }
+
+.help-guide-footer {
+    margin-top: 32px;
+    text-align: center;
+    padding: 20px;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-radius: 16px;
+    border: 1px solid #E2E8F0;
+}
+
+.help-guide-contact {
+    font-size: 14px;
+    color: #64748B;
+    margin-bottom: 8px;
+}
+
+.help-guide-contact-info {
+    font-size: 15px;
+    font-weight: 600;
+    color: #6C5CE7;
+}

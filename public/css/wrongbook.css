@@ -463,3 +463,14 @@
 .wrongbook-bottom-spacer {
     height: 24px;
 }
+
+/* ===== 错题复习时间显示 ===== */
+.wrong-review-time {
+    font-size: 11px;
+    color: #94A3B8;
+    background: #F1F5F9;
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-left: 8px;
+    flex-shrink: 0;
+}

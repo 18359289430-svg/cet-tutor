@@ -645,3 +645,253 @@
     font-size: 12px;
     color: #94A3B8;
 }
+
+/* ===== CET每日任务卡片样式 ===== */
+
+/* 禁用遮罩 */
+.cet-task-disabled-overlay {
+    margin: 16px;
+}
+
+.cet-task-disabled-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: #F8FAFC;
+    border: 1px dashed #E2E8F0;
+    border-radius: 14px;
+    padding: 20px;
+    opacity: 0.7;
+}
+
+.cet-task-disabled-icon {
+    font-size: 32px;
+}
+
+.cet-task-disabled-text {
+    font-size: 14px;
+    color: #94A3B8;
+}
+
+/* 任务概览卡片 */
+.cet-task-overview {
+    margin: 16px 16px;
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    border: 1px solid #F0F0F5;
+}
+
+.cet-task-overview.completed {
+    background: linear-gradient(135deg, rgba(0,184,148,0.05) 0%, rgba(85,239,196,0.05) 100%);
+    border-color: #00B894;
+}
+
+.cet-task-overview-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.cet-task-overview-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #1E293B;
+}
+
+.cet-task-overview-badge {
+    background: linear-gradient(135deg, #6C5CE7 0%, #A29BFE 100%);
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 20px;
+}
+
+.cet-task-overview-badge.done {
+    background: #00B894;
+}
+
+.cet-task-progress-bar {
+    height: 8px;
+    background: #F1F5F9;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.cet-task-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #6C5CE7, #A29BFE);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.cet-task-overview.completed .cet-task-progress-fill {
+    background: linear-gradient(90deg, #00B894, #55EFC4);
+}
+
+.cet-task-overview-time {
+    font-size: 12px;
+    color: #94A3B8;
+    text-align: right;
+}
+
+/* 任务卡片列表 */
+.cet-task-list {
+    margin: 16px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.cet-task-card {
+    display: flex;
+    align-items: center;
+    background: white;
+    border-radius: 14px;
+    padding: 16px;
+    border: 1px solid #F0F0F5;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.cet-task-card:active {
+    transform: scale(0.98);
+}
+
+.cet-task-card.completed {
+    background: #F8FAFC;
+    border-color: #E2E8F0;
+    cursor: default;
+}
+
+.cet-task-card-left {
+    margin-right: 14px;
+}
+
+.cet-task-icon {
+    width: 44px;
+    height: 44px;
+    background: linear-gradient(135deg, rgba(108,92,231,0.1) 0%, rgba(162,155,254,0.1) 100%);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+}
+
+.cet-task-icon.done {
+    background: linear-gradient(135deg, #00B894 0%, #55EFC4 100%);
+    color: white;
+    font-size: 20px;
+}
+
+.cet-task-card-center {
+    flex: 1;
+    min-width: 0;
+}
+
+.cet-task-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1E293B;
+    margin-bottom: 4px;
+}
+
+.cet-task-title.done {
+    color: #94A3B8;
+    text-decoration: line-through;
+}
+
+.cet-task-meta {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: #94A3B8;
+    flex-wrap: wrap;
+}
+
+.cet-task-type {
+    background: #F1F5F9;
+    color: #64748B;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.cet-task-card.completed .cet-task-type {
+    background: #E2E8F0;
+    color: #94A3B8;
+}
+
+.cet-task-dim {
+    color: #6C5CE7;
+}
+
+.cet-task-card.completed .cet-task-dim {
+    color: #94A3B8;
+}
+
+.cet-task-est {
+    color: #64748B;
+}
+
+.cet-task-card.completed .cet-task-est {
+    color: #94A3B8;
+}
+
+.cet-task-card-right {
+    margin-left: 12px;
+}
+
+.cet-task-arrow {
+    width: 20px;
+    height: 20px;
+    stroke: #CBD5E1;
+}
+
+/* 全部完成鼓励文案 */
+.cet-task-complete-msg {
+    text-align: center;
+    margin: 20px 16px;
+    padding: 20px;
+    background: linear-gradient(135deg, rgba(0,184,148,0.08) 0%, rgba(85,239,196,0.08) 100%);
+    border-radius: 16px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #059669;
+}
+
+/* 底部操作按钮 */
+.cet-task-actions {
+    margin: 20px 16px 40px;
+    display: flex;
+    justify-content: center;
+}
+
+.cet-task-refresh-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #64748B;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.cet-task-refresh-btn:active {
+    background: #F1F5F9;
+}
+
+.cet-task-refresh-btn svg {
+    width: 16px;
+    height: 16px;
+    stroke: #64748B;
+}
