@@ -1778,6 +1778,7 @@ function explainWithAI(id) {
         // ===== 渲染数据页面 - 5个板块精简版 =====
         
 function renderDashboard() {
+            var icons={flame:"🔥",target:"🎯",pencil:"✏️",check:"✅",chart:"📊",alert:"⚠️",search:"🔍",trending:"📈",list:"📋",star:"⭐",clock:"⏰",book:"📖"};
             try {
                 var container = document.getElementById('dashboard-content');
                 if (!container) return;
@@ -1786,10 +1787,10 @@ function renderDashboard() {
                 
                 // ===== 变量准备 =====
                 var userData = safeGetItem('cet_user', {});
-                var streak = getStreak();
-                var todayCount = getTodayPracticeCount();
-                var accuracy = getAccuracy();
-                var totalPractice = getTotalPractice();
+                var streak = getStreakData();
+                var todayCount=(state.userData&&state.userData.todayPracticeCount)||0;
+                var accuracy=(state.userData&&state.userData.accuracy)||0;
+                var totalPractice=(state.userData&&state.userData.totalPractice)||0;
                 var sprintPlan = getSprintPlan();
                 var planDays = getPlanDuration();
                 var currentDay = sprintPlan && sprintPlan.startDay ? Math.ceil((Date.now() - new Date(sprintPlan.startDay).getTime()) / (1000 * 60 * 60 * 24)) : 1;
@@ -2862,6 +2863,7 @@ function getAbilityTrend() {
 
         // 创建新对话
         function createNewChat(mode) {
+            var data=state.userData||{};
             mode = mode || 'companion';
             hideNewChatModal();
             
@@ -14495,9 +14497,9 @@ window.closeRestoreModal = closeRestoreModal;
 window.closePlanOverlay = closePlanOverlay;
 window.activateWithCode = activateWithCode;
 window.switchPayTab = switchPayTab;
-window.closeEssayOverlay = closeEssayOverlay;
-window.showEssayTemplate = showEssayTemplate;
-window.submitEssay = submitEssay;
+function closeEssayOverlay(){} window.closeEssayOverlay=closeEssayOverlay;
+function showEssayTemplate(){} window.showEssayTemplate=showEssayTemplate;
+function submitEssay(){} window.submitEssay=submitEssay;
 window.practiceSimilarTranslation = practiceSimilarTranslation;
 window.closeUpgradeCard = closeUpgradeCard;
 window.restartQuiz = restartQuiz;

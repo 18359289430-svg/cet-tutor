@@ -2313,7 +2313,7 @@ ${user_input}
                     console.log('[Webhook] 收到push事件，开始自动部署...');
                     const { execSync } = require('child_process');
                     try {
-                        execSync('cd /opt/cet-tutor && git fetch --all && git reset --hard origin/main && pm2 restart all', { timeout: 30000 });
+                        execSync('cd /opt/cet-tutor && git fetch --all && echo AUTO_DEPLOY_DISABLED && pm2 restart all', { timeout: 30000 });
                         console.log('[Webhook] 部署完成');
                     } catch (e) {
                         console.error('[Webhook] 部署失败:', e.message);
@@ -2530,7 +2530,7 @@ ${user_input}
                     console.log('[Webhook] 收到push事件，开始自动部署...');
                     const { execSync } = require('child_process');
                     try {
-                        execSync('cd /opt/cet-tutor && git fetch --all && git reset --hard origin/main && pm2 restart all', { timeout: 30000 });
+                        execSync('cd /opt/cet-tutor && git fetch --all && echo AUTO_DEPLOY_DISABLED && pm2 restart all', { timeout: 30000 });
                         console.log('[Webhook] 部署完成');
                     } catch (e) {
                         console.error('[Webhook] 部署失败:', e.message);
@@ -2745,7 +2745,7 @@ function sendHtml(res, htmlContent, req) {
     res.setHeader('X-Content-Type-Options', 'nosniff');
     res.setHeader('Cache-Control', 'no-cache'); // HTML不缓存，确保更新即时生效
     // CSP安全头
-    res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.clarity.ms https://us.umami.is https://cloud.umami.is https://scripts.clarity.ms; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://api.deepseek.com https://api.coze.cn https://us.umami.is https://api-gateway.umami.dev https://cloud.umami.is https://n.clarity.ms https://www.clarity.ms https://cdn.clarity.ms; font-src 'self'; frame-src 'none'; object-src 'none'");
+    res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.clarity.ms https://us.umami.is https://cloud.umami.is https://scripts.clarity.ms; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://api.deepseek.com https://api.coze.cn https://us.umami.is https://api-gateway.umami.dev https://cloud.umami.is https://n.clarity.ms https://www.clarity.ms https://cdn.clarity.ms https://z.clarity.ms; font-src 'self'; frame-src 'none'; object-src 'none'");
     
     if (shouldCompress(req, contentLength)) {
         res.setHeader('Content-Type', 'text/html; charset=utf-8');
@@ -3179,7 +3179,7 @@ async function handleDeepseekEssayGrade(req, res) {
                     console.log('[Webhook] 收到push事件，开始自动部署...');
                     const { execSync } = require('child_process');
                     try {
-                        execSync('cd /opt/cet-tutor && git fetch --all && git reset --hard origin/main && pm2 restart all', { timeout: 30000 });
+                        execSync('cd /opt/cet-tutor && git fetch --all && echo AUTO_DEPLOY_DISABLED && pm2 restart all', { timeout: 30000 });
                         console.log('[Webhook] 部署完成');
                     } catch (e) {
                         console.error('[Webhook] 部署失败:', e.message);
