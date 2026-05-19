@@ -1609,3 +1609,57 @@
 .dashboard-trend-diff.trend-stable {
     color: #94a3b8;
 }
+
+/* ===== 个性化训练建议 ===== */
+.dashboard-training-tips {
+    padding: 16px 18px;
+    margin-bottom: 16px;
+}
+.dashboard-training-tips-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #1E293B;
+    margin-bottom: 14px;
+}
+.dashboard-training-tip-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    background: rgba(108, 92, 231, 0.04);
+    border-radius: 12px;
+    margin-bottom: 10px;
+    gap: 12px;
+}
+.dashboard-training-tip-item:last-child {
+    margin-bottom: 0;
+}
+.dashboard-tip-text {
+    flex: 1;
+    font-size: 13px;
+    color: #475569;
+    line-height: 1.5;
+}
+.dashboard-tip-dim {
+    font-weight: 600;
+    color: #6C5CE7;
+}
+.dashboard-tip-action {
+    flex-shrink: 0;
+    padding: 6px 14px;
+    background: linear-gradient(135deg, #6C5CE7, #A29BFE);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.dashboard-tip-action:active {
+    transform: scale(0.96);
+    opacity: 0.9;
+}
