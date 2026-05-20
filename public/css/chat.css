@@ -266,26 +266,27 @@
 .custom-chat-header {
     display: flex; 
     align-items: center; 
-    padding: 20px 20px; 
-    background: rgba(255, 255, 255, 0.85);
+    padding: 10px 16px; 
+    background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border-bottom: 0.5px solid rgba(229, 229, 234, 0.6); 
     flex-shrink: 0; 
-    gap: 12px;
+    gap: 8px;
     position: relative;
     z-index: 10;
+    min-height: 44px;
 }
 .custom-chat-back {
-    width: 36px; 
-    height: 36px; 
+    width: 32px; 
+    height: 32px; 
     border: none; 
     background: transparent; 
     cursor: pointer;
     display: none; 
     align-items: center; 
     justify-content: center; 
-    border-radius: 10px;
+    border-radius: 8px;
     transition: all 0.2s ease;
 }
 .custom-chat-back:active { background: #F0F0F5; }
@@ -296,18 +297,19 @@
     padding-left: 4px;
 }
 .custom-chat-header-name { 
-    font-size: 20px; 
-    font-weight: 700; 
+    font-size: 16px; 
+    font-weight: 600; 
     color: #1E293B; 
-    letter-spacing: -0.4px;
-    margin-bottom: 4px;
+    letter-spacing: -0.3px;
+    margin-bottom: 0;
+    line-height: 1.2;
 }
 .custom-chat-header-status { 
-    font-size: 12px; 
+    font-size: 11px; 
     color: #94A3B8; 
     display: flex; 
     align-items: center; 
-    gap: 6px;
+    gap: 4px;
 }
 .custom-chat-header-status .dot { 
     width: 6px; 
@@ -319,26 +321,26 @@
 }
 /* Vercel/Linear风格考试倒计时小药丸 */
 .custom-chat-header-countdown {
-    padding: 6px 14px; 
-    border-radius: 14px; 
-    font-size: 12px; 
+    padding: 3px 10px; 
+    border-radius: 10px; 
+    font-size: 11px; 
     font-weight: 600;
-    background: linear-gradient(135deg, rgba(108, 92, 231, 0.1) 0%, rgba(162, 155, 254, 0.1) 100%);
+    background: rgba(108, 92, 231, 0.08);
     color: #6C5CE7; 
-    border: 1px solid rgba(108, 92, 231, 0.15);
-    margin-right: 8px;
+    border: none;
+    margin-right: 4px;
     white-space: nowrap;
 }
 .custom-chat-actions-btn {
-    width: 36px; 
-    height: 36px; 
+    width: 32px; 
+    height: 32px; 
     border: none; 
     background: transparent; 
     cursor: pointer;
     display: flex; 
     align-items: center; 
     justify-content: center; 
-    border-radius: 10px;
+    border-radius: 8px;
     transition: all 0.2s ease;
     flex-shrink: 0;
 }
@@ -1639,10 +1641,10 @@
 /* ===== 响应式适配 ===== */
 @media (max-width: 380px) {
     .custom-chat-header {
-        padding: 16px;
+        padding: 8px 12px;
     }
     .custom-chat-header-name {
-        font-size: 18px;
+        font-size: 15px;
     }
     .custom-chat-messages {
         padding: 20px 16px 16px;

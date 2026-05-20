@@ -3239,7 +3239,7 @@ function ensureChatOpen(){
     var tabBar=document.querySelector(".tab-bar");if(tabBar)tabBar.style.display="";
     window.location.hash="practice";
     localStorage.setItem("cet_current_tab","diagnosis");
-    var chatTitle=document.getElementById("chat-title");if(chatTitle)chatTitle.textContent="AI\u966a\u7ec3";
+    var chatTitle=document.getElementById("chat-title");if(chatTitle)chatTitle.textContent="AI陪练";
     if(typeof initChatChips==='function')initChatChips(mode);
 }
 
