@@ -961,13 +961,14 @@ A. 选项A B. 选项B C. 选项C D. 选项D
 - 出变式题时：300字内
 `;
 
+
 async function handleApi(req, res, pathname) {
-    const url = 
     // Redirect IP-based access to domain
     if(req.headers.host && /^\d+\.\d+\.\d+\.\d+/.test(req.headers.host)){
         res.writeHead(301,{'Location':'https://guocet.top'+req.url});res.end();return;
     }
-new URL(req.url, `http://localhost:${PORT}`);
+
+    const url = new URL(req.url, `http://localhost:${PORT}`);
     // 统一设置CSP
 
     // 处理CORS预检
