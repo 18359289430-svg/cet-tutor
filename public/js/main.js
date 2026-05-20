@@ -1824,12 +1824,8 @@ function renderDashboard() {
                 html += '<div class="dashboard-hero-circle-wrap">';
                 html += '<div class="dashboard-hero-circle">';
                 html += '<svg viewBox="0 0 100 100">';
-                html += '<defs>';
-                html += '<linearGradient id="planGradient" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#6C5CE7"/><stop offset="50%" stop-color="#A29BFE"/><stop offset="100%" stop-color="#DDA0DD"/></linearGradient>';
-                html += '<filter id="glow"><feGaussianBlur stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>';
-                html += '</defs>';
                 html += '<circle class="dashboard-plan-circle-bg" cx="50" cy="50" r="42"/>';
-                html += '<circle class="dashboard-plan-circle-progress" cx="50" cy="50" r="42" stroke-dasharray="' + circumference + '" stroke-dashoffset="' + offset + '" filter="url(#glow)"/>';
+                html += '<circle class="dashboard-plan-circle-progress" cx="50" cy="50" r="42" stroke-dasharray="' + circumference + '" stroke-dashoffset="' + offset + '"/>';
                 html += '</svg>';
                 html += '<div class="dashboard-hero-circle-text">';
                 html += '<div class="dashboard-hero-circle-day">' + planProgress + '%</div>';
