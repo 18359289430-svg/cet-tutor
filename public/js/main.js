@@ -2893,7 +2893,6 @@ function getAbilityTrend() {
             // 清空消息显示 - 引导式开场白
             var container = document.getElementById('chat-messages');
             container.innerHTML = '<div class="custom-chat-msg ai welcome-msg">' +
-                '<div class="custom-chat-avatar"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>' +
                 '<div class="welcome-bubble-card">' +
                 '<p style="font-size:17px;font-weight:700;color:#1E293B;margin-bottom:12px">嗨！我是小过学长 👋</p>' +
                 '<p style="margin-bottom:12px;color:#64748B">我能帮你这些：</p>' +
@@ -3225,7 +3224,6 @@ function getAbilityTrend() {
             // 清空消息显示 - 引导式开场白
             var container = document.getElementById('chat-messages');
             container.innerHTML = '<div class="custom-chat-msg ai welcome-msg">' +
-                '<div class="custom-chat-avatar"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>' +
                 '<div class="welcome-bubble-card">' +
                 '<p style="font-size:17px;font-weight:700;color:#1E293B;margin-bottom:12px">嗨！我是小过学长 👋</p>' +
                 '<p style="margin-bottom:12px;color:#64748B">我能帮你这些：</p>' +
@@ -3440,7 +3438,6 @@ function getAbilityTrend() {
             var timeStr = getNowTime();
 
             if (role === 'ai') {
-                msgDiv.innerHTML = '<div class="custom-chat-avatar"><svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 7h8M8 11h8M8 15h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>' +
                     '<div class="custom-chat-bubble">' + formatBotText(text) + '<div class="custom-chat-time">' + timeStr + '</div></div>';
             } else if (role === 'system') {
                 msgDiv.innerHTML = '<div class="custom-chat-bubble">' + escapeHtml(text) + '</div>';
@@ -3459,7 +3456,6 @@ function getAbilityTrend() {
             var msgDiv = document.createElement('div');
             msgDiv.className = 'custom-chat-msg ai';
             msgDiv.id = 'typing-indicator';
-            msgDiv.innerHTML = '<div class="custom-chat-avatar"><svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 7h8M8 11h8M8 15h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>' +
                 '<div class="custom-chat-bubble"><div class="typing-indicator"><span></span><span></span><span></span></div></div>';
             container.appendChild(msgDiv);
             scrollChatToBottom();
