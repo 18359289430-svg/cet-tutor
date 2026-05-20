@@ -8338,7 +8338,7 @@ var diagState = {
     answers: [],
     selfEval: [],
     correctCount: 0,
-    phase: 'loading', // loading, questions, selfeval, writing, translation, generating, done
+    phase: 'loading', // loading, questions, listening, selfeval, writing, translation, generating, done
     writingScore: null,
     translationScore: null,
     writingPrompt: null,
@@ -8955,7 +8955,7 @@ function showCurrentListening() {
     // 记录听力题目展示时间
     diagState.questionShowTime = Date.now();
     if (!passage) {
-        startWritingTest();
+        showSelfEval();
         return;
     }
     
@@ -9196,6 +9196,68 @@ function startReadingPhase() {
     });
 }
 
+
+// ===== 听力诊断阶段 =====
+function startListeningTest() {
+    diagState.phase = 'listening';
+    
+    // 从diagnosis_questions.json加载听力passages
+    var diagUrl = EXAM_TYPE === 'cet6' ? '/public/cet6_diagnosis_questions.json' : '/public/diagnosis_questions.json';
+    diagUrl += '?t=' + Date.now();
+    console.log('[听力阶段] 加载听力题目:', diagUrl);
+    
+    fetchWithTimeout(diagUrl).then(function(resp) {
+        return resp.json();
+    }).then(function(data) {
+        var passages = data.listening_passages || [];
+        if (passages.length === 0) {
+            console.log('[听力阶段] 无听力题目，跳过');
+            showSelfEval();
+            return;
+        }
+        
+        // 随机选取2-3个passage
+        passages.sort(function() { return Math.random() - 0.5; });
+        var selected = passages.slice(0, Math.min(3, passages.length));
+        
+        // 确保题目格式一致（选项用optionA/B/C/D）
+        selected.forEach(function(p) {
+            (p.questions || []).forEach(function(q) {
+                if (!q.optionA && q.options) {
+                    // 旧格式转换
+                    var opts = q.options;
+                    q.optionA = opts[0] || '';
+                    q.optionB = opts[1] || '';
+                    q.optionC = opts[2] || '';
+                    q.optionD = opts[3] || '';
+                    delete q.options;
+                }
+            });
+        });
+        
+        diagState.listeningPassages = selected;
+        diagState.currentListeningPassageIndex = 0;
+        diagState.currentListeningQIndex = 0;
+        diagState.listeningAnswers = [];
+        diagState.listeningCorrectCount = 0;
+        diagState.listeningPlayed = false;
+        diagState.listeningReplayCount = 0;
+        
+        // 重置播放器
+        listeningPlayer.extraRounds = 0;
+        listeningPlayer.round = 1;
+        listeningPlayer.maxRounds = 1;
+        listeningPlayer.currentText = '';
+        listeningPlayer.totalDuration = 0;
+        
+        console.log('[听力阶段] 加载完成，', selected.length, '个passage');
+        showCurrentListening();
+    }).catch(function(e) {
+        console.error('[听力阶段加载失败]', e);
+        showSelfEval();
+    });
+}
+
 // ========== 听力实测功能结束 ==========
 
 
@@ -9339,8 +9401,8 @@ function selectOption(btn, selectedValue) {
         diagState.currentQIndex++;
         var totalQuestions = diagState.questions.length;
         if (diagState.currentQIndex >= totalQuestions) {
-            // 阅读题做完，进入写作测试
-            startWritingTest();
+            // 阅读题做完，进入听力测试
+            startListeningTest();
         } else {
             showCurrentQuestion();
         }
@@ -14516,6 +14578,7 @@ window.navigateToWrongBook = navigateToWrongBook;
 window.handlePlayClick = handlePlayClick;
 window.handleReplayClick = handleReplayClick;
 window.selectListeningOption = selectListeningOption;
+window.startListeningTest = startListeningTest;
 window.startQuizWithDim = startQuizWithDim;
 window.startPathPractice = startPathPractice;
 window.showSelfEval = showSelfEval;
