@@ -1,0 +1,111 @@
+/* 题目试卷风格 */
+.custom-chat-bubble .quiz-passage {
+    background: #f8f9fb;
+    border-left: 3px solid #4a7c59;
+    padding: 12px 16px;
+    margin: 8px 0;
+    border-radius: 0 6px 6px 0;
+    line-height: 1.8;
+    font-size: 14px;
+    color: #333;
+}
+.custom-chat-bubble .quiz-question {
+    font-weight: 700;
+    color: #1a1a2e;
+    margin: 14px 0 6px 0;
+    font-size: 15px;
+}
+.custom-chat-bubble .quiz-options li {
+    padding: 6px 12px;
+    margin: 3px 0;
+    border-radius: 6px;
+    font-size: 14px;
+    line-height: 1.6;
+    background: #f0f2f5;
+    color: #333;
+}
+.custom-chat-bubble .quiz-hint {
+    background: #fffbeb;
+    border-left: 3px solid #f59e0b;
+    padding: 8px 14px;
+    margin: 8px 0;
+    border-radius: 0 6px 6px 0;
+    font-size: 13px;
+    color: #92400e;
+}
+/* Markdown渲染通用样式 */
+.custom-chat-bubble h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin: 12px 0 6px 0;
+    padding-bottom: 4px;
+    border-bottom: 2px solid #e5e7eb;
+}
+.custom-chat-bubble h4 {
+    font-size: 15px;
+    font-weight: 600;
+    color: #374151;
+    margin: 10px 0 4px 0;
+}
+.custom-chat-bubble ol, .custom-chat-bubble ul {
+    padding-left: 20px;
+    margin: 6px 0;
+}
+.custom-chat-bubble li {
+    margin: 3px 0;
+    line-height: 1.6;
+}
+.custom-chat-bubble blockquote {
+    border-left: 3px solid #6366f1;
+    margin: 8px 0;
+    padding: 8px 14px;
+    background: #f5f3ff;
+    border-radius: 0 6px 6px 0;
+    color: #4c1d95;
+    font-size: 13px;
+}
+.custom-chat-bubble code {
+    background: #f1f5f9;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 13px;
+    color: #dc2626;
+}
+.custom-chat-bubble pre {
+    background: #1e293b;
+    color: #e2e8f0;
+    padding: 12px;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 8px 0;
+    font-size: 13px;
+}
+.custom-chat-bubble pre code {
+    background: none;
+    color: inherit;
+    padding: 0;
+}
+.custom-chat-bubble hr {
+    border: none;
+    border-top: 1px dashed #d0d5dd;
+    margin: 12px 0;
+}
+.custom-chat-bubble table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 8px 0;
+    font-size: 13px;
+}
+.custom-chat-bubble th, .custom-chat-bubble td {
+    border: 1px solid #e5e7eb;
+    padding: 6px 10px;
+    text-align: left;
+}
+.custom-chat-bubble th {
+    background: #f8f9fb;
+    font-weight: 600;
+}
+.custom-chat-bubble p {
+    margin: 4px 0;
+}
