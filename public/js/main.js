@@ -1021,7 +1021,8 @@ function initApp() {
             if (!data.cloudUserId) {
                 data.cloudUserId = 'u_' + Date.now() + '_' + Math.random().toString(36).substr(2, 8);
                 state.userData = data;
-                saveUserData(state.userData);
+                // Only save to localStorage, NOT saveUserData (which would cause infinite recursion)
+                safeSetItem(examKey('user'), JSON.stringify(data));
             }
             return data.cloudUserId;
         }
