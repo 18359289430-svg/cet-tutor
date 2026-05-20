@@ -2689,7 +2689,7 @@ function getAbilityTrend() {
         // 获取对话列表
         function getChatList() {
             try {
-                var list = localStorage.getItem('cet_chat_list');
+                var list = localStorage.getItem(examKey('chat_list'));
                 return list ? JSON.parse(list) : [];
             } catch (e) {
                 return [];
@@ -2698,7 +2698,7 @@ function getAbilityTrend() {
 
         // 保存对话列表
         function saveChatList(list) {
-            localStorage.setItem('cet_chat_list', JSON.stringify(list));
+            localStorage.setItem(examKey('chat_list'), JSON.stringify(list));
         }
 
         // 格式化时间
@@ -3160,7 +3160,7 @@ function getAbilityTrend() {
         function saveMessagesToLocal(convId) {
             if (!convId) return;
             try {
-                var key = 'cet_msg_' + convId;
+                var key = examKey('msg_') + convId;
                 // 优先使用chatHistory（流式消息存这里），fallback到messages
                 var source = chatState.chatHistory.length > 0 ? chatState.chatHistory : chatState.messages;
                 var msgs = source.map(function(m) {
@@ -3174,7 +3174,7 @@ function getAbilityTrend() {
         function loadMessagesFromLocal(convId) {
             if (!convId) return [];
             try {
-                var key = 'cet_msg_' + convId;
+                var key = examKey('msg_') + convId;
                 var data = localStorage.getItem(key);
                 return data ? JSON.parse(data) : [];
             } catch(e) { return []; }
@@ -7722,7 +7722,7 @@ function checkChatLimit() {
 // 获取本地使用量（降级用）
 function getChatUsage() {
     try {
-        var data = localStorage.getItem('cet_chat_usage');
+        var data = localStorage.getItem(examKey('chat_usage'));
         if (!data) return { count: 0, date: '' };
         var usage = JSON.parse(data);
         var today = new Date().toISOString().split('T')[0];
@@ -7741,7 +7741,7 @@ function incrementChatUsage() {
     var usage = getChatUsage();
     usage.count++;
     usage.date = new Date().toISOString().split('T')[0];
-    localStorage.setItem('cet_chat_usage', JSON.stringify(usage));
+    localStorage.setItem(examKey('chat_usage'), JSON.stringify(usage));
 }
 
 // 页面加载时预获取限流信息
