@@ -14540,6 +14540,7 @@ window.handleTodayTaskClick = handleTodayTaskClick;
 window.generateTodayPlan = generateTodayPlan;
 window.markTaskComplete = markTaskComplete;
 window.handleCapsuleClick = handleCapsuleClick;
+window.ensureChatOpen = ensureChatOpen;
 window.createNewChat = createNewChat;
 window.sendMessage = sendMessage;
 window.handleChatBack = handleChatBack;
