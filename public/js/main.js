@@ -1195,7 +1195,7 @@ function initApp() {
                     showToast('🎉 ' + (resp.plan === 'flagship' ? '全程营' : '冲刺营') + ' 已开通！');
                     // 激活成功后自动跳转到聊天页面开始使用
                     switchTab('diagnosis');
-                    setTimeout(function() { openChat('companion'); }, 500);
+                    setTimeout(function() { ensureChatOpen(); }, 500);
                 } else {
                     showToast('激活失败：' + (resp.error || '订单验证失败'));
                 }
@@ -1357,7 +1357,7 @@ function initApp() {
                 return;
             }
             if (text === '翻译练习') {
-                openChat('companion');
+                ensureChatOpen();
                 setTimeout(function() { sendSuggestion('翻译练习'); }, 300);
                 return;
             }
@@ -1366,12 +1366,12 @@ function initApp() {
                 return;
             }
             if (text === '今日任务') {
-                openChat('companion');
+                ensureChatOpen();
                 setTimeout(function() { sendSuggestion('今天练什么好'); }, 300);
                 return;
             }
             if (text === '写作模板') {
-                openChat('companion');
+                ensureChatOpen();
                 setTimeout(function() { sendSuggestion('给我写作模板'); }, 300);
                 return;
             }
@@ -1383,7 +1383,7 @@ function initApp() {
         }
         
         function handleEssayClick() {
-            openChat('companion');
+            ensureChatOpen();
             setTimeout(function(){ sendSuggestion('帮我批改作文'); }, 300);
         }
         
@@ -2706,7 +2706,7 @@ function getAbilityTrend() {
 
         function startPractice() {
             closePersonalityModal();
-            openChat('chat');
+            ensureChatOpen();
         }
 
         // ===== 对话列表管理 =====
@@ -3373,7 +3373,7 @@ function ensureChatOpen(){
         
         function startDiagChat(initialMsg) {
             // 'chat'模式：已诊断→陪练，未诊断→诊断
-            openChat('chat');
+            ensureChatOpen();
             if (initialMsg) {
                 setTimeout(function() { sendSuggestion(initialMsg); }, 300);
             }
@@ -5956,7 +5956,7 @@ function activateWithOrderIdFromModal() {
                 closePayModal();
                 showToast('🎉 ' + (resp.plan === 'flagship' ? '全程营' : '冲刺营') + ' 已开通！');
                 switchTab('diagnosis');
-                setTimeout(function() { openChat('companion'); }, 500);
+                setTimeout(function() { ensureChatOpen(); }, 500);
             }, 800);
         } else {
             if (msgEl) { msgEl.style.color = '#E17055'; msgEl.textContent = resp.error || '订单号验证失败'; }
@@ -6065,7 +6065,7 @@ function showPaySuccess(plan) {
     setTimeout(function() {
         closePayModal();
         switchTab('diagnosis');
-        setTimeout(function() { openChat('companion'); }, 300);
+        setTimeout(function() { ensureChatOpen(); }, 300);
     }, 1500);
 }
 
@@ -8532,7 +8532,7 @@ async function startNewDiagnosis() {
         if (questions.length === 0) {
             closeDiagOverlay();
             showToast('诊断题库暂不可用，将使用AI对话诊断');
-            openChat('chat');
+            ensureChatOpen();
             setTimeout(function(){ sendSuggestion('开始AI诊断，帮我找出' + EXAM_LABEL + '薄弱点'); }, 300);
             return;
         }
