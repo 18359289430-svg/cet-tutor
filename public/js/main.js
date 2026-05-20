@@ -3288,13 +3288,13 @@ function getAbilityTrend() {
             // 诊断模式：显示开始诊断快捷建议
             if (mode === 'diagnosis') {
                 chips.innerHTML = '' +
-                    '<div class="chip-grid">' +
-                    '<div class="custom-chip-card" onclick="startNewDiagnosis()" style="background:linear-gradient(135deg,#6C5CE7,#A29BFE);color:white"><span class="chip-card-icon" style="background:rgba(255,255,255,0.2)">🔍</span><span class="chip-card-text">开始诊断</span></div>' +
-                    '<div class="custom-chip-card" onclick="sendSuggestion(this.dataset.msg)" data-msg="我的阅读成绩很差怎么办"><span class="chip-card-icon" style="background:linear-gradient(135deg,#00B894,#55EFC4)">📖</span><span class="chip-card-text">阅读突破</span></div>' +
-                    '<div class="custom-chip-card" onclick="sendSuggestion(this.dataset.msg)" data-msg="听力听不懂怎么练"><span class="chip-card-icon" style="background:linear-gradient(135deg,#FDCB6E,#F39C12)">🎧</span><span class="chip-card-text">听力技巧</span></div>' +
-                    '<div class="custom-chip-card" onclick="sendSuggestion(this.dataset.msg)" data-msg="写作翻译怎么复习"><span class="chip-card-icon" style="background:linear-gradient(135deg,#E17055,#D63031)">✍️</span><span class="chip-card-text">写译方法</span></div>' +
-                    '<div class="custom-chip-card" onclick="sendSuggestion(this.dataset.msg)" data-msg="高频词汇有哪些"><span class="chip-card-icon" style="background:linear-gradient(135deg,#FDCB6E,#E17055)">📚</span><span class="chip-card-text">高频词汇</span></div>' +
-                    '<div class="custom-chip-card" onclick="sendSuggestion(this.dataset.msg)" data-msg="有什么高效的备考技巧"><span class="chip-card-icon" style="background:linear-gradient(135deg,#A29BFE,#6C5CE7)">💡</span><span class="chip-card-text">备考技巧</span></div>' +
+                    '<div class="chip-pill-wrap">' +
+                    '<div class="custom-chip-pill" onclick="startNewDiagnosis()" style="background:linear-gradient(135deg,#6C5CE7,#A29BFE);color:white">🔍 开始诊断</div>' +
+                    '<div class="custom-chip-pill" onclick="sendSuggestion(this.dataset.msg)" data-msg="我的阅读成绩很差怎么办">📖 阅读突破</div>' +
+                    '<div class="custom-chip-pill" onclick="sendSuggestion(this.dataset.msg)" data-msg="听力听不懂怎么练">🎧 听力技巧</div>' +
+                    '<div class="custom-chip-pill" onclick="sendSuggestion(this.dataset.msg)" data-msg="写作翻译怎么复习">✍️ 写译方法</div>' +
+                    '<div class="custom-chip-pill" onclick="sendSuggestion(this.dataset.msg)" data-msg="高频词汇有哪些">📚 高频词汇</div>' +
+                    '<div class="custom-chip-pill" onclick="sendSuggestion(this.dataset.msg)" data-msg="有什么高效的备考技巧">💡 备考技巧</div>' +
                     '</div>';
                 chips.style.display = '';
                 return;
@@ -3302,13 +3302,13 @@ function getAbilityTrend() {
             
             // 陪练模式：6个快捷按钮
             var chipsHtml = '' +
-                '<div class="chip-grid">' +
-                '<div class="custom-chip-card" onclick="sendSuggestion(this.dataset.msg)" data-msg="今天练什么好"><span class="chip-card-icon" style="background:linear-gradient(135deg,#6C5CE7,#A29BFE)">📋</span><span class="chip-card-text">今日练习</span></div>' +
-                '<div class="custom-chip-card" onclick="sendSuggestion(this.dataset.msg)" data-msg="给我出一道听力题"><span class="chip-card-icon" style="background:linear-gradient(135deg,#E84393,#FD79A8)">🎧</span><span class="chip-card-text">听力训练</span></div>' +
-                '<div class="custom-chip-card" onclick="sendSuggestion(this.dataset.msg)" data-msg="请帮我批改作文，请先让我发送作文题目"><span class="chip-card-icon" style="background:linear-gradient(135deg,#00B894,#55EFC4)">✍️</span><span class="chip-card-text">批改作文</span></div>' +
-                '<div class="custom-chip-card" onclick="sendSuggestion(this.dataset.msg)" data-msg="请根据我的近期错题，分析我的薄弱模式和改进方向"><span class="chip-card-icon" style="background:linear-gradient(135deg,#FDCB6E,#F39C12)">📊</span><span class="chip-card-text">错题分析</span></div>' +
-                '<div class="custom-chip-card" onclick="sendSuggestion(this.dataset.msg)" data-msg="给我一段中文，让我翻译成英文"><span class="chip-card-icon" style="background:linear-gradient(135deg,#00CEC9,#81ECEC)">📝</span><span class="chip-card-text">翻译练习</span></div>' +
-                '<div class="custom-chip-card" onclick="sendSuggestion(this.dataset.msg)" data-msg="给我一个今天就能用上的四级考试具体技巧，要有操作步骤"><span class="chip-card-icon" style="background:linear-gradient(135deg,#A29BFE,#6C5CE7)">💡</span><span class="chip-card-text">今日技巧</span></div>' +
+                '<div class="chip-pill-wrap">' +
+                '<div class="custom-chip-pill" onclick="sendSuggestion(this.dataset.msg)" data-msg="今天练什么好">📋 今日练习</div>' +
+                '<div class="custom-chip-pill" onclick="sendSuggestion(this.dataset.msg)" data-msg="给我出一道听力题">🎧 听力训练</div>' +
+                '<div class="custom-chip-pill" onclick="sendSuggestion(this.dataset.msg)" data-msg="请帮我批改作文，请先让我发送作文题目">✍️ 批改作文</div>' +
+                '<div class="custom-chip-pill" onclick="sendSuggestion(this.dataset.msg)" data-msg="请根据我的近期错题，分析我的薄弱模式和改进方向">📊 错题分析</div>' +
+                '<div class="custom-chip-pill" onclick="sendSuggestion(this.dataset.msg)" data-msg="给我一段中文，让我翻译成英文">📝 翻译练习</div>' +
+                '<div class="custom-chip-pill" onclick="sendSuggestion(this.dataset.msg)" data-msg="给我一个今天就能用上的四级考试具体技巧，要有操作步骤">💡 今日技巧</div>' +
                 '</div>';
             
             // Flagship专属
