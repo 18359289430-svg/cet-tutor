@@ -1,0 +1,285 @@
+{
+  "version": "v1.0-六级版",
+  "total_questions": 20,
+  "ability_summary": {
+    "细节定位": 8,
+    "推理判断": 10,
+    "同义替换": 4,
+    "主旨归纳": 5,
+    "态度推断": 3
+  },
+  "passages": [],
+  "writing_prompts": [
+    {
+      "topic": "The Impact of Artificial Intelligence on the Workplace",
+      "description": "Directions: For this part, you are allowed 30 minutes to write an essay on the impact of artificial intelligence on the workplace. You should write at least 150 words but no more than 200 words."
+    },
+    {
+      "topic": "The Importance of Sustainable Development",
+      "description": "Directions: For this part, you are allowed 30 minutes to write an essay on the importance of sustainable development. You should write at least 150 words but no more than 200 words."
+    },
+    {
+      "topic": "The Role of Social Media in Modern Society",
+      "description": "Directions: For this part, you are allowed 30 minutes to write an essay on the role of social media in modern society. You should write at least 150 words but no more than 200 words."
+    },
+    {
+      "topic": "Work-Life Balance in the Digital Age",
+      "description": "Directions: For this part, you are allowed 30 minutes to write an essay on work-life balance in the digital age. You should write at least 150 words but no more than 200 words."
+    }
+  ],
+  "translation_prompts": [
+    {
+      "chinese": "人工智能技术的快速发展正在深刻改变各行各业。从医疗诊断到自动驾驶，从金融分析到教育评估，AI的应用前景广阔。然而，这也引发了关于就业、隐私和伦理的担忧。",
+      "reference": "The rapid development of artificial intelligence technology is profoundly transforming various industries. From medical diagnosis to autonomous driving, from financial analysis to educational assessment, AI has broad application prospects. However, this has also raised concerns about employment, privacy, and ethics."
+    },
+    {
+      "chinese": "丝绸之路是古代连接中国与地中海地区的重要贸易通道。它不仅促进了商品的流通，也推动了不同文明之间的文化交流与融合，为人类文明的发展做出了重要贡献。",
+      "reference": "The Silk Road was an important trade route connecting China with the Mediterranean region in ancient times. It not only facilitated the flow of goods but also promoted cultural exchange and integration between different civilizations, making significant contributions to the development of human civilization."
+    },
+    {
+      "chinese": "在当今数字化时代，人们越来越依赖智能手机和社交媒体。虽然这些技术带来了便利和效率，但也可能导致注意力分散、人际交往减少以及个人信息泄露等问题。",
+      "reference": "In today's digital age, people are increasingly dependent on smartphones and social media. While these technologies have brought convenience and efficiency, they may also lead to attention distraction, reduced face-to-face interaction, and personal information leakage."
+    },
+    {
+      "chinese": "中国的高等教育近年来取得了显著进步，越来越多的大学在全球排名中上升。然而，如何培养学生的创新能力和批判性思维仍然是教育工作者面临的重要挑战。",
+      "reference": "China's higher education has made remarkable progress in recent years, with more and more universities rising in global rankings. However, how to cultivate students' innovative ability and critical thinking remains an important challenge for educators."
+    }
+  ],
+  "listening_passages": [
+    {
+      "passage_id": 1,
+      "type": "长对话",
+      "text": "M: ... W: ...",
+      "questions": [
+        {
+          "id": "2023-06-S1-LC-038",
+          "ability": "细节理解",
+          "question": "What does the man say about himself?",
+          "optionA": "The information is not provided.",
+          "optionB": "It can be inferred from the context.",
+          "optionC": "It is mentioned in the passage.",
+          "optionD": "The speaker does not specify.",
+          "answer": "D"
+        },
+        {
+          "id": "2023-06-S1-LC-011",
+          "ability": "细节理解",
+          "question": "How did the postal service contribute to America's westward expansion?",
+          "optionA": "It is mentioned in the passage.",
+          "optionB": "The information is not provided.",
+          "optionC": "It can be inferred from the context.",
+          "optionD": "The speaker does not specify.",
+          "answer": "D"
+        },
+        {
+          "id": "2023-06-S1-LC-003",
+          "ability": "推理判断",
+          "question": "Why does the woman say she is going to sound like an idiot?",
+          "optionA": "She prefers smaller spaces.",
+          "optionB": "She now misses her roommates.",
+          "optionC": "She enjoys her independence.",
+          "optionD": "She used to complain about crowded living.",
+          "answer": "B"
+        },
+        {
+          "id": "2023-06-S1-PASS-13",
+          "ability": "推理判断",
+          "question": "How did the postal service contribute to America's westward expansion?",
+          "optionA": "It is mentioned in the passage.",
+          "optionB": "The information is not provided.",
+          "optionC": "It can be inferred from the context.",
+          "optionD": "The speaker does not specify.",
+          "answer": "D"
+        }
+      ]
+    },
+    {
+      "passage_id": 2,
+      "type": "短文理解",
+      "text": "Now listen to a passage about...",
+      "questions": [
+        {
+          "id": "2023-06-S1-LC-035",
+          "ability": "主旨归纳",
+          "question": "What do we learn from the conversation about Mr. Sanchez?",
+          "optionA": "The speaker does not specify.",
+          "optionB": "The information is not provided.",
+          "optionC": "It can be inferred from the context.",
+          "optionD": "It is mentioned in the passage.",
+          "answer": "C"
+        },
+        {
+          "id": "2023-06-S1-PASS-15",
+          "ability": "主旨归纳",
+          "question": "What did Mr. Blevins do to study the history of the US postal service?",
+          "optionA": "The information is not provided.",
+          "optionB": "The speaker does not specify.",
+          "optionC": "It is mentioned in the passage.",
+          "optionD": "It can be inferred from the context.",
+          "answer": "C"
+        },
+        {
+          "id": "2023-06-S1-LC-07",
+          "ability": "细节理解",
+          "question": "How should the education budget be allocated according to the man?",
+          "optionA": "The information is not provided.",
+          "optionB": "It can be inferred from the context.",
+          "optionC": "It is mentioned in the passage.",
+          "optionD": "The speaker does not specify.",
+          "answer": "A"
+        },
+        {
+          "id": "2023-06-S2-LEC-19",
+          "ability": "细节理解",
+          "question": "What does the speaker say about Nebraska City in 1854 when Julius Morton moved there?",
+          "optionA": "The information is not provided.",
+          "optionB": "The speaker does not specify.",
+          "optionC": "It is mentioned in the passage.",
+          "optionD": "It can be inferred from the context.",
+          "answer": "A"
+        }
+      ]
+    },
+    {
+      "passage_id": 3,
+      "type": "长对话",
+      "text": "M: Good morning. W: Good morning. How can I help you?",
+      "questions": [
+        {
+          "id": "2023-06-S1-LC-036",
+          "ability": "推理判断",
+          "question": "Why does the man think he is a very competitive candidate?",
+          "optionA": "It can be inferred from the context.",
+          "optionB": "It is mentioned in the passage.",
+          "optionC": "The speaker does not specify.",
+          "optionD": "The information is not provided.",
+          "answer": "B"
+        },
+        {
+          "id": "2023-06-S1-LEC-21",
+          "ability": "推理判断",
+          "question": "What does the speaker suggest marketers do to meet future challenges?",
+          "optionA": "The speaker does not specify.",
+          "optionB": "It is mentioned in the passage.",
+          "optionC": "It can be inferred from the context.",
+          "optionD": "The information is not provided.",
+          "answer": "B"
+        },
+        {
+          "id": "2024-12-S2-LEC-16",
+          "ability": "态度判断",
+          "question": "What does the speaker recommend in this talk?",
+          "optionA": "It is mentioned in the passage.",
+          "optionB": "It can be inferred from the context.",
+          "optionC": "The information is not provided.",
+          "optionD": "The speaker does not specify.",
+          "answer": "D"
+        },
+        {
+          "id": "2023-06-S2-LEC-25",
+          "ability": "态度判断",
+          "question": "What question does the speaker raise close to the end of the talk?",
+          "optionA": "The information is not provided.",
+          "optionB": "It can be inferred from the context.",
+          "optionC": "It is mentioned in the passage.",
+          "optionD": "The speaker does not specify.",
+          "answer": "D"
+        }
+      ]
+    },
+    {
+      "passage_id": 4,
+      "type": "短文理解",
+      "text": "Today I'd like to talk about...",
+      "questions": [
+        {
+          "id": "2021-06-S2-LC-020",
+          "ability": "主旨归纳",
+          "question": "What is the passage/conversation mainly about?",
+          "optionA": "They have unrealistic expectations.",
+          "optionB": "They bear fewer social responsibilities.",
+          "optionC": "They are born with a stronger ability to socialize.",
+          "optionD": "They are better able to survive or handle disease.",
+          "answer": "A"
+        },
+        {
+          "id": "2021-12-S1-LC-037",
+          "ability": "主旨归纳",
+          "question": "What is the passage/conversation mainly about?",
+          "optionA": "Cultivation of new varieties of crops.",
+          "optionB": "The research on crop rotation in developing countries.",
+          "optionC": "The cooperation of the world’s agricultural scientists.",
+          "optionD": "The improvement of agricultural infrastructure.",
+          "answer": "A"
+        },
+        {
+          "id": "2023-06-S1-LEC-22",
+          "ability": "细节理解",
+          "question": "What does the speaker say is interesting?",
+          "optionA": "The information is not provided.",
+          "optionB": "It is mentioned in the passage.",
+          "optionC": "The speaker does not specify.",
+          "optionD": "It can be inferred from the context.",
+          "answer": "A"
+        },
+        {
+          "id": "2023-06-S2-LEC-19",
+          "ability": "细节理解",
+          "question": "What does the speaker say about Nebraska City in 1854 when Julius Morton moved there?",
+          "optionA": "The information is not provided.",
+          "optionB": "The speaker does not specify.",
+          "optionC": "It is mentioned in the passage.",
+          "optionD": "It can be inferred from the context.",
+          "answer": "A"
+        }
+      ]
+    },
+    {
+      "passage_id": 5,
+      "type": "长对话",
+      "text": "M: Have you heard about...? W: Yes, actually...",
+      "questions": [
+        {
+          "id": "2024-12-S2-LEC-20",
+          "ability": "细节理解",
+          "question": "What does the speaker say about globalization?",
+          "optionA": "The information is not provided.",
+          "optionB": "The speaker does not specify.",
+          "optionC": "It can be inferred from the context.",
+          "optionD": "It is mentioned in the passage.",
+          "answer": "C"
+        },
+        {
+          "id": "2023-06-S1-LC-009",
+          "ability": "细节理解",
+          "question": "What trait do all great professionals share?",
+          "optionA": "The information is not provided.",
+          "optionB": "It is mentioned in the passage.",
+          "optionC": "It can be inferred from the context.",
+          "optionD": "The speaker does not specify.",
+          "answer": "D"
+        },
+        {
+          "id": "2023-06-S2-LEC-16",
+          "ability": "推理判断",
+          "question": "What does most cyberloafing research focus on?",
+          "optionA": "The information is not provided.",
+          "optionB": "It can be inferred from the context.",
+          "optionC": "The speaker does not specify.",
+          "optionD": "It is mentioned in the passage.",
+          "answer": "A"
+        },
+        {
+          "id": "2023-06-S1-LEC-20",
+          "ability": "推理判断",
+          "question": "How do marketers capture consumers' attentior as quickly as possible?",
+          "optionA": "The information is not provided.",
+          "optionB": "It can be inferred from the context.",
+          "optionC": "It is mentioned in the passage.",
+          "optionD": "The speaker does not specify.",
+          "answer": "C"
+        }
+      ]
+    }
+  ]
+}

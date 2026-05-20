@@ -1769,3 +1769,249 @@
 .diag-loading-text {
     font-size: 14px;
 }
+
+/* ========== 自评问卷样式 ========== */
+.diag-eval-section {
+    padding: 20px 16px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+.diag-eval-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1a1a2e;
+    text-align: center;
+    margin-bottom: 4px;
+}
+.diag-eval-subtitle {
+    font-size: 14px;
+    color: #64748b;
+    text-align: center;
+    margin-bottom: 24px;
+}
+.diag-eval-item {
+    margin-bottom: 20px;
+}
+.diag-eval-label {
+    font-size: 15px;
+    font-weight: 600;
+    color: #334155;
+    margin-bottom: 8px;
+    padding-left: 2px;
+}
+.diag-eval-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.diag-eval-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 14px;
+    background: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.diag-eval-btn:hover {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+}
+.diag-eval-btn.selected {
+    background: #eff6ff;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 1px #3b82f6;
+}
+.eval-letter {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #e2e8f0;
+    color: #475569;
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.diag-eval-btn.selected .eval-letter {
+    background: #3b82f6;
+    color: white;
+}
+.eval-desc {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 2px;
+}
+.eval-sub {
+    font-size: 12px;
+    color: #64748b;
+    line-height: 1.4;
+}
+.diag-generate-btn {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    margin-top: 24px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+.diag-generate-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* ========== 写作实测样式 ========== */
+.diag-writing-section {
+    padding: 20px 16px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+.diag-writing-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+.diag-writing-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 4px;
+}
+.diag-writing-subtitle {
+    font-size: 14px;
+    color: #64748b;
+}
+.diag-writing-prompt {
+    background: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+.diag-prompt-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 8px;
+}
+.diag-prompt-desc {
+    font-size: 13px;
+    color: #475569;
+    line-height: 1.6;
+}
+.diag-writing-textarea {
+    width: 100%;
+    min-height: 180px;
+    padding: 14px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 14px;
+    line-height: 1.8;
+    resize: vertical;
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.2s;
+    font-family: inherit;
+}
+.diag-writing-textarea:focus {
+    border-color: #6366f1;
+}
+.diag-word-count {
+    font-size: 12px;
+    color: #94a3b8;
+    margin-top: 6px;
+    padding-left: 2px;
+}
+.diag-word-count.error {
+    color: #ef4444;
+}
+.diag-word-count.warning {
+    color: #f59e0b;
+}
+.diag-writing-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+}
+.diag-writing-submit {
+    flex: 1;
+    padding: 12px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+.diag-writing-submit:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+.diag-writing-skip {
+    padding: 12px 20px;
+    background: white;
+    color: #64748b;
+    font-size: 15px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+/* ========== 翻译实测样式 ========== */
+.diag-translation-section {
+    padding: 20px 16px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+.diag-translation-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+.diag-translation-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 4px;
+}
+.diag-translation-subtitle {
+    font-size: 14px;
+    color: #64748b;
+}
+.diag-translation-chinese {
+    background: #fefce8;
+    border: 1.5px solid #fde68a;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+    font-size: 15px;
+    line-height: 1.8;
+    color: #1e293b;
+}
+.diag-translation-textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 14px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 14px;
+    line-height: 1.8;
+    resize: vertical;
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.2s;
+    font-family: inherit;
+}
+.diag-translation-textarea:focus {
+    border-color: #6366f1;
+}
