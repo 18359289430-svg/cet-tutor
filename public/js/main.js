@@ -6320,7 +6320,7 @@ function handleDailyTask() {
         msg = task ? task.prompt : '帮我练一下英语';
     }
 
-    openChat('companion');
+    ensureChatOpen();
     setTimeout(function() { sendSuggestion(msg); }, 300);
 }
 
@@ -10213,7 +10213,7 @@ function continuePractice() {
     closeReportPage();
     switchTab('diagnosis');
     setTimeout(function() {
-        openChat('companion');
+        ensureChatOpen();
     }, 350);
 }
 
@@ -10226,7 +10226,7 @@ function startWeakDimPractice() {
     closeReportPage();
     switchTab('diagnosis');
     setTimeout(function() {
-        openChat('companion');
+        ensureChatOpen();
         setTimeout(function() {
             var msg = weakName ? 
                 '我' + weakName + '比较薄弱，给我出几道' + weakName + '的真题练练' : 
@@ -10703,7 +10703,7 @@ function startPracticeChallenge() {
     closeReportPage();
     switchTab('diagnosis');
     setTimeout(function() {
-        openChat('companion');
+        ensureChatOpen();
         setTimeout(function() {
             var msg = '我想开始7天提升挑战，帮我制定今天的练习计划';
             sendSuggestion(msg);
