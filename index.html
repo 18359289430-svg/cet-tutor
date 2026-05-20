@@ -31,25 +31,25 @@
     <meta name="twitter:image" content="https://cet-tutor.com/og-image.jpg">
     <link rel="preload" href="/wechat-qr.jpg" as="image">
     <!-- CSS -->
-    <link rel="stylesheet" href="/css/variables.css?v=20260520v69">
-    <link rel="stylesheet" href="/css/base.css?v=20260520v69">
-    <link rel="stylesheet" href="/css/home.css?v=20260520v69">
-    <link rel="stylesheet" href="/css/study.css?v=20260520v69">
-    <link rel="stylesheet" href="/css/chat.css?v=20260520v69">
-    <link rel="stylesheet" href="/css/personality.css?v=20260520v69">
-    <link rel="stylesheet" href="/css/components.css?v=20260520v69">
-    <link rel="stylesheet" href="/css/quiz.css?v=20260520v69">
-    <link rel="stylesheet" href="/css/payment.css?v=20260520v69">
-    <link rel="stylesheet" href="/css/profile.css?v=20260520v69">
-    <link rel="stylesheet" href="/css/dashboard.css?v=20260520v69">
-    <link rel="stylesheet" href="/css/diagnosis.css?v=20260520v69">
-    <link rel="stylesheet" href="/css/essay.css?v=20260520v69">
-    <link rel="stylesheet" href="/css/review.css?v=20260520v69">
-    <link rel="stylesheet" href="/css/plan.css?v=20260520v69">
-    <link rel="stylesheet" href="/css/plan-page.css?v=20260520v69">
-    <link rel="stylesheet" href="/css/wrongbook.css?v=20260520v69">
-    <link rel="stylesheet" href="/css/learning-path.css?v=20260520v69">
-    <link rel="stylesheet" href="/css/vocab.css?v=20260520v69">
+    <link rel="stylesheet" href="/css/variables.css?v=20260521v78">
+    <link rel="stylesheet" href="/css/base.css?v=20260521v78">
+    <link rel="stylesheet" href="/css/home.css?v=20260521v78">
+    <link rel="stylesheet" href="/css/study.css?v=20260521v78">
+    <link rel="stylesheet" href="/css/chat.css?v=20260521v78">
+    <link rel="stylesheet" href="/css/personality.css?v=20260521v78">
+    <link rel="stylesheet" href="/css/components.css?v=20260521v78">
+    <link rel="stylesheet" href="/css/quiz.css?v=20260521v78">
+    <link rel="stylesheet" href="/css/payment.css?v=20260521v78">
+    <link rel="stylesheet" href="/css/profile.css?v=20260521v78">
+    <link rel="stylesheet" href="/css/dashboard.css?v=20260521v78">
+    <link rel="stylesheet" href="/css/diagnosis.css?v=20260521v78">
+    <link rel="stylesheet" href="/css/essay.css?v=20260521v78">
+    <link rel="stylesheet" href="/css/review.css?v=20260521v78">
+    <link rel="stylesheet" href="/css/plan.css?v=20260521v78">
+    <link rel="stylesheet" href="/css/plan-page.css?v=20260521v78">
+    <link rel="stylesheet" href="/css/wrongbook.css?v=20260521v78">
+    <link rel="stylesheet" href="/css/learning-path.css?v=20260521v78">
+    <link rel="stylesheet" href="/css/vocab.css?v=20260521v78">
     <!-- Clarity -->
     <script type="text/javascript">
         (function(c,l,a,r,i,t,y){ c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
@@ -892,7 +892,19 @@
     </div>
 
     <!-- JS -->
-    <script src="/js/main.js?v=20260520v69"></script>
-    <script src="/js/essay.js?v=20260520v69"></script>
+    <script src="/js/main.js?v=20260521v78"></script>
+    <script src="/js/essay.js?v=20260521v78"></script>
+
+<!-- Onboarding: Exam Type Selection -->
+<div id="onboarding-overlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,rgba(99,102,241,0.95),rgba(139,92,246,0.95));z-index:99999;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:24px;padding:40px 32px;max-width:380px;width:90%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+    <div style="font-size:48px;margin-bottom:16px;">🎓</div>
+    <h2 style="margin:0 0 8px;font-size:22px;color:#1a1a2e;font-weight:700;">选择你的考试</h2>
+    <p style="color:#666;margin:0 0 28px;font-size:14px;">5分钟免费诊断，精准定位薄弱项</p>
+    <button onclick="selectExamType('cet4')" style="width:100%;padding:16px;border:none;border-radius:14px;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;font-size:17px;font-weight:600;cursor:pointer;margin-bottom:12px;">四级 CET-4</button>
+    <button onclick="selectExamType('cet6')" style="width:100%;padding:16px;border:none;border-radius:14px;background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;font-size:17px;font-weight:600;cursor:pointer;">六级 CET-6</button>
+    <p style="color:#999;font-size:12px;margin:16px 0 0;">免费使用，无需注册</p>
+  </div>
+</div>
 </body>
 

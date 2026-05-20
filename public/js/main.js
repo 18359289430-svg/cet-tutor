@@ -1,3 +1,23 @@
+// ===== New User Onboarding =====
+function showOnboarding(){
+    var o=document.getElementById("onboarding-overlay");if(!o)return;
+    o.style.display="flex";document.body.style.overflow="hidden";
+}
+function selectExamType(type){
+    localStorage.setItem('cet_exam_type',type);
+    localStorage.setItem('cet_onboarding_done','1');
+    var o=document.getElementById("onboarding-overlay");if(o)o.style.display="none";
+    document.body.style.overflow='';
+    if(type==='cet6'){window.location.href='/index.html?exam=cet6';}
+    else{window.location.href='/';}
+}
+function checkOnboarding(){
+    if(!localStorage.getItem('cet_onboarding_done')&&!localStorage.getItem('cet_exam_type')){
+        showOnboarding();return true;
+    }
+    return false;
+}
+
         // ===== 考试类型：页面加载时确定，之后不变 =====
 var EXAM_TYPE = (function() {
     try {
@@ -1299,7 +1319,7 @@ function initApp() {
             if (mode === 'diagnosis') {
                 startNewDiagnosis();
             } else if (mode === 'companion') {
-                createNewChat('companion');
+                ensureChatOpen();
             }
         }
 
@@ -1782,6 +1802,12 @@ function explainWithAI(id) {
         
         // ===== 渲染数据页面 - 5个板块精简版 =====
         
+function calculateScore(dims){
+    var k=["listening","reading","writing","translation","vocabulary"],t=0,c=0;
+    for(var i=0;i<k.length;i++){if(dims&&dims[k[i]]){t+=dims[k[i]];c++;}}
+    if(c===0)return 0;return Math.round((t/c)*7.1);
+}
+
 function renderDashboard() {
             var icons={flame:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 12c2-2.96 0-7-1-8 0 3.038-1.773 4.741-3 6-1.226 1.26-2 3.24-2 5a6 6 0 1 0 12 0c0-1.532-1.056-3.94-2-5-1.786 3-2.791 3-4 2z"/></svg>',target:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>',pencil:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>',check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',chart:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>',alert:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',trending:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>',list:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>'};
             try {
@@ -3194,6 +3220,27 @@ function getAbilityTrend() {
             currentMode: 'diagnosis',
             hasReplied: false
         };
+
+function ensureChatOpen(){
+    var mode='companion';
+    var botMap={'diagnosis':'7636289658620215331','companion':'7637702903679631395'};
+    if(!chatState.botId)chatState.botId=botMap[mode];
+    if(!chatState.currentMode)chatState.currentMode=mode;
+    var p=document.getElementById("chat-panel");
+    if(p){p.classList.remove("hidden");p.style.display="";}
+    var clv=document.getElementById("chat-list-view");
+    if(clv)clv.classList.remove("active");
+    var cp=document.getElementById("chat-page");
+    if(cp)cp.style.display="flex";
+    state.currentTab='diagnosis';
+    document.querySelectorAll(".tab-page").forEach(function(pg){pg.classList.toggle("active",pg.id==="tab-diagnosis")});
+    document.querySelectorAll(".tab-item").forEach(function(it){it.classList.toggle("active",it.dataset.tab==="diagnosis")});
+    var tabBar=document.querySelector(".tab-bar");if(tabBar)tabBar.style.display="";
+    window.location.hash="practice";
+    localStorage.setItem("cet_current_tab","diagnosis");
+    var chatTitle=document.getElementById("chat-title");if(chatTitle)chatTitle.textContent="AI\u966a\u7ec3";
+    if(typeof initChatChips==='function')initChatChips(mode);
+}
 
         function openChat(mode) {
             mode = mode || 'diagnosis';
@@ -14430,7 +14477,7 @@ function doHelpAction(type) {
     if (type === 'diagnosis') {
         startPractice();
     } else if (type === 'companion') {
-        createNewChat('companion');
+        ensureChatOpen();
     } else if (type === 'wrongbook') {
         switchTab('wrongbook');
         renderWrongBook();
