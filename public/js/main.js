@@ -8370,7 +8370,6 @@ async function startNewDiagnosis() {
         translationScore: null,
         writingPrompt: null,
         translationPrompt: null,
-        // 听力相关状态
         listeningPlayed: false,
         listeningReplayCount: 0,
         listeningAnswers: [],
@@ -8380,109 +8379,126 @@ async function startNewDiagnosis() {
         currentListeningQIndex: 0
     };
     
-    // 显示界面
     overlay.classList.add('active');
     document.getElementById('diag-progress-wrap').style.display = 'none';
-    
-    // 显示加载
     renderDiagLoading('正在加载题目...');
     
     try {
-        // 调用API获取题目 - 从统一题库加载
-        var quizUrl = EXAM_TYPE === 'cet6' ? '/public/cet6_quiz_questions.json' : '/public/quiz_questions.json';
-        quizUrl += '?t=' + Date.now(); // 禁用缓存
-        console.log('[诊断] 开始加载题目:', quizUrl);
-        var resp = await fetchWithTimeout(quizUrl);
-        console.log('[诊断] 响应状态:', resp.status, resp.headers.get('content-type'));
-        if (!resp.ok) {
-            throw new Error('HTTP ' + resp.status);
-        }
-        var allQuestions = await resp.json();
-        console.log('[诊断] 题目数量:', allQuestions.length);
+        // 从diagnosis_questions.json加载完整题目（含passage原文）
+        var diagUrl = EXAM_TYPE === 'cet6' ? '/public/cet6_diagnosis_questions.json' : '/public/diagnosis_questions.json';
+        diagUrl += '?t=' + Date.now();
+        console.log('[诊断] 加载诊断题库:', diagUrl);
+        var resp = await fetchWithTimeout(diagUrl);
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        var diagData = await resp.json();
         
-        // 从统一题库按维度各抽取题目
-        // 维度映射：包含更多同义字段
+        var passages = diagData.passages || [];
+        var listeningPassages = diagData.listening_passages || [];
+        
+        if (passages.length === 0 && listeningPassages.length === 0) {
+            throw new Error('题库为空');
+        }
+        
+        // 从阅读passage中抽取题目，每道题附上_passageText
+        var questions = [];
+        var allReadingQs = [];
+        passages.forEach(function(p) {
+            var passageText = p.text || '';
+            (p.questions || []).forEach(function(q) {
+                // 确保选项格式统一
+                if (!q.optionA && q.options) {
+                    q.optionA = q.options[0] || '';
+                    q.optionB = q.options[1] || '';
+                    q.optionC = q.options[2] || '';
+                    q.optionD = q.options[3] || '';
+                    delete q.options;
+                }
+                q._passageText = passageText;
+                allReadingQs.push(q);
+            });
+        });
+        
+        // 按维度分组，每维度抽2-3题
         var dimMapping = {
-            '细节理解': ['细节理解', '关键信息捕捉'],
+            '细节定位': ['细节定位', '细节理解', '关键信息捕捉'],
             '推理判断': ['推理判断'],
             '同义替换': ['同义替换', '词义推断'],
             '主旨归纳': ['主旨归纳', '主旨大意'],
             '态度判断': ['态度判断', '态度推断']
         };
-        var questionPerDim = 3; // 每个维度抽取3道
-        var questions = [];
+        var questionPerDim = 3;
         
         Object.keys(dimMapping).forEach(function(dimName) {
             var abilities = dimMapping[dimName];
-            var dimQuestions = allQuestions.filter(function(q) {
+            var dimQs = allReadingQs.filter(function(q) {
                 return q.answer && abilities.indexOf(q.ability) !== -1;
             });
-            // 随机打乱
-            dimQuestions.sort(function() { return Math.random() - 0.5; });
-            // 抽取指定数量
-            var selected = dimQuestions.slice(0, questionPerDim);
-            questions = questions.concat(selected);
+            dimQs.sort(function() { return Math.random() - 0.5; });
+            questions = questions.concat(dimQs.slice(0, questionPerDim));
         });
         
-        // 如果抽取的题目不足，补充随机题目
+        // 不足15题时补充
         if (questions.length < 15) {
-            var remaining = allQuestions.filter(function(q) {
+            var remaining = allReadingQs.filter(function(q) {
                 return q.answer && questions.indexOf(q) === -1;
             });
             remaining.sort(function() { return Math.random() - 0.5; });
             questions = questions.concat(remaining.slice(0, 15 - questions.length));
         }
         
-        console.log('[诊断] 筛选后题目数量:', questions.length, '维度分布:', questions.map(function(q){return q.ability}));
+        // 随机打乱
+        questions.sort(function() { return Math.random() - 0.5; });
         
-        // 内嵌写作和翻译题目
-        diagState.writingPrompts = [
-            {topic: 'The Impact of Technology on Learning', desc: 'Directions: For this part, you are allowed 30 minutes to write a short essay on the impact of technology on learning. You should write at least 120 words but no more than 180 words.'},
-            {topic: 'The Importance of Teamwork', desc: 'Directions: For this part, you are allowed 30 minutes to write a short essay on the importance of teamwork. You should write at least 120 words but no more than 180 words.'},
-            {topic: 'How to Deal with Stress', desc: 'Directions: For this part, you are allowed 30 minutes to write a short essay on how to deal with stress. You should write at least 120 words but no more than 180 words.'}
-        ];
-        if (EXAM_TYPE === 'cet6') {
+        console.log('[诊断] 抽取阅读题:', questions.length, '维度:', questions.map(function(q){return q.ability}));
+        
+        // 写作和翻译题目（用diagData中的，如果没有则用内置的）
+        if (diagData.writing_prompts && diagData.writing_prompts.length > 0) {
+            diagState.writingPrompts = diagData.writing_prompts;
+        } else {
+            diagState.writingPrompts = [
+                {topic: 'The Impact of Technology on Learning', desc: 'Directions: For this part, you are allowed 30 minutes to write a short essay on the impact of technology on learning. You should write at least 120 words but no more than 180 words.'},
+                {topic: 'The Importance of Teamwork', desc: 'Directions: For this part, you are allowed 30 minutes to write a short essay on the importance of teamwork. You should write at least 120 words but no more than 180 words.'},
+                {topic: 'How to Deal with Stress', desc: 'Directions: For this part, you are allowed 30 minutes to write a short essay on how to deal with stress. You should write at least 120 words but no more than 180 words.'}
+            ];
+        }
+        if (EXAM_TYPE === 'cet6' && (!diagData.writing_prompts || diagData.writing_prompts.length === 0)) {
             diagState.writingPrompts = [
                 {topic: 'The Value of Innovation', desc: 'Directions: For this part, you are allowed 30 minutes to write an essay on the value of innovation. You should write at least 150 words but no more than 200 words.'},
                 {topic: 'Work-Life Balance', desc: 'Directions: For this part, you are allowed 30 minutes to write an essay on work-life balance. You should write at least 150 words but no more than 200 words.'},
                 {topic: 'The Role of Artificial Intelligence', desc: 'Directions: For this part, you are allowed 30 minutes to write an essay on the role of artificial intelligence in modern society. You should write at least 150 words but no more than 200 words.'}
             ];
         }
-        diagState.translationPrompts = [
-            {chinese: '中国是世界上最古老的文明之一，拥有五千多年的历史。中国文化对世界文化的发展做出了重要贡献。', reference: 'China is one of the oldest civilizations in the world, with a history of over five thousand years. Chinese culture has made important contributions to the development of world culture.'},
-            {chinese: '随着经济的发展，越来越多的中国人有机会出国旅游。这不仅开阔了他们的眼界，也促进了文化交流。', reference: 'With the development of economy, more and more Chinese people have the opportunity to travel abroad. This not only broadens their horizons but also promotes cultural exchange.'},
-            {chinese: '互联网的普及改变了人们的生活方式。现在，人们可以通过网络购物、学习、交流，这大大提高了生活效率。', reference: 'The popularity of the Internet has changed people\'s lifestyle. Nowadays, people can shop, study, and communicate online, which greatly improves the efficiency of life.'}
-        ];
-        if (EXAM_TYPE === 'cet6') {
+        if (diagData.translation_prompts && diagData.translation_prompts.length > 0) {
+            diagState.translationPrompts = diagData.translation_prompts;
+        } else {
+            diagState.translationPrompts = [
+                {chinese: '中国是世界上最古老的文明之一，拥有五千多年的历史。中国文化对世界文化的发展做出了重要贡献。', reference: 'China is one of the oldest civilizations in the world, with a history of over five thousand years. Chinese culture has made important contributions to the development of world culture.'},
+                {chinese: '随着经济的发展，越来越多的中国人有机会出国旅游。这不仅开阔了他们的眼界，也促进了文化交流。', reference: 'With the development of economy, more and more Chinese people have the opportunity to travel abroad. This not only broadens their horizons but also promotes cultural exchange.'},
+                {chinese: '互联网的普及改变了人们的生活方式。现在，人们可以通过网络购物、学习、交流，这大大提高了生活效率。', reference: 'The popularity of the Internet has changed people\'s lifestyle. Nowadays, people can shop, study, and communicate online, which greatly improves the efficiency of life.'}
+            ];
+        }
+        if (EXAM_TYPE === 'cet6' && (!diagData.translation_prompts || diagData.translation_prompts.length === 0)) {
             diagState.translationPrompts = [
                 {chinese: '丝绸之路是古代连接中国与地中海地区的重要贸易通道。它不仅促进了商品的流通，也推动了不同文明之间的文化交流与融合。', reference: 'The Silk Road was an important trade route connecting China with the Mediterranean region in ancient times. It not only facilitated the flow of goods but also promoted cultural exchange and integration between different civilizations.'},
                 {chinese: '人工智能技术的快速发展正在深刻改变各行各业。从医疗诊断到自动驾驶，AI的应用前景广阔，但也引发了关于就业和隐私的担忧。', reference: 'The rapid development of artificial intelligence technology is profoundly transforming various industries. From medical diagnosis to autonomous driving, AI has broad application prospects, but it has also raised concerns about employment and privacy.'},
-                {chinese: '中国的高铁网络已成为世界上最发达的铁路系统之一，总里程超过四万公里。它不仅缩短了城市间的距离，也推动了区域经济的协调发展。', reference: "China\'s high-speed rail network has become one of the most developed railway systems in the world, with a total mileage exceeding 40,000 kilometers. It not only shortens the distance between cities but also promotes the coordinated development of regional economies."}
+                {chinese: '中国的高铁网络已成为世界上最发达的铁路系统之一，总里程超过四万公里。它不仅缩短了城市间的距离，也推动了区域经济的协调发展。', reference: "China's high-speed rail network has become one of the most developed railway systems in the world, with a total mileage exceeding 40,000 kilometers. It not only shortens the distance between cities but also promotes the coordinated development of regional economies."}
             ];
         }
         
         if (questions.length === 0) {
-            // fallback到旧模式
             closeDiagOverlay();
-            // 提示用户使用AI对话诊断
-            showToast('新诊断模式暂不可用，将使用AI对话诊断');
+            showToast('诊断题库暂不可用，将使用AI对话诊断');
             openChat('chat');
             setTimeout(function(){ sendSuggestion('开始AI诊断，帮我找出' + EXAM_LABEL + '薄弱点'); }, 300);
             return;
-
-
-
-
-
-
         }
+        
         diagState.questions = questions;
         diagState.phase = 'questions';
         document.getElementById('diag-progress-wrap').style.display = '';
         
-        // 开始答题
         try {
-            console.log('[诊断] 准备显示第1题, questions:', diagState.questions.length);
+            console.log('[诊断] 显示第1题, 阅读题:', diagState.questions.length);
             showCurrentQuestion();
             console.log('[诊断] 第1题显示成功');
         } catch(e) {
@@ -8490,12 +8506,13 @@ async function startNewDiagnosis() {
             showSelfEval();
         }
         
-    } catch(e) {
-        console.error('[诊断加载失败]', e);
+    } catch(err) {
+        console.error('[诊断] 加载失败:', err);
         closeDiagOverlay();
-        showToast('加载题目失败，请重试');
+        showToast('加载诊断题失败，请重试');
     }
 }
+
 
 // 渲染加载状态
 function renderDiagLoading(text) {
