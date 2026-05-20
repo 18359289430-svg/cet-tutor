@@ -1783,7 +1783,7 @@ function explainWithAI(id) {
         // ===== 渲染数据页面 - 5个板块精简版 =====
         
 function renderDashboard() {
-            var icons={flame:"🔥",target:"🎯",pencil:"✏️",check:"✅",chart:"📊",alert:"⚠️",search:"🔍",trending:"📈",list:"📋",star:"⭐",clock:"⏰",book:"📖"};
+            var icons={flame:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 12c2-2.96 0-7-1-8 0 3.038-1.773 4.741-3 6-1.226 1.26-2 3.24-2 5a6 6 0 1 0 12 0c0-1.532-1.056-3.94-2-5-1.786 3-2.791 3-4 2z"/></svg>',target:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>',pencil:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>',check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',chart:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>',alert:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',trending:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>',list:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>'};
             try {
                 var container = document.getElementById('dashboard-content');
                 if (!container) return;
@@ -1824,6 +1824,7 @@ function renderDashboard() {
                 html += '<div class="dashboard-hero-circle-wrap">';
                 html += '<div class="dashboard-hero-circle">';
                 html += '<svg viewBox="0 0 100 100">';
+                html += '<defs><linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#4F46E5"/><stop offset="100%" stop-color="#818CF8"/></linearGradient></defs>';
                 html += '<circle class="dashboard-plan-circle-bg" cx="50" cy="50" r="42"/>';
                 html += '<circle class="dashboard-plan-circle-progress" cx="50" cy="50" r="42" stroke-dasharray="' + circumference + '" stroke-dashoffset="' + offset + '"/>';
                 html += '</svg>';
@@ -1843,13 +1844,13 @@ function renderDashboard() {
                 html += '<div class="dashboard-overview">';
                 // 大卡片1: 连续学习天数
                 html += '<div class="dashboard-overview-card large streak-card shimmer-card">';
-                html += '<div class="overview-icon" style="background:rgba(255,255,255,0.2)">' + icons.flame + '</div>';
+                html += '<div class="overview-icon" style="background:rgba(255,255,255,0.15);color:white">' + icons.flame + '</div>';
                 html += '<div class="overview-num">' + streak.count + '</div>';
                 html += '<div class="overview-label">连续学习天数</div>';
                 html += '</div>';
                 // 大卡片2: 预估分数
                 html += '<div class="dashboard-overview-card large score-card shimmer-card">';
-                html += '<div class="overview-icon" style="background:rgba(255,255,255,0.2)">' + icons.target + '</div>';
+                html += '<div class="overview-icon" style="background:rgba(255,255,255,0.15);color:white">' + icons.target + '</div>';
                 if (hasDimData) {
                     var passLine = 425;
                     var diff = passLine - estimatedScore;
@@ -1865,13 +1866,13 @@ function renderDashboard() {
                 html += '</div>';
                 // 小卡片1: 今日练习
                 html += '<div class="dashboard-overview-card small practice">';
-                html += '<div class="overview-icon" style="background:rgba(0,184,148,0.1)">' + icons.pencil + '</div>';
+                html += '<div class="overview-icon" style="background:rgba(16,185,129,0.08);color:#10B981">' + icons.pencil + '</div>';
                 html += '<div class="overview-num">' + todayCount + '</div>';
                 html += '<div class="overview-label">今日练习</div>';
                 html += '</div>';
                 // 小卡片2: 正确率
                 html += '<div class="dashboard-overview-card small accuracy">';
-                html += '<div class="overview-icon" style="background:rgba(108,92,231,0.1)">' + icons.check + '</div>';
+                html += '<div class="overview-icon" style="background:rgba(79,70,229,0.08);color:#4F46E5">' + icons.check + '</div>';
                 html += '<div class="overview-num">' + accuracy + '%</div>';
                 html += '<div class="overview-label">总正确率</div>';
                 html += '</div>';
@@ -14010,6 +14011,7 @@ function renderLearningPath() {
     html += '</div>';
     html += '<div class="path-stats-ring">';
     html += '<svg viewBox="0 0 100 100">';
+                html += '<defs><linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#4F46E5"/><stop offset="100%" stop-color="#818CF8"/></linearGradient></defs>';
     html += '<circle class="path-stats-ring-circle" cx="50" cy="50" r="42" stroke-dasharray="' + (2 * Math.PI * 42) + '" stroke-dashoffset="0"/>';
     html += '<circle class="path-stats-ring-progress" cx="50" cy="50" r="42" stroke-dasharray="' + (2 * Math.PI * 42) + '" stroke-dashoffset="' + (2 * Math.PI * 42 * (1 - masterRate / 100)) + '"/>';
     html += '</svg>';
