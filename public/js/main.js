@@ -1816,17 +1816,20 @@ function renderDashboard() {
                 html += '<div class="dashboard-hero glass-card">';
                 html += '<div class="dashboard-hero-header">';
                 html += '<div class="dashboard-hero-title">' + icons.flame + '学习进度</div>';
-                html += '<div class="dashboard-hero-subtitle">距考试 ' + daysToExam + ' 天 · 冲刺备考</div>';
+                html += '<div class="dashboard-hero-subtitle">距考试 ' + daysToExam + ' 天</div>';
                 html += '</div>';
-                // 环形进度条
+                // 环形进度条 - 加大 + 发光
                 var circumference = 2 * Math.PI * 42;
                 var offset = circumference - (planProgress / 100) * circumference;
                 html += '<div class="dashboard-hero-circle-wrap">';
                 html += '<div class="dashboard-hero-circle">';
                 html += '<svg viewBox="0 0 100 100">';
-                html += '<defs><linearGradient id="planGradient" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#6C5CE7"/><stop offset="100%" stop-color="#A29BFE"/></linearGradient></defs>';
+                html += '<defs>';
+                html += '<linearGradient id="planGradient" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#6C5CE7"/><stop offset="50%" stop-color="#A29BFE"/><stop offset="100%" stop-color="#DDA0DD"/></linearGradient>';
+                html += '<filter id="glow"><feGaussianBlur stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>';
+                html += '</defs>';
                 html += '<circle class="dashboard-plan-circle-bg" cx="50" cy="50" r="42"/>';
-                html += '<circle class="dashboard-plan-circle-progress" cx="50" cy="50" r="42" stroke-dasharray="' + circumference + '" stroke-dashoffset="' + offset + '"/>';
+                html += '<circle class="dashboard-plan-circle-progress" cx="50" cy="50" r="42" stroke-dasharray="' + circumference + '" stroke-dashoffset="' + offset + '" filter="url(#glow)"/>';
                 html += '</svg>';
                 html += '<div class="dashboard-hero-circle-text">';
                 html += '<div class="dashboard-hero-circle-day">' + planProgress + '%</div>';
@@ -1835,7 +1838,7 @@ function renderDashboard() {
                 html += '</div>';
                 html += '</div>';
                 html += '<div class="dashboard-hero-footer">';
-                html += '<span>第 ' + currentDay + ' 天 / ' + planDays + '天</span>';
+                html += '<span>第 ' + currentDay + ' 天 / ' + planDays + ' 天</span>';
                 html += '<span class="dashboard-plan-end">开始于 ' + formatDate((function(){ var p=getSprintPlan(); return p&&p.startDay?new Date(p.startDay):new Date(); })()) + '</span>';
                 html += '</div>';
                 html += '</div>';
@@ -1910,7 +1913,7 @@ function renderDashboard() {
                     }
                 } else {
                     html += '<div class="dashboard-radar-empty">';
-                    html += '<div class="dashboard-radar-empty-icon">' + icons.search + '</div>';
+                    html += '<div class="dashboard-radar-empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/><line x1="12" y1="22" x2="12" y2="15.5"/><polyline points="22 8.5 12 15.5 2 8.5"/></svg></div>';
                     html += '<div class="dashboard-radar-empty-text">完成首次诊断后解锁<br>AI将分析你的五维能力</div>';
                     html += '</div>';
                 }
@@ -1965,9 +1968,9 @@ function renderDashboard() {
                     });
                 } else {
                     html += '<div class="dashboard-report-empty">';
-                    html += '<div class="dashboard-empty-icon">' + icons.pencil + '</div>';
-                    html += '<div>暂无诊断记录</div>';
-                    html += '<div style="font-size:12px;margin-top:4px">完成AI诊断后即可查看报告</div>';
+                    html += '<div class="dashboard-empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>';
+                    html += '<div style="font-size:14px;font-weight:600;color:#1a1a2e">暂无诊断记录</div>';
+                    html += '<div style="font-size:12px;margin-top:4px;color:#64748b">完成AI诊断后即可查看报告</div>';
                     html += '</div>';
                 }
                 html += '</div>'; // end timeline
