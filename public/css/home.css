@@ -2780,10 +2780,11 @@
 }
 .practice-hero {
     background: linear-gradient(135deg, #4A3CB5, #6C5CE7, #8B7CF7);
-    padding: 28px 24px 24px;
+    padding: 28px 20px 22px;
     border-radius: 0 0 24px 24px;
     position: relative;
     overflow: hidden;
+    margin: 0 0 16px;
 }
 .practice-hero::before {
     content: '';
@@ -2812,8 +2813,8 @@
 }
 .practice-hero-stats {
     display: flex;
-    gap: 12px;
-    margin-top: 18px;
+    gap: 8px;
+    margin-top: 16px;
 }
 .practice-stat {
     flex: 1;
@@ -2824,7 +2825,7 @@
     backdrop-filter: blur(4px);
 }
 .practice-stat-value {
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 800;
     color: #fff;
     line-height: 1.2;
@@ -2873,14 +2874,15 @@
     justify-content: center;
     flex-shrink: 0;
 }
-.practice-card-icon svg {
-    width: 20px;
-    height: 20px;
+.pci-sym {
+    font-size: 18px;
+    font-weight: 800;
+    line-height: 1;
 }
-.practice-card-icon.blue { background: rgba(69,183,209,0.1); color: #45B7D1; }
-.practice-card-icon.green { background: rgba(0,184,148,0.1); color: #00B894; }
-.practice-card-icon.rose { background: rgba(253,121,168,0.1); color: #FD79A8; }
-.practice-card-icon.amber { background: rgba(253,203,110,0.1); color: #E17055; }
+.practice-card-icon.blue { background: rgba(69,183,209,0.12); color: #45B7D1; }
+.practice-card-icon.green { background: rgba(0,184,148,0.12); color: #00B894; }
+.practice-card-icon.rose { background: rgba(253,121,168,0.12); color: #FD79A8; }
+.practice-card-icon.amber { background: rgba(253,203,110,0.12); color: #E17055; }
 .practice-card-info { flex: 1; min-width: 0; }
 .practice-card-name {
     font-size: 15px;
