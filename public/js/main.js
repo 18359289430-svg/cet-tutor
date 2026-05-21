@@ -3244,6 +3244,74 @@ function getAbilityTrend() {
             hasReplied: false
         };
 
+
+function handleImageUpload(input) {
+    if (!input.files || !input.files[0]) return;
+    var file = input.files[0];
+    if (!file.type.startsWith('image/')) {
+        showToast('请选择图片');
+        return;
+    }
+    // Show image preview in chat
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        var base64 = e.target.result;
+        // Add image message to chat
+        appendImageMessage('user', base64);
+        // Show typing indicator
+        appendMessage('ai', '');
+        var lastMsg = document.querySelector('.custom-chat-msg.ai:last-child .custom-chat-bubble');
+        if (lastMsg) lastMsg.innerHTML = '<div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>';
+        // Upload to server for OCR/analysis
+        fetch('/api/essay/upload', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ image: base64 })
+        }).then(function(r) { return r.json(); }).then(function(resp) {
+            if (resp.code === 0 && resp.data && resp.data.text) {
+                // Replace typing with extracted text info
+                var lastBubble = document.querySelector('.custom-chat-msg.ai:last-child .custom-chat-bubble');
+                if (lastBubble) {
+                    lastBubble.innerHTML = '📷 已识别你的作文，正在批改中...';
+                }
+                // Send extracted text to DeepSeek for grading
+                sendSuggestion('请批改以下作文：\n\n' + resp.data.text);
+            } else {
+                var lastBubble = document.querySelector('.custom-chat-msg.ai:last-child .custom-chat-bubble');
+                if (lastBubble) {
+                    lastBubble.innerHTML = '图片识别暂时不可用，请直接输入作文内容';
+                }
+            }
+        }).catch(function(err) {
+            var lastBubble = document.querySelector('.custom-chat-msg.ai:last-child .custom-chat-bubble');
+            if (lastBubble) {
+                lastBubble.innerHTML = '图片上传失败，请直接输入作文内容';
+            }
+        });
+    };
+    reader.readAsDataURL(file);
+    // Reset input so same file can be selected again
+    input.value = '';
+}
+
+function appendImageMessage(role, src) {
+    var container = document.getElementById('chat-messages');
+    if (!container) return;
+    var div = document.createElement('div');
+    div.className = 'custom-chat-msg ' + role;
+    var bubble = document.createElement('div');
+    bubble.className = 'custom-chat-bubble';
+    bubble.style.padding = '4px';
+    bubble.style.maxWidth = role === 'user' ? '60%' : '85%';
+    var img = document.createElement('img');
+    img.src = src;
+    img.style.cssText = 'max-width:100%;border-radius:10px;display:block;';
+    bubble.appendChild(img);
+    div.appendChild(bubble);
+    container.appendChild(div);
+    container.scrollTop = container.scrollHeight;
+}
+
 function ensureChatOpen(){
     var mode='companion';
     var botMap={'diagnosis':'7636289658620215331','companion':'7637702903679631395'};

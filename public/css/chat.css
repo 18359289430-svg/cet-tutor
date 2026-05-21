@@ -1832,3 +1832,29 @@
     border-color: #6C5CE7;
 }
 .action-btn.ai-primary:hover { background: #5a4bd1; }
+
+/* ===== 相机按钮 ===== */
+.custom-chat-camera {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    padding: 0;
+    border-radius: 50%;
+    transition: background 0.15s;
+}
+.custom-chat-camera:hover { background: #f0f0f5; }
+.custom-chat-camera:active { background: #e5e5ea; }
+.custom-chat-camera svg {
+    width: 18px;
+    height: 18px;
+    stroke: #94A3B8;
+    stroke-width: 1.8;
+    fill: none;
+}
+.custom-chat-camera:hover svg { stroke: #6C5CE7; }
