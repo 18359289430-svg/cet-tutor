@@ -9104,6 +9104,7 @@ function playListeningFull(text, isConversation, onComplete, passageId) {
             playListeningFullFallback(text, isConversation, onComplete);
         };
         
+        _listeningAudioEl.playbackRate = _currentPlaybackRate;
         _listeningAudioEl.play().catch(function(e) {
             console.warn('[音频播放失败] 回退到SpeechSynthesis:', e);
             _listeningAudioEl = null;
@@ -9364,7 +9365,17 @@ function showCurrentListening() {
     }
     html += '</button>';
     
-    html += '<div class="listening-play-hint">📢 ' + cetLabel + '听力语速(2026新规)：' + (isCET6User() ? '约150-155词/分钟' : '约145-148词/分钟') + '</div>';
+    html += '<div class="listening-speed-bar">';
+    html += '<span class="listening-speed-label">语速</span>';
+    html += '<button class="listening-speed-btn' + (_currentPlaybackRate === 0.8 ? ' active' : '') + '" onclick="setListeningSpeed(0.8)">0.8x</button>';
+    html += '<button class="listening-speed-btn' + (_currentPlaybackRate === 1.0 ? ' active' : '') + '" onclick="setListeningSpeed(1.0)">1.0x</button>';
+    html += '<button class="listening-speed-btn' + (_currentPlaybackRate === 1.2 ? ' active' : '') + '" onclick="setListeningSpeed(1.2)">1.2x</button>';
+    html += '<span class="listening-speed-tip">' + (_currentPlaybackRate <= 0.8 ? '慢速精听' : (_currentPlaybackRate >= 1.2 ? '考场实战语速' : '先听懂再提速')) + '</span>';
+    html += '</div>';
+    html += '<div class="listening-transcript-toggle" id="listening-transcript-toggle">';
+    html += '<button class="transcript-reveal-btn" id="transcript-reveal-btn" onclick="toggleListeningTranscript()">📋 查看原文</button>';
+    html += '<div class="listening-transcript-content" id="listening-transcript-content" style="display:none;">' + escapeHtml(passage.text || '') + '</div>';
+    html += '</div>';
     
     html += '</div>';
     
@@ -9436,6 +9447,36 @@ function handleReplayClick() {
         console.log('[额外重播完成]');
         updateReplayButtonState();
     }, passage.passage_id || null);
+}
+
+function setListeningSpeed(rate) {
+    _currentPlaybackRate = rate;
+    if (_listeningAudioEl) {
+        _listeningAudioEl.playbackRate = rate;
+    }
+    var rateBtns = document.querySelectorAll('.listening-speed-btn');
+    rateBtns.forEach(function(b) {
+        b.classList.toggle('active', parseFloat(b.textContent) === rate);
+    });
+    var tipEl = document.querySelector('.listening-speed-tip');
+    if (tipEl) {
+        if (rate <= 0.8) tipEl.textContent = '慢速精听';
+        else if (rate >= 1.2) tipEl.textContent = '考场实战语速';
+        else tipEl.textContent = '先听懂再提速';
+    }
+}
+
+function toggleListeningTranscript() {
+    var content = document.getElementById('listening-transcript-content');
+    var btn = document.getElementById('transcript-reveal-btn');
+    if (!content || !btn) return;
+    if (content.style.display === 'none') {
+        content.style.display = 'block';
+        btn.textContent = '📋 隐藏原文';
+    } else {
+        content.style.display = 'none';
+        btn.textContent = '📋 查看原文';
+    }
 }
 
 function selectListeningOption(btn, selectedValue) {
