@@ -293,8 +293,8 @@
 .custom-chat-back svg { width: 22px; height: 22px; stroke: #1E293B; stroke-width: 2; }
 .custom-chat-header-center { 
     flex: 1; 
-    text-align: left;
-    padding-left: 4px;
+    text-align: center;
+    padding-left: 0;
 }
 .custom-chat-header-name { 
     font-size: 16px; 
@@ -1019,7 +1019,7 @@
     margin-top: 6px; 
     text-align: right;
 }
-.custom-chat-msg.ai .custom-chat-time { text-align: left; }
+.custom-chat-msg.ai .custom-chat-time { text-align: center; }
 
 /* ===== 17. Card in bubble ===== */
 .custom-chat-card {
