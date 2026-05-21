@@ -3262,31 +3262,46 @@ function handleImageUpload(input) {
         appendMessage('ai', '');
         var lastMsg = document.querySelector('.custom-chat-msg.ai:last-child .custom-chat-bubble');
         if (lastMsg) lastMsg.innerHTML = '<div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>';
-        // Upload to server for OCR/analysis
+        // Upload to server: Qwen-VL识别 + DeepSeek批改
+        var pureBase64 = base64.split(',')[1] || base64;
+        var isCet6 = isCET6User();
         fetch('/api/essay/upload', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ image: base64 })
+            body: JSON.stringify({ image_base64: pureBase64, essay_type: isCet6 ? 'cet6' : 'cet4' })
         }).then(function(r) { return r.json(); }).then(function(resp) {
-            if (resp.code === 0 && resp.data && resp.data.text) {
-                // Replace typing with extracted text info
-                var lastBubble = document.querySelector('.custom-chat-msg.ai:last-child .custom-chat-bubble');
-                if (lastBubble) {
-                    lastBubble.innerHTML = '📷 已识别你的作文，正在批改中...';
+            var lastBubble = document.querySelector('.custom-chat-msg.ai:last-child .custom-chat-bubble');
+            if (resp.success && resp.recognized_text) {
+                if (resp.grading) {
+                    // 直接显示批改结果
+                    var g = resp.grading;
+                    var templateWarning = g.template_score && g.template_score > 30 ? '\n⚠️ 模板化程度: ' + g.template_score + '% (2026新规: 超30%会被压分)' : '';
+                    var resultHtml = '📷 识别成功！\n\n';
+                    resultHtml += '📝 批改结果\n';
+                    resultHtml += '总分: ' + (g.total_score || '?') + '/15\n';
+                    resultHtml += '内容: ' + (g.content_score || '?') + '/5 | 结构: ' + (g.organization_score || '?') + '/5 | 语言: ' + (g.language_score || '?') + '/5';
+                    resultHtml += templateWarning;
+                    resultHtml += '\n\n💬 ' + (g.overall_comment || '');
+                    if (g.sentences && g.sentences.length > 0) {
+                        resultHtml += '\n\n📝 逐句批改：';
+                        g.sentences.forEach(function(s, i) {
+                            resultHtml += '\n' + (i+1) + '. ' + s.original;
+                            if (s.issue) resultHtml += '\n   问题: ' + s.issue;
+                            if (s.suggestion) resultHtml += '\n   建议: ' + s.suggestion;
+                        });
+                    }
+                    if (lastBubble) lastBubble.innerHTML = resultHtml.replace(/\n/g, '<br>');
+                } else {
+                    // 识别成功但批改失败，发到聊天里让AI批改
+                    if (lastBubble) lastBubble.innerHTML = '📷 已识别你的作文，正在批改中...';
+                    sendSuggestion('请批改以下作文：\n\n' + resp.recognized_text);
                 }
-                // Send extracted text to DeepSeek for grading
-                sendSuggestion('请批改以下作文：\n\n' + resp.data.text);
             } else {
-                var lastBubble = document.querySelector('.custom-chat-msg.ai:last-child .custom-chat-bubble');
-                if (lastBubble) {
-                    lastBubble.innerHTML = '图片识别暂时不可用，请直接输入作文内容';
-                }
+                if (lastBubble) lastBubble.innerHTML = '📷 ' + (resp.error || '图片识别暂时不可用，请直接输入作文内容');
             }
         }).catch(function(err) {
             var lastBubble = document.querySelector('.custom-chat-msg.ai:last-child .custom-chat-bubble');
-            if (lastBubble) {
-                lastBubble.innerHTML = '图片上传失败，请直接输入作文内容';
-            }
+            if (lastBubble) lastBubble.innerHTML = '📷 图片上传失败，请直接输入作文内容';
         });
     };
     reader.readAsDataURL(file);
@@ -3319,7 +3334,7 @@ function ensureChatOpen(){
     if(!chatState.currentMode)chatState.currentMode=mode;
     var p=document.getElementById("chat-panel");
     if(p){p.classList.remove("hidden");p.style.display="";}
-    var clv=v104.getElementById("chat-list-view");
+    var clv=v105.getElementById("chat-list-view");
     if(clv)clv.classList.remove("active");
     var cp=document.getElementById("chat-page");
     if(cp)cp.style.display="flex";
@@ -3335,7 +3350,7 @@ function ensureChatOpen(){
     var chatList=getChatList();
     var msgContainer=document.getElementById('chat-messages');
     if(chatList&&chatList.length>0){
-        var lastConv=v104List[0];
+        var lastConv=v105List[0];
         if(lastConv&&lastConv.id){
             currentConversationId=lastConv.id;
             chatState.conversationId=lastConv.id;
@@ -3678,7 +3693,7 @@ function ensureChatOpen(){
                     return;
                 }
                 var vocabFile = '/public/cet' + (IS_CET6 ? '6' : '4') + '_vocab.json';
-                fetch(vocabFile + '?v=v104' + Date.now())
+                fetch(vocabFile + '?v=v105' + Date.now())
                     .then(function(response) { return response.json(); })
                     .then(function(data) {
                         vocabData = data;

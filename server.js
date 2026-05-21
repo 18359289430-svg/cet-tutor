@@ -2314,6 +2314,117 @@ ${user_input}
         return;
     }
 
+
+// ===== 图片上传+Qwen-VL识别+DeepSeek批改 =====
+// POST /api/essay/upload - 接收图片，识别文字，批改作文
+if (pathname === '/api/essay/upload' && req.method === 'POST') {
+    try {
+        // 读取图片数据（base64方式，前端转好base64传过来）
+        const body = await parseBody(req);
+        const { image_base64, essay_type } = body;
+        
+        if (!image_base64) {
+            return sendJson(res, 400, { error: '缺少图片数据' });
+        }
+        
+        const dashscopeKey = process.env.DASHSCOPE_API_KEY || 'sk-66e1b4668f1c464d8981c7cfe255d438';
+        if (!dashscopeKey) {
+            return sendJson(res, 500, { error: 'DashScope API未配置' });
+        }
+        
+        // Step 1: Qwen-VL识别图片中的文字
+        var isCet6Essay = essay_type === 'cet6' || essay_type === '六级';
+        var examLabelEssay = isCet6Essay ? '六级' : '四级';
+        
+        const vlResponse = await fetch('https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation', {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + dashscopeKey,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                model: 'qwen-vl-max',
+                input: {
+                    messages: [{
+                        role: 'user',
+                        content: [
+                            { image: 'data:image/jpeg;base64,' + image_base64 },
+                            { text: '请仔细识别这张图片中的英文文字内容，这是一篇' + examLabelEssay + '英语作文。请完整输出识别到的英文文字，不要添加任何解释或修改。如果图片中有非英文内容（如题目说明），请用[题目]标记。' }
+                        ]
+                    }]
+                }
+            })
+        });
+        
+        if (!vlResponse.ok) {
+            const vlErr = await vlResponse.text();
+            console.error('[Qwen-VL Error]', vlErr);
+            return sendJson(res, 500, { error: '图片识别失败', detail: vlErr.substring(0, 200) });
+        }
+        
+        const vlData = await vlResponse.json();
+        var recognizedText = '';
+        try {
+            recognizedText = vlData.output.choices[0].message.content[0].text;
+        } catch(e) {
+            return sendJson(res, 500, { error: '图片识别结果解析失败', raw: JSON.stringify(vlData).substring(0, 300) });
+        }
+        
+        if (!recognizedText || recognizedText.length < 10) {
+            return sendJson(res, 400, { error: '未识别到有效文字，请确保图片清晰', recognized: recognizedText });
+        }
+        
+        // Step 2: DeepSeek批改作文
+        const dsKey = DEEPSEEK_API_KEY || process.env.DEEPSEEK_API_KEY;
+        if (!dsKey) {
+            return sendJson(res, 200, { recognized_text: recognizedText, error: '识别成功但批改服务未配置' });
+        }
+        
+        var wordCountReq = isCet6Essay ? '150-200词' : '120-180词';
+        
+        const gradeResponse = await fetch(DEEPSEEK_API_BASE + '/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + dsKey,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                model: 'deepseek-chat',
+                messages: [
+                    { role: 'system', content: '你是' + examLabelEssay + '作文批改专家。2026新规：逻辑连贯性占20%，模板化语句超30%压低档分。你必须严格按照格式返回JSON结果，不要包含任何markdown代码块标记。' },
+                    { role: 'user', content: '请对以下作文进行批改（' + wordCountReq + '），返回JSON格式：{"total_score": 数字(15分制), "content_score": 数字(5分制), "organization_score": 数字(5分制), "language_score": 数字(5分制), "template_score": 数字(模板化程度0-100), "sentences": [{"original": "原句", "issue": "问题说明", "suggestion": "修改建议"}], "overall_comment": "总评"} 注意：如果检测到大量模板化语句，template_score应较高，total_score需相应降低。只返回JSON，不要其他文字。\n\n' + recognizedText }
+                ],
+                temperature: 0.3,
+                max_tokens: 1500
+            })
+        });
+        
+        var gradingResult = null;
+        if (gradeResponse.ok) {
+            const gradeData = await gradeResponse.json();
+            try {
+                var gradeContent = gradeData.choices[0].message.content;
+                // 清理可能的markdown代码块标记
+                gradeContent = gradeContent.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+                gradingResult = JSON.parse(gradeContent);
+            } catch(e) {
+                console.error('[Essay Grade Parse Error]', e.message);
+            }
+        }
+        
+        return sendJson(res, 200, {
+            success: true,
+            recognized_text: recognizedText,
+            grading: gradingResult
+        });
+        
+    } catch(e) {
+        console.error('[Essay Upload Error]', e.message);
+        return sendJson(res, 500, { error: '处理失败: ' + e.message });
+    }
+}
+
+
     // 404
         // GET /api/quiz/random - 随机获取真题（每日一练用，支持自适应推题）
         // GET /api/quiz/batch - 批量获取题目（每日一练全套，根据五维能力智能分配）
