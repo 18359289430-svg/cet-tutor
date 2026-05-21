@@ -396,26 +396,78 @@
 
             <!-- 诊断页 -->
             <div class="tab-page" id="tab-diagnosis">
-                <!-- 对话列表 -->
-            <div class="chat-list-view" id="chat-list-view">
-                <div class="chat-list-header">
-                    <div class="chat-list-title">我的对话</div>
-                    <button class="chat-list-new-btn" onclick="showNewChatModal()">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-                        </svg>
-                    </button>
+                <!-- 训练卡片入口 -->
+                <div class="practice-page">
+                    <div class="practice-header">
+                        <div class="practice-title">专项训练</div>
+                        <div class="practice-sub" id="practice-sub">选择科目开始训练</div>
+                    </div>
+                    <div class="practice-cards" id="practice-cards">
+                        <div class="practice-card" onclick="startPractice('listening')">
+                            <div class="practice-card-icon blue">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>
+                                </svg>
+                            </div>
+                            <div class="practice-card-info">
+                                <div class="practice-card-name">听力训练</div>
+                                <div class="practice-card-stage" id="practice-stage-listening">—</div>
+                            </div>
+                            <div class="practice-card-score" id="practice-score-listening">—</div>
+                        </div>
+                        <div class="practice-card" onclick="startPractice('reading')">
+                            <div class="practice-card-icon green">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+                                </svg>
+                            </div>
+                            <div class="practice-card-info">
+                                <div class="practice-card-name">阅读训练</div>
+                                <div class="practice-card-stage" id="practice-stage-reading">—</div>
+                            </div>
+                            <div class="practice-card-score" id="practice-score-reading">—</div>
+                        </div>
+                        <div class="practice-card" onclick="startPractice('writing')">
+                            <div class="practice-card-icon rose">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
+                                </svg>
+                            </div>
+                            <div class="practice-card-info">
+                                <div class="practice-card-name">写作批改</div>
+                                <div class="practice-card-stage" id="practice-stage-writing">—</div>
+                            </div>
+                            <div class="practice-card-score" id="practice-score-writing">—</div>
+                        </div>
+                        <div class="practice-card" onclick="startPractice('translation')">
+                            <div class="practice-card-icon amber">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                                </svg>
+                            </div>
+                            <div class="practice-card-info">
+                                <div class="practice-card-name">翻译训练</div>
+                                <div class="practice-card-stage" id="practice-stage-translation">—</div>
+                            </div>
+                            <div class="practice-card-score" id="practice-score-translation">—</div>
+                        </div>
+                    </div>
+                    <!-- AI陪练历史（折叠） -->
+                    <div class="practice-history-section" id="practice-history-section">
+                        <div class="practice-history-toggle" onclick="togglePracticeHistory()">
+                            <span>历史对话</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px">
+                                <polyline points="6 9 12 15 18 9"/>
+                            </svg>
+                        </div>
+                        <div class="practice-history-list" id="chat-list-body" style="display:none">
+                            <!-- 对话卡片由JS渲染 -->
+                        </div>
+                    </div>
                 </div>
-                <div class="chat-list-search-wrap">
-                    <svg class="chat-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                    </svg>
-                    <input class="chat-list-search" id="chat-search-input" type="text" placeholder="搜索对话标题..." oninput="filterChatList(this.value)" />
+                <!-- 保留隐藏的chat-list-view供JS使用 -->
+                <div class="chat-list-view" id="chat-list-view" style="display:none">
                 </div>
-                <div class="chat-list-body" id="chat-list-body">
-                    <!-- 对话卡片由JS渲染 -->
-                </div>
-            </div>
 
             <!-- 新建对话弹窗 -->
             <div class="new-chat-modal" id="new-chat-modal">

@@ -998,3 +998,51 @@
     padding: 5px 12px; background: var(--primary); color: white;
     border: none; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer;
 }
+
+/* ===== 数据页快捷入口 ===== */
+.dash-shortcuts {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 16px 0;
+}
+.dash-shortcut-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #f1f5f9;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+.dash-shortcut-item:active {
+    border-color: #6C5CE7;
+}
+.dash-shortcut-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.dash-shortcut-icon svg { width: 18px; height: 18px; }
+.dash-shortcut-info { flex: 1; min-width: 0; }
+.dash-shortcut-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1a1a2e;
+}
+.dash-shortcut-desc {
+    font-size: 12px;
+    color: #94A3B8;
+    margin-top: 1px;
+}
+.dash-shortcut-arrow {
+    font-size: 18px;
+    color: #cbd5e1;
+    flex-shrink: 0;
+}

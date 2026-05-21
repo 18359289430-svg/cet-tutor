@@ -2773,3 +2773,90 @@
     background: #00B894;
     pointer-events: none;
 }
+
+/* ===== 练习页训练卡片 ===== */
+.practice-page {
+    padding: 20px 16px;
+}
+.practice-header {
+    margin-bottom: 20px;
+}
+.practice-title {
+    font-size: 22px;
+    font-weight: 800;
+    color: #1a1a2e;
+}
+.practice-sub {
+    font-size: 13px;
+    color: #94A3B8;
+    margin-top: 4px;
+}
+.practice-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+.practice-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px;
+    background: #fff;
+    border-radius: 14px;
+    border: 1px solid #f1f5f9;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+.practice-card:active {
+    border-color: #6C5CE7;
+    box-shadow: 0 2px 8px rgba(108,92,231,0.1);
+}
+.practice-card-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.practice-card-icon svg { width: 22px; height: 22px; }
+.practice-card-icon.blue { background: rgba(69,183,209,0.1); color: #45B7D1; }
+.practice-card-icon.green { background: rgba(0,184,148,0.1); color: #00B894; }
+.practice-card-icon.rose { background: rgba(253,121,168,0.1); color: #FD79A8; }
+.practice-card-icon.amber { background: rgba(253,203,110,0.1); color: #FDCB6E; }
+.practice-card-info { flex: 1; min-width: 0; }
+.practice-card-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1a1a2e;
+}
+.practice-card-stage {
+    font-size: 12px;
+    color: #94A3B8;
+    margin-top: 2px;
+}
+.practice-card-score {
+    font-size: 20px;
+    font-weight: 800;
+    color: #6C5CE7;
+    flex-shrink: 0;
+}
+/* 历史对话折叠区 */
+.practice-history-section {
+    border-top: 1px solid #f1f5f9;
+    padding-top: 16px;
+}
+.practice-history-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #94A3B8;
+    cursor: pointer;
+    padding: 8px 0;
+}
+.practice-history-toggle:active {
+    color: #6C5CE7;
+}

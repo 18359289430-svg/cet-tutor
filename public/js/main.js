@@ -1268,7 +1268,8 @@ function initApp() {
         }
 
         function initTabEvents() {
-            document.querySelectorAll('.tab-item').forEach(function(item) {
+                if (tabName === 'diagnosis') { updatePracticeCards(); }
+    document.querySelectorAll('.tab-item').forEach(function(item) {
                 item.addEventListener('click', function() {
                     var tab = this.dataset.tab;
                     switchTab(tab);
@@ -1942,6 +1943,27 @@ function renderDashboard() {
                 html += '</div>';
                 html += '</div>';
                 
+                // ===== 快捷入口 =====
+                html += '<div class="dash-shortcuts">';
+                var wrongQs = getWrongQuestions();
+                var overdueCount = typeof getOverdueReviewCount === 'function' ? getOverdueReviewCount() : 0;
+                html += '<div class="dash-shortcut-item" onclick="switchTab(\'wrongbook\')">';
+                html += '<div class="dash-shortcut-icon" style="background:rgba(116,185,255,0.1);color:#74B9FF">' + icons.list + '</div>';
+                html += '<div class="dash-shortcut-info"><div class="dash-shortcut-name">错题本</div>';
+                html += '<div class="dash-shortcut-desc">' + (wrongQs.length > 0 ? wrongQs.length + '道错题' + (overdueCount > 0 ? '，' + overdueCount + '道待复习' : '') : '暂无错题') + '</div></div>';
+                html += '<div class="dash-shortcut-arrow">›</div></div>';
+                html += '<div class="dash-shortcut-item" onclick="switchTab(\'plan\')">';
+                html += '<div class="dash-shortcut-icon" style="background:rgba(0,184,148,0.1);color:#00B894">' + icons.check + '</div>';
+                html += '<div class="dash-shortcut-info"><div class="dash-shortcut-name">备考计划</div>';
+                html += '<div class="dash-shortcut-desc">30天冲刺方案</div></div>';
+                html += '<div class="dash-shortcut-arrow">›</div></div>';
+                html += '<div class="dash-shortcut-item" onclick="startNewDiagnosis()">';
+                html += '<div class="dash-shortcut-icon" style="background:rgba(108,92,231,0.1);color:#6C5CE7">' + icons.target + '</div>';
+                html += '<div class="dash-shortcut-info"><div class="dash-shortcut-name">重新诊断</div>';
+                html += '<div class="dash-shortcut-desc">更新能力评估</div></div>';
+                html += '<div class="dash-shortcut-arrow">›</div></div>';
+                html += '</div>';
+
                 // ===== 第3个板块: 五维能力分析（雷达图+趋势+薄弱项）=====
                 html += '<div class="dashboard-radar-section glass-card">';
                 html += '<div class="dashboard-radar-header">';
@@ -16080,6 +16102,58 @@ function buildCoachContext() {
 // 重写handleChatBack，如果是从教练模式打开的则关闭浮层
 var _origHandleChatBack = typeof handleChatBack === 'function' ? handleChatBack : null;
 
+
+// ===== 练习页训练卡片 =====
+function updatePracticeCards() {
+    var diagHist = JSON.parse(localStorage.getItem(examKey('diagnosis_history')) || '[]');
+    var skills = ['listening', 'reading', 'writing', 'translation'];
+    var skillNames = { listening: '听力', reading: '阅读', writing: '写作', translation: '翻译' };
+    
+    skills.forEach(function(sk) {
+        var stageEl = document.getElementById('practice-stage-' + sk);
+        var scoreEl = document.getElementById('practice-score-' + sk);
+        if (!stageEl || !scoreEl) return;
+        
+        if (diagHist.length === 0) {
+            stageEl.textContent = '先做诊断';
+            scoreEl.textContent = '—';
+            return;
+        }
+        
+        var scores = diagHist[diagHist.length - 1].scores || {};
+        var score = scores[sk];
+        var stage = getCurrentStage(sk);
+        var stageInfo = TRAINING_STAGES[sk] ? TRAINING_STAGES[sk][stage - 1] : null;
+        
+        stageEl.textContent = stageInfo ? stageInfo.name + '·' + stageInfo.desc : '基础训练';
+        scoreEl.textContent = score !== undefined ? score : '—';
+        scoreEl.style.color = score >= 80 ? '#6C5CE7' : score >= 60 ? '#00B894' : score >= 35 ? '#FDCB6E' : '#E17055';
+    });
+    
+    var subEl = document.getElementById('practice-sub');
+    if (subEl) {
+        if (diagHist.length === 0) {
+            subEl.textContent = '先做AI诊断，我会根据结果推荐训练';
+        } else {
+            var today = new Date().toISOString().split('T')[0];
+            var hist = getTrainingHistory();
+            var todayCount = hist.filter(function(h) { return h.date === today; }).length;
+            subEl.textContent = '今天已练' + todayCount + '次，继续加油';
+        }
+    }
+}
+
+function togglePracticeHistory() {
+    var list = document.getElementById('chat-list-body');
+    if (!list) return;
+    if (list.style.display === 'none') {
+        list.style.display = 'block';
+        renderChatList();
+    } else {
+        list.style.display = 'none';
+    }
+}
+
 window.handleHomeCta = handleHomeCta;
 // 从训练页面问AI教练
 function askCoachAbout(questionId) {
@@ -16130,6 +16204,8 @@ function getNextWeakSkill(excludeSkill) {
 }
 
 window.openCoachChat = openCoachChat;
+window.updatePracticeCards = updatePracticeCards;
+window.togglePracticeHistory = togglePracticeHistory;
 window.askCoachAbout = askCoachAbout;
 window.closeCoachChat = closeCoachChat;
 window.renderHomeTodayTasks = renderHomeTodayTasks;
