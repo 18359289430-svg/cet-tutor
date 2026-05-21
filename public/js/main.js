@@ -2762,10 +2762,6 @@ function getAbilityTrend() {
             document.getElementById('personality-modal').classList.remove('show');
         }
 
-        function startPractice() {
-            closePersonalityModal();
-            ensureChatOpen();
-        }
 
         // ===== 对话列表管理 =====
         var currentConversationId = null; // 当前活跃对话ID
