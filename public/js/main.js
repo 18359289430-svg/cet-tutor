@@ -8486,7 +8486,7 @@ var diagState = {
     answers: [],
     selfEval: [],
     correctCount: 0,
-    phase: 'loading', // loading, questions, listening, selfeval, writing, translation, generating, done
+    phase: 'loading', // loading, questions, listening, translation, writing, selfeval, generating, done
     writingScore: null,
     translationScore: null,
     writingPrompt: null,
@@ -8651,7 +8651,7 @@ async function startNewDiagnosis() {
             console.log('[诊断] 第1题显示成功');
         } catch(e) {
             console.error('[诊断] 显示题目失败:', e);
-            showSelfEval();
+            startTranslationTest();
         }
         
     } catch(err) {
@@ -9120,7 +9120,7 @@ function showCurrentListening() {
     // 记录听力题目展示时间
     diagState.questionShowTime = Date.now();
     if (!passage) {
-        showSelfEval();
+        startTranslationTest();
         return;
     }
     
@@ -9347,7 +9347,7 @@ function startReadingPhase() {
         });
         
         if (questions.length === 0) {
-            showSelfEval();
+            startTranslationTest();
             return;
         }
         
@@ -9357,7 +9357,7 @@ function startReadingPhase() {
         showCurrentQuestion();
     }).catch(function(e) {
         console.error('[加载阅读题目失败]', e);
-        showSelfEval();
+        startTranslationTest();
     });
 }
 
@@ -9377,7 +9377,7 @@ function startListeningTest() {
         var passages = data.listening_passages || [];
         if (passages.length === 0) {
             console.log('[听力阶段] 无听力题目，跳过');
-            showSelfEval();
+            startTranslationTest();
             return;
         }
         
@@ -9419,7 +9419,7 @@ function startListeningTest() {
         showCurrentListening();
     }).catch(function(e) {
         console.error('[听力阶段加载失败]', e);
-        showSelfEval();
+        startTranslationTest();
     });
 }
 
@@ -9434,7 +9434,7 @@ function showCurrentQuestion() {
     var q = diagState.questions[diagState.currentQIndex];
     if (!q) {
         console.error('[诊断] 题目为空! index:', diagState.currentQIndex, 'total:', diagState.questions.length);
-        showSelfEval();
+        startTranslationTest();
         return;
     }
     console.log('[诊断] 题目:', q.id, q.question ? q.question.substring(0, 30) : 'NO QUESTION');
@@ -9779,7 +9779,7 @@ function updateWritingCount() {
 // 跳过写作实测
 function skipWritingTest() {
     diagState.writingScore = null;
-    startTranslationTest();
+    showSelfEval();
 }
 
 // 提交写作实测
@@ -9829,7 +9829,7 @@ async function submitWritingTest() {
         console.error('[写作评分失败]', e);
         // 评分失败时跳过
         diagState.writingScore = null;
-        startTranslationTest();
+        showSelfEval();
     }
 }
 
@@ -9891,7 +9891,7 @@ function showWritingScoreResult(score) {
             '<div class="diag-score-comment">' +
                 '<div class="diag-comment-text">💬 ' + (score.comment || '继续保持！') + '</div>' +
             '</div>' +
-            '<button class="diag-score-continue" onclick="startTranslationTest()">继续翻译实测 →</button>' +
+            '<button class="diag-score-continue" onclick="showSelfEval()">继续自评 →</button>' +
         '</div>';
     
     document.getElementById('diag-body').innerHTML = html;
@@ -9961,7 +9961,7 @@ function updateTranslationCount() {
 // 跳过翻译实测
 function skipTranslationTest() {
     diagState.translationScore = null;
-    showSelfEval();
+    startWritingTest();
 }
 
 // 提交翻译实测
@@ -10021,7 +10021,7 @@ async function submitTranslationTest() {
         console.error('[翻译评分失败]', e);
         // 评分失败时跳过翻译分数，继续自评
         diagState.translationScore = null;
-        showSelfEval();
+        startWritingTest();
     }
 }
 
@@ -10074,7 +10074,7 @@ function showTranslationScoreResult(score) {
             '<div class="diag-score-comment">' +
                 '<div class="diag-comment-text">💬 ' + (score.comment || '继续保持！') + '</div>' +
             '</div>' +
-            '<button class="diag-score-continue translation" onclick="showSelfEval()">📝 继续自评</button>' +
+            '<button class="diag-score-continue translation" onclick="startWritingTest()">✍️ 继续写作实测</button>' +
         '</div>';
     
     document.getElementById('diag-body').innerHTML = html;
