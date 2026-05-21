@@ -4748,6 +4748,7 @@ function updateHomeStatus() {
             }
 
             updateDailyTask();
+            renderHomeTodayTasks();
         }
 
         function updateProfileStats() {
@@ -15476,7 +15477,155 @@ async function doRestoreData() {
 // ===== 暴露函数到全局作用域（HTML onclick需要）=====
 window.switchExamType = switchExamType;
 window.handleQuickAction = handleQuickAction;
+
+// ===== 今日任务卡片（首页教练模式核心） =====
+function renderHomeTodayTasks() {
+    var card = document.getElementById('home-today-tasks');
+    if (!card) return;
+    
+    // 未诊断用户不显示
+    var diagHist = JSON.parse(localStorage.getItem(examKey('diagnosis_history')) || '[]');
+    if (diagHist.length === 0) {
+        card.style.display = 'none';
+        return;
+    }
+    
+    // 生成任务
+    var tasks = generateSmartTasks();
+    if (!tasks || tasks.length === 0) {
+        card.style.display = 'none';
+        return;
+    }
+    
+    card.style.display = 'block';
+    
+    // 判断哪些已完成
+    var trainingHist = getTrainingHistory();
+    var today = new Date().toISOString().split('T')[0];
+    var todayTrained = trainingHist.filter(function(h) { return h.date === today; });
+    var todaySkills = todayTrained.map(function(h) { return h.skill; });
+    
+    var completedCount = 0;
+    var taskItems = '';
+    var skillColors = {
+        'listening': '#45B7D1',
+        'reading': '#00B894',
+        'writing': '#FD79A8',
+        'translation': '#FDCB6E',
+        'review': '#74B9FF',
+        'diagnosis': '#A29BFE',
+        'sprint': '#FF7675'
+    };
+    
+    tasks.forEach(function(task, idx) {
+        var isDone = false;
+        // 判断完成：诊断任务检查是否有诊断记录，训练任务检查今天是否练过该技能
+        if (task.id === 'diagnosis') {
+            isDone = diagHist.length > 0;
+        } else if (task.skill) {
+            isDone = todaySkills.indexOf(task.skill) >= 0;
+        } else if (task.id === 'review') {
+            // 错题复习：简单判断今天是否有训练记录
+            isDone = todayTrained.length > 0;
+        }
+        
+        if (isDone) completedCount++;
+        
+        var colorClass = task.skill || task.id || 'diagnosis';
+        
+        taskItems += '<div class="htt-item' + (isDone ? ' done' : '') + '" onclick="handleHttClick(' + idx + ')">';
+        taskItems += '  <div class="htt-item-icon ' + colorClass + '">' + (task.icon || '📋') + '</div>';
+        taskItems += '  <div class="htt-item-info">';
+        taskItems += '    <div class="htt-item-name">' + task.text + '</div>';
+        taskItems += '    <div class="htt-item-desc">' + (task.time || '') + '</div>';
+        taskItems += '  </div>';
+        taskItems += '  <div class="htt-item-status ' + (isDone ? 'done' : 'pending') + '">' + (isDone ? '✓' : '') + '</div>';
+        taskItems += '</div>';
+    });
+    
+    var listEl = document.getElementById('htt-list');
+    if (listEl) listEl.innerHTML = taskItems;
+    
+    // 更新进度
+    var progressEl = document.getElementById('htt-progress');
+    if (progressEl) progressEl.textContent = completedCount + '/' + tasks.length;
+    
+    // 更新按钮
+    var btn = document.getElementById('htt-start-btn');
+    if (btn) {
+        var allDone = completedCount >= tasks.length;
+        if (allDone) {
+            btn.textContent = '今日训练已完成 ✓';
+            btn.classList.add('all-done');
+        } else {
+            // 找到第一个未完成的任务
+            var nextTask = null;
+            for (var i = 0; i < tasks.length; i++) {
+                var isDone = false;
+                if (tasks[i].id === 'diagnosis') {
+                    isDone = diagHist.length > 0;
+                } else if (tasks[i].skill) {
+                    isDone = todaySkills.indexOf(tasks[i].skill) >= 0;
+                } else if (tasks[i].id === 'review') {
+                    isDone = todayTrained.length > 0;
+                }
+                if (!isDone) { nextTask = tasks[i]; break; }
+            }
+            btn.textContent = nextTask ? '开始练' + (nextTask.text.split('·')[0] || '训练') : '开始训练';
+            btn.classList.remove('all-done');
+        }
+    }
+    
+    // 存到全局供点击使用
+    window._homeTodayTasks = tasks;
+}
+
+// 点击单个任务
+function handleHttClick(idx) {
+    var tasks = window._homeTodayTasks;
+    if (!tasks || !tasks[idx]) return;
+    var task = tasks[idx];
+    if (task.action) {
+        eval(task.action);
+    }
+}
+
+// 点击"开始训练"按钮
+function startHomeTodayTask() {
+    var tasks = window._homeTodayTasks;
+    if (!tasks || tasks.length === 0) return;
+    
+    var trainingHist = getTrainingHistory();
+    var today = new Date().toISOString().split('T')[0];
+    var todayTrained = trainingHist.filter(function(h) { return h.date === today; });
+    var todaySkills = todayTrained.map(function(h) { return h.skill; });
+    var diagHist = JSON.parse(localStorage.getItem(examKey('diagnosis_history')) || '[]');
+    
+    // 找第一个未完成的
+    for (var i = 0; i < tasks.length; i++) {
+        var task = tasks[i];
+        var isDone = false;
+        if (task.id === 'diagnosis') {
+            isDone = diagHist.length > 0;
+        } else if (task.skill) {
+            isDone = todaySkills.indexOf(task.skill) >= 0;
+        } else if (task.id === 'review') {
+            isDone = todayTrained.length > 0;
+        }
+        if (!isDone && task.action) {
+            eval(task.action);
+            return;
+        }
+    }
+    
+    // 全部完成
+    showToast('今日训练已完成，继续保持！');
+}
+
 window.handleHomeCta = handleHomeCta;
+window.renderHomeTodayTasks = renderHomeTodayTasks;
+window.handleHttClick = handleHttClick;
+window.startHomeTodayTask = startHomeTodayTask;
 
 
 // 渲染提分路线图

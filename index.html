@@ -31,25 +31,25 @@
     <meta name="twitter:image" content="https://cet-tutor.com/og-image.jpg">
     <link rel="preload" href="/wechat-qr.jpg" as="image">
     <!-- CSS -->
-    <link rel="stylesheet" href="/css/variables.css?v=v125">
-    <link rel="stylesheet" href="/css/base.css?v=v125">
-    <link rel="stylesheet" href="/css/home.css?v=v125">
-    <link rel="stylesheet" href="/css/study.css?v=v125">
-    <link rel="stylesheet" href="/css/chat.css?v=v125">
-    <link rel="stylesheet" href="/css/personality.css?v=v125">
-    <link rel="stylesheet" href="/css/components.css?v=v125">
-    <link rel="stylesheet" href="/css/quiz.css?v=v125">
-    <link rel="stylesheet" href="/css/payment.css?v=v125">
-    <link rel="stylesheet" href="/css/profile.css?v=v125">
-    <link rel="stylesheet" href="/css/dashboard.css?v=v125">
-    <link rel="stylesheet" href="/css/diagnosis.css?v=v125">
-    <link rel="stylesheet" href="/css/essay.css?v=v125">
-    <link rel="stylesheet" href="/css/review.css?v=v125">
-    <link rel="stylesheet" href="/css/plan.css?v=v125">
-    <link rel="stylesheet" href="/css/plan-page.css?v=v125">
-    <link rel="stylesheet" href="/css/wrongbook.css?v=v125">
-    <link rel="stylesheet" href="/css/learning-path.css?v=v125">
-    <link rel="stylesheet" href="/css/vocab.css?v=v125">
+    <link rel="stylesheet" href="/css/variables.css?v=v126">
+    <link rel="stylesheet" href="/css/base.css?v=v126">
+    <link rel="stylesheet" href="/css/home.css?v=v126">
+    <link rel="stylesheet" href="/css/study.css?v=v126">
+    <link rel="stylesheet" href="/css/chat.css?v=v126">
+    <link rel="stylesheet" href="/css/personality.css?v=v126">
+    <link rel="stylesheet" href="/css/components.css?v=v126">
+    <link rel="stylesheet" href="/css/quiz.css?v=v126">
+    <link rel="stylesheet" href="/css/payment.css?v=v126">
+    <link rel="stylesheet" href="/css/profile.css?v=v126">
+    <link rel="stylesheet" href="/css/dashboard.css?v=v126">
+    <link rel="stylesheet" href="/css/diagnosis.css?v=v126">
+    <link rel="stylesheet" href="/css/essay.css?v=v126">
+    <link rel="stylesheet" href="/css/review.css?v=v126">
+    <link rel="stylesheet" href="/css/plan.css?v=v126">
+    <link rel="stylesheet" href="/css/plan-page.css?v=v126">
+    <link rel="stylesheet" href="/css/wrongbook.css?v=v126">
+    <link rel="stylesheet" href="/css/learning-path.css?v=v126">
+    <link rel="stylesheet" href="/css/vocab.css?v=v126">
     <!-- Clarity -->
     <script type="text/javascript">
         (function(c,l,a,r,i,t,y){ c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
@@ -59,7 +59,7 @@
     <!-- Umami -->
     <script async src="https://us.umami.is/script.js" data-website-id="5a41f1b0-59b5-41a7-bafa-5bd7432c4dd3"></script>
 <style>.reform-badge{display:inline-block;font-size:9px;background:#6C5CE7;color:#fff;padding:1px 5px;border-radius:6px;vertical-align:middle;margin-left:4px;font-weight:500;letter-spacing:0.3px;}</style>
-    <link rel="stylesheet" href="/css/comic.css?v=v125">
+    <link rel="stylesheet" href="/css/comic.css?v=v126">
 </head>
 <body>
     <div class="app">
@@ -137,6 +137,26 @@
                 </div>
 
                 <!-- 社交证明横条 -->
+
+                <!-- 今日任务卡片（教练模式核心） -->
+                <div class="home-today-tasks" id="home-today-tasks" style="display:none">
+                    <div class="htt-header">
+                        <div class="htt-header-left">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;color:#6C5CE7">
+                                <path d="M9 11l3 3L22 4"/>
+                                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+                            </svg>
+                            <span class="htt-title">今日任务</span>
+                        </div>
+                        <div class="htt-progress" id="htt-progress">0/3</div>
+                    </div>
+                    <div class="htt-list" id="htt-list">
+                        <!-- JS动态渲染 -->
+                    </div>
+                    <button class="htt-start-btn" id="htt-start-btn" onclick="startHomeTodayTask()">
+                        开始今天的训练
+                    </button>
+                </div>
 
                 <!-- 待复习错题提醒卡片 -->
                 <div class="home-review-reminder" id="home-review-reminder" style="display:none" onclick="switchTab('wrongbook')">
@@ -947,8 +967,8 @@
     </div>
 
     <!-- JS -->
-    <script src="/js/main.js?v=v125"></script>
-    <script src="/js/essay.js?v=v125"></script>
+    <script src="/js/main.js?v=v126"></script>
+    <script src="/js/essay.js?v=v126"></script>
 
 <!-- Onboarding: Exam Type Selection -->
 <div id="onboarding-overlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,rgba(99,102,241,0.95),rgba(139,92,246,0.95));z-index:99999;align-items:center;justify-content:center;">
