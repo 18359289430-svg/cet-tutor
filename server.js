@@ -2669,52 +2669,25 @@ if (pathname === '/api/essay/upload' && req.method === 'POST') {
                         return;
                     }
                     const truncatedText = text.substring(0, 1500);
-                    const rate = exam_type === 'cet6' ? 1.2 : 1.05;
-                    console.log('[TTS] Generating audio, length:', truncatedText.length, 'rate:', rate);
-                    const ttsResp = await fetch('https://dashscope.aliyuncs.com/api/v1/services/audio/tts/SpeechSynthesizer', {
-                        method: 'POST',
-                        headers: {
-                            'Authorization': 'Bearer ' + process.env.DASHSCOPE_API_KEY,
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            model: 'cosyvoice-v3-flash',
-                            input: { text: truncatedText },
-                            parameters: { voice: 'longanyang', rate: rate, format: 'mp3' }
-                        })
-                    });
-                    if (!ttsResp.ok) {
-                        const errText = await ttsResp.text();
-                        console.error('[TTS] API error:', ttsResp.status, errText.substring(0,200));
-                        res.writeHead(200, { 'Content-Type': 'application/json' });
-                        res.end(JSON.stringify({ error: 'TTS API failed: ' + ttsResp.status }));
-                        return;
-                    }
-                    // CosyVoice returns JSON with audio URL
-                    const ttsData = JSON.parse(await ttsResp.text());
-                    const audioUrl = ttsData.output && ttsData.output.audio && ttsData.output.audio.url;
-                    if (!audioUrl) {
-                        console.error('[TTS] No audio URL in response:', JSON.stringify(ttsData).substring(0,200));
-                        res.writeHead(200, { 'Content-Type': 'application/json' });
-                        res.end(JSON.stringify({ error: 'No audio URL returned' }));
-                        return;
-                    }
-                    // Download the audio file from the returned URL
-                    console.log('[TTS] Downloading audio from:', audioUrl.substring(0,80) + '...');
-                    const audioResp = await fetch(audioUrl);
-                    if (!audioResp.ok) {
-                        console.error('[TTS] Audio download error:', audioResp.status);
-                        res.writeHead(200, { 'Content-Type': 'application/json' });
-                        res.end(JSON.stringify({ error: 'Audio download failed' }));
-                        return;
-                    }
+                    console.log('[TTS] Edge-TTS generating audio, length:', truncatedText.length);
                     const audioId = 'tts_' + Date.now() + '_' + Math.random().toString(36).substr(2,6) + '.mp3';
                     const audioPath = '/opt/cet-tutor/public/audio/listening/' + audioId;
-                    const buffer = Buffer.from(await audioResp.arrayBuffer());
-                    require('fs').writeFileSync(audioPath, buffer);
-                    console.log('[TTS] Saved:', audioPath, 'size:', buffer.length);
+                    const { execFile } = require('child_process');
+                    const edgeArgs = ['--text', truncatedText, '--voice', 'en-US-JennyNeural', '--write-media', audioPath];
+                    await new Promise((resolve, reject) => {
+                        execFile('edge-tts', edgeArgs, { timeout: 60000 }, (err, stdout, stderr) => {
+                            if (err) reject(err);
+                            else resolve();
+                        });
+                    });
+                    const fs = require('fs');
+                    if (!fs.existsSync(audioPath)) {
+                        throw new Error('Edge-TTS output file not created');
+                    }
+                    const stat = fs.statSync(audioPath);
+                    console.log('[TTS] Edge-TTS saved:', audioPath, 'size:', stat.size);
                     res.writeHead(200, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({ url: '/public/audio/listening/' + audioId, size: buffer.length }));
+                    res.end(JSON.stringify({ url: '/public/audio/listening/' + audioId, size: stat.size }))
                 } catch (err) {
                     console.error('[TTS] Error:', err.message);
                     res.writeHead(200, { 'Content-Type': 'application/json' });
