@@ -2776,32 +2776,76 @@
 
 /* ===== 练习页训练卡片 ===== */
 .practice-page {
-    padding: 20px 16px;
+    padding: 0 0 20px;
 }
-.practice-header {
-    margin-bottom: 20px;
+.practice-hero {
+    background: linear-gradient(135deg, #4A3CB5, #6C5CE7, #8B7CF7);
+    padding: 28px 24px 24px;
+    border-radius: 0 0 24px 24px;
+    position: relative;
+    overflow: hidden;
 }
-.practice-title {
+.practice-hero::before {
+    content: '';
+    position: absolute;
+    top: -30px;
+    right: -20px;
+    width: 140px;
+    height: 140px;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    border-radius: 50%;
+}
+.practice-hero-inner {
+    position: relative;
+    z-index: 1;
+}
+.practice-hero-title {
     font-size: 22px;
     font-weight: 800;
-    color: #1a1a2e;
+    color: #fff;
+    letter-spacing: 0.5px;
 }
-.practice-sub {
+.practice-hero-sub {
     font-size: 13px;
-    color: #94A3B8;
+    color: rgba(255,255,255,0.7);
     margin-top: 4px;
+}
+.practice-hero-stats {
+    display: flex;
+    gap: 12px;
+    margin-top: 18px;
+}
+.practice-stat {
+    flex: 1;
+    background: rgba(255,255,255,0.12);
+    border-radius: 12px;
+    padding: 10px 12px;
+    text-align: center;
+    backdrop-filter: blur(4px);
+}
+.practice-stat-value {
+    font-size: 22px;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.2;
+}
+.practice-stat-label {
+    font-size: 11px;
+    color: rgba(255,255,255,0.6);
+    margin-top: 2px;
+    font-weight: 500;
 }
 .practice-cards {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    margin-bottom: 24px;
+    gap: 10px;
+    padding: 16px 16px 0;
 }
 .practice-card {
     display: flex;
     align-items: center;
-    gap: 14px;
-    padding: 16px;
+    justify-content: space-between;
+    padding: 14px 16px;
     background: #fff;
     border-radius: 14px;
     border: 1px solid #f1f5f9;
@@ -2811,24 +2855,35 @@
 .practice-card:active {
     border-color: #6C5CE7;
     box-shadow: 0 2px 8px rgba(108,92,231,0.1);
+    transform: scale(0.99);
+}
+.practice-card-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex: 1;
+    min-width: 0;
 }
 .practice-card-icon {
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
 }
-.practice-card-icon svg { width: 24px; height: 24px; max-width: 24px; max-height: 24px; flex-shrink: 0; opacity: 0.85; }
+.practice-card-icon svg {
+    width: 20px;
+    height: 20px;
+}
 .practice-card-icon.blue { background: rgba(69,183,209,0.1); color: #45B7D1; }
 .practice-card-icon.green { background: rgba(0,184,148,0.1); color: #00B894; }
 .practice-card-icon.rose { background: rgba(253,121,168,0.1); color: #FD79A8; }
-.practice-card-icon.amber { background: rgba(253,203,110,0.1); color: #FDCB6E; }
+.practice-card-icon.amber { background: rgba(253,203,110,0.1); color: #E17055; }
 .practice-card-info { flex: 1; min-width: 0; }
 .practice-card-name {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 700;
     color: #1a1a2e;
 }
@@ -2838,10 +2893,12 @@
     margin-top: 2px;
 }
 .practice-card-score {
-    font-size: 20px;
+    font-size: 24px;
     font-weight: 800;
     color: #6C5CE7;
     flex-shrink: 0;
+    min-width: 36px;
+    text-align: right;
 }
 /* 历史对话折叠区 */
 .practice-history-section {

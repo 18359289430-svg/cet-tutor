@@ -16117,6 +16117,7 @@ function updatePracticeCards() {
         if (diagHist.length === 0) {
             stageEl.textContent = '先做诊断';
             scoreEl.textContent = '—';
+            scoreEl.style.color = '#94A3B8';
             return;
         }
         
@@ -16141,6 +16142,57 @@ function updatePracticeCards() {
             subEl.textContent = '今天已练' + todayCount + '次，继续加油';
         }
     }
+    
+    // Hero stats
+    var totalEl = document.getElementById('practice-stat-total');
+    var streakEl = document.getElementById('practice-stat-streak');
+    var weakEl = document.getElementById('practice-stat-weak');
+    
+    if (totalEl) {
+        var today2 = new Date().toISOString().split('T')[0];
+        var hist2 = getTrainingHistory();
+        totalEl.textContent = hist2.filter(function(h) { return h.date === today2; }).length;
+    }
+    if (streakEl) {
+        var streak = calcStreak();
+        streakEl.textContent = streak;
+    }
+    if (weakEl) {
+        if (diagHist.length === 0) {
+            weakEl.textContent = '—';
+        } else {
+            var scores2 = diagHist[diagHist.length - 1].scores || {};
+            var weakest = null;
+            var weakestScore = 999;
+            for (var sk in skillNames) {
+                if (scores2[sk] !== undefined && scores2[sk] < weakestScore) {
+                    weakestScore = scores2[sk];
+                    weakest = skillNames[sk];
+                }
+            }
+            weakEl.textContent = weakest || '—';
+        }
+    }
+}
+
+function calcStreak() {
+    var hist = getTrainingHistory();
+    if (!hist || hist.length === 0) return 0;
+    var dates = [];
+    hist.forEach(function(h) {
+        if (dates.indexOf(h.date) === -1) dates.push(h.date);
+    });
+    dates.sort().reverse();
+    var today = new Date().toISOString().split('T')[0];
+    if (dates[0] !== today) return 0;
+    var streak = 1;
+    for (var i = 1; i < dates.length; i++) {
+        var prev = new Date(dates[i - 1]);
+        var curr = new Date(dates[i]);
+        var diff = (prev - curr) / (1000 * 60 * 60 * 24);
+        if (diff === 1) { streak++; } else { break; }
+    }
+    return streak;
 }
 
 function togglePracticeHistory() {

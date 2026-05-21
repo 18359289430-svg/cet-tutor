@@ -33,16 +33,16 @@
     <!-- CSS -->
     <link rel="stylesheet" href="/css/variables.css?v=v126">
     <link rel="stylesheet" href="/css/base.css?v=v126">
-    <link rel="stylesheet" href="/css/home.css?v=134v126">
+    <link rel="stylesheet" href="/css/home.css?v=135v126">
     <link rel="stylesheet" href="/css/study.css?v=v126">
-    <link rel="stylesheet" href="/css/chat.css?v=134v126">
+    <link rel="stylesheet" href="/css/chat.css?v=135v126">
     <link rel="stylesheet" href="/css/personality.css?v=v126">
-    <link rel="stylesheet" href="/css/components.css?v=134v126">
+    <link rel="stylesheet" href="/css/components.css?v=135v126">
     <link rel="stylesheet" href="/css/quiz.css?v=v126">
     <link rel="stylesheet" href="/css/payment.css?v=v126">
     <link rel="stylesheet" href="/css/profile.css?v=v126">
-    <link rel="stylesheet" href="/css/dashboard.css?v=134v126">
-    <link rel="stylesheet" href="/css/diagnosis.css?v=134v126">
+    <link rel="stylesheet" href="/css/dashboard.css?v=135v126">
+    <link rel="stylesheet" href="/css/diagnosis.css?v=135v126">
     <link rel="stylesheet" href="/css/essay.css?v=v126">
     <link rel="stylesheet" href="/css/review.css?v=v126">
     <link rel="stylesheet" href="/css/plan.css?v=v126">
@@ -390,40 +390,72 @@
             <div class="tab-page" id="tab-diagnosis">
                 <!-- 训练卡片入口 -->
                 <div class="practice-page">
-                    <div class="practice-header">
-                        <div class="practice-title">专项训练</div>
-                        <div class="practice-sub" id="practice-sub">选择科目开始训练</div>
+                    <div class="practice-hero">
+                        <div class="practice-hero-inner">
+                            <div class="practice-hero-title">专项训练</div>
+                            <div class="practice-hero-sub" id="practice-sub">选择科目开始训练</div>
+                            <div class="practice-hero-stats" id="practice-hero-stats">
+                                <div class="practice-stat">
+                                    <div class="practice-stat-value" id="practice-stat-total">0</div>
+                                    <div class="practice-stat-label">今日训练</div>
+                                </div>
+                                <div class="practice-stat">
+                                    <div class="practice-stat-value" id="practice-stat-streak">0</div>
+                                    <div class="practice-stat-label">连续天数</div>
+                                </div>
+                                <div class="practice-stat">
+                                    <div class="practice-stat-value" id="practice-stat-weak">—</div>
+                                    <div class="practice-stat-label">最弱项</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="practice-cards" id="practice-cards">
                         <div class="practice-card" onclick="startPractice('listening')">
-                            <div class="practice-card-icon blue">🎧</div>
-                            <div class="practice-card-info">
-                                <div class="practice-card-name">听力训练</div>
-                                <div class="practice-card-stage" id="practice-stage-listening">—</div>
+                            <div class="practice-card-left">
+                                <div class="practice-card-icon blue">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
+                                </div>
+                                <div class="practice-card-info">
+                                    <div class="practice-card-name">听力训练</div>
+                                    <div class="practice-card-stage" id="practice-stage-listening">—</div>
+                                </div>
                             </div>
                             <div class="practice-card-score" id="practice-score-listening">—</div>
                         </div>
                         <div class="practice-card" onclick="startPractice('reading')">
-                            <div class="practice-card-icon green">📖</div>
-                            <div class="practice-card-info">
-                                <div class="practice-card-name">阅读训练</div>
-                                <div class="practice-card-stage" id="practice-stage-reading">—</div>
+                            <div class="practice-card-left">
+                                <div class="practice-card-icon green">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                                </div>
+                                <div class="practice-card-info">
+                                    <div class="practice-card-name">阅读训练</div>
+                                    <div class="practice-card-stage" id="practice-stage-reading">—</div>
+                                </div>
                             </div>
                             <div class="practice-card-score" id="practice-score-reading">—</div>
                         </div>
                         <div class="practice-card" onclick="startPractice('writing')">
-                            <div class="practice-card-icon rose">✏️</div>
-                            <div class="practice-card-info">
-                                <div class="practice-card-name">写作批改</div>
-                                <div class="practice-card-stage" id="practice-stage-writing">—</div>
+                            <div class="practice-card-left">
+                                <div class="practice-card-icon rose">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+                                </div>
+                                <div class="practice-card-info">
+                                    <div class="practice-card-name">写作批改</div>
+                                    <div class="practice-card-stage" id="practice-stage-writing">—</div>
+                                </div>
                             </div>
                             <div class="practice-card-score" id="practice-score-writing">—</div>
                         </div>
                         <div class="practice-card" onclick="startPractice('translation')">
-                            <div class="practice-card-icon amber">🌐</div>
-                            <div class="practice-card-info">
-                                <div class="practice-card-name">翻译训练</div>
-                                <div class="practice-card-stage" id="practice-stage-translation">—</div>
+                            <div class="practice-card-left">
+                                <div class="practice-card-icon amber">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8l6 6"/><path d="M4 14l6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="M22 22l-5-10-5 10"/><path d="M14 18h6"/></svg>
+                                </div>
+                                <div class="practice-card-info">
+                                    <div class="practice-card-name">翻译训练</div>
+                                    <div class="practice-card-stage" id="practice-stage-translation">—</div>
+                                </div>
                             </div>
                             <div class="practice-card-score" id="practice-score-translation">—</div>
                         </div>
@@ -1002,7 +1034,7 @@
     </div>
 
     <!-- JS -->
-    <script src="/js/main.js?v=134v126"></script>
+    <script src="/js/main.js?v=135v126"></script>
     <script src="/js/essay.js?v=v126"></script>
 
 <!-- Onboarding: Exam Type Selection -->
