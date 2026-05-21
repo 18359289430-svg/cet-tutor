@@ -3775,17 +3775,19 @@ function ensureChatOpen(){
                 html += '<div class="vocab-section">';
                 html += '<div class="vocab-stats">';
                 html += '<div class="vocab-stat-item"><div class="vocab-stat-num">' + wrongWords.length + '</div><div class="vocab-stat-label">高频错题词</div></div>';
-                html += '<div class="vocab-stat-item"><div class="vocab-stat-num">' + weakDims.length + '</div><div class="vocab-stat-label">薄弱维度</div></div>';
+                var weakDimNames = weakDims.map(function(d) { return typeof d === 'object' ? d.name : d; });
+                html += '<div class="vocab-stat-item"><div class="vocab-stat-num">' + weakDimNames.length + '</div><div class="vocab-stat-label">薄弱维度</div></div>';
                 html += '</div>';
                 html += '</div>';
                 
                 // 薄弱维度标签
-                if (weakDims.length > 0) {
+                if (weakDimNames.length > 0) {
                     html += '<div class="vocab-section">';
                     html += '<div class="vocab-section-title">💡 推荐强化 <span class="badge">薄弱项优先</span></div>';
                     html += '<div class="dimension-tags">';
                     weakDims.forEach(function(dim) {
-                        html += '<div class="dimension-tag weak active" onclick="renderDimensionWords(\'' + dim + '\')">' + dim + '</div>';
+                        var dimName = typeof dim === 'object' ? (dim.name || '') : dim;
+                        html += '<div class="dimension-tag weak active" onclick="renderDimensionWords(\'' + dimName + '\')">' + dimName + '</div>';
                     });
                     html += '<div class="dimension-tag" onclick="renderAllDimensionWords()">全部维度</div>';
                     html += '</div>';
