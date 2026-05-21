@@ -2658,6 +2658,54 @@ if (pathname === '/api/essay/upload' && req.method === 'POST') {
         return;
     }
 
+        // POST /api/tts/generate - 听力训练TTS音频生成
+        if (pathname === '/api/tts/generate' && req.method === 'POST') {
+            let body = '';
+            req.on('data', chunk => { body += chunk.toString(); });
+            req.on('end', async () => {
+                try {
+                    const { text, exam_type } = JSON.parse(body);
+                    if (!text || text.length < 10) {
+                        res.writeHead(200, { 'Content-Type': 'application/json' });
+                        res.end(JSON.stringify({ error: 'Text too short' }));
+                        return;
+                    }
+                    const truncatedText = text.substring(0, 1500);
+                    const rate = exam_type === 'cet6' ? 1.2 : 1.05;
+                    console.log('[TTS] Generating audio, length:', truncatedText.length, 'rate:', rate);
+                    const ttsResp = await fetch('https://dashscope.aliyuncs.com/api/v1/services/audio/tts/SpeechSynthesizer', {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': 'Bearer ' + process.env.DASHSCOPE_API_KEY,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            model: 'cosyvoice-v3-flash',
+                            input: { text: truncatedText },
+                            parameters: { voice: 'longanyang', rate: rate, format: 'mp3' }
+                        })
+                    });
+                    if (!ttsResp.ok) {
+                        console.error('[TTS] API error:', ttsResp.status);
+                        res.writeHead(200, { 'Content-Type': 'application/json' });
+                        res.end(JSON.stringify({ error: 'TTS API failed' }));
+                        return;
+                    }
+                    const audioId = 'tts_' + Date.now() + '_' + Math.random().toString(36).substr(2,6) + '.mp3';
+                    const audioPath = '/opt/cet-tutor/public/audio/listening/' + audioId;
+                    const buffer = Buffer.from(await ttsResp.arrayBuffer());
+                    require('fs').writeFileSync(audioPath, buffer);
+                    console.log('[TTS] Saved:', audioPath, 'size:', buffer.length);
+                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ url: '/public/audio/listening/' + audioId, size: buffer.length }));
+                } catch (err) {
+                    console.error('[TTS] Error:', err.message);
+                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ error: err.message }));
+                }
+            });
+        }
+
     // 404
         sendJson(res, 404, { error: 'API不存在' });
 
@@ -3468,53 +3516,7 @@ async function handleDeepseekEssayGrade(req, res) {
         }
     }
 
-        // POST /api/tts/generate - 听力训练TTS音频生成
-        if (pathname === '/api/tts/generate' && req.method === 'POST') {
-            let body = '';
-            req.on('data', chunk => { body += chunk.toString(); });
-            req.on('end', async () => {
-                try {
-                    const { text, exam_type } = JSON.parse(body);
-                    if (!text || text.length < 10) {
-                        res.writeHead(200, { 'Content-Type': 'application/json' });
-                        res.end(JSON.stringify({ error: 'Text too short' }));
-                        return;
-                    }
-                    const truncatedText = text.substring(0, 1500);
-                    const rate = exam_type === 'cet6' ? 1.2 : 1.05;
-                    console.log('[TTS] Generating audio, length:', truncatedText.length, 'rate:', rate);
-                    const ttsResp = await fetch('https://dashscope.aliyuncs.com/api/v1/services/audio/tts/SpeechSynthesizer', {
-                        method: 'POST',
-                        headers: {
-                            'Authorization': 'Bearer ' + process.env.DASHSCOPE_API_KEY,
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            model: 'cosyvoice-v3-flash',
-                            input: { text: truncatedText },
-                            parameters: { voice: 'longanyang', rate: rate, format: 'mp3' }
-                        })
-                    });
-                    if (!ttsResp.ok) {
-                        console.error('[TTS] API error:', ttsResp.status);
-                        res.writeHead(200, { 'Content-Type': 'application/json' });
-                        res.end(JSON.stringify({ error: 'TTS API failed' }));
-                        return;
-                    }
-                    const audioId = 'tts_' + Date.now() + '_' + Math.random().toString(36).substr(2,6) + '.mp3';
-                    const audioPath = '/opt/cet-tutor/public/audio/listening/' + audioId;
-                    const buffer = Buffer.from(await ttsResp.arrayBuffer());
-                    require('fs').writeFileSync(audioPath, buffer);
-                    console.log('[TTS] Saved:', audioPath, 'size:', buffer.length);
-                    res.writeHead(200, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({ url: '/public/audio/listening/' + audioId, size: buffer.length }));
-                } catch (err) {
-                    console.error('[TTS] Error:', err.message);
-                    res.writeHead(200, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({ error: err.message }));
-                }
-            });
-        }
+
 
     // 404
     res.writeHead(404);
