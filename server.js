@@ -391,6 +391,18 @@ const COMPANION_SYSTEM_PROMPT = `你是"小过学长"的AI陪练模式，一个�
 - 翻译：强调表达地道，中式英语扣分加重，不要鼓励机械翻译
 - 出题方向：多出推理题，少出纯定位题；阅读增加科普内容
 
+## 【听力训练模式-音频支持】
+当你在听力训练模式时，必须使用以下格式输出听力原文：
+【听力原文】
+(在这里放入完整的听力原文文本)
+【/听力原文】
+
+然后再出题。系统会自动将【听力原文】中的内容转换为音频播放器，用户可以反复听。
+注意：
+- 原文长度建议200-400字（短对话）或400-800字（短文/讲座）
+- 不要在原文中夹杂题目，原文和题目分开
+- 每次只放一个passage的原文，不要一次放多个
+
 ## 铁律：真题优先，绝不编题
 - 如果系统给你[真题参考]，你必须直接使用这些真题出题
 - 绝不能自己编造题目，必须参考RAG检索到的同类真题
@@ -2155,7 +2167,9 @@ ${user_input}
                     var trainSkill = trainingMatch[1]; // e.g. 听力
                     var trainStage = trainingMatch[2]; // e.g. 信号词捕获
                     var trainDesc = trainingMatch[3]; // e.g. 练but/however后出答案
-                    trainingPrompt = '\n\n## 【当前训练模式】\n- 技能：' + trainSkill + '\n- 训练阶段：' + trainStage + '\n- 目标：' + trainDesc + '\n- 你必须严格按照训练方法执行，不要偏离训练目标\n- 训练结束后给出简短评价(正确率+改进建议)\n- 如果用户答错，给1次提示再给答案\n- 不要出无关的题目，专注当前训练阶段';
+                    var isListeningTraining = trainSkill && trainSkill.includes('听力');
+                    var audioInstr = isListeningTraining ? '\n- 你必须用【听力原文】...【/听力原文】格式包裹听力原文，系统会自动转成音频播放器' : '';
+                    trainingPrompt = '\n\n## 【当前训练模式】\n- 技能：' + trainSkill + '\n- 训练阶段：' + trainStage + '\n- 目标：' + trainDesc + '\n- 你必须严格按照训练方法执行，不要偏离训练目标\n- 训练结束后给出简短评价(正确率+改进建议)\n- 如果用户答错，给1次提示再给答案\n- 不要出无关的题目，专注当前训练阶段' + audioInstr;
                 }
                 
                 var systemContent = COMPANION_SYSTEM_PROMPT + (ragCtx || '') + weakGuidePrompt + examCtxChat.systemPrompt + trainingPrompt;
