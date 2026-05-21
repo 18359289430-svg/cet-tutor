@@ -8803,9 +8803,23 @@ var listeningPlayer = {
 
 // 预生成听力音频文件映射 (CosyVoice TTS)
 var LISTENING_AUDIO_MAP = {
+    // 四级
     'L1': '/public/audio/listening/cet4_L1.mp3',
     'L2': '/public/audio/listening/cet4_L2.mp3',
-    'L3': '/public/audio/listening/cet4_L3.mp3'
+    'L3': '/public/audio/listening/cet4_L3.mp3',
+    'L4': '/public/audio/listening/cet4_L4.mp3',
+    'L5': '/public/audio/listening/cet4_L5.mp3',
+    'L6': '/public/audio/listening/cet4_L6.mp3',
+    'L7': '/public/audio/listening/cet4_L7.mp3',
+    'L8': '/public/audio/listening/cet4_L8.mp3',
+    'L9': '/public/audio/listening/cet4_L9.mp3',
+    // 六级
+    'CET6_L1': '/public/audio/listening/cet6_L1.mp3',
+    'CET6_L2': '/public/audio/listening/cet6_L2.mp3',
+    'CET6_L3': '/public/audio/listening/cet6_L3.mp3',
+    'CET6_L4': '/public/audio/listening/cet6_L4.mp3',
+    'CET6_L5': '/public/audio/listening/cet6_L5.mp3',
+    'CET6_L6': '/public/audio/listening/cet6_L6.mp3'
 };
 var _listeningAudioEl = null; // HTML5 Audio element
 
@@ -9056,7 +9070,9 @@ function playListeningFull(text, isConversation, onComplete, passageId) {
     stopListeningPlayback();
     
     // 检查是否有预生成的MP3音频（CosyVoice TTS，音质远超浏览器SpeechSynthesis）
-    var audioUrl = passageId ? LISTENING_AUDIO_MAP[passageId] : null;
+    // CET6用CET6_前缀查找音频
+    var lookupId = passageId ? (IS_CET6 ? 'CET6_' + passageId : passageId) : null;
+    var audioUrl = lookupId ? LISTENING_AUDIO_MAP[lookupId] : null;
     
     if (audioUrl) {
         _listeningAudioEl = new Audio(audioUrl);
@@ -11263,8 +11279,11 @@ function selectTrainOption(btn, selectedValue) {
     } else {
         explainHtml += '<div class="train-explain-result wrong">回答错误，正确答案是 ' + correctAnswer + '</div>';
     }
+    // 答对也显示解析，帮助巩固
     if (q.explanation) {
         explainHtml += '<div class="train-explain-text">' + escapeHtml(q.explanation) + '</div>';
+    } else if (isCorrect) {
+        explainHtml += '<div class="train-explain-text" style="color:#00B894">做得好！保持这个节奏。</div>';
     }
     // 答错时给出阶段技巧
     if (!isCorrect && ts.stageInfo && ts.stageInfo.tip) {
@@ -11310,8 +11329,24 @@ function finishTraining() {
         accuracy: accuracy
     });
     
-    // 更新首页今日任务卡片
+    // 训练完成自动打卡
+    var streak = safeGetItem('cet_streak', {count:0,lastDate:""});
+    var today = new Date().toISOString().split('T')[0];
+    if (streak.lastDate !== today) {
+        streak.count = (streak.count || 0) + 1;
+        streak.lastDate = today;
+        localStorage.setItem('cet_streak', JSON.stringify(streak));
+    }
+    // 标记今日已训练
+    var ud = state.userData || {};
+    ud.daily_task_done = true;
+    ud.daily_task_done_date = getTodayStr();
+    state.userData = ud;
+    saveUserData(ud);
+    
+    // 更新首页今日任务卡片 + 连续天数
     renderHomeTodayTasks();
+    updateHomeStatus();
     
     // 显示训练结果
     var html = '<div class="train-result">';
@@ -16017,11 +16052,11 @@ function buildCoachContext() {
     var wrongQs = getWrongQuestions();
     var wrongInfo = wrongQs.length > 0 ? '错题本有' + wrongQs.length + '道' : '';
     
-    var msg = '我在用AI教练模式备考' + examLabel + '，距考试' + daysLeft + '天。';
-    msg += '我的能力：' + stageInfo.join('、') + '。';
+    var msg = '[AI教练模式] 我是' + examLabel + '考生，距考试' + daysLeft + '天。';
+    msg += '能力评估：' + stageInfo.join('、') + '。';
     msg += todayInfo + '。';
     if (wrongInfo) msg += wrongInfo + '。';
-    msg += '请根据我的情况回答问题，给出针对性建议。';
+    msg += '请基于我的具体情况给出针对性建议，不要给通用答案。回答简洁实用，告诉我具体该做什么。';
     
     return msg;
 }
