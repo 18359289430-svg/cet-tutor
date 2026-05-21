@@ -7,7 +7,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="theme-color" content="#6C5CE7">
-    <title>四级备考搭子 - AI智能四级备考助手</title>
+    <title>四级备考搭子</title>
     <script>
     if (new URLSearchParams(window.location.search).get('type') === 'cet6') {
         document.title = '六级备考搭子 - AI智能六级备考助手';
@@ -31,25 +31,25 @@
     <meta name="twitter:image" content="https://cet-tutor.com/og-image.jpg">
     <link rel="preload" href="/wechat-qr.jpg" as="image">
     <!-- CSS -->
-    <link rel="stylesheet" href="/css/variables.css?v=v121">
-    <link rel="stylesheet" href="/css/base.css?v=v121">
-    <link rel="stylesheet" href="/css/home.css?v=v121">
-    <link rel="stylesheet" href="/css/study.css?v=v121">
-    <link rel="stylesheet" href="/css/chat.css?v=v121">
-    <link rel="stylesheet" href="/css/personality.css?v=v121">
-    <link rel="stylesheet" href="/css/components.css?v=v121">
-    <link rel="stylesheet" href="/css/quiz.css?v=v121">
-    <link rel="stylesheet" href="/css/payment.css?v=v121">
-    <link rel="stylesheet" href="/css/profile.css?v=v121">
-    <link rel="stylesheet" href="/css/dashboard.css?v=v121">
-    <link rel="stylesheet" href="/css/diagnosis.css?v=v121">
-    <link rel="stylesheet" href="/css/essay.css?v=v121">
-    <link rel="stylesheet" href="/css/review.css?v=v121">
-    <link rel="stylesheet" href="/css/plan.css?v=v121">
-    <link rel="stylesheet" href="/css/plan-page.css?v=v121">
-    <link rel="stylesheet" href="/css/wrongbook.css?v=v121">
-    <link rel="stylesheet" href="/css/learning-path.css?v=v121">
-    <link rel="stylesheet" href="/css/vocab.css?v=v121">
+    <link rel="stylesheet" href="/css/variables.css?v=v122">
+    <link rel="stylesheet" href="/css/base.css?v=v122">
+    <link rel="stylesheet" href="/css/home.css?v=v122">
+    <link rel="stylesheet" href="/css/study.css?v=v122">
+    <link rel="stylesheet" href="/css/chat.css?v=v122">
+    <link rel="stylesheet" href="/css/personality.css?v=v122">
+    <link rel="stylesheet" href="/css/components.css?v=v122">
+    <link rel="stylesheet" href="/css/quiz.css?v=v122">
+    <link rel="stylesheet" href="/css/payment.css?v=v122">
+    <link rel="stylesheet" href="/css/profile.css?v=v122">
+    <link rel="stylesheet" href="/css/dashboard.css?v=v122">
+    <link rel="stylesheet" href="/css/diagnosis.css?v=v122">
+    <link rel="stylesheet" href="/css/essay.css?v=v122">
+    <link rel="stylesheet" href="/css/review.css?v=v122">
+    <link rel="stylesheet" href="/css/plan.css?v=v122">
+    <link rel="stylesheet" href="/css/plan-page.css?v=v122">
+    <link rel="stylesheet" href="/css/wrongbook.css?v=v122">
+    <link rel="stylesheet" href="/css/learning-path.css?v=v122">
+    <link rel="stylesheet" href="/css/vocab.css?v=v122">
     <!-- Clarity -->
     <script type="text/javascript">
         (function(c,l,a,r,i,t,y){ c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
@@ -59,7 +59,7 @@
     <!-- Umami -->
     <script async src="https://us.umami.is/script.js" data-website-id="5a41f1b0-59b5-41a7-bafa-5bd7432c4dd3"></script>
 <style>.reform-badge{display:inline-block;font-size:9px;background:#6C5CE7;color:#fff;padding:1px 5px;border-radius:6px;vertical-align:middle;margin-left:4px;font-weight:500;letter-spacing:0.3px;}</style>
-    <link rel="stylesheet" href="/css/comic.css?v=v121">
+    <link rel="stylesheet" href="/css/comic.css?v=v122">
 </head>
 <body>
     <div class="app">
@@ -430,10 +430,10 @@
                             <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
                         </button>
                         <div class="custom-chat-header-center">
-                            <div class="custom-chat-header-name" id="chat-title">小过学长</div>
-                            <div class="custom-chat-header-status">内容由AI生成</div>
+                            <div class="custom-chat-header-name" id="chat-title">小过学长<span class="header-ai-tag">AI</span></div>
                         </div>
-                                                <button class="custom-chat-actions-btn" id="btn-rediag" style="display:none" onclick="showRediagModal()" title="重新诊断">
+                        <div class="custom-chat-header-countdown" id="chat-countdown"></div>
+                        <button class="custom-chat-actions-btn" id="btn-rediag" style="display:none" onclick="showRediagModal()" title="重新诊断">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
                         </button>
                         <button class="custom-chat-actions-btn" onclick="showClearChatModal()" title="清空对话">
@@ -947,8 +947,8 @@
     </div>
 
     <!-- JS -->
-    <script src="/js/main.js?v=v121"></script>
-    <script src="/js/essay.js?v=v121"></script>
+    <script src="/js/main.js?v=v122"></script>
+    <script src="/js/essay.js?v=v122"></script>
 
 <!-- Onboarding: Exam Type Selection -->
 <div id="onboarding-overlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,rgba(99,102,241,0.95),rgba(139,92,246,0.95));z-index:99999;align-items:center;justify-content:center;">

@@ -1263,7 +1263,7 @@ function initApp() {
             }
             var chatCd = document.getElementById('chat-countdown');
             if (chatCd) {
-                chatCd.textContent = diffDays > 0 ? diffHours > 0 ? '距' + EXAM_LABEL + ' ' + diffDays + '天' + diffHours + '时' : '距' + EXAM_LABEL + ' ' + diffDays + '天' : EXAM_LABEL + '加油';
+                chatCd.innerHTML = diffDays > 0 ? '<span class="countdown-dot"></span>' + diffDays + '天' + (diffHours > 0 ? diffHours + '时' : '') : EXAM_LABEL + '加油';
             }
         }
 
@@ -1277,6 +1277,7 @@ function initApp() {
         }
 
         function switchTab(tab) {
+            document.body.classList.remove('chat-mode');
             state.currentTab = tab;
             document.querySelectorAll('.tab-page').forEach(function(page) {
                 page.classList.toggle('active', page.id === 'tab-' + tab);
@@ -3079,7 +3080,7 @@ function getAbilityTrend() {
             
             // 显示聊天界面，隐藏对话列表
             document.getElementById('chat-list-view').classList.remove('active');
-            document.getElementById('chat-page').style.display = 'flex';
+            document.getElementById('chat-page').style.display = 'flex'; document.body.classList.add('chat-mode');
             // 立即清空消息区域，显示加载中（避免闪现欢迎语）
             var msgContainer = document.getElementById('chat-messages');
             if (msgContainer) {
@@ -3200,7 +3201,7 @@ function getAbilityTrend() {
         // 显示对话列表
         function showChatList() {
             document.getElementById('chat-list-view').classList.add('active');
-            document.getElementById('chat-page').style.display = 'none';
+            document.getElementById('chat-page').style.display = 'none'; document.body.classList.remove('chat-mode');
             chatListView = true;
             currentConversationId = null;
             renderChatList();
@@ -3435,7 +3436,7 @@ function ensureChatOpen(){
             // 切换到诊断tab，显示聊天界面
             // 注意：直接操作DOM而不是调用switchTab，避免showChatList覆盖聊天页面显示
             document.getElementById('chat-list-view').classList.remove('active');
-            document.getElementById('chat-page').style.display = 'flex';
+            document.getElementById('chat-page').style.display = 'flex'; document.body.classList.add('chat-mode');
             // 更新tab状态
             state.currentTab = 'diagnosis';
             document.querySelectorAll('.tab-page').forEach(function(page) {

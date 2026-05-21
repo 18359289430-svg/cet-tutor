@@ -266,7 +266,7 @@
 .custom-chat-header {
     display: flex; 
     align-items: center; 
-    padding: 10px 16px; 
+    padding: 8px 16px; 
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
@@ -304,6 +304,19 @@
     margin-bottom: 0;
     line-height: 1.2;
 }
+
+.header-ai-tag {
+    font-size: 10px;
+    font-weight: 500;
+    color: #94A3B8;
+    background: rgba(148,163,184,0.1);
+    padding: 1px 5px;
+    border-radius: 4px;
+    margin-left: 6px;
+    vertical-align: middle;
+    letter-spacing: 0.5px;
+}
+
 .custom-chat-header-status { 
     font-size: 11px; 
     color: #94A3B8; 
@@ -321,15 +334,21 @@
 }
 /* Vercel/Linear风格考试倒计时小药丸 */
 .custom-chat-header-countdown {
-    padding: 3px 10px; 
-    border-radius: 10px; 
-    font-size: 11px; 
+    padding: 2px 8px; 
+    border-radius: 8px; 
+    font-size: 10px; 
     font-weight: 600;
     background: rgba(108, 92, 231, 0.08);
     color: #6C5CE7; 
     border: none;
-    margin-right: 4px;
+    margin-right: 2px;
     white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+.custom-chat-header-countdown .countdown-dot {
+    width: 5px; height: 5px; background: #EF4444; border-radius: 50%; animation: pulse 1.5s infinite;
 }
 .custom-chat-actions-btn {
     width: 32px; 
@@ -1919,3 +1938,7 @@
     color: #8C6E00;
     border-radius: 10px !important;
 }
+
+/* 聊天页模式 - 隐藏顶部状态栏 */
+body.chat-mode .status-bar { display: none !important; }
+body.chat-mode .custom-chat-header { padding-top: calc(8px + var(--safe-top, 0px)); }
