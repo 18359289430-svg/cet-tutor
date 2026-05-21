@@ -2821,7 +2821,7 @@
     justify-content: center;
     flex-shrink: 0;
 }
-.practice-card-icon svg { width: 24px; height: 24px; opacity: 0.9; }
+.practice-card-icon svg { width: 24px; height: 24px; max-width: 24px; max-height: 24px; flex-shrink: 0; opacity: 0.85; }
 .practice-card-icon.blue { background: rgba(69,183,209,0.1); color: #45B7D1; }
 .practice-card-icon.green { background: rgba(0,184,148,0.1); color: #00B894; }
 .practice-card-icon.rose { background: rgba(253,121,168,0.1); color: #FD79A8; }
