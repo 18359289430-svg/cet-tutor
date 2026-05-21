@@ -15457,12 +15457,123 @@ function renderScoreRoadmap() {
         });
     });
 }
+
+function renderDetailedRoadmap() {
+    var container = document.getElementById('detail-roadmap-content');
+    if (!container) return;
+    
+    var diagHistory = JSON.parse(localStorage.getItem(examKey('diagnosis_history')) || '[]');
+    
+    if (diagHistory.length === 0) {
+        container.innerHTML = '<div class="detail-no-diag">先完成AI诊断，才能看到你的细化提分路线</div>';
+        return;
+    }
+    
+    var latest = diagHistory[diagHistory.length - 1];
+    var scores = latest.scores || {};
+    var trainingHist = JSON.parse(localStorage.getItem(examKey('training_history')) || '[]');
+    
+    var skillIcons = {listening:'🎧',reading:'📚',writing:'✍️',translation:'📝'};
+    var skillNames = {listening:'听力',reading:'阅读',writing:'写作',translation:'翻译'};
+    var skillOrder = ['listening','reading','writing','translation'];
+    
+    // Sort: weakest first
+    var sorted = skillOrder.slice().sort(function(a, b) {
+        return (scores[a] || 0) - (scores[b] || 0);
+    });
+    
+    function getLevel(score) {
+        if (score >= 80) return {name:'冲刺',cls:'top'};
+        if (score >= 60) return {name:'良好',cls:'good'};
+        if (score >= 35) return {name:'待提升',cls:'fair'};
+        return {name:'薄弱',cls:'weak'};
+    }
+    
+    function getCurrentStage(skill) {
+        var history = getTrainingHistory();
+        var skillHistory = history.filter(function(h) { return h.skill === skill; });
+        if (skillHistory.length === 0) return 1;
+        var recent = skillHistory.slice(-3);
+        var avgCorrect = recent.reduce(function(sum, h) { return sum + (h.correct / h.total); }, 0) / recent.length;
+        if (avgCorrect >= 0.6 && skillHistory.length >= 3) {
+            var cur = Math.min(skillHistory.length, TRAINING_STAGES[skill] ? TRAINING_STAGES[skill].length : 1);
+            return cur;
+        }
+        var maxStg = 1;
+        for (var i = 0; i < skillHistory.length; i++) {
+            if (skillHistory[i].correct / skillHistory[i].total >= 0.6) maxStg++;
+        }
+        return Math.min(maxStg, TRAINING_STAGES[skill] ? TRAINING_STAGES[skill].length : 1);
+    }
+    
+    var html = '';
+    for (var i = 0; i < sorted.length; i++) {
+        var sk = sorted[i];
+        var score = scores[sk] !== undefined ? scores[sk] : 0;
+        var level = getLevel(score);
+        var curStage = getCurrentStage(sk);
+        var stages = TRAINING_STAGES[sk] || [];
+        var isWeak = i === 0;
+        
+        html += '<div class="detail-skill-card' + (isWeak ? ' is-weak' : '') + '">';
+        html += '<div class="detail-skill-header">';
+        html += '<div class="detail-skill-name"><span class="skill-icon">' + skillIcons[sk] + '</span>' + skillNames[sk] + (isWeak ? ' · 最薄弱' : '') + '</div>';
+        html += '<div class="detail-skill-meta">';
+        html += '<span class="detail-skill-score">' + score + '分</span>';
+        html += '<span class="detail-skill-level ' + level.cls + '">' + level.name + '</span>';
+        html += '</div></div>';
+        
+        // Stages
+        html += '<div class="detail-stages">';
+        for (var j = 0; j < stages.length; j++) {
+            var s = stages[j];
+            var snum = j + 1;
+            var cls = 'locked';
+            var dotContent = snum;
+            if (snum < curStage) {
+                cls = 'done';
+                dotContent = '✓';
+            } else if (snum === curStage) {
+                cls = 'active';
+            }
+            html += '<div class="detail-stage ' + cls + '">';
+            html += '<div class="detail-stage-dot">' + dotContent + '</div>';
+            html += '<div class="detail-stage-name">' + s.name + '</div>';
+            html += '<div class="detail-stage-desc">' + s.desc + '</div>';
+            html += '</div>';
+        }
+        html += '</div>';
+        
+        // Current stage tip
+        if (stages[curStage - 1] && stages[curStage - 1].tip) {
+            html += '<div class="detail-skill-tip">' + stages[curStage - 1].tip + '</div>';
+        }
+        
+        // Action button
+        var stageInfo = stages[curStage - 1];
+        var actionText = stageInfo ? '练「' + stageInfo.name + '」' : '开始训练';
+        html += '<div class="detail-skill-action" data-practice="' + sk + '">' + actionText + '</div>';
+        
+        html += '</div>';
+    }
+    
+    container.innerHTML = html;
+    
+    // Bind actions
+    var actions = container.querySelectorAll('[data-practice]');
+    actions.forEach(function(el) {
+        el.addEventListener('click', function() {
+            startPractice(this.getAttribute('data-practice'));
+        });
+    });
+}
+
 // 在switchTab('plan')时渲染路线图
 var _origSwitchTab = switchTab;
 switchTab = function(tab) {
     _origSwitchTab(tab);
     if (tab === 'plan') {
-        setTimeout(renderScoreRoadmap, 100);
+        setTimeout(renderScoreRoadmap, 100); setTimeout(renderDetailedRoadmap, 150);
     }
 };
 
