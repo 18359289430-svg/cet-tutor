@@ -7039,7 +7039,7 @@ function renderQuizQuestion(question) {
     if (isListeningQuestion && question.passage) {
         // 保存当前听力文本到quizState
         quizState.currentListeningText = question.passage;
-        quizState.currentListeningIsConv = (question.passage_type === 'conversation');
+        quizState.currentListeningIsConv = (question.passage_type === 'conversation' || question.passage_type === '长对话');
         quizState.listeningPlayed = false;
         quizState.listeningReplayCount = 0;
         
@@ -9164,7 +9164,7 @@ function showCurrentListening() {
     var globalIndex = getCurrentListeningGlobalIndex();
     var totalQuestions = getTotalListeningQuestions();
     var progress = Math.round((globalIndex / totalQuestions) * 100);
-    var isConversation = passage.type === 'conversation';
+    var isConversation = passage.type === 'conversation' || passage.type === '长对话';
     
     document.getElementById('diag-progress-fill').style.width = progress + '%';
     document.getElementById('diag-progress-text').textContent = '听力 第' + (globalIndex + 1) + '/' + totalQuestions + '题';
@@ -9178,7 +9178,7 @@ function showCurrentListening() {
     
     html += '<div class="listening-passage-card">';
     html += '<div class="listening-passage-type">';
-    html += isConversation ? '🎧 短对话' : '📝 短文理解';
+    html += passage.type === '讲座/讲话' ? '🎤 讲座/讲话' : (isConversation ? '🎧 长对话' : '📝 短文理解');
     html += '</div>';
     
     // 听力播放器区域
@@ -9255,7 +9255,7 @@ function handlePlayClick() {
     if (!passage) return;
     
     stopListeningPlayback();
-    var isConversation = passage.type === 'conversation';
+    var isConversation = passage.type === 'conversation' || passage.type === '长对话';
     var passageId = passage.passage_id || null;
     
     playListeningFull(passage.text, isConversation, function() {
@@ -9282,7 +9282,7 @@ function handleReplayClick() {
         updateReplayButtonState();
     }
     
-    var isConversation = passage.type === 'conversation';
+    var isConversation = passage.type === 'conversation' || passage.type === '长对话';
     stopListeningPlayback();
     listeningPlayer.maxRounds = 1;  // 额外重播只播放1遍
     
