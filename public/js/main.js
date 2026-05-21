@@ -3762,34 +3762,48 @@ function ensureChatOpen(){
             loadVocabData().then(function() {
                 var wrongWords = extractWrongWords();
                 var weakDims = getWeakDimensions();
+                var weakDimNames = weakDims.map(function(d) { return typeof d === 'object' ? (d.name || '') : d; });
+                
+                // 检查是否做过诊断
+                var profile = safeGetItem(examKey('user_profile'), {});
+                var radar = profile.radar || {};
+                var hasDiagnosis = false;
+                for (var k in radar) { if (radar[k] > 0) { hasDiagnosis = true; break; } }
                 
                 var html = '';
                 
-                // Hero区域
-                html += '<div class="vocab-hero">';
-                html += '<div class="vocab-hero-title">📖 词汇诊断</div>';
-                html += '<div class="vocab-hero-subtitle">基于你的错题本，智能分析高频词汇</div>';
+                // Header - 极简风格
+                html += '<div class="vocab-header">';
+                html += '<div class="vocab-header-title">词汇诊断</div>';
+                html += '<div class="vocab-header-sub">基于错题本，智能分析薄弱词汇</div>';
                 html += '</div>';
                 
-                // 统计信息
-                html += '<div class="vocab-section">';
-                html += '<div class="vocab-stats">';
-                html += '<div class="vocab-stat-item"><div class="vocab-stat-num">' + wrongWords.length + '</div><div class="vocab-stat-label">高频错题词</div></div>';
-                var weakDimNames = weakDims.map(function(d) { return typeof d === 'object' ? d.name : d; });
-                html += '<div class="vocab-stat-item"><div class="vocab-stat-num">' + weakDimNames.length + '</div><div class="vocab-stat-label">薄弱维度</div></div>';
-                html += '</div>';
+                if (!hasDiagnosis) {
+                    // 未诊断状态
+                    html += '<div class="vocab-empty-state">';
+                    html += '<div class="vocab-empty-state-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="48" height="48"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>';
+                    html += '<div class="vocab-empty-state-text">完成AI诊断后解锁词汇分析</div>';
+                    html += '<div class="vocab-empty-state-sub">诊断后会根据你的薄弱点推荐高频词</div>';
+                    html += '</div>';
+                    container.innerHTML = html;
+                    return;
+                }
+                
+                // 统计信息 - 深色卡片风格
+                html += '<div class="vocab-stats-row">';
+                html += '<div class="vocab-stat-card"><div class="vocab-stat-card-num">' + wrongWords.length + '</div><div class="vocab-stat-card-label">高频错题词</div></div>';
+                html += '<div class="vocab-stat-card"><div class="vocab-stat-card-num">' + weakDimNames.length + '</div><div class="vocab-stat-card-label">薄弱维度</div></div>';
                 html += '</div>';
                 
-                // 薄弱维度标签
+                // 薄弱维度标签 - 灰底药丸风格
                 if (weakDimNames.length > 0) {
                     html += '<div class="vocab-section">';
-                    html += '<div class="vocab-section-title">💡 推荐强化 <span class="badge">薄弱项优先</span></div>';
+                    html += '<div class="vocab-section-title">推荐强化</div>';
                     html += '<div class="dimension-tags">';
-                    weakDims.forEach(function(dim) {
-                        var dimName = typeof dim === 'object' ? (dim.name || '') : dim;
-                        html += '<div class="dimension-tag weak active" onclick="renderDimensionWords(\'' + dimName + '\')">' + dimName + '</div>';
+                    weakDimNames.forEach(function(dimName) {
+                        html += '<div class="dimension-tag active" onclick="renderDimensionWords(\'' + dimName + '\')">' + dimName + '</div>';
                     });
-                    html += '<div class="dimension-tag" onclick="renderAllDimensionWords()">全部维度</div>';
+                    html += '<div class="dimension-tag" onclick="renderAllDimensionWords()">全部</div>';
                     html += '</div>';
                     html += '<div id="dimension-words-list"></div>';
                     html += '</div>';
@@ -3798,7 +3812,7 @@ function ensureChatOpen(){
                 // 错题本高频词
                 if (wrongWords.length > 0) {
                     html += '<div class="vocab-section">';
-                    html += '<div class="vocab-section-title">📝 错题高频词 <span class="badge">Top ' + wrongWords.length + '</span></div>';
+                    html += '<div class="vocab-section-title">错题高频词</div>';
                     
                     wrongWords.forEach(function(item) {
                         html += '<div class="word-card">';
@@ -3811,30 +3825,16 @@ function ensureChatOpen(){
                         html += '</button>';
                         html += '</div>';
                         html += '<div class="word-meaning">出现频次: ' + item.freq + ' 次</div>';
-                        html += '<div class="word-source"><span>来自错题本</span></div>';
                         html += '</div>';
                     });
                     html += '</div>';
-                } else {
-                    html += '<div class="vocab-section">';
-                    html += '<div class="vocab-empty">';
-                    html += '<div class="vocab-empty-icon">📚</div>';
-                    html += '<div class="vocab-empty-text">还没有错题记录<br>先去做几道题，我来帮你诊断</div>';
-                    html += '</div>';
-                    html += '</div>';
                 }
-                
-                // 百词斩推荐
-                html += '<a class="vocab-bai-link" href="https://www.baicizhan.com" target="_blank">';
-                html += '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>';
-                html += '推荐用百词斩巩固这些词 →';
-                html += '</a>';
                 
                 container.innerHTML = html;
                 
                 // 渲染第一个薄弱维度的词
-                if (weakDims.length > 0) {
-                    renderDimensionWords(weakDims[0]);
+                if (weakDimNames.length > 0) {
+                    renderDimensionWords(weakDimNames[0]);
                 }
             }).catch(function(err) {
                 container.innerHTML = '<div class="vocab-empty"><div class="vocab-empty-icon">⚠️</div><div class="vocab-empty-text">加载词汇数据失败，请刷新重试</div></div>';

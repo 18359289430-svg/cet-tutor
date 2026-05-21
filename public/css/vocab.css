@@ -1,78 +1,139 @@
 /* ===== 词汇诊断模块 ===== */
 #tab-vocab {
     padding: 20px;
-    background: #f5f5f7;
+    background: #f8f9fa;
     min-height: 100%;
 }
 
-.vocab-hero {
-    background: linear-gradient(135deg, #6C5CE7, #A29BFE);
-    border-radius: 20px;
-    padding: 24px;
-    color: white;
+.vocab-header {
     margin-bottom: 20px;
-    position: relative;
-    overflow: hidden;
 }
 
-.vocab-hero::before {
-    content: '';
-    position: absolute;
-    top: -30px;
-    right: -30px;
-    width: 120px;
-    height: 120px;
-    background: rgba(255,255,255,0.1);
-    border-radius: 50%;
-}
-
-.vocab-hero-title {
-    font-size: 22px;
+.vocab-header-title {
+    font-size: 20px;
     font-weight: 700;
-    margin-bottom: 8px;
+    color: #1a1a1a;
+    margin-bottom: 4px;
+}
+
+.vocab-header-sub {
+    font-size: 13px;
+    color: #999;
+}
+
+/* 空状态 - 未诊断 */
+.vocab-empty-state {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.vocab-empty-state-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 20px;
+    background: #f0f0f5;
     display: flex;
     align-items: center;
-    gap: 8px;
+    justify-content: center;
+    margin: 0 auto 16px;
+    color: #bbb;
 }
 
-.vocab-hero-subtitle {
-    font-size: 14px;
-    opacity: 0.85;
+.vocab-empty-state-text {
+    font-size: 15px;
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 6px;
 }
 
+.vocab-empty-state-sub {
+    font-size: 13px;
+    color: #999;
+}
+
+/* 统计卡片行 */
+.vocab-stats-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.vocab-stat-card {
+    background: #1E1B3A;
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+}
+
+.vocab-stat-card-num {
+    font-size: 28px;
+    font-weight: 700;
+    color: white;
+    line-height: 1.2;
+}
+
+.vocab-stat-card-label {
+    font-size: 12px;
+    color: rgba(255,255,255,0.6);
+    margin-top: 4px;
+}
+
+/* Section */
 .vocab-section {
     background: white;
-    border-radius: 16px;
-    padding: 20px;
-    margin-bottom: 16px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-}
-
-.vocab-section-title {
-    font-size: 16px;
-    font-weight: 600;
-    color: #1a1a1a;
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.vocab-section-title .badge {
-    background: #6C5CE7;
-    color: white;
-    font-size: 11px;
-    padding: 2px 8px;
-    border-radius: 10px;
-    font-weight: 500;
-}
-
-.word-card {
-    background: #f8f8fa;
     border-radius: 12px;
     padding: 16px;
     margin-bottom: 12px;
-    border-left: 3px solid #6C5CE7;
+}
+
+.vocab-section-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 12px;
+}
+
+.vocab-section-title .badge {
+    display: none;
+}
+
+/* 维度标签 - 灰底药丸 */
+.dimension-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.dimension-tag {
+    padding: 5px 12px;
+    border-radius: 14px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    background: #f0f0f5;
+    color: #666;
+    border: none;
+}
+
+.dimension-tag:hover {
+    background: #e8e8ef;
+}
+
+.dimension-tag.active {
+    background: #6C5CE7;
+    color: white;
+}
+
+/* 单词卡片 */
+.word-card {
+    background: #fafafa;
+    border-radius: 10px;
+    padding: 14px;
+    margin-bottom: 8px;
+    border-left: 2px solid #6C5CE7;
 }
 
 .word-card:last-child {
@@ -83,113 +144,77 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
 .word-text {
-    font-size: 18px;
-    font-weight: 700;
+    font-size: 16px;
+    font-weight: 600;
     color: #1a1a1a;
 }
 
 .word-phonetic {
-    font-size: 13px;
-    color: #888;
-    margin-left: 8px;
+    font-size: 12px;
+    color: #999;
+    margin-left: 6px;
 }
 
 .word-speak-btn {
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     border: none;
-    background: #6C5CE7;
-    color: white;
+    background: #f0f0f5;
+    color: #6C5CE7;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: transform 0.2s, background 0.2s;
+    transition: background 0.15s;
 }
 
 .word-speak-btn:hover {
-    background: #5849c2;
-    transform: scale(1.1);
+    background: #e0e0ef;
 }
 
 .word-speak-btn:active {
-    transform: scale(0.95);
+    background: #d0d0df;
 }
 
 .word-meaning {
-    font-size: 14px;
-    color: #444;
-    margin-bottom: 8px;
+    font-size: 13px;
+    color: #555;
+    margin-bottom: 6px;
 }
 
 .word-example {
-    font-size: 13px;
-    color: #666;
+    font-size: 12px;
+    color: #777;
     font-style: italic;
     line-height: 1.5;
 }
 
 .word-example-cn {
-    font-size: 12px;
-    color: #888;
-    margin-top: 4px;
+    font-size: 11px;
+    color: #999;
+    margin-top: 3px;
 }
 
 .word-source {
     font-size: 11px;
-    color: #999;
-    margin-top: 8px;
-    padding-top: 8px;
-    border-top: 1px dashed #e0e0e0;
+    color: #aaa;
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px dashed #e8e8e8;
 }
 
 .word-source span {
     background: #f0f0f5;
     padding: 2px 6px;
     border-radius: 4px;
-    margin-right: 4px;
 }
 
-.dimension-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 16px;
-}
-
-.dimension-tag {
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s;
-    border: 1px solid #e0e0e0;
-    color: #666;
-}
-
-.dimension-tag:hover {
-    border-color: #6C5CE7;
-    color: #6C5CE7;
-}
-
-.dimension-tag.active {
-    background: #6C5CE7;
-    color: white;
-    border-color: #6C5CE7;
-}
-
-.dimension-tag.weak {
-    background: #fff3e0;
-    color: #e65100;
-    border-color: #ffb74d;
-}
-
+/* 旧版兼容 */
 .vocab-empty {
     text-align: center;
     padding: 40px 20px;
@@ -197,60 +222,14 @@
 }
 
 .vocab-empty-icon {
-    font-size: 48px;
+    font-size: 40px;
     margin-bottom: 12px;
 }
 
 .vocab-empty-text {
-    font-size: 14px;
+    font-size: 13px;
     line-height: 1.6;
-}
-
-.vocab-bai-link {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 14px 20px;
-    background: linear-gradient(135deg, #FF6B35, #FF8F65);
-    border-radius: 12px;
-    color: white;
-    font-weight: 600;
-    font-size: 14px;
-    text-decoration: none;
-    margin-top: 16px;
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.vocab-bai-link:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255,107,53,0.3);
-}
-
-.vocab-stats {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    margin-bottom: 16px;
-}
-
-.vocab-stat-item {
-    background: #f8f8fa;
-    border-radius: 12px;
-    padding: 14px;
-    text-align: center;
-}
-
-.vocab-stat-num {
-    font-size: 24px;
-    font-weight: 700;
-    color: #6C5CE7;
-}
-
-.vocab-stat-label {
-    font-size: 12px;
-    color: #888;
-    margin-top: 4px;
+    color: #999;
 }
 
 .vocab-loading {
@@ -258,16 +237,14 @@
     padding: 60px 20px;
 }
 
-.vocab-loading-spinner {
-    width: 40px;
-    height: 40px;
-    border: 3px solid #e0e0e0;
-    border-top-color: #6C5CE7;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin: 0 auto 16px;
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
+/* 移除旧样式 */
+.vocab-hero,
+.vocab-hero::before,
+.vocab-bai-link,
+.vocab-stats,
+.vocab-stat-item,
+.vocab-stat-num,
+.vocab-stat-label,
+.dimension-tag.weak {
+    display: none;
 }
