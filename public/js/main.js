@@ -7946,7 +7946,7 @@ function preloadLimitInfo() {
             // 底部信息
             ctx.fillStyle = 'rgba(255,255,255,0.9)';
             ctx.font = '11px -apple-system, BlinkMacSystemFont, sans-serif';
-            ctx.fillText(EXAM_LABEL + '备考搭子 · AI智能诊断', width / 2, 300);
+            ctx.fillText(EXAM_LABEL + '备考搭子 · guocet.top', width / 2, 300);
             
             // 底部提示
             ctx.fillStyle = 'rgba(255,255,255,0.7)';
@@ -11121,6 +11121,7 @@ function renderReportPage() {
         })() +
         
         (weakAdviceHtml ? '<div class="report-advice-section"><div class="report-section-title">💪 专项提升建议</div>' + weakAdviceHtml + '</div>' : '') +
+        (weakAdviceHtml ? '<div class="report-ai-cta" onclick="startPracticeChallenge()"><div class="report-ai-cta-icon">🤖</div><div class="report-ai-cta-text"><div class="report-ai-cta-title">AI陪练帮你突破弱项</div><div class="report-ai-cta-desc">针对你的薄弱点智能出题，每天15分钟就能看到进步</div></div><div class="report-ai-cta-arrow">›</div></div>' : '') +
         
         // 错题复盘区域
         buildWrongQuestionsSection() +
@@ -11571,7 +11572,7 @@ function drawReportShareImage() {
     ctx.fillStyle = 'rgba(255,255,255,0.8)';
     ctx.font = '11px -apple-system, BlinkMacSystemFont, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText(EXAM_LABEL + '备考搭子 · AI智能诊断', 140, 385);
+    ctx.fillText(EXAM_LABEL + '备考搭子 · guocet.top', 140, 385);
 }
 
 // ===== 免费AI对话限额逻辑 (GPT风格) =====
@@ -15290,23 +15291,60 @@ function trackTrainingCompletion(skill, stage, aiResponse) {
 function checkAndSuggestRediagnosis(skill) {
     var history = getTrainingHistory();
     var skillHistory = history.filter(function(h) { return h.skill === skill; });
-    if (skillHistory.length >= 3) {
-        var lastDiag = localStorage.getItem(examKey('last_diagnosis_date'));
-        var today = new Date().toISOString().split('T')[0];
-        if (lastDiag && lastDiag !== today) {
-            setTimeout(function() {
-                var container = document.getElementById('chat-messages');
-                if (!container) return;
-                var skillNames = {listening:'听力',reading:'阅读',writing:'写作',translation:'翻译'};
-                var nudgeDiv = document.createElement('div');
-                nudgeDiv.className = 'custom-chat-msg system';
-                nudgeDiv.innerHTML = '<div class="custom-chat-bubble rediagnosis-nudge"><span>💡 你已经练了' + skillHistory.length + '次' + (skillNames[skill]||skill) + '，要不要再测一次看看进步？</span><button onclick="startFullDiagnosis()" style="margin-left:8px;padding:4px 12px;background:#6C5CE7;color:white;border:none;border-radius:6px;font-size:12px;cursor:pointer">再测一次</button></div>';
-                container.appendChild(nudgeDiv);
-                scrollChatToBottom();
-                updateChatPadding();
-            }, 2000);
+    var skillNames = {listening:'听力',reading:'阅读',writing:'写作',translation:'翻译'};
+    
+    setTimeout(function() {
+        var container = document.getElementById('chat-messages');
+        if (!container) return;
+        
+        var todayRecords = skillHistory.filter(function(h) { return h.date === new Date().toISOString().split('T')[0]; });
+        var totalToday = todayRecords.length;
+        var avgAccuracy = todayRecords.length > 0 ? Math.round(todayRecords.reduce(function(s,r){return s+r.accuracy},0)/todayRecords.length) : 0;
+        
+        var diagData = null;
+        try { diagData = JSON.parse(localStorage.getItem(examKey('ability_scores'))); } catch(e) {}
+        var skillScore = diagData && diagData.dims ? (function() {
+            var dimMap = {listening:'听力',reading:'阅读',writing:'写作',translation:'翻译'};
+            return diagData.dims[dimMap[skill]] || 0;
+        })() : 0;
+        
+        var cardDiv = document.createElement('div');
+        cardDiv.className = 'custom-chat-msg system';
+        
+        var cardHtml = '<div class="training-complete-card">';
+        cardHtml += '<div class="training-complete-header">✅ 训练完成</div>';
+        cardHtml += '<div class="training-complete-stats">';
+        cardHtml += '<div class="training-stat"><div class="training-stat-num">' + totalToday + '</div><div class="training-stat-label">今日练习</div></div>';
+        cardHtml += '<div class="training-stat"><div class="training-stat-num">' + avgAccuracy + '%</div><div class="training-stat-label">正确率</div></div>';
+        if (skillScore > 0) {
+            cardHtml += '<div class="training-stat"><div class="training-stat-num">' + skillScore + '</div><div class="training-stat-label">技能分</div></div>';
         }
-    }
+        cardHtml += '</div>';
+        
+        if (skillHistory.length >= 3) {
+            var lastDiag = localStorage.getItem(examKey('last_diagnosis_date'));
+            var today = new Date().toISOString().split('T')[0];
+            if (lastDiag && lastDiag !== today) {
+                cardHtml += '<div class="training-rediag-hint">📈 你已练了' + skillHistory.length + '次' + (skillNames[skill]||skill) + '，再诊断一次看看进步吧！</div>';
+                cardHtml += '<button class="training-rediag-btn" onclick="startFullDiagnosis()">📊 再诊断一次</button>';
+            }
+        } else {
+            cardHtml += '<div class="training-keep-hint">💪 再练' + (3 - skillHistory.length) + '次就可以再诊断看进步了</div>';
+        }
+        
+        cardHtml += '</div>';
+        cardDiv.innerHTML = cardHtml;
+        container.appendChild(cardDiv);
+        scrollChatToBottom();
+        updateChatPadding();
+    }, 1500);
+}
+
+function startFullDiagnosis() {
+    clearTrainingTimer();
+    localStorage.removeItem(examKey('current_training'));
+    if (typeof startDiagnosis === 'function') startDiagnosis();
+    else switchTab('diagnosis');
 }
 
 function startFullDiagnosis() {
