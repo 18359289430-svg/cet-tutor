@@ -1451,22 +1451,43 @@ function initApp() {
             
             var html = '';
             
-            // Hero区域 - 和数据页一致
+            // Hero区域 - AI分析为核心
             html += '<div class="wrongbook-hero">';
             html += '<h2>错题本</h2>';
-            html += '<div class="wrongbook-hero-sub">记录每一次失误，让进步更有方向</div>';
-            html += '<div class="wrongbook-hero-divider"></div>';
+            html += '<div class="wrongbook-hero-sub">AI帮你分析薄弱点，逐个击破</div>';
             html += '</div>';
             
-            // 主卡 - 大数字
-            html += '<div class="wrongbook-hero-card">';
-            html += '<div class="wrongbook-hero-number">' + stats.total + '</div>';
-            html += '<div class="wrongbook-hero-label">错题总数</div>';
-            html += '<div class="wrongbook-sub-stats">';
-            html += '<div class="wrongbook-sub-item"><span class="sub-dot"></span><span class="sub-num">' + stats.todayNew + '</span> 今日新增</div>';
-            html += '<div class="wrongbook-sub-item"><span class="sub-dot" style="background:#10B981"></span><span class="sub-num">' + (stats.total - stats.todayNew >= 0 ? stats.total - stats.todayNew : 0) + '</span> 待复习</div>';
+            // AI分析大按钮
+            html += '<div class="wrongbook-ai-cta" onclick="analyzeWeakness()">';
+            html += '<div class="ai-cta-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 0 1 4 4c0 1.95-1.4 3.58-3.25 3.93V12h2.75a2.5 2.5 0 0 1 2.5 2.5v1.75c1.85.35 3.25 1.98 3.25 3.93a4 4 0 1 1-7.25-2.33V14.5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0-.5.5v3.35A4 4 0 1 1 4 20.18a4 4 0 0 1 3.25-3.93V14.5A2.5 2.5 0 0 1 9.75 12h2.5V9.93A4.002 4.002 0 0 1 12 2z"/></svg></div>';
+            html += '<div class="ai-cta-text">';
+            html += '<div class="ai-cta-title">AI分析我的薄弱点</div>';
+            html += '<div class="ai-cta-desc">基于' + stats.total + '道错题，智能分析薄弱项</div>';
             html += '</div>';
+            html += '<svg class="ai-cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>';
             html += '</div>';
+            
+            // 薄弱项分布条
+            if (stats.total > 0) {
+                var categories = [
+                    {name: '词汇', count: stats.vocabulary, color: '#6C5CE7'},
+                    {name: '语法', count: stats.grammar, color: '#F59E0B'},
+                    {name: '阅读', count: stats.reading, color: '#3B82F6'},
+                    {name: '听力', count: stats.listening, color: '#10B981'}
+                ];
+                html += '<div class="wrongbook-weak-bars">';
+                categories.forEach(function(cat) {
+                    var pct = stats.total > 0 ? Math.round(cat.count / stats.total * 100) : 0;
+                    if (cat.count > 0) {
+                        html += '<div class="weak-bar-row">';
+                        html += '<span class="weak-bar-label">' + cat.name + '</span>';
+                        html += '<div class="weak-bar-track"><div class="weak-bar-fill" style="width:' + pct + '%;background:' + cat.color + '"></div></div>';
+                        html += '<span class="weak-bar-count">' + cat.count + '题</span>';
+                        html += '</div>';
+                    }
+                });
+                html += '</div>';
+            }
             
             // 筛选标签 - 带数量统计
             html += '<div class="wrongbook-section">';
@@ -1584,15 +1605,12 @@ function initApp() {
             html += '<div class="exp-content">' + escapeHtml(q.explanation || '暂无解析') + '</div>';
             html += '</div>';
             html += '<div class="wrong-actions">';
-            html += '<button class="action-btn ai-btn" onclick="event.stopPropagation(); explainWithAI(\'' + q.id + '\')">';
+            html += '<button class="action-btn ai-btn ai-primary" onclick="event.stopPropagation(); explainWithAI(\'' + q.id + '\')">';
             html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>';
             html += 'AI讲解</button>';
             html += '<button class="action-btn master-btn" onclick="event.stopPropagation(); markAsMastered(\'' + q.id + '\')">';
             html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>';
             html += '已掌握</button>';
-            html += '<button class="wrong-redo-btn" onclick="event.stopPropagation(); startRedo(\'' + q.id + '\')">';
-            html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>';
-            html += '重做</button>';
             html += '</div>';
             html += '</div>';
             html += '</div>';
@@ -1774,6 +1792,30 @@ function toggleWrongDetail(card) {
             // 恢复底部导航
             var nav = document.querySelector('.bottom-nav');
             if (nav) nav.style.display = '';
+        }
+
+        function analyzeWeakness() {
+            var questions = getWrongQuestions();
+            if (questions.length === 0) {
+                showToast('还没有错题，先去练习吧');
+                return;
+            }
+            var stats = getWrongQuestionStats();
+            var prompt = '分析我的' + EXAM_LABEL + '错题薄弱点，给出针对性复习建议：\n\n';
+            prompt += '错题统计：共' + stats.total + '道错题\n';
+            prompt += '词汇错' + stats.vocabulary + '道，语法错' + stats.grammar + '道，阅读错' + stats.reading + '道，听力错' + stats.listening + '道\n\n';
+            prompt += '具体错题：\n';
+            var maxQ = Math.min(questions.length, 8);
+            for (var i = 0; i < maxQ; i++) {
+                var q = questions[i];
+                prompt += (i+1) + '. [' + (q.type||'词汇') + '] ' + (q.question||'').substring(0,60) + ' (我选了' + (q.userAnswer||'?') + '，正确' + (q.answer||'?') + ')\n';
+            }
+            if (questions.length > 8) {
+                prompt += '...还有' + (questions.length - 8) + '道错题\n';
+            }
+            prompt += '\n请从以下角度分析：1.我最薄弱的1-2个方面是什么 2.错误模式有什么规律 3.给出具体可执行的复习建议';
+            switchTab('diagnosis');
+            setTimeout(function() { sendSuggestion(prompt); }, 300);
         }
 function explainWithAI(id) {
             var questions = getWrongQuestions();
