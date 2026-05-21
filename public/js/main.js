@@ -10668,6 +10668,11 @@ function closeReportPage() {
             overlay.style.opacity = '';
         }, 300);
     }
+    // 诊断后刷新首页任务卡片
+    setTimeout(function() {
+        renderHomeTodayTasks();
+        updateHomeStatus();
+    }, 400);
 }
 
 // 继续陪练
@@ -11369,6 +11374,14 @@ function finishTraining() {
     } else {
         html += '<div class="train-result-hint">正确率未达60%，建议再练一次巩固</div>';
         html += '<button class="train-result-btn primary" onclick="startTraining(\'' + ts.skill + '\', ' + ts.stage + ')">再练一次</button>';
+    }
+    // 练下一个弱项按钮
+    var nextWeakSkill = getNextWeakSkill(ts.skill);
+    if (nextWeakSkill) {
+        var nextStage = getCurrentStage(nextWeakSkill);
+        var nextInfo = TRAINING_STAGES[nextWeakSkill] ? TRAINING_STAGES[nextWeakSkill][nextStage - 1] : null;
+        var skillLabel = { listening: '听力', reading: '阅读', writing: '写作', translation: '翻译' };
+        html += '<button class="train-result-btn secondary" onclick="startTraining(\'' + nextWeakSkill + '\', ' + nextStage + ')" style="color:#6C5CE7;background:rgba(108,92,231,0.06)">练' + skillLabel[nextWeakSkill] + (nextInfo ? '·' + nextInfo.name : '') + '</button>';
     }
     html += '<button class="train-result-btn secondary" onclick="closeDiagOverlay();switchTab(\'home\')">返回首页</button>';
     html += '</div>';
@@ -15949,6 +15962,9 @@ function openCoachChat() {
     var chatPage = document.getElementById('chat-page');
     var bubble = document.getElementById('ai-bubble');
     if (!chatPage) return;
+    // 诊断/训练overlay打开时不响应
+    var diagOverlay = document.getElementById('diag-overlay');
+    if (diagOverlay && diagOverlay.classList.contains('active') && !window._trainState) return;
     
     // 设置为companion模式
     if (!chatState.currentMode) chatState.currentMode = 'companion';
@@ -16093,6 +16109,24 @@ function askCoachAbout(questionId) {
         var msg = '我正在练' + ctx.skillName + '·' + ctx.stageName + '，这道' + ctx.ability + '题我选了' + ctx.userAnswer + '但答案是' + ctx.answer + '，帮我分析一下为什么错：\n' + ctx.question + '\nA. ' + ctx.optionA + '\nB. ' + ctx.optionB + '\nC. ' + ctx.optionC + '\nD. ' + ctx.optionD;
         sendSuggestion(msg);
     }, 500);
+}
+
+// 获取下一个最弱技能（排除当前技能）
+function getNextWeakSkill(excludeSkill) {
+    var diagHist = JSON.parse(localStorage.getItem(examKey('diagnosis_history')) || '[]');
+    if (diagHist.length === 0) return null;
+    var scores = diagHist[diagHist.length - 1].scores || {};
+    var skillNames = {'listening': '听力', 'reading': '阅读', 'writing': '写作', 'translation': '翻译'};
+    var weakest = null;
+    var weakestScore = 999;
+    for (var sk in skillNames) {
+        if (sk === excludeSkill) continue;
+        if (scores[sk] !== undefined && scores[sk] < weakestScore) {
+            weakestScore = scores[sk];
+            weakest = sk;
+        }
+    }
+    return weakest;
 }
 
 window.openCoachChat = openCoachChat;
