@@ -3319,7 +3319,7 @@ function ensureChatOpen(){
     if(!chatState.currentMode)chatState.currentMode=mode;
     var p=document.getElementById("chat-panel");
     if(p){p.classList.remove("hidden");p.style.display="";}
-    var clv=document.getElementById("chat-list-view");
+    var clv=v102.getElementById("chat-list-view");
     if(clv)clv.classList.remove("active");
     var cp=document.getElementById("chat-page");
     if(cp)cp.style.display="flex";
@@ -3335,7 +3335,7 @@ function ensureChatOpen(){
     var chatList=getChatList();
     var msgContainer=document.getElementById('chat-messages');
     if(chatList&&chatList.length>0){
-        var lastConv=chatList[0];
+        var lastConv=v102List[0];
         if(lastConv&&lastConv.id){
             currentConversationId=lastConv.id;
             chatState.conversationId=lastConv.id;
@@ -3678,7 +3678,7 @@ function ensureChatOpen(){
                     return;
                 }
                 var vocabFile = '/public/cet' + (IS_CET6 ? '6' : '4') + '_vocab.json';
-                fetch(vocabFile + '?v=' + Date.now())
+                fetch(vocabFile + '?v=v102' + Date.now())
                     .then(function(response) { return response.json(); })
                     .then(function(data) {
                         vocabData = data;
@@ -10524,10 +10524,10 @@ function openReportPayModal() {
 
 // ===== 技能等级评估系统 =====
 function getSkillLevel(score) {
-    if (score >= 80) return { level: 4, name: '冲刺', color: '#6C5CE7', icon: '🚀', desc: '接近考试水平，保持冲刺' };
-    if (score >= 60) return { level: 3, name: '真题', color: '#00B894', icon: '✅', desc: '能应对真题难度，注意细节' };
-    if (score >= 35) return { level: 2, name: '进阶', color: '#FDCB6E', icon: '📈', desc: '有基础但不够稳，需专项强化' };
-    return { level: 1, name: '基础', color: '#E17055', icon: '🌱', desc: '基础薄弱，建议从简单题开始' };
+    if (score >= 80) return { level: 4, name: '稳过', color: '#6C5CE7', icon: '🏆', desc: '该技能稳过，冲高分' };
+    if (score >= 60) return { level: 3, name: '有望', color: '#00B894', icon: '✅', desc: '有望过线，需巩固细节' };
+    if (score >= 35) return { level: 2, name: '悬', color: '#FDCB6E', icon: '⚠️', desc: '过线悬，需专项突破' };
+    return { level: 1, name: '危险', color: '#E17055', icon: '🔴', desc: '裸考危险，需从基础抓起' };
 }
 
 function getSkillLevels(dims) {
@@ -10553,12 +10553,30 @@ function getSkillLevels(dims) {
     };
 }
 
+// 预估考试分数：4技能映射到710分制
+// 四级：听力35%(248.5) 阅读35%(248.5) 写作15%(106.5) 翻译15%(106.5)
+function estimateExamScores(skillLevels) {
+    var weights = { listening: 0.35, reading: 0.35, writing: 0.15, translation: 0.15 };
+    var maxScores = { listening: 248.5, reading: 248.5, writing: 106.5, translation: 106.5 };
+    var result = {};
+    var totalEstimate = 0;
+    for (var k in skillLevels) {
+        var s = skillLevels[k].score;
+        var est = Math.round(s / 100 * maxScores[k]);
+        result[k] = { estimate: est, max: maxScores[k], diff: est - maxScores[k] * 0.6 };
+        totalEstimate += est;
+    }
+    result.total = totalEstimate;
+    result.passGap = 425 - totalEstimate;
+    return result;
+}
+
 function getNextAction(skillKey, skillInfo) {
     var actions = {
-        listening: { 1: '先练短对话关键词抓取', 2: '练长对话推理题', 3: '做真题听力限时训练', 4: '全真模拟25分钟' },
-        reading: { 1: '先练细节定位题', 2: '练推理+同义替换', 3: '做真题阅读限时训练', 4: '3篇连做模拟考场' },
-        writing: { 1: '先练翻译句子', 2: '练段落写作', 3: '完整作文AI批改', 4: '30分钟限时写作' },
-        translation: { 1: '先练核心词汇翻译', 2: '练句式转换', 3: '完整段落AI评分', 4: '5分钟限时翻译' }
+        listening: { 1: '抓基础分：短对话关键词', 2: '提分关键：长对话推理', 3: '真题实战限时练', 4: '冲高分：全真模拟25min' },
+        reading: { 1: '保底分：细节定位题', 2: '提分关键：推理+同义替换', 3: '真题实战限时练', 4: '冲高分：3篇连做' },
+        writing: { 1: '保底分：翻译句子练句型', 2: '提分关键：段落写作', 3: '真题实战：完整作文', 4: '冲高分：30min限时' },
+        translation: { 1: '保底分：核心词翻译', 2: '提分关键：句式转换', 3: '真题实战：段落翻译', 4: '冲高分：5min限时' }
     };
     var level = skillInfo.level.level;
     var actionMap = actions[skillKey] || {};

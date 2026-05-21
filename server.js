@@ -2764,8 +2764,8 @@ function buildRagContext(userMessage, personality, weakDims, dimScores, wrongSum
         });
     }
     
-    // 完整用户画像
-    context += '\n\n[用户画像]';
+    // 完整用户画像（考试导向）
+    context += '\n\n[用户画像-目标：通过四六级考试]';
     if (personality) context += '\n- 备考人格: ' + personality;
     if (dimScores) {
         try {
@@ -2786,34 +2786,40 @@ function buildRagContext(userMessage, personality, weakDims, dimScores, wrongSum
         context += '\n- 已学习: ' + studyDays + '天';
     }
     
-    // 技能等级
+    // 技能等级(考试导向)
     if (skillLevels) {
         try {
             var levels = JSON.parse(skillLevels);
             var lvMap = { listening: '听力', reading: '阅读', writing: '写作', translation: '翻译' };
-            var lvLabels = { 1: '基础', 2: '进阶', 3: '真题', 4: '冲刺' };
-            context += '\n- 技能等级: ';
+            var lvLabels = { 1: '危险(裸考过不了)', 2: '悬(过线有风险)', 3: '有望(有望过线)', 4: '稳过(能过)' };
+            var maxScores = { listening: 248.5, reading: 248.5, writing: 106.5, translation: 106.5 };
+            var totalEst = 0;
+            context += '\n- 考试水平评估(710分制): ';
             for (var sk in levels) {
                 var s = levels[sk];
                 var lv = s >= 80 ? 4 : s >= 60 ? 3 : s >= 35 ? 2 : 1;
-                context += (lvMap[sk] || sk) + 'Lv' + lv + '(' + lvLabels[lv] + '/' + s + '分) ';
+                var est = Math.round(s / 100 * maxScores[sk]);
+                totalEst += est;
+                context += (lvMap[sk] || sk) + est + '/' + maxScores[sk] + '(' + lvLabels[lv] + ') ';
             }
+            var passGap = 425 - totalEst;
+            context += '\n→ 预估总分: ' + totalEst + '/710，' + (passGap > 0 ? '距及格线425差' + passGap + '分，重点补短板' : '超及格线' + (-passGap) + '分，巩固优势');
             var weakestSkill = null, weakestScore = 999;
             for (var sk2 in levels) { if (levels[sk2] < weakestScore) { weakestScore = levels[sk2]; weakestSkill = sk2; } }
             if (weakestSkill) {
-                var focusMap = { listening: '先出简单短对话逐步加长', reading: '先出细节定位题再出推理题', writing: '先从翻译句子开始再写段落', translation: '先练关键词翻译再练完整句子' };
-                context += '\n→ 最低技能: ' + (lvMap[weakestSkill] || weakestSkill) + '，' + (focusMap[weakestSkill] || '从基础开始');
+                var focusMap = { listening: '听力是最弱项，先出短对话抓关键词得分，逐步加长', reading: '阅读最弱，先出细节定位题保底分，再加推理题', writing: '写作最弱，先练翻译句子保底分，再写段落', translation: '翻译最弱，先练关键词翻译得分，再练完整句' };
+                context += '\n→ 最弱技能: ' + (lvMap[weakestSkill] || weakestSkill) + '，' + (focusMap[weakestSkill] || '从保底分开始');
             }
         } catch(e) {}
     }
     
     // 诊断历史趋势
     if (diagTrend && diagTrend.length > 0) {
-        context += '\n- 进步趋势: ' + diagTrend + ' → 有进步要鼓励，退步维度重点练';
+        context += '\n- 进步趋势: ' + diagTrend + ' → 有进步要鼓励"继续保持就能过"，退步维度重点练"这块丢分多，考试会吃亏"';
     }
     if (diagCount && diagCount > 1) {
         context += '\n- 已完成诊断: ' + diagCount + '次';
-        if (diagCount >= 3) context += '（老用户可适当提高难度）';
+        if (diagCount >= 3) context += '（多次诊断用户，出题更接近真题难度，帮他找到考试感觉）';
     }
     
     return context;
