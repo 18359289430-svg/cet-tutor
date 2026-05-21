@@ -9991,6 +9991,39 @@ function startTranslationTest() {
     document.getElementById('diag-body').innerHTML = html;
 }
 
+
+// 诊断模式翻译页拍照上传
+function handleDiagTransPhoto(input) {
+    var file = input.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        var base64 = e.target.result;
+        var pureBase64 = base64.split(',')[1];
+        showToast('📷 正在识别手写翻译...');
+        fetch('/api/essay/upload', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ image_base64: pureBase64, essay_type: isCET6User() ? 'cet6' : 'cet4' })
+        }).then(function(r) { return r.json(); }).then(function(resp) {
+            if (resp.success && resp.recognized_text) {
+                var textarea = document.getElementById('translation-input');
+                if (textarea) {
+                    textarea.value = resp.recognized_text;
+                    updateTranslationCount();
+                    showToast('✅ 识别成功，已填入文本框');
+                }
+            } else {
+                showToast('📷 ' + (resp.error || '识别失败，请手动输入'));
+            }
+        }).catch(function(err) {
+            showToast('📷 上传失败，请手动输入');
+        });
+    };
+    reader.readAsDataURL(file);
+    input.value = '';
+}
+
 // 更新翻译字数统计
 function updateTranslationCount() {
     var input = document.getElementById('translation-input');
