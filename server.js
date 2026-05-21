@@ -3689,3 +3689,39 @@ async function saveUserProgress(userId, data) {
     
     return { updated_at: now };
 }
+
+// ===== 听力训练TTS音频生成 =====
+app.post("/api/tts/generate", async (req, res) => {
+    try {
+        const { text, exam_type } = req.body;
+        if (!text || text.length < 10) return res.json({ error: "Text too short" });
+        const truncatedText = text.substring(0, 1500);
+        const rate = exam_type === "cet6" ? 1.2 : 1.05;
+        console.log("[TTS] Generating audio, length:", truncatedText.length, "rate:", rate);
+        const ttsResp = await fetch("https://dashscope.aliyuncs.com/api/v1/services/audio/tts/SpeechSynthesizer", {
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer " + process.env.DASHSCOPE_API_KEY,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                model: "cosyvoice-v3-flash",
+                input: { text: truncatedText },
+                parameters: { voice: "longanyang", rate: rate, format: "mp3" }
+            })
+        });
+        if (!ttsResp.ok) {
+            console.error("[TTS] API error:", ttsResp.status);
+            return res.json({ error: "TTS API failed" });
+        }
+        const audioId = "tts_" + Date.now() + "_" + Math.random().toString(36).substr(2,6) + ".mp3";
+        const audioPath = "/opt/cet-tutor/public/audio/listening/" + audioId;
+        const buffer = await ttsResp.buffer();
+        require("fs").writeFileSync(audioPath, buffer);
+        console.log("[TTS] Saved:", audioPath, "size:", buffer.length);
+        res.json({ url: "/public/audio/listening/" + audioId, size: buffer.length });
+    } catch (err) {
+        console.error("[TTS] Error:", err.message);
+        res.json({ error: err.message });
+    }
+});
