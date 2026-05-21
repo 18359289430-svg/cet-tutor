@@ -2086,7 +2086,19 @@ ${user_input}
                 const weakDims = body.weak_dims || [];
                 const userId = body.user_id || 'anonymous';
                 let ragCtx = '';
-                try { ragCtx = buildRagContext(messages[messages.length-1].content || '', userPersonality, weakDims, body.dim_scores, body.wrong_summary, body.study_days || 0, body.skill_levels, body.diag_trend, body.diag_count); } catch(e) {}
+                // 注入训练历史
+                var trainingCtx = '';
+                if (body.training_history) {
+                    try {
+                        var th = JSON.parse(body.training_history);
+                        var recent = th.slice(-5);
+                        if (recent.length > 0) {
+                            trainingCtx = '\n- 近期训练: ' + recent.map(function(r) { return r.skill + '(阶段' + r.stage + ',正确' + r.correct + '/' + r.total + ')'; }).join(', ');
+                            trainingCtx += ' → 根据训练历史调整出题难度，已练过的阶段不要重复，正确率高的可以升级';
+                        }
+                    } catch(e) {}
+                }
+                try { ragCtx = buildRagContext(messages[messages.length-1].content || '', userPersonality, weakDims, body.dim_scores, body.wrong_summary, body.study_days || 0, body.skill_levels, body.diag_trend, body.diag_count) + trainingCtx; } catch(e) {}
                 // 检测考试类型并注入到system prompt
                 var lastMsgChat = messages[messages.length-1] ? messages[messages.length-1].content : '';
                 var isCet6Chat = detectExamType(lastMsgChat, userPersonality);
@@ -2135,7 +2147,18 @@ ${user_input}
                     weakGuidePrompt += '- 语气亲切自然，像朋友间的学习交流。\n';
                 }
                 
-                var systemContent = COMPANION_SYSTEM_PROMPT + (ragCtx || '') + weakGuidePrompt + examCtxChat.systemPrompt;
+                // 训练模式检测 - 如果用户消息含[训练模式]，注入训练指令
+                var trainingPrompt = '';
+                var lastUserMsg = messages[messages.length-1] ? messages[messages.length-1].content : '';
+                var trainingMatch = lastUserMsg.match(/\[训练模式\]\s*(.+?)·(.+?)：(.+)/);
+                if (trainingMatch) {
+                    var trainSkill = trainingMatch[1]; // e.g. 听力
+                    var trainStage = trainingMatch[2]; // e.g. 信号词捕获
+                    var trainDesc = trainingMatch[3]; // e.g. 练but/however后出答案
+                    trainingPrompt = '\n\n## 【当前训练模式】\n- 技能：' + trainSkill + '\n- 训练阶段：' + trainStage + '\n- 目标：' + trainDesc + '\n- 你必须严格按照训练方法执行，不要偏离训练目标\n- 训练结束后给出简短评价(正确率+改进建议)\n- 如果用户答错，给1次提示再给答案\n- 不要出无关的题目，专注当前训练阶段';
+                }
+                
+                var systemContent = COMPANION_SYSTEM_PROMPT + (ragCtx || '') + weakGuidePrompt + examCtxChat.systemPrompt + trainingPrompt;
                 const payload = {
                     model: 'deepseek-chat',
                     messages: [{ role: 'system', content: systemContent }, ...messages.slice(-10)],

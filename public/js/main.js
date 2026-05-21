@@ -3319,7 +3319,7 @@ function ensureChatOpen(){
     if(!chatState.currentMode)chatState.currentMode=mode;
     var p=document.getElementById("chat-panel");
     if(p){p.classList.remove("hidden");p.style.display="";}
-    var clv=v103.getElementById("chat-list-view");
+    var clv=v104.getElementById("chat-list-view");
     if(clv)clv.classList.remove("active");
     var cp=document.getElementById("chat-page");
     if(cp)cp.style.display="flex";
@@ -3335,7 +3335,7 @@ function ensureChatOpen(){
     var chatList=getChatList();
     var msgContainer=document.getElementById('chat-messages');
     if(chatList&&chatList.length>0){
-        var lastConv=v103List[0];
+        var lastConv=v104List[0];
         if(lastConv&&lastConv.id){
             currentConversationId=lastConv.id;
             chatState.conversationId=lastConv.id;
@@ -3678,7 +3678,7 @@ function ensureChatOpen(){
                     return;
                 }
                 var vocabFile = '/public/cet' + (IS_CET6 ? '6' : '4') + '_vocab.json';
-                fetch(vocabFile + '?v=v103' + Date.now())
+                fetch(vocabFile + '?v=v104' + Date.now())
                     .then(function(response) { return response.json(); })
                     .then(function(data) {
                         vocabData = data;
@@ -4279,125 +4279,7 @@ function ensureChatOpen(){
         
         // 生成每日任务
         function generateDailyTasks() {
-            var data = state.userData || {};
-            var hasDiag = data.personality || (data.diagnosis && data.diagnosis.type);
-            var overdueCount = typeof getOverdueReviewCount === 'function' ? getOverdueReviewCount() : 0;
-            
-            var abilityScores = getAbilityScores();
-            var dims = abilityScores && abilityScores.dims ? abilityScores.dims : {};
-            
-            var tasks = [];
-            
-            // 1. 未做过诊断 -> 完成AI诊断
-            if (!hasDiag) {
-                tasks.push({
-                    id: 'diagnosis',
-                    text: '完成3分钟AI诊断',
-                    time: '3min',
-                    action: "switchTab('diagnosis');setTimeout(function(){startNewDiagnosis();},300)",
-                    checkType: 'diagnosis'
-                });
-                return tasks;
-            }
-            
-            // 2. 有待复习错题 -> 复习错题
-            if (overdueCount > 0) {
-                tasks.push({
-                    id: 'review',
-                    text: '复习' + overdueCount + '道到期错题',
-                    time: '5min',
-                    action: 'showWrongBook()',
-                    checkType: 'review'
-                });
-            }
-            
-            // 3. 某维度正确率<60% 或耗时过高 -> 专项练习
-            var dimConfigs = {
-                '细节定位': { label: '细节理解', score: dims['细节定位'] || 0 },
-                '推理判断': { label: '推理判断', score: dims['推理判断'] || 0 },
-                '同义替换': { label: '同义替换', score: dims['同义替换'] || 0 },
-                '主旨归纳': { label: '主旨归纳', score: dims['主旨归纳'] || 0 },
-                '态度判断': { label: '态度判断', score: dims['态度判断'] || 0 }
-            };
-            
-            // 获取耗时数据
-            var abilityScores = getAbilityScores();
-            var dimTimes = abilityScores && abilityScores.dimTimes ? abilityScores.dimTimes : {};
-            
-            // 计算平均耗时
-            var totalTime = 0;
-            var timeCount = 0;
-            Object.keys(dimTimes).forEach(function(dim) {
-                totalTime += dimTimes[dim];
-                timeCount++;
-            });
-            var avgTime = timeCount > 0 ? totalTime / timeCount : 60;
-            
-            var weakDims = [];
-            for (var dim in dimConfigs) {
-                var baseScore = dimConfigs[dim].score;
-                var timeSpent = dimTimes[dim] || 0;
-                
-                // 如果耗时超过平均的1.5倍，也视为薄弱项
-                var isTimeWeak = timeSpent > 0 && avgTime > 0 && timeSpent > avgTime * 1.5;
-                
-                if ((baseScore > 0 && baseScore < 60) || isTimeWeak) {
-                    // 耗时过长的维度降低评分优先级
-                    var adjustedScore = isTimeWeak && baseScore >= 60 ? baseScore - 10 : baseScore;
-                    weakDims.push({ key: dim, label: dimConfigs[dim].label, score: adjustedScore, timeWeak: isTimeWeak });
-                }
-            }
-            
-            if (weakDims.length > 0) {
-                var weakDim = weakDims[0];
-                tasks.push({
-                    id: 'dim_' + weakDim.key,
-                    text: '专项练' + weakDim.label + '(' + weakDim.score + '%)',
-                    time: '10min',
-                    action: "openQuizWithDim('" + weakDim.key + "')",
-                    checkType: 'quiz',
-                    checkDim: weakDim.key
-                });
-            }
-            
-            // 4. 听力弱 -> 听力训练
-            var listeningScore = dims['听力'] || 0;
-            var hasListeningDim = Object.keys(dims).indexOf('听力') !== -1;
-            if (hasListeningDim && listeningScore > 0 && listeningScore < 50) {
-                tasks.push({
-                    id: 'listening',
-                    text: '听力训练1组',
-                    time: '10min',
-                    action: "switchTab('chat');setTimeout(function(){sendSuggestion('陪我练" + EXAM_LABEL + "听力');},300)",
-                    checkType: 'listening'
-                });
-            }
-            
-            // 5. 作文未练 -> 写1篇作文
-            var essayKey = examKey('essay_practiced_' + new Date().toISOString().split('T')[0]);
-            var essayPracticed = localStorage.getItem(essayKey);
-            if (!essayPracticed) {
-                tasks.push({
-                    id: 'essay',
-                    text: '写1篇作文AI批改',
-                    time: '15min',
-                    action: 'openEssayOverlay()',
-                    checkType: 'essay'
-                });
-            }
-            
-            // 默认：每日一练
-            if (tasks.length === 0) {
-                tasks.push({
-                    id: 'daily',
-                    text: '每日一练5道',
-                    time: '10min',
-                    action: 'openQuiz()',
-                    checkType: 'quiz'
-                });
-            }
-            
-            return tasks.slice(0, 3); // 最多3个任务
+            return generateSmartTasks();
         }
         
         // ===== CET每日任务系统（计划tab使用） =====
@@ -4509,8 +4391,8 @@ function ensureChatOpen(){
             tasks.forEach(function(task, idx) {
                 var checked = task.completed ? 'checked' : '';
                 var opacity = task.completed ? 'style="opacity:0.6"' : '';
-                html += '<div class="daily-task-item" ' + opacity + ' data-task-id="' + task.id + '" onclick="handleDailyTaskClick(\'' + task.id + '\')">';
-                html += '<div class="daily-task-checkbox ' + checked + '">' + (task.completed ? '✓' : (idx + 1)) + '</div>';
+                html += '<div class="daily-task-item" ' + opacity + ' data-task-id="' + task.id + '" onclick="handleTaskAction(\'' + task.id + '\')">';
+                html += '<div class="daily-task-checkbox ' + checked + '">' + (task.completed ? '✓' : (task.icon || (idx + 1))) + '</div>';
                 html += '<div class="daily-task-text' + (task.completed ? ' completed' : '') + '">' + task.text + '</div>';
                 html += '<div class="daily-task-time">' + task.time + '</div>';
                 html += '</div>';
@@ -4525,7 +4407,36 @@ function ensureChatOpen(){
             }
         }
         
-        // 处理任务点击
+        // 处理任务点击（统一入口）
+        function handleTaskAction(taskId) {
+            var tasks = getTodayTasks() || generateDailyTasks();
+            var task = tasks.find(function(t) { return t.id === taskId; });
+            if (!task || task.completed) return;
+            
+            // 标记完成
+            task.completed = true;
+            saveTodayTasks(tasks);
+            
+            // 记录训练
+            if (task.skill && task.stage) {
+                saveTrainingRecord({
+                    skill: task.skill,
+                    stage: task.stage,
+                    correct: 0,
+                    total: 0,
+                    trained: true
+                });
+            }
+            
+            // 执行action
+            if (task.action) {
+                try { eval(task.action); } catch(e) {}
+            }
+            
+            updateDailyTaskCard();
+        }
+        
+        // 处理任务点击（旧版兼容）
         function handleDailyTaskClick(taskId) {
             var tasks = getTodayTasks() || [];
             var task = tasks.find(function(t) { return t.id === taskId; });
@@ -5071,7 +4982,11 @@ function updateHomeStatus() {
                         wrong_summary: wrongSummary,
                         study_days: streak,
                         plan_token: (state.userData && state.userData.planToken) || '',
-                        plan_order_id: (state.userData && state.userData.planOrderId) || ''
+                        plan_order_id: (state.userData && state.userData.planOrderId) || '',
+                        skill_levels: (function() { try { var d = getAbilityScores(); if (d && d.dims) { var sl = getSkillLevels(d.dims); var out = {}; for (var k in sl) out[k] = sl[k].score; return JSON.stringify(out); } } catch(e) {} return ''; })(),
+                        diag_trend: (function() { try { var h = getAbilityHistory(); if (h.length >= 2) return h[h.length-2].date + '→' + h[h.length-1].date + ' 总分' + h[h.length-1].total; } catch(e) {} return ''; })(),
+                        diag_count: (function() { try { return getAbilityHistory().length; } catch(e) {} return 0; })(),
+                        training_history: (function() { try { return JSON.stringify(getTrainingHistory().slice(-5)); } catch(e) {} return ''; })()
                     };
                 }
 
@@ -10552,6 +10467,233 @@ function getSkillLevels(dims) {
         translation: { score: translationScore, level: getSkillLevel(translationScore) }
     };
 }
+
+// ===== 训练阶段系统 =====
+var TRAINING_STAGES = {
+    listening: [
+        { stage: 1, name: '听前预判', desc: '5秒看选项预判题目方向', icon: '🎯', time: 10, prompt: '训练方法：给用户3-4个选项，让用户5秒内猜题目问什么，然后播放音频验证。重点练预判能力。出3组短对话选项即可。' },
+        { stage: 2, name: '信号词捕获', desc: '练but/however/because后出答案', icon: '🔑', time: 10, prompt: '训练方法：读3段短对话，每段重点在but/however/because/because of等信号词后设置题目。让用户学会在转折处找答案。出3道信号词相关题。' },
+        { stage: 3, name: '同义替换', desc: '选项≠原文，识别换说法', icon: '🔄', time: 15, prompt: '训练方法：播放短文后出题，正确选项必须是原文的同义改写而非原词复现。让用户理解"答案换了种说法"。出3道同义替换题。' },
+        { stage: 4, name: '笔记速记', desc: '长讲座边听边记关键信息', icon: '📝', time: 20, prompt: '训练方法：播放一段较长的讲座材料，让用户边听边记笔记，然后针对细节提问。训练信息捕捉能力。出3道细节回忆题。' },
+        { stage: 5, name: '全真模拟', desc: '完整passage限时实战', icon: '🏆', time: 25, prompt: '训练方法：模拟真实考试，播放完整听力材料(只放1遍)，限时答题。训练考试节奏感。出5道题模拟完整流程。' }
+    ],
+    reading: [
+        { stage: 1, name: '定位速度', desc: '关键词回文找位置', icon: '🎯', time: 10, prompt: '训练方法：给一篇短文+题目，让用户说出关键词在原文第几段第几句。重点练快速定位，不需要理解全文。出3道定位题。' },
+        { stage: 2, name: '同义替换', desc: '选项是原文的改写', icon: '🔄', time: 10, prompt: '训练方法：给短文+题目，正确选项是原文的同义改写。让用户判断哪些选项是原文的等价表达。出3道同义替换识别题。' },
+        { stage: 3, name: '推理判断', desc: '转折词后藏答案，段首段尾是关键(新规占50%)', icon: '💡', time: 15, prompt: '训练方法：2026新规重点！出推理判断题，答案藏在but/however之后或段首段尾。引导用户找推理链：原文信息→逻辑推导→正确选项。出3道推理题，逐步讲解推理思路。' },
+        { stage: 4, name: '长篇匹配', desc: '12段文章快速定位匹配', icon: '📋', time: 15, prompt: '训练方法：给较长文章(8-10段)+5道匹配题，训练用特殊词(大写/数字/专有名词)快速定位。不按顺序做，先做有特征的。限时8分钟。' },
+        { stage: 5, name: '全真模拟', desc: '3篇连做40分钟', icon: '🏆', time: 40, prompt: '训练方法：模拟考试完整流程，选词填空+长篇匹配+仔细阅读，限时40分钟。训练考试节奏。' }
+    ],
+    writing: [
+        { stage: 1, name: '语法清零', desc: '修复低级语法错误', icon: '🔧', time: 10, prompt: '训练方法：给5个含典型语法错误的句子(如he don\'t/I am agree/three childs)，让用户找出并改正。确保基础语法不出错。' },
+        { stage: 2, name: '逻辑框架', desc: '三段式结构不是模板', icon: '📐', time: 10, prompt: '训练方法：给一个话题，让用户列出三段式提纲(引入→论述→总结)。评价逻辑链是否完整，不评价语言。注意：教结构不教套句，2026新规反模板。' },
+        { stage: 3, name: '自然表达', desc: '用自己的话，不套句', icon: '✨', time: 10, prompt: '训练方法：2026新规重点！给3个常见套句(如With the development of/As is known to all)，让用户改成自然表达。评分标准：越不像模板越好。' },
+        { stage: 4, name: '完整写作', desc: '30分钟独立完成', icon: '✍️', time: 30, prompt: '训练方法：给话题，30分钟限时写作。AI批改时重点看：1.模板化程度(超30%压分) 2.逻辑连贯性 3.语法错误。给出改进建议。' }
+    ],
+    translation: [
+        { stage: 1, name: '核心词汇', desc: '中国文化/社会高频词', icon: '📚', time: 10, prompt: '训练方法：给5个中国文化和社论高频词(如繁荣/传承/创新/协调/绿色)，让用户翻译。重点练关键词覆盖。' },
+        { stage: 2, name: '拆句成短', desc: '中文长句拆英文短句', icon: '✂️', time: 10, prompt: '训练方法：给2个中文长句，让用户拆成2-3个英文短句。评分看：每个短句语法对、意思完整。不需要高级句式。' },
+        { stage: 3, name: '反中式英语', desc: '常见Chinglish纠错(新规重点)', icon: '🚫', time: 10, prompt: '训练方法：2026新规重点！给5个典型中式英语表达(如open the light/people mountain people sea)，让用户改成地道英文。重点练思维转换。' },
+        { stage: 4, name: '完整段落', desc: '限时段落翻译', icon: '📝', time: 30, prompt: '训练方法：给一段完整中文(140-160字四级/180-200字六级)，限时翻译。AI评分：关键词覆盖25%+语法35%+表达地道度40%。' }
+    ]
+};
+
+// 获取用户某技能当前训练阶段
+function getCurrentStage(skill) {
+    var history = getTrainingHistory();
+    var skillHistory = history.filter(function(h) { return h.skill === skill; });
+    if (skillHistory.length === 0) return 1;
+    // 最近3次该技能训练，如果正确率>=60%就升级
+    var recent = skillHistory.slice(-3);
+    var avgCorrect = recent.reduce(function(sum, h) { return sum + (h.correct / h.total); }, 0) / recent.length;
+    var maxStage = TRAINING_STAGES[skill] ? TRAINING_STAGES[skill].length : 1;
+    var currentStage = skillHistory[skillHistory.length - 1].stage || 1;
+    if (avgCorrect >= 0.6 && currentStage < maxStage) {
+        return currentStage + 1;
+    }
+    return currentStage;
+}
+
+// 获取训练历史
+function getTrainingHistory() {
+    try {
+        var data = localStorage.getItem(examKey('training_history'));
+        if (data) return JSON.parse(data);
+    } catch(e) {}
+    return [];
+}
+
+// 保存训练记录
+function saveTrainingRecord(record) {
+    var history = getTrainingHistory();
+    record.date = new Date().toISOString().split('T')[0];
+    record.timestamp = Date.now();
+    history.push(record);
+    // 只保留最近50条
+    if (history.length > 50) history = history.slice(-50);
+    localStorage.setItem(examKey('training_history'), JSON.stringify(history));
+}
+
+// 生成智能今日任务（基于训练阶段+诊断数据+距考试天数）
+function generateSmartTasks() {
+    var skillLevels = null;
+    try {
+        var dims = getAbilityScores();
+        if (dims && dims.dims) skillLevels = getSkillLevels(dims.dims);
+    } catch(e) {}
+    
+    var examDate = new Date('2026-06-13');
+    var daysLeft = Math.ceil((examDate - new Date()) / (1000 * 60 * 60 * 24));
+    var trainingHistory = getTrainingHistory();
+    
+    // 今天已练过的技能
+    var today = new Date().toISOString().split('T')[0];
+    var todayPracticed = trainingHistory.filter(function(h) { return h.date === today; });
+    var todaySkills = todayPracticed.map(function(h) { return h.skill; });
+    
+    // 未做过诊断
+    var data = state.userData || {};
+    var hasDiag = data.personality || (data.diagnosis && data.diagnosis.type);
+    if (!hasDiag) {
+        return [
+            { id: 'diagnosis', text: '完成3分钟AI诊断', time: '3min', icon: '🔍', skill: null, stage: null, action: "switchTab('diagnosis');setTimeout(function(){startNewDiagnosis();},300)" }
+        ];
+    }
+    
+    var tasks = [];
+    
+    // 按技能薄弱程度排序
+    var skills = ['listening', 'reading', 'writing', 'translation'];
+    var skillNames = { listening: '听力', reading: '阅读', writing: '写作', translation: '翻译' };
+    var skillSorted = skills.slice();
+    if (skillLevels) {
+        skillSorted.sort(function(a, b) {
+            return (skillLevels[a] ? skillLevels[a].score : 0) - (skillLevels[b] ? skillLevels[b].score : 0);
+        });
+    }
+    
+    // 任务1: 最弱技能，当前阶段训练
+    var task1Skill = null;
+    for (var i = 0; i < skillSorted.length; i++) {
+        if (todaySkills.indexOf(skillSorted[i]) === -1) {
+            task1Skill = skillSorted[i];
+            break;
+        }
+    }
+    if (!task1Skill) task1Skill = skillSorted[0]; // 都练过了就练最弱的
+    
+    if (task1Skill) {
+        var stage = getCurrentStage(task1Skill);
+        var stageInfo = TRAINING_STAGES[task1Skill] ? TRAINING_STAGES[task1Skill][stage - 1] : null;
+        tasks.push({
+            id: 'train_' + task1Skill + '_s' + stage,
+            text: skillNames[task1Skill] + '·' + (stageInfo ? stageInfo.name : '基础训练'),
+            time: (stageInfo ? stageInfo.time : 10) + 'min',
+            icon: stageInfo ? stageInfo.icon : '📋',
+            skill: task1Skill,
+            stage: stage,
+            action: "startTraining('" + task1Skill + "', " + stage + ")"
+        });
+    }
+    
+    // 任务2: 次弱技能
+    var task2Skill = null;
+    for (var i = 0; i < skillSorted.length; i++) {
+        if (skillSorted[i] !== task1Skill && todaySkills.indexOf(skillSorted[i]) === -1) {
+            task2Skill = skillSorted[i];
+            break;
+        }
+    }
+    if (!task2Skill) task2Skill = skillSorted.length > 1 ? skillSorted[1] : null;
+    
+    if (task2Skill) {
+        var stage2 = getCurrentStage(task2Skill);
+        var stageInfo2 = TRAINING_STAGES[task2Skill] ? TRAINING_STAGES[task2Skill][stage2 - 1] : null;
+        tasks.push({
+            id: 'train_' + task2Skill + '_s' + stage2,
+            text: skillNames[task2Skill] + '·' + (stageInfo2 ? stageInfo2.name : '基础训练'),
+            time: (stageInfo2 ? stageInfo2.time : 10) + 'min',
+            icon: stageInfo2 ? stageInfo2.icon : '📋',
+            skill: task2Skill,
+            stage: stage2,
+            action: "startTraining('" + task2Skill + "', " + stage2 + ")"
+        });
+    }
+    
+    // 任务3: 错题复习或冲刺
+    var overdueCount = typeof getOverdueReviewCount === 'function' ? getOverdueReviewCount() : 0;
+    if (overdueCount > 0) {
+        tasks.push({
+            id: 'review',
+            text: '复习' + overdueCount + '道到期错题',
+            time: '5min',
+            icon: '📖',
+            skill: null,
+            stage: null,
+            action: 'showWrongBook()'
+        });
+    } else if (daysLeft <= 14) {
+        // 距考试2周内，加冲刺任务
+        tasks.push({
+            id: 'sprint',
+            text: '考前冲刺模拟(限时)',
+            time: '25min',
+            icon: '⚡',
+            skill: null,
+            stage: null,
+            action: "switchTab('chat');setTimeout(function(){sendSuggestion('考前限时模拟练习');},300)"
+        });
+    } else {
+        // 第三弱技能
+        var task3Skill = null;
+        for (var i = 0; i < skillSorted.length; i++) {
+            if (skillSorted[i] !== task1Skill && skillSorted[i] !== task2Skill && todaySkills.indexOf(skillSorted[i]) === -1) {
+                task3Skill = skillSorted[i];
+                break;
+            }
+        }
+        if (task3Skill) {
+            var stage3 = getCurrentStage(task3Skill);
+            var stageInfo3 = TRAINING_STAGES[task3Skill] ? TRAINING_STAGES[task3Skill][stage3 - 1] : null;
+            tasks.push({
+                id: 'train_' + task3Skill + '_s' + stage3,
+                text: skillNames[task3Skill] + '·' + (stageInfo3 ? stageInfo3.name : '基础训练'),
+                time: (stageInfo3 ? stageInfo3.time : 10) + 'min',
+                icon: stageInfo3 ? stageInfo3.icon : '📋',
+                skill: task3Skill,
+                stage: stage3,
+                action: "startTraining('" + task3Skill + "', " + stage3 + ")"
+            });
+        }
+    }
+    
+    return tasks.slice(0, 3);
+}
+
+// 启动训练 - 通过AI聊天执行
+function startTraining(skill, stage) {
+    var stageInfo = TRAINING_STAGES[skill] ? TRAINING_STAGES[skill][stage - 1] : null;
+    var skillNames = { listening: '听力', reading: '阅读', writing: '写作', translation: '翻译' };
+    var skillName = skillNames[skill] || skill;
+    var stageName = stageInfo ? stageInfo.name : '基础';
+    var stageDesc = stageInfo ? stageInfo.desc : '';
+    var stagePrompt = stageInfo ? stageInfo.prompt : '';
+    
+    // 保存当前训练上下文
+    localStorage.setItem(examKey('current_training'), JSON.stringify({
+        skill: skill,
+        stage: stage,
+        startTime: Date.now()
+    }));
+    
+    // 切到聊天页并发送训练指令
+    switchTab('chat');
+    setTimeout(function() {
+        var msg = '[训练模式] ' + skillName + '·' + stageName + '：' + stageDesc + '\n\nAI请按以下方法训练我：' + stagePrompt;
+        sendSuggestion(msg);
+    }, 300);
+}
+
 
 // 预估考试分数：4技能映射到710分制
 // 四级：听力35%(248.5) 阅读35%(248.5) 写作15%(106.5) 翻译15%(106.5)
