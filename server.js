@@ -2704,6 +2704,7 @@ if (pathname === '/api/essay/upload' && req.method === 'POST') {
                     res.end(JSON.stringify({ error: err.message }));
                 }
             });
+            return;
         }
 
     // 404
