@@ -3482,12 +3482,9 @@ function ensureChatOpen(){
             // 陪练模式：6个快捷按钮
             var chipsHtml = '' +
                 '<div class="chip-pill-wrap">' +
-                '<div class="custom-chip-pill" onclick="sendSuggestion(this.dataset.msg)" data-msg="今天练什么好">📋 今日练习</div>' +
-                '<div class="custom-chip-pill" onclick="sendSuggestion(this.dataset.msg)" data-msg="给我出一道听力题">🎧 听力训练</div>' +
+                '<div class="custom-chip-pill" onclick="sendSuggestion(this.dataset.msg)" data-msg="今天练什么好">📋 今日任务</div>' +
                 '<div class="custom-chip-pill" onclick="sendSuggestion(this.dataset.msg)" data-msg="请帮我批改作文，请先让我发送作文题目">✍️ 批改作文</div>' +
                 '<div class="custom-chip-pill" onclick="sendSuggestion(this.dataset.msg)" data-msg="请根据我的近期错题，分析我的薄弱模式和改进方向">📊 错题分析</div>' +
-                '<div class="custom-chip-pill" onclick="sendSuggestion(this.dataset.msg)" data-msg="给我一段中文，让我翻译成英文">📝 翻译练习</div>' +
-                '<div class="custom-chip-pill" onclick="sendSuggestion(this.dataset.msg)" data-msg="给我一个今天就能用上的四级考试具体技巧，要有操作步骤">💡 今日技巧</div>' +
                 '</div>';
             
             // Flagship专属
