@@ -10681,7 +10681,7 @@ var TRAINING_STAGES = {
     reading: [
         { stage: 1, name: '定位速度', desc: '关键词回文找位置', icon: '🎯', time: 10, prompt: '训练方法：给一篇短文+题目，让用户说出关键词在原文第几段第几句。重点练快速定位，不需要理解全文。出3道定位题。' },
         { stage: 2, name: '同义替换', desc: '选项是原文的改写', icon: '🔄', time: 10, prompt: '训练方法：给短文+题目，正确选项是原文的同义改写。让用户判断哪些选项是原文的等价表达。出3道同义替换识别题。' },
-        { stage: 3, name: '推理判断', desc: '转折词后藏答案，段首段尾是关键(新规占50%)', icon: '💡', time: 15, prompt: '训练方法：2026新规重点！推理判断现在占阅读50%(以前30%)。出推理判断题，答案藏在but/however/although/despite之后或段首段尾。引导用户找推理链：原文信息→逻辑推导→正确选项。出3道推理题，逐步讲解推理思路。每道题讲完告诉用户'这种题在新规中占比最大'。' },
+        { stage: 3, name: '推理判断', desc: '转折词后藏答案，段首段尾是关键(新规占50%)', icon: '💡', time: 15, prompt: '训练方法：2026新规重点！推理判断现在占阅读50%(以前30%)。出推理判断题，答案藏在but/however/although/despite之后或段首段尾。引导用户找推理链：原文信息→逻辑推导→正确选项。出3道推理题，逐步讲解推理思路。每道题讲完告诉用户「这种题在新规中占比最大」。' },
         { stage: 4, name: '长篇匹配', desc: '12段文章快速定位匹配', icon: '📋', time: 15, prompt: '训练方法：给较长文章(8-10段)+5道匹配题，训练用特殊词(大写/数字/专有名词)快速定位。不按顺序做，先做有特征的。限时8分钟。' },
         { stage: 5, name: '全真模拟', desc: '3篇连做40分钟', icon: '🏆', time: 40, prompt: '训练方法：模拟考试完整流程，选词填空+长篇匹配+仔细阅读，限时40分钟。训练考试节奏。' }
     ],
@@ -10689,7 +10689,7 @@ var TRAINING_STAGES = {
         { stage: 1, name: '语法清零', desc: '修复低级语法错误', icon: '🔧', time: 10, prompt: '训练方法：给5个含典型语法错误的句子(如he don\'t/I am agree/three childs)，让用户找出并改正。确保基础语法不出错。' },
         { stage: 2, name: '逻辑框架', desc: '三段式结构不是模板', icon: '📐', time: 10, prompt: '训练方法：给一个话题，让用户列出三段式提纲(引入→论述→总结)。评价逻辑链是否完整，不评价语言。注意：教结构不教套句，2026新规反模板。' },
         { stage: 3, name: '自然表达', desc: '用自己的话，不套句', icon: '✨', time: 10, prompt: '训练方法：2026新规重点！给3个常见套句(如With the development of/As is known to all)，让用户改成自然表达。评分标准：越不像模板越好。' },
-        { stage: 4, name: '完整写作', desc: '30分钟独立完成', icon: '✍️', time: 30, prompt: '训练方法：给话题，30分钟限时写作。AI批改时必须：1.给出模板化分数(0-100)，>70分警告'新规会压分'并标出模板化句子 2.评价逻辑连贯性 3.标出语法错误 4.每个模板化句子给出自然替代写法。' }
+        { stage: 4, name: '完整写作', desc: '30分钟独立完成', icon: '✍️', time: 30, prompt: '训练方法：给话题，30分钟限时写作。AI批改时必须：1.给出模板化分数(0-100)，>70分警告「新规会压分」并标出模板化句子 2.评价逻辑连贯性 3.标出语法错误 4.每个模板化句子给出自然替代写法。' }
     ],
     translation: [
         { stage: 1, name: '核心词汇', desc: '中国文化/社会高频词', icon: '📚', time: 10, prompt: '训练方法：给5个中国文化和社论高频词(如繁荣/传承/创新/协调/绿色)，让用户翻译。重点练关键词覆盖。' },
@@ -15254,7 +15254,7 @@ function renderListeningAudio(bubbleEl, audioUrl) {
 
 function detectAndGenerateAudio(fullText, bubbleEl) {
     if (!fullText || !bubbleEl) return;
-    var match = fullText.match(/【听力原文】([sS]*?)【/听力原文】/);
+    var match = fullText.match(/【听力原文】([\s\S]*?)【听力原文】/);
     if (match && match[1] && match[1].trim().length > 20) {
         var listeningText = match[1].trim();
         console.log('[Audio] Detected listening text, generating...');
