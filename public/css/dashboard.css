@@ -512,6 +512,11 @@
     gap: 6px;
     padding-left: 2px;
 }
+.dashboard-section-title svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
 
 .dashboard-report-timeline {
     display: flex;
