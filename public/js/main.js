@@ -4689,9 +4689,9 @@ function updateHomeStatus() {
 
                 // 计算今日训练数
                 var todayStr = new Date().toDateString();
-                var practiceHistory = JSON.parse(localStorage.getItem(examKey('practice_history')) || '[]');
-                var todayPractices = practiceHistory.filter(function(p) {
-                    return new Date(p.date).toDateString() === todayStr;
+                var trainingHist = JSON.parse(localStorage.getItem(examKey('training_history')) || '[]');
+                var todayPractices = trainingHist.filter(function(p) {
+                    return p.date === new Date().toISOString().split('T')[0];
                 });
                 var todayCount = todayPractices.length;
                 var targetCount = 3;
@@ -10993,22 +10993,74 @@ function startTraining(skill, stage) {
     var stageName = stageInfo ? stageInfo.name : '基础';
     var stageDesc = stageInfo ? stageInfo.desc : '';
     var stagePrompt = stageInfo ? stageInfo.prompt : '';
+    var targetCount = (skill === 'writing' || skill === 'translation') ? 1 : 5;
     
-    // 保存当前训练上下文
+    // 保存当前训练上下文 + 进度追踪
     localStorage.setItem(examKey('current_training'), JSON.stringify({
         skill: skill,
         stage: stage,
-        startTime: Date.now()
+        startTime: Date.now(),
+        questionCount: 0,
+        targetCount: targetCount
     }));
     
     // 切到聊天页并发送训练指令
     switchTab('chat');
     setTimeout(function() {
         var timeLimit = stageInfo ? stageInfo.time : 10;
-        var msg = '[训练模式] ' + skillName + '·' + stageName + '：' + stageDesc + '\n\n限时' + timeLimit + '分钟。AI请按以下方法训练我：' + stagePrompt;
+        var msg = '[训练模式] ' + skillName + '·' + stageName + '：' + stageDesc + '\n\n限时' + timeLimit + '分钟，共' + targetCount + '题。AI请按以下方法训练我：' + stagePrompt + '\n\n重要：每道题出完后等用户回答再出下一道。出完' + targetCount + '道题后给出【训练评价】总结正确率。';
         sendSuggestion(msg);
         startTrainingTimer(timeLimit, skillName + '·' + stageName);
+        showTrainingProgress(skillName, 0, targetCount);
     }, 300);
+}
+
+// 训练进度条
+function showTrainingProgress(skillName, current, target) {
+    var headerCenter = document.querySelector('.custom-chat-header-center');
+    if (!headerCenter) return;
+    
+    var existing = document.getElementById('training-progress-bar');
+    if (existing) existing.remove();
+    
+    var progressDiv = document.createElement('div');
+    progressDiv.id = 'training-progress-bar';
+    progressDiv.style.cssText = 'display:flex;align-items:center;gap:6px;margin-top:2px;';
+    
+    var label = document.createElement('span');
+    label.style.cssText = 'font-size:10px;color:#6C5CE7;font-weight:600;';
+    label.textContent = skillName + ' ' + current + '/' + target;
+    
+    var barBg = document.createElement('div');
+    barBg.style.cssText = 'width:48px;height:4px;background:rgba(108,92,231,0.15);border-radius:2px;overflow:hidden;';
+    
+    var barFill = document.createElement('div');
+    var pct = target > 0 ? Math.min(100, Math.round(current / target * 100)) : 0;
+    barFill.style.cssText = 'width:' + pct + '%;height:100%;background:#6C5CE7;border-radius:2px;transition:width 0.3s;';
+    
+    barBg.appendChild(barFill);
+    progressDiv.appendChild(label);
+    progressDiv.appendChild(barBg);
+    
+    // 插到header-status之前
+    var statusEl = headerCenter.querySelector('.custom-chat-header-status');
+    if (statusEl) {
+        headerCenter.insertBefore(progressDiv, statusEl);
+    } else {
+        headerCenter.appendChild(progressDiv);
+    }
+}
+
+// 更新训练进度
+function updateTrainingProgress() {
+    var trainingStr = localStorage.getItem(examKey('current_training'));
+    if (!trainingStr) return;
+    try {
+        var training = JSON.parse(trainingStr);
+        if (!training.skill) return;
+        var skillNames = { listening: '听力', reading: '阅读', writing: '写作', translation: '翻译' };
+        showTrainingProgress(skillNames[training.skill] || training.skill, training.questionCount || 0, training.targetCount || 5);
+    } catch(e) {}
 }
 
 
@@ -15388,14 +15440,40 @@ function detectAndGenerateAudio(fullText, bubbleEl) {
 
 // ===== 训练完成追踪 =====
 function trackTrainingCompletion(skill, stage, aiResponse) {
-    var evalMatch = aiResponse.match(/【训练评价】[sS]*?正确率[：:]s*(d+)%/);
+    // 追踪题目进度
+    var trainingStr = localStorage.getItem(examKey('current_training'));
+    if (trainingStr) {
+        try {
+            var training = JSON.parse(trainingStr);
+            if (training.skill === skill) {
+                // 检测AI出题：看回复里是否包含题目编号或选项
+                var hasQuestion = aiResponse.match(/第[一二三四五六七八九十1-5]题|题[1-5]|[A-D][.．、)]|选项[ABCD]/);
+                if (hasQuestion) {
+                    training.questionCount = (training.questionCount || 0) + 1;
+                    localStorage.setItem(examKey('current_training'), JSON.stringify(training));
+                    updateTrainingProgress();
+                }
+                // 检测训练评价（一组完成）
+                var evalMatch2 = aiResponse.match(/【训练评价】/);
+                if (evalMatch2) {
+                    training.questionCount = training.targetCount || 5;
+                    localStorage.setItem(examKey('current_training'), JSON.stringify(training));
+                    updateTrainingProgress();
+                    // 训练完成后更新首页状态
+                    setTimeout(function() { updateHomeStatus(); }, 500);
+                }
+            }
+        } catch(e) {}
+    }
+    
+    var evalMatch = aiResponse.match(/【训练评价】[\s\S]*?正确率[：:]\s*(\d+)%/);
     if (evalMatch) {
         var accuracy = parseInt(evalMatch[1]);
         saveTrainingRecord({ skill: skill, stage: stage, total: 5, correct: Math.round(5 * accuracy / 100), accuracy: accuracy, timestamp: Date.now() });
         checkAndSuggestRediagnosis(skill);
         return;
     }
-    evalMatch = aiResponse.match(/(d+)题对(d+)题/);
+    evalMatch = aiResponse.match(/(\d+)题对(\d+)题/);
     if (evalMatch) {
         saveTrainingRecord({ skill: skill, stage: stage, total: parseInt(evalMatch[1]), correct: parseInt(evalMatch[2]), timestamp: Date.now() });
         checkAndSuggestRediagnosis(skill);
@@ -15457,13 +15535,8 @@ function checkAndSuggestRediagnosis(skill) {
 function startFullDiagnosis() {
     clearTrainingTimer();
     localStorage.removeItem(examKey('current_training'));
-    if (typeof startDiagnosis === 'function') startDiagnosis();
-    else switchTab('diagnosis');
-}
-
-function startFullDiagnosis() {
-    clearTrainingTimer();
-    localStorage.removeItem(examKey('current_training'));
+    var progBar = document.getElementById('training-progress-bar');
+    if (progBar) progBar.remove();
     if (typeof startDiagnosis === 'function') startDiagnosis();
     else switchTab('diagnosis');
 }
