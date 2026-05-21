@@ -5013,7 +5013,8 @@ function updateHomeStatus() {
                         skill_levels: (function() { try { var d = getAbilityScores(); if (d && d.dims) { var sl = getSkillLevels(d.dims); var out = {}; for (var k in sl) out[k] = sl[k].score; return JSON.stringify(out); } } catch(e) {} return ''; })(),
                         diag_trend: (function() { try { var h = getAbilityHistory(); if (h.length >= 2) return h[h.length-2].date + '→' + h[h.length-1].date + ' 总分' + h[h.length-1].total; } catch(e) {} return ''; })(),
                         diag_count: (function() { try { return getAbilityHistory().length; } catch(e) {} return 0; })(),
-                        training_history: (function() { try { return JSON.stringify(getTrainingHistory().slice(-5)); } catch(e) {} return ''; })()
+                        training_history: (function() { try { return JSON.stringify(getTrainingHistory().slice(-5)); } catch(e) {} return ''; })(),
+                        current_training: localStorage.getItem(examKey('current_training')) || ''
                     };
                 }
 
