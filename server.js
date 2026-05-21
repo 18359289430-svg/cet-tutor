@@ -2894,7 +2894,7 @@ function shouldCompress(req, contentLength) {
 function sendHtml(res, htmlContent, req) {
     const contentLength = Buffer.byteLength(htmlContent, 'utf-8');
     res.setHeader('X-Content-Type-Options', 'nosniff');
-    res.setHeader('Cache-Control', 'no-cache'); // HTML不缓存，确保更新即时生效
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0'); res.setHeader('Pragma', 'no-cache'); res.setHeader('Expires', '0'); // HTML不缓存，确保更新即时生效
     // CSP安全头
     res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.clarity.ms https://us.umami.is https://cloud.umami.is https://scripts.clarity.ms https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://api.deepseek.com https://api.coze.cn https://us.umami.is https://api-gateway.umami.dev https://cloud.umami.is https://n.clarity.ms https://www.clarity.ms https://cdn.clarity.ms https://z.clarity.ms https://s.clarity.ms; font-src 'self'; frame-src 'none'; object-src 'none'");
     
@@ -3235,7 +3235,7 @@ async function handleDeepseekEssayGrade(req, res) {
     if (pathname === '/admin-activate-cet4') {
         const adminHtml = fs.readFileSync(path.join(__dirname, 'admin.html'), 'utf-8');
         const adminContentLength = Buffer.byteLength(adminHtml, 'utf-8');
-        res.setHeader('Cache-Control', 'no-cache');  // API不缓存
+        res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0'); res.setHeader('Pragma', 'no-cache'); res.setHeader('Expires', '0');  // API不缓存
         if (shouldCompress(req, adminContentLength)) {
             res.setHeader('Content-Type', 'text/html; charset=utf-8');
             res.setHeader('Content-Encoding', 'gzip');
