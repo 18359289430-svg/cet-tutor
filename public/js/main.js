@@ -1225,6 +1225,18 @@ function initApp() {
             if (hour < 12) greeting = '早上好';
             else if (hour < 18) greeting = '下午好';
             document.getElementById('greeting-text').textContent = greeting;
+            // 有诊断数据时hero subtitle显示距及格差几分
+            var homeSubtitle = document.getElementById('home-hero-subtitle');
+            var _diagHist = JSON.parse(localStorage.getItem(examKey('diagnosis_history')) || '[]');
+            if (homeSubtitle && _diagHist.length > 0) {
+                var _lastDiag = _diagHist[_diagHist.length - 1];
+                var _scores = _lastDiag.scores || {};
+                var _examScore = estimateExamScores(_scores);
+                if (_examScore && _examScore.total > 0) {
+                    var _diff = 425 - _examScore.total;
+                    homeSubtitle.textContent = _diff > 0 ? '距及格还差' + _diff + '分，今天继续' : '预估' + _examScore.total + '分，保持住';
+                }
+            }
         }
 
         function initCountdown() {
@@ -4646,7 +4658,7 @@ function updateHomeStatus() {
             var ctaText = document.getElementById('home-cta-text');
             if (ctaText) {
                 var hasDiag = data.personality || (data.diagnosis && data.diagnosis.type);
-                ctaText.textContent = hasDiag ? '继续AI陪练' : '开始AI诊断';
+                ctaText.textContent = hasDiag ? '今日任务' : '精准诊断';
             }
             updateDailyTask();
         }
@@ -5789,8 +5801,13 @@ function showClearChatModal() {
         })();
     
 function handleHomeCta() {
-    // 使用新的前端诊断模式
-    startNewDiagnosis();
+    // 有诊断数据 → 进今日任务继续练；没做过 → 先诊断
+    var diagHistory = JSON.parse(localStorage.getItem(examKey('diagnosis_history')) || '[]');
+    if (diagHistory.length > 0) {
+        openDailyTask();
+    } else {
+        startNewDiagnosis();
+    }
 }
 
 var currentSelectedPlan = 'sprint';  // 当前弹窗选中的套餐
@@ -8569,7 +8586,7 @@ async function startNewDiagnosis() {
             closeDiagOverlay();
             showToast('诊断题库暂不可用，将使用AI对话诊断');
             ensureChatOpen();
-            setTimeout(function(){ sendSuggestion('开始AI诊断，帮我找出' + EXAM_LABEL + '薄弱点'); }, 300);
+            setTimeout(function(){ sendSuggestion('精准诊断，帮我找出' + EXAM_LABEL + '丢分点'); }, 300);
             return;
         }
         
