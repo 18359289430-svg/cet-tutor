@@ -1268,8 +1268,7 @@ function initApp() {
         }
 
         function initTabEvents() {
-                if (tabName === 'diagnosis') { updatePracticeCards(); }
-    document.querySelectorAll('.tab-item').forEach(function(item) {
+            document.querySelectorAll('.tab-item').forEach(function(item) {
                 item.addEventListener('click', function() {
                     var tab = this.dataset.tab;
                     switchTab(tab);
@@ -16706,7 +16705,7 @@ window.closePlanOverlay = closePlanOverlay;
 window.activateWithCode = activateWithCode;
 window.switchPayTab = switchPayTab;
 function closeEssayOverlay(){} window.closeEssayOverlay=closeEssayOverlay;
-window.showEssayTemplate=showEssayTemplate;
+function showEssayTemplate(){} window.showEssayTemplate=showEssayTemplate;
 window.submitEssay=submitEssay;
 window.practiceSimilarTranslation = practiceSimilarTranslation;
 window.closeUpgradeCard = closeUpgradeCard;
