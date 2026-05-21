@@ -2686,14 +2686,33 @@ if (pathname === '/api/essay/upload' && req.method === 'POST') {
                         })
                     });
                     if (!ttsResp.ok) {
-                        console.error('[TTS] API error:', ttsResp.status);
+                        const errText = await ttsResp.text();
+                        console.error('[TTS] API error:', ttsResp.status, errText.substring(0,200));
                         res.writeHead(200, { 'Content-Type': 'application/json' });
-                        res.end(JSON.stringify({ error: 'TTS API failed' }));
+                        res.end(JSON.stringify({ error: 'TTS API failed: ' + ttsResp.status }));
+                        return;
+                    }
+                    // CosyVoice returns JSON with audio URL
+                    const ttsData = JSON.parse(await ttsResp.text());
+                    const audioUrl = ttsData.output && ttsData.output.audio && ttsData.output.audio.url;
+                    if (!audioUrl) {
+                        console.error('[TTS] No audio URL in response:', JSON.stringify(ttsData).substring(0,200));
+                        res.writeHead(200, { 'Content-Type': 'application/json' });
+                        res.end(JSON.stringify({ error: 'No audio URL returned' }));
+                        return;
+                    }
+                    // Download the audio file from the returned URL
+                    console.log('[TTS] Downloading audio from:', audioUrl.substring(0,80) + '...');
+                    const audioResp = await fetch(audioUrl);
+                    if (!audioResp.ok) {
+                        console.error('[TTS] Audio download error:', audioResp.status);
+                        res.writeHead(200, { 'Content-Type': 'application/json' });
+                        res.end(JSON.stringify({ error: 'Audio download failed' }));
                         return;
                     }
                     const audioId = 'tts_' + Date.now() + '_' + Math.random().toString(36).substr(2,6) + '.mp3';
                     const audioPath = '/opt/cet-tutor/public/audio/listening/' + audioId;
-                    const buffer = Buffer.from(await ttsResp.arrayBuffer());
+                    const buffer = Buffer.from(await audioResp.arrayBuffer());
                     require('fs').writeFileSync(audioPath, buffer);
                     console.log('[TTS] Saved:', audioPath, 'size:', buffer.length);
                     res.writeHead(200, { 'Content-Type': 'application/json' });
