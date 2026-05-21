@@ -3319,7 +3319,7 @@ function ensureChatOpen(){
     if(!chatState.currentMode)chatState.currentMode=mode;
     var p=document.getElementById("chat-panel");
     if(p){p.classList.remove("hidden");p.style.display="";}
-    var clv=v102.getElementById("chat-list-view");
+    var clv=v103.getElementById("chat-list-view");
     if(clv)clv.classList.remove("active");
     var cp=document.getElementById("chat-page");
     if(cp)cp.style.display="flex";
@@ -3335,7 +3335,7 @@ function ensureChatOpen(){
     var chatList=getChatList();
     var msgContainer=document.getElementById('chat-messages');
     if(chatList&&chatList.length>0){
-        var lastConv=v102List[0];
+        var lastConv=v103List[0];
         if(lastConv&&lastConv.id){
             currentConversationId=lastConv.id;
             chatState.conversationId=lastConv.id;
@@ -3678,7 +3678,7 @@ function ensureChatOpen(){
                     return;
                 }
                 var vocabFile = '/public/cet' + (IS_CET6 ? '6' : '4') + '_vocab.json';
-                fetch(vocabFile + '?v=v102' + Date.now())
+                fetch(vocabFile + '?v=v103' + Date.now())
                     .then(function(response) { return response.json(); })
                     .then(function(data) {
                         vocabData = data;
@@ -8844,7 +8844,7 @@ function playListeningRound(text, isConversation, onSegmentStart, onComplete) {
         // 根据CET级别设置语速
         // 四级：约130词/分钟，rate设为1.0
         // 六级：约150词/分钟，rate设为1.15（适当加快）
-        var cetRate = isCET6User() ? 1.15 : 1.0;
+        var cetRate = isCET6User() ? 1.2 : 1.05;
         
         function playSegment(index) {
             if (index >= segments.length) {
@@ -9199,7 +9199,7 @@ function showCurrentListening() {
     }
     html += '</button>';
     
-    html += '<div class="listening-play-hint">📢 ' + cetLabel + '听力语速：' + (isCET6User() ? '约150词/分钟' : '约130词/分钟') + '</div>';
+    html += '<div class="listening-play-hint">📢 ' + cetLabel + '听力语速(2026新规)：' + (isCET6User() ? '约150-155词/分钟' : '约145-148词/分钟') + '</div>';
     
     html += '</div>';
     
@@ -10630,11 +10630,11 @@ function renderReportPage() {
     // 生成弱项建议卡片
     var weakAdviceHtml = '';
     var adviceMap = {
-        '听力': { label: '听力强化专项', advice: '建议每天听一段VOA或BBC，先泛听抓大意，再精听记细节。考前集中练习真题听力，熟悉题型和语速。' },
-        '细节定位': { label: '细节定位专项', advice: '建议每天练习3道细节题，学会用关键词回原文定位。重点关注时间、数字、绝对词等信号词。' },
-        '推理判断': { label: '推理判断专项', advice: '练习从原文信息推导隐含含义，重点关注转折词和因果词。一切答案从原文出发，避免主观推测。' },
-        '同义替换': { label: '同义替换专项', advice: '留意选项和原文的改写方式，重点关注词性变换和近义替换。积累高频同义替换词组有助于解题。' },
-        '主旨归纳': { label: '主旨归纳专项', advice: '先看首尾句和转折词，关注高频出现的名词和主题词。文章主旨通常在首段末句或末段首句。' },
+        '听力': { label: '听力强化专项', advice: '2026新规：听力语速提升5%-8%，推理题占比增加。建议精听真题，重点关注说话人意图和态度，不能只抓关键词。' },
+        '细节定位': { label: '细节定位专项', advice: '改革后细节题占比下降，但仍是基础分。练好定位后要进阶到推理题，才能应对新规。' },
+        '推理判断': { label: '推理判断专项(新规重点)', advice: '2026新规：推理+态度题占50%，是最重要的题型。重点练转折词(but/however)后隐含的言外之意，答案不在原文原话里。' },
+        '同义替换': { label: '同义替换专项(新规核心)', advice: '2026新规：同义替换成核心考点，原词复现的选项多是干扰项。积累高频替换词组是解题关键。' },
+        '主旨归纳': { label: '主旨归纳专项', advice: '科普类文章占比升至40%，主旨常藏在段首或转折词后。先看首尾句，再抓高频主题词。' },
         '态度判断': { label: '态度判断专项', advice: '积累常见的态度词（如skeptical、optimistic等），注意作者是否直接表态还是引用他人观点。' }
     };
     d.weakDims.forEach(function(weak) {
@@ -10650,8 +10650,8 @@ function renderReportPage() {
     // 生成备考建议
     var tipsHtml = '';
     var tips = [
-        { icon: '', text: '每天投入30分钟针对性训练，重点巩固薄弱维度' },
-        { icon: '', text: '做完题及时复盘错题，记录考点和错误原因' },
+        { icon: '', text: '2026新规：推理题占50%，每天重点练推理和同义替换' },
+        { icon: '', text: '写作减少模板套句，新规下模板化超30%会被压分' },
         { icon: '', text: '定期重新诊断，追踪各维度能力变化' }
     ];
     tips.forEach(function(tip) {

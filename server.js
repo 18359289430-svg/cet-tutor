@@ -353,13 +353,22 @@ function getExamContext(isCet6) {
     var examLabel = isCet6 ? '六级' : '四级';
     var wordCountReq = isCet6 ? '150-200词' : '120-180词';
     var vocabLevel = isCet6 ? '6000' : '4500';
+    var reformInfo = '';
+    
+    // 2026年改革要点
+    if (isCet6) {
+        reformInfo = '\n\n【2026年新规适配】六级已改革：\n- 听力语速提升至150-155词/分钟（原150-170），推理题占比提升\n- 阅读科普文章占比40%，推理+态度题占50%\n- 写作禁止翻阅试卷，逻辑连贯性占20%，模板化>30%压低档分\n- 翻译强调表达地道，中式英语扣分加重';
+    } else {
+        reformInfo = '\n\n【2026年新规适配】四级已改革：\n- 听力语速提升至145-148词/分钟（原130-150），新增推理判断题\n- 阅读科普文章占比40%，推理+态度题占50%\n- 写作禁止翻阅试卷，逻辑连贯性占20%，模板化>30%压低档分\n- 翻译强调表达地道，中式英语扣分加重';
+    }
+    
     return {
         examLabel: examLabel,
         wordCountReq: wordCountReq,
         vocabLevel: vocabLevel,
         systemPrompt: isCet6 
-            ? '\n\n【重要】当前用户正在备考六级，所有出题必须按六级标准：词汇量6000、推理深度2-3步、选项更隐蔽、逻辑结构更完整。'
-            : ''
+            ? '\n\n【重要】当前用户正在备考六级，所有出题必须按六级标准：词汇量6000、推理深度2-3步、选项更隐蔽、逻辑结构更完整。' + reformInfo
+            : reformInfo
     };
 }
 
@@ -374,6 +383,13 @@ const COMPANION_SYSTEM_PROMPT = `你是"小过学长"的AI陪练模式，一个�
 - 禁止说"提分XX" → 不提数字
 - 禁止说"押题""预测" → 绝对不出现
 - 只说"帮你练习""帮你巩固""帮你提升能力"
+
+## 【2026改革适配】新规要点必须落实
+- 听力：推理判断/观点理解题占比提升，语速加快，要训练跨场景信息整合能力
+- 阅读：推理+态度题占50%，科普类占比40%，同义替换是核心，不能用关键词蒙题
+- 写作：逻辑连贯性占20%，模板化语句超30%压低档分，要练真实表达
+- 翻译：强调表达地道，中式英语扣分加重，不要鼓励机械翻译
+- 出题方向：多出推理题，少出纯定位题；阅读增加科普内容
 
 ## 铁律：真题优先，绝不编题
 - 如果系统给你[真题参考]，你必须直接使用这些真题出题
@@ -493,8 +509,11 @@ AI必须：
 ✅ 命中关键词：xxx
 ❌ 遗漏关键词：xxx
 🔧 语法修正：xxx → yyy
+⚠️ 模板化检测：模板语句占XX%（2026新规：超30%压低档分）
 💡 建议：xxx
 \`\`\`
+
+【重要】2026新规：模板化语句超30%会被压低档分。批改时要提醒用户减少套句，多用自然表达。
 
 ## 【出题质量标准-第三层升级】
 
@@ -1516,7 +1535,7 @@ ${user_input}
             const isCet6T = detectExamType(lastMsgT, '');
             const examCtxT = getExamContext(isCet6T);
             
-            const prompt = `你是一位${examCtxT.examLabel}考试翻译评分专家。请对以下翻译进行评分。
+            const prompt = `你是一位${examCtxT.examLabel}考试翻译评分专家。2026新规：中式英语扣分加重，强调表达地道。请对以下翻译进行评分。
 中文原文：
 ${chinese || ''}
 ${reference ? '参考译文：\n' + reference : ''}
@@ -1525,9 +1544,9 @@ ${user_input}
 
 请按以下格式返回JSON（不要加markdown代码块，不要有其他内容）：
 {
-  "keywords": 0-35之间的整数（关键词覆盖程度）,
+  "keywords": 0-25之间的整数（关键词覆盖程度）,
   "grammar": 0-35之间的整数（语法正确性）,
-  "expression": 0-30之间的整数（表达地道程度）,
+  "expression": 0-40之间的整数（表达地道度，2026新规核心）,
   "total": 0-100之间的整数,
   "comment": "1-2句简短评语（中文）"
 }`;
@@ -1535,7 +1554,7 @@ ${user_input}
                 const dsPayload = {
                     model: 'deepseek-chat',
                     messages: [
-                        { role: 'system', content: '你是一位专业、严谨的' + examCtxT.examLabel + '翻译评分专家。你必须严格按照格式返回JSON结果，不要包含任何markdown代码块标记。' },
+                        { role: 'system', content: '你是一位专业、严谨的' + examCtxT.examLabel + '翻译评分专家。2026新规：中式英语扣分加重，机械直译需严格扣分，表达地道度权重提升。你必须严格按照格式返回JSON结果，不要包含任何markdown代码块标记。' },
                         { role: 'user', content: prompt }
                     ],
                     temperature: 0.3,
@@ -2205,7 +2224,7 @@ ${user_input}
             var examCtxEssay = getExamContext(isCet6Essay);
             var examLabelEssay = examCtxEssay.examLabel;
             var wordCountReqEssay = examCtxEssay.wordCountReq;
-            var systemPrompt = '你是' + examLabelEssay + '作文批改专家。请对以下作文进行批改（' + wordCountReqEssay + '），返回JSON格式：{"total_score": 数字(15分制), "content_score": 数字(5分制), "organization_score": 数字(5分制), "language_score": 数字(5分制), "sentences": [{"original": "原句", "issue": "问题说明", "suggestion": "修改建议"}], "overall_comment": "总评"} 只返回JSON，不要其他文字。';
+            var systemPrompt = '你是' + examLabelEssay + '作文批改专家。2026新规：逻辑连贯性占20%，模板化语句超30%压低档分。请对以下作文进行批改（' + wordCountReqEssay + '），返回JSON格式：{"total_score": 数字(15分制), "content_score": 数字(5分制), "organization_score": 数字(5分制), "language_score": 数字(5分制), "template_score": 数字(模板化程度0-100,0=完全原创,100=全是套句), "sentences": [{"original": "原句", "issue": "问题说明", "suggestion": "修改建议"}], "overall_comment": "总评"} 注意：如果检测到大量模板化语句(如With the development of/As is known to all等)，template_score应较高，total_score需相应降低。只返回JSON，不要其他文字。';
             
             try {
                 const resp = await fetch(DEEPSEEK_API_BASE + '/chat/completions', {
@@ -2969,7 +2988,7 @@ async function handleDeepseekEssayGrade(req, res) {
         }
         
         var topicPrefix = topic ? '【题目类型】' + topic + '\n' : '';
-        var systemPrompt = '你是四级作文批改专家。请对以下作文进行批改，返回JSON格式：{"total_score": 数字(15分制), "content_score": 数字(5分制), "organization_score": 数字(5分制), "language_score": 数字(5分制), "sentences": [{"original": "原句", "issue": "问题说明", "suggestion": "修改建议"}], "overall_comment": "总评"} 只返回JSON，不要其他文字。';
+        var systemPrompt = '你是四级作文批改专家。2026新规：逻辑连贯性占20%，模板化语句超30%压低档分。请对以下作文进行批改，返回JSON格式：{"total_score": 数字(15分制), "content_score": 数字(5分制), "organization_score": 数字(5分制), "language_score": 数字(5分制), "template_score": 数字(模板化程度0-100), "sentences": [{"original": "原句", "issue": "问题说明", "suggestion": "修改建议"}], "overall_comment": "总评"} 注意：如果检测到大量模板化语句，template_score应较高，total_score需相应降低。只返回JSON，不要其他文字。';
         
         const payload = {
             model: 'deepseek-chat',
