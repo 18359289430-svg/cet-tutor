@@ -200,17 +200,17 @@
 }
 
 .dashboard-overview-card.large.streak-card {
-    background: var(--accent);
+    background: #1E1B3A;
     color: white;
     border: none;
-    box-shadow: 0 2px 8px rgba(245,158,11,0.2);
+    box-shadow: 0 2px 8px rgba(30,27,58,0.15);
 }
 
 .dashboard-overview-card.large.score-card {
-    background: var(--primary);
+    background: #1E1B3A;
     color: white;
     border: none;
-    box-shadow: 0 2px 8px rgba(79,70,229,0.2);
+    box-shadow: 0 2px 8px rgba(30,27,58,0.15);
 }
 
 /* 去掉大卡片内部装饰圆 */
