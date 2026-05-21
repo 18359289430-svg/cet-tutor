@@ -33,7 +33,7 @@
     <!-- CSS -->
     <link rel="stylesheet" href="/css/variables.css?v=151">
     <link rel="stylesheet" href="/css/base.css?v=151">
-    <link rel="stylesheet" href="/css/home3.css?v=153">
+    <link rel="stylesheet" href="/css/home2.css?v=154">
     <link rel="stylesheet" href="/css/study.css?v=151">
     <link rel="stylesheet" href="/css/chat.css?v=151">
     <link rel="stylesheet" href="/css/personality.css?v=151">
@@ -391,68 +391,73 @@
                 <!-- 训练卡片入口 -->
                 <div class="practice-page">
                     <div class="practice-section-title">专项训练</div>
-                    <div class="practice-sub" id="practice-sub">选择科目开始训练</div>
-
-                    <!-- 听力训练 -->
-                    <div class="practice-card" onclick="startPractice('listening')" style="border-left-color:#45B7D1;">
-                        <div class="practice-card-header">
-                            <div class="practice-card-icon" style="background:rgba(69,183,209,0.1);color:#45B7D1;">
-                                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
+                    <div class="practice-sub" id="practice-sub" style="margin-bottom:0;">选择科目开始训练</div>
+                    <!-- 听力训练 卡片 -->
+                    <div class="dashboard-radar-section glass-card" onclick="startPractice('listening')" style="cursor:pointer;">
+                        <div class="dashboard-radar-header" style="margin-bottom:0;">
+                            <div class="dashboard-radar-title">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#45B7D1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
+                                听力训练
                             </div>
-                            <div class="practice-card-info">
-                                <div class="practice-card-name">听力训练</div>
-                                <div class="practice-card-desc" id="practice-stage-listening">完成诊断后解锁听力训练</div>
+                            <div id="practice-score-listening" style="font-size:16px;font-weight:800;color:var(--primary);">—</div>
+                        </div>
+                        <div class="dashboard-radar-empty" style="padding:24px 20px;">
+                            <div class="dashboard-radar-empty-icon" style="background:rgba(69,183,209,0.08);">
+                                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#45B7D1" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.5;"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
                             </div>
-                            <div class="practice-card-score" id="practice-score-listening">—</div>
-                            <svg class="practice-card-arrow" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                            <div class="dashboard-radar-empty-text" id="practice-stage-listening">完成诊断后解锁听力训练</div>
                         </div>
                     </div>
-
-                    <!-- 阅读训练 -->
-                    <div class="practice-card" onclick="startPractice('reading')" style="border-left-color:#00B894;">
-                        <div class="practice-card-header">
-                            <div class="practice-card-icon" style="background:rgba(0,184,148,0.1);color:#00B894;">
-                                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                    <!-- 阅读训练 卡片 -->
+                    <div class="dashboard-trend-section glass-card" onclick="startPractice('reading')" style="cursor:pointer;">
+                        <div class="dashboard-trend-header" style="margin-bottom:0;">
+                            <div class="dashboard-trend-title">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#00B894" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                                阅读训练
                             </div>
-                            <div class="practice-card-info">
-                                <div class="practice-card-name">阅读训练</div>
-                                <div class="practice-card-desc" id="practice-stage-reading">完成诊断后解锁阅读训练</div>
+                            <div id="practice-score-reading" style="font-size:16px;font-weight:800;color:var(--primary);">—</div>
+                        </div>
+                        <div class="dashboard-trend-empty" style="padding:24px 20px;">
+                            <div class="dashboard-trend-empty-icon" style="background:rgba(0,184,148,0.08);">
+                                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#00B894" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.5;"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
                             </div>
-                            <div class="practice-card-score" id="practice-score-reading">—</div>
-                            <svg class="practice-card-arrow" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                            <div class="dashboard-trend-empty-text" id="practice-stage-reading">完成诊断后解锁阅读训练</div>
                         </div>
                     </div>
-
-                    <!-- 写作批改 -->
-                    <div class="practice-card" onclick="startPractice('writing')" style="border-left-color:#FD79A8;">
-                        <div class="practice-card-header">
-                            <div class="practice-card-icon" style="background:rgba(253,121,168,0.1);color:#FD79A8;">
-                                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+                    <!-- 写作批改 卡片 -->
+                    <div class="dashboard-report-section" onclick="startPractice('writing')" style="cursor:pointer;padding:0;">
+                        <div class="dashboard-section-title">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#FD79A8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+                            写作批改
+                            <span id="practice-score-writing" style="margin-left:auto;font-size:16px;font-weight:800;color:var(--primary);">—</span>
+                        </div>
+                        <div class="dashboard-report-card">
+                            <div style="display:flex;flex-direction:column;align-items:center;padding:20px;text-align:center;">
+                                <div style="width:48px;height:48px;border-radius:50%;background:rgba(253,121,168,0.08);display:flex;align-items:center;justify-content:center;margin-bottom:12px;">
+                                    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#FD79A8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.5;"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+                                </div>
+                                <div style="font-size:13px;color:var(--text-secondary);" id="practice-stage-writing">完成诊断后解锁写作训练</div>
                             </div>
-                            <div class="practice-card-info">
-                                <div class="practice-card-name">写作批改</div>
-                                <div class="practice-card-desc" id="practice-stage-writing">完成诊断后解锁写作训练</div>
-                            </div>
-                            <div class="practice-card-score" id="practice-score-writing">—</div>
-                            <svg class="practice-card-arrow" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
                         </div>
                     </div>
-
-                    <!-- 翻译训练 -->
-                    <div class="practice-card" onclick="startPractice('translation')" style="border-left-color:#E17055;">
-                        <div class="practice-card-header">
-                            <div class="practice-card-icon" style="background:rgba(225,112,85,0.1);color:#E17055;">
-                                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                    <!-- 翻译训练 卡片 -->
+                    <div class="dashboard-report-section" onclick="startPractice('translation')" style="cursor:pointer;padding:0;margin-bottom:16px;">
+                        <div class="dashboard-section-title">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#E17055" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                            翻译训练
+                            <span id="practice-score-translation" style="margin-left:auto;font-size:16px;font-weight:800;color:var(--primary);">—</span>
+                        </div>
+                        <div class="dashboard-report-card">
+                            <div style="display:flex;flex-direction:column;align-items:center;padding:20px;text-align:center;">
+                                <div style="width:48px;height:48px;border-radius:50%;background:rgba(253,203,110,0.08);display:flex;align-items:center;justify-content:center;margin-bottom:12px;">
+                                    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#E17055" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.5;"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                                </div>
+                                <div style="font-size:13px;color:var(--text-secondary);" id="practice-stage-translation">完成诊断后解锁翻译训练</div>
                             </div>
-                            <div class="practice-card-info">
-                                <div class="practice-card-name">翻译训练</div>
-                                <div class="practice-card-desc" id="practice-stage-translation">完成诊断后解锁翻译训练</div>
-                            </div>
-                            <div class="practice-card-score" id="practice-score-translation">—</div>
-                            <svg class="practice-card-arrow" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
                         </div>
                     </div>
-
+                    
+                    
                     <!-- AI陪练历史（折叠） -->
                 </div>
 
