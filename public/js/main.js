@@ -15625,7 +15625,7 @@ function updateProfileUserId() {
     var userIdElem = document.getElementById('profile-user-id');
     if (userIdElem) {
         var userId = getCloudUserId();
-        userIdElem.textContent = userId.substring(0, 8) + '...';
+        userIdElem.textContent = userId ? userId.substring(0, 8) + '...' : '—';
     }
     // 更新使用帮助红点状态
     updateHelpGuideBadge();
@@ -16706,7 +16706,7 @@ window.activateWithCode = activateWithCode;
 window.switchPayTab = switchPayTab;
 function closeEssayOverlay(){} window.closeEssayOverlay=closeEssayOverlay;
 function showEssayTemplate(){} window.showEssayTemplate=showEssayTemplate;
-window.submitEssay=submitEssay;
+function submitEssay(){} window.submitEssay=submitEssay;
 window.practiceSimilarTranslation = practiceSimilarTranslation;
 window.closeUpgradeCard = closeUpgradeCard;
 window.restartQuiz = restartQuiz;
