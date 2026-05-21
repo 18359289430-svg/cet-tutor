@@ -3273,7 +3273,8 @@ async function handleDeepseekEssayGrade(req, res) {
                 '.woff': 'font/woff',
                 '.woff2': 'font/woff2',
                 '.ttf': 'font/truetype',
-                '.pdf': 'application/pdf'
+                '.pdf': 'application/pdf',
+                '.mp3': 'audio/mpeg'
             };
             res.setHeader('Cache-Control', ext === '.json' ? 'no-cache' : 'public, max-age=604800');
             res.setHeader('Content-Type', contentTypes[ext] || 'application/octet-stream');
