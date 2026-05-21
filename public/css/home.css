@@ -2313,7 +2313,7 @@
     font-weight: 600;
 }
 
-/* v120: 提分路线图 */
+/* v121: 提分路线图 */
 .score-roadmap {
     background: linear-gradient(135deg, #6C5CE7 0%, #A29BFE 100%);
     border-radius: 16px;
@@ -2549,4 +2549,86 @@
     padding: 20px;
     color: #94A3B8;
     font-size: 13px;
+}
+
+/* P3: Today focus in roadmap */
+.roadmap-today-focus {
+    background: rgba(255,255,255,0.15);
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+}
+.roadmap-today-label {
+    font-size: 11px;
+    opacity: 0.8;
+    margin-bottom: 4px;
+}
+.roadmap-today-action {
+    font-size: 15px;
+    font-weight: 700;
+    color: white;
+    cursor: pointer;
+    margin-bottom: 2px;
+}
+.roadmap-today-sub {
+    font-size: 11px;
+    opacity: 0.75;
+}
+
+/* P4: Diagnosis comparison */
+.diag-comparison-banner {
+    background: linear-gradient(135deg, #F8FAFC, #EDE9FE);
+    border-radius: 14px;
+    padding: 16px;
+    margin: 12px 0;
+    border: 1px solid rgba(108,92,231,0.15);
+}
+.diag-comparison-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1E293B;
+    margin-bottom: 12px;
+    text-align: center;
+}
+.diag-comparison-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+.diag-comp-item {
+    background: white;
+    border-radius: 10px;
+    padding: 10px;
+    text-align: center;
+}
+.diag-comp-name {
+    font-size: 12px;
+    color: #64748B;
+    margin-bottom: 4px;
+}
+.diag-comp-scores {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 700;
+}
+.diag-comp-prev {
+    color: #94A3B8;
+    text-decoration: line-through;
+    font-size: 13px;
+}
+.diag-comp-arrow {
+    font-size: 12px;
+}
+.diag-comp-cur {
+    font-size: 16px;
+}
+
+/* P1: Stage upgrade toast */
+.toast-upgrade {
+    background: linear-gradient(135deg, #6C5CE7, #A29BFE) !important;
+    color: white !important;
+    font-weight: 700;
 }

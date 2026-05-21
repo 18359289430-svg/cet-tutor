@@ -286,6 +286,8 @@ var personalities = [
 
             // 添加到历史记录开头
             history.unshift(record);
+            // Save diagnosis date for re-diagnosis tracking
+            localStorage.setItem(examKey('last_diagnosis_date'), new Date().toISOString().split('T')[0]);
 
             // 限制最大记录数
             while (history.length > MAX_DIAGNOSIS_HISTORY) {
@@ -4697,28 +4699,28 @@ function updateHomeStatus() {
                 var targetCount = 3;
 
                 if (todayCount >= targetCount) {
-                    // 今日已完成
-                    if (heroTitle) heroTitle.innerHTML = '今日训练已完成 <span style="color:var(--success)">✓</span>';
-                    if (heroSubtitle) heroSubtitle.textContent = '明天继续，保持节奏';
+                    if (heroTitle) heroTitle.innerHTML = '今日训练已完成 <span style="color:#00B894">✓</span>';
+                    if (heroSubtitle) heroSubtitle.textContent = streak.count > 0 ? '已连续' + streak.count + '天，明天继续' : '明天继续，保持节奏';
                     if (ctaText) ctaText.textContent = '再练一组';
                     if (ctaSecondary) {
                         ctaSecondary.style.display = '';
-                        ctaSecondary.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>查看数据';
+                        ctaSecondary.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>查看进步';
                         ctaSecondary.setAttribute('onclick', "switchTab('progress')");
                     }
                 } else if (weakest) {
-                    // 有弱项 - 针对性训练
                     var weakName = skillNames[weakest] || weakest;
+                    var weakStage = getCurrentStage(weakest);
+                    var weakStageInfo = TRAINING_STAGES[weakest] ? TRAINING_STAGES[weakest][weakStage - 1] : null;
+                    var stageLabel = weakStageInfo ? weakStageInfo.name : '';
                     if (heroTitle) heroTitle.innerHTML = '今日目标：练<span id="exam-type-title">' + weakName + '</span> ' + todayCount + '/' + targetCount;
-                    if (heroSubtitle) heroSubtitle.textContent = '上次' + weakName + '薄弱，今天先练这里';
-                    if (ctaText) ctaText.textContent = '开始训练';
+                    if (heroSubtitle) heroSubtitle.textContent = stageLabel ? weakName + '·' + stageLabel + ' - ' + (weakStageInfo ? weakStageInfo.desc : '') : '上次' + weakName + '薄弱，今天先练这里';
+                    if (ctaText) ctaText.textContent = stageLabel ? '练' + weakName + '·' + stageLabel : '开始训练';
                     if (ctaSecondary) {
                         ctaSecondary.style.display = '';
                         ctaSecondary.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>今日任务';
                         ctaSecondary.setAttribute('onclick', 'openDailyTask()');
                     }
                 } else {
-                    // 已诊断但没有明显弱项
                     if (heroTitle) heroTitle.innerHTML = '继续今天的<span id="exam-type-title">' + examLabel + '</span>训练';
                     if (heroSubtitle) heroSubtitle.textContent = '保持手感，距考试还有' + diff + '天';
                     if (ctaText) ctaText.textContent = '今日任务';
@@ -5890,35 +5892,41 @@ function showClearChatModal() {
 function handleHomeCta() {
     var diagHistory = JSON.parse(localStorage.getItem(examKey('diagnosis_history')) || '[]');
     if (diagHistory.length === 0) {
-        // 未诊断 - 直接开始诊断
         startNewDiagnosis();
         return;
     }
-    // 已诊断 - 找最弱技能直接练
     var latestDiag = diagHistory[diagHistory.length - 1];
     var scores = latestDiag.scores || {};
-    var weakest = null;
-    var weakestScore = 999;
-    var skillMap = {'listening': 'listening', 'reading': 'reading', 'writing': 'writing', 'translation': 'translation'};
-    for (var sk in skillMap) {
+    var trainingHist = getTrainingHistory();
+    var today = new Date().toISOString().split('T')[0];
+    var todayTrained = trainingHist.filter(function(h) { return h.date === today; });
+    
+    // Find weakest skill and its current stage
+    var skillNames = {'listening': '听力', 'reading': '阅读', 'writing': '写作', 'translation': '翻译'};
+    var weakest = null, weakestScore = 999;
+    for (var sk in skillNames) {
         if (scores[sk] !== undefined && scores[sk] < weakestScore) {
             weakestScore = scores[sk];
             weakest = sk;
         }
     }
-    // 检查今日是否已完成3组
-    var todayStr = new Date().toDateString();
-    var practiceHistory = JSON.parse(localStorage.getItem(examKey('practice_history')) || '[]');
-    var todayCount = practiceHistory.filter(function(p) { return new Date(p.date).toDateString() === todayStr; }).length;
-    if (todayCount >= 3) {
-        // 今日已完成 - 再来一组
-        if (weakest) {
-            startPractice(weakest);
-        } else {
-            openDailyTask();
-        }
-    } else if (weakest) {
-        startPractice(weakest);
+    
+    // Check if should re-diagnose (5+ trainings since last diagnosis)
+    var lastDiagDate = localStorage.getItem(examKey('last_diagnosis_date'));
+    var trainedSinceDiag = lastDiagDate ? trainingHist.filter(function(h) { return h.date >= lastDiagDate; }).length : trainingHist.length;
+    if (trainedSinceDiag >= 5 && (!lastDiagDate || lastDiagDate !== today)) {
+        startFullDiagnosis();
+        return;
+    }
+    
+    if (todayTrained.length >= 3) {
+        if (weakest) { startPractice(weakest); } else { openDailyTask(); }
+        return;
+    }
+    
+    if (weakest) {
+        var stage = getCurrentStage(weakest);
+        startTraining(weakest, stage);
     } else {
         openDailyTask();
     }
@@ -8527,6 +8535,27 @@ function showDiagnosisReport(text) {
     // 保存到诊断历史记录
     saveDiagnosisRecord(reportData);
     
+    // Save diagnosis date for comparison
+    localStorage.setItem(examKey('last_diagnosis_date'), new Date().toISOString().split('T')[0]);
+    
+    // Generate comparison if this is not the first diagnosis
+    var prevDiagList = JSON.parse(localStorage.getItem(examKey('diagnosis_history')) || '[]');
+    reportData.hasComparison = prevDiagList.length >= 2;
+    if (reportData.hasComparison) {
+        var prevScores = prevDiagList[1].scores || {};
+        reportData.comparison = {};
+        var compSkills = ['listening','reading','writing','translation'];
+        var compNames = {listening:'听力',reading:'阅读',writing:'写作',translation:'翻译'};
+        for (var ci = 0; ci < compSkills.length; ci++) {
+            var csk = compSkills[ci];
+            var prevS = prevScores[csk] !== undefined ? prevScores[csk] : null;
+            var curS = reportData.dims[compNames[csk]] !== undefined ? reportData.dims[compNames[csk]] : null;
+            if (prevS !== null && curS !== null) {
+                reportData.comparison[csk] = {prev: prevS, current: curS, diff: curS - prevS};
+            }
+        }
+    }
+    
     renderReportPage();
     
     var overlay = document.getElementById('report-overlay');
@@ -10865,10 +10894,9 @@ function generateSmartTasks() {
     var todayPracticed = trainingHistory.filter(function(h) { return h.date === today; });
     var todaySkills = todayPracticed.map(function(h) { return h.skill; });
     
-    // 未做过诊断
-    var data = state.userData || {};
-    var hasDiag = data.personality || (data.diagnosis && data.diagnosis.type);
-    if (!hasDiag) {
+    // 未做过诊断 - check diagnosis_history
+    var diagHistList = JSON.parse(localStorage.getItem(examKey('diagnosis_history')) || '[]');
+    if (diagHistList.length === 0) {
         return [
             { id: 'diagnosis', text: '完成3分钟AI诊断', time: '3min', icon: '🔍', skill: null, stage: null, action: "switchTab('diagnosis');setTimeout(function(){startNewDiagnosis();},300)" }
         ];
@@ -11007,7 +11035,8 @@ function startTraining(skill, stage) {
     switchTab('chat');
     setTimeout(function() {
         var timeLimit = stageInfo ? stageInfo.time : 10;
-        var msg = '[训练模式] ' + skillName + '·' + stageName + '：' + stageDesc + '\n\n限时' + timeLimit + '分钟，共' + targetCount + '题。AI请按以下方法训练我：' + stagePrompt + '\n\n重要：每道题出完后等用户回答再出下一道。出完' + targetCount + '道题后给出【训练评价】总结正确率。';
+        var tipText = stageInfo && stageInfo.tip ? '\n\n' + stageInfo.tip : '';
+        var msg = '[训练模式] ' + skillName + '·' + stageName + '：' + stageDesc + tipText + '\n\n限时' + timeLimit + '分钟，共' + targetCount + '题。AI请按以下方法训练我：' + stagePrompt + '\n\n重要：每道题出完后等用户回答再出下一道。出完' + targetCount + '道题后给出【训练评价】总结正确率。';
         sendSuggestion(msg);
         startTrainingTimer(timeLimit, skillName + '·' + stageName);
         showTrainingProgress(skillName, 0, targetCount);
@@ -11259,6 +11288,9 @@ function renderReportPage() {
                 { key: 'translation', name: '翻译', emoji: '🌐' }
             ];
             var html = '<div class="report-section-title">📊 四项技能等级</div>';
+            if (reportData.hasComparison && reportData.comparison) {
+                html += showDiagComparison(reportData.comparison);
+            }
             html += '<div class="report-skills-grid">';
             skills.forEach(function(s) {
                 var info = skillLevels[s.key];
@@ -15445,7 +15477,18 @@ function renderScoreRoadmap() {
     
     html += '<div class="roadmap-phase"><div class="roadmap-phase-num">4</div><div class="roadmap-phase-body"><div class="roadmap-phase-title">再诊断看进步</div><div class="roadmap-phase-sub">练3-5组后重新诊断，看分数有没有提升。进步是最好的动力</div><div class="roadmap-action" onclick="startNewDiagnosis()">再诊断一次</div></div></div>';
     
-    html += '<div class="roadmap-current">📍 今天已练 ' + todayTrained.length + ' 组' + (todayTrained.length >= 3 ? ' · 今日目标已完成 ✅' : ' · 再练 ' + (3 - todayTrained.length) + ' 组完成今日目标') + '</div>';
+    // Today focus
+    var todayFocusSkill = weakest;
+    var todayFocusStage = getCurrentStage(todayFocusSkill || 'listening');
+    var todayStageInfo = todayFocusSkill && TRAINING_STAGES[todayFocusSkill] ? TRAINING_STAGES[todayFocusSkill][todayFocusStage - 1] : null;
+    if (todayStageInfo) {
+        html += '<div class="roadmap-today-focus">';
+        html += '<div class="roadmap-today-label">📍 今日重点</div>';
+        html += '<div class="roadmap-today-action" data-practice="' + todayFocusSkill + '">练' + weakName + '·' + todayStageInfo.name + '</div>';
+        html += '<div class="roadmap-today-sub">' + todayStageInfo.desc + ' · 限时' + todayStageInfo.time + '分钟</div>';
+        html += '</div>';
+    }
+    html += '<div class="roadmap-current">今天已练 ' + todayTrained.length + ' 组' + (todayTrained.length >= 3 ? ' · 今日目标已完成 ✅' : ' · 再练 ' + (3 - todayTrained.length) + ' 组完成今日目标') + '</div>';
     
     container.innerHTML = html;
     
@@ -15681,13 +15724,29 @@ function checkAndSuggestRediagnosis(skill) {
     var skillHistory = history.filter(function(h) { return h.skill === skill; });
     var skillNames = {listening:'听力',reading:'阅读',writing:'写作',translation:'翻译'};
     
+    // Update home status immediately
+    if (typeof updateHomeStatus === 'function') updateHomeStatus();
+    
+    // Check for stage upgrade
+    var oldStage = parseInt(localStorage.getItem(examKey(skill + '_stage')) || '1');
+    var newStage = getCurrentStage(skill);
+    if (newStage > oldStage) {
+        localStorage.setItem(examKey(skill + '_stage'), newStage);
+        var stageInfo = TRAINING_STAGES[skill] ? TRAINING_STAGES[skill][newStage - 1] : null;
+        var stageName = stageInfo ? stageInfo.name : '阶段' + newStage;
+        // Show upgrade toast
+        showToast(skillNames[skill] + '升级到' + stageName + '！', 'upgrade');
+    } else {
+        localStorage.setItem(examKey(skill + '_stage'), newStage);
+    }
+    
     setTimeout(function() {
         var container = document.getElementById('chat-messages');
         if (!container) return;
         
         var todayRecords = skillHistory.filter(function(h) { return h.date === new Date().toISOString().split('T')[0]; });
         var totalToday = todayRecords.length;
-        var avgAccuracy = todayRecords.length > 0 ? Math.round(todayRecords.reduce(function(s,r){return s+r.accuracy},0)/todayRecords.length) : 0;
+        var avgAccuracy = todayRecords.length > 0 ? Math.round(todayRecords.reduce(function(s,r){return s+(r.accuracy||0)},0)/todayRecords.length) : 0;
         
         var diagData = null;
         try { diagData = JSON.parse(localStorage.getItem(examKey('ability_scores'))); } catch(e) {}
@@ -15707,7 +15766,21 @@ function checkAndSuggestRediagnosis(skill) {
         if (skillScore > 0) {
             cardHtml += '<div class="training-stat"><div class="training-stat-num">' + skillScore + '</div><div class="training-stat-label">技能分</div></div>';
         }
+        // Show stage progress
+        var curStageInfo = TRAINING_STAGES[skill] ? TRAINING_STAGES[skill][newStage - 1] : null;
+        if (curStageInfo) {
+            var totalStages = TRAINING_STAGES[skill].length;
+            cardHtml += '<div class="training-stat"><div class="training-stat-num">' + newStage + '/' + totalStages + '</div><div class="training-stat-label">阶段进度</div></div>';
+        }
         cardHtml += '</div>';
+        
+        // Stage upgrade highlight
+        if (newStage > oldStage && curStageInfo) {
+            cardHtml += '<div style="background:linear-gradient(135deg,rgba(108,92,231,0.1),rgba(162,155,254,0.1));border-radius:10px;padding:10px 12px;margin:8px 0;text-align:center">';
+            cardHtml += '<div style="font-size:14px;font-weight:700;color:#6C5CE7">🎉 ' + skillNames[skill] + '升级到阶段' + newStage + '：' + curStageInfo.name + '</div>';
+            cardHtml += '<div style="font-size:12px;color:#64748B;margin-top:4px">' + curStageInfo.desc + '</div>';
+            cardHtml += '</div>';
+        }
         
         if (skillHistory.length >= 3) {
             var lastDiag = localStorage.getItem(examKey('last_diagnosis_date'));
@@ -15726,6 +15799,29 @@ function checkAndSuggestRediagnosis(skill) {
         scrollChatToBottom();
         updateChatPadding();
     }, 1500);
+}
+
+
+function showDiagComparison(comparison) {
+    if (!comparison || Object.keys(comparison).length === 0) return '';
+    var html = '<div class="diag-comparison-banner">';
+    html += '<div class="diag-comparison-title">📊 与上次诊断对比</div>';
+    html += '<div class="diag-comparison-grid">';
+    var names = {listening:'听力',reading:'阅读',writing:'写作',translation:'翻译'};
+    for (var sk in comparison) {
+        var c = comparison[sk];
+        var arrow = c.diff > 0 ? '↑' : (c.diff < 0 ? '↓' : '→');
+        var color = c.diff > 0 ? '#00B894' : (c.diff < 0 ? '#E17055' : '#64748B');
+        html += '<div class="diag-comp-item">';
+        html += '<div class="diag-comp-name">' + (names[sk]||sk) + '</div>';
+        html += '<div class="diag-comp-scores">';
+        html += '<span class="diag-comp-prev">' + c.prev + '</span>';
+        html += '<span class="diag-comp-arrow" style="color:' + color + '">' + arrow + Math.abs(c.diff) + '</span>';
+        html += '<span class="diag-comp-cur" style="color:' + color + '">' + c.current + '</span>';
+        html += '</div></div>';
+    }
+    html += '</div></div>';
+    return html;
 }
 
 function startFullDiagnosis() {
