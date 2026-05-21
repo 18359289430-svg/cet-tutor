@@ -15406,3 +15406,331 @@ window.startPracticeChallenge = startPracticeChallenge;
 window.submitWritingTest = submitWritingTest;
 window.upgradeToUnlockPlan = upgradeToUnlockPlan;
 window.openDayPlan = openDayPlan;
+
+// ===== 连环画数据 =====
+var COMIC_THEMES = {
+    campus: {
+        id: 'campus',
+        title: '校园日常',
+        subtitle: 'Campus Life · 听力+词汇',
+        skill: 'listening',
+        cover: '/public/comic/cover_campus.jpg',
+        comic: '/public/comic/comic_campus.jpg',
+        panels: [
+            {
+                title: '走进校园',
+                desc: '新学期开始，走进校园的那一刻，一切都很新鲜',
+                vocab: [
+                    { word: 'campus', phonetic: '/ˈkæmpəs/', meaning: '校园', example: 'The campus is beautiful in autumn.' },
+                    { word: 'semester', phonetic: '/sɪˈmestər/', meaning: '学期', example: 'The new semester starts in September.' },
+                    { word: 'enrollment', phonetic: '/ɪnˈroʊlmənt/', meaning: '注册入学', example: 'Enrollment has increased this year.' }
+                ]
+            },
+            {
+                title: '图书馆学习',
+                desc: '在图书馆找个安静的角落，翻开参考书开始复习',
+                vocab: [
+                    { word: 'library', phonetic: '/ˈlaɪbreri/', meaning: '图书馆', example: 'I spend most of my time in the library.' },
+                    { word: 'concentrate', phonetic: '/ˈkɑːnsntreɪt/', meaning: '集中注意力', example: 'It\'s hard to concentrate with noise.' },
+                    { word: 'reference', phonetic: '/ˈrefərəns/', meaning: '参考', example: 'You can find reference books on the second floor.' }
+                ]
+            },
+            {
+                title: '课堂讨论',
+                desc: '教授抛出一个问题，大家踊跃举手发表看法',
+                vocab: [
+                    { word: 'lecture', phonetic: '/ˈlektʃər/', meaning: '讲座；讲课', example: 'The lecture on economics was fascinating.' },
+                    { word: 'participate', phonetic: '/pɑːrˈtɪsɪpeɪt/', meaning: '参与', example: 'Everyone should participate in the discussion.' },
+                    { word: 'assignment', phonetic: '/əˈsaɪnmənt/', meaning: '作业；任务', example: 'The assignment is due next Monday.' }
+                ]
+            },
+            {
+                title: '考试结束',
+                desc: '走出考场的那一刻，终于松了一口气',
+                vocab: [
+                    { word: 'examine', phonetic: '/ɪɡˈzæmɪn/', meaning: '考试；检查', example: 'Students are examined at the end of the term.' },
+                    { word: 'qualify', phonetic: '/ˈkwɑːlɪfaɪ/', meaning: '有资格；合格', example: 'She qualified for the final exam.' },
+                    { word: 'relief', phonetic: '/rɪˈliːf/', meaning: '轻松；宽慰', example: 'What a relief to finish the exam!' }
+                ]
+            }
+        ]
+    },
+    culture: {
+        id: 'culture',
+        title: '茶与文化',
+        subtitle: 'Tea Culture · 翻译+词汇',
+        skill: 'translation',
+        cover: '/public/comic/cover_culture.jpg',
+        comic: '/public/comic/comic_culture.jpg',
+        panels: [
+            {
+                title: '茶园采茶',
+                desc: '清晨的茶园，露珠还挂在叶片上，采茶人开始了一天的劳作',
+                vocab: [
+                    { word: 'cultivation', phonetic: '/ˌkʌltɪˈveɪʃn/', meaning: '种植；培养', example: 'Tea cultivation has a long history in China.' },
+                    { word: 'heritage', phonetic: '/ˈherɪtɪdʒ/', meaning: '遗产；传统', example: 'Tea culture is part of China\'s cultural heritage.' },
+                    { word: 'harvest', phonetic: '/ˈhɑːrvɪst/', meaning: '收获；采收', example: 'The spring harvest produces the best tea.' }
+                ]
+            },
+            {
+                title: '制茶工艺',
+                desc: '老师傅的手艺代代相传，每一步都需要耐心和经验',
+                vocab: [
+                    { word: 'craftsmanship', phonetic: '/ˈkræftsmənʃɪp/', meaning: '工艺；手艺', example: 'The craftsmanship of tea-making requires years of practice.' },
+                    { word: 'procedure', phonetic: '/prəˈsiːdʒər/', meaning: '程序；步骤', example: 'Each step in the procedure is crucial.' },
+                    { word: 'tradition', phonetic: '/trəˈdɪʃn/', meaning: '传统', example: 'This tradition has been passed down for centuries.' }
+                ]
+            },
+            {
+                title: '茶道表演',
+                desc: '优雅的茶道不仅是技艺，更是一种生活哲学',
+                vocab: [
+                    { word: 'ceremony', phonetic: '/ˈserəmoʊni/', meaning: '仪式；典礼', example: 'The tea ceremony is a refined art form.' },
+                    { word: 'elegant', phonetic: '/ˈelɪɡənt/', meaning: '优雅的', example: 'Her movements were calm and elegant.' },
+                    { word: 'philosophy', phonetic: '/fəˈlɑːsəfi/', meaning: '哲学', example: 'Tea ceremony reflects a philosophy of life.' }
+                ]
+            },
+            {
+                title: '品茶交流',
+                desc: '一杯茶，几位好友，谈天说地间品味生活的美好',
+                vocab: [
+                    { word: 'appreciate', phonetic: '/əˈpriːʃieɪt/', meaning: '欣赏；感激', example: 'We should appreciate the beauty of simplicity.' },
+                    { word: 'harmony', phonetic: '/ˈhɑːrməni/', meaning: '和谐', example: 'Harmony between humans and nature.' },
+                    { word: 'preserve', phonetic: '/prɪˈzɜːrv/', meaning: '保护；保存', example: 'We must preserve this cultural treasure.' }
+                ]
+            }
+        ]
+    },
+    tech: {
+        id: 'tech',
+        title: '智慧生活',
+        subtitle: 'Smart Life · 阅读+词汇',
+        skill: 'reading',
+        cover: '/public/comic/cover_tech.jpg',
+        comic: '/public/comic/comic_tech.jpg',
+        panels: [
+            {
+                title: '视频通话',
+                desc: '在咖啡厅和家人视频通话，距离再远也像在身边',
+                vocab: [
+                    { word: 'communicate', phonetic: '/kəˈmjuːnɪkeɪt/', meaning: '交流；沟通', example: 'Technology helps us communicate across distances.' },
+                    { word: 'convenient', phonetic: '/kənˈviːniənt/', meaning: '方便的', example: 'Video calls make communication more convenient.' },
+                    { word: 'device', phonetic: '/dɪˈvaɪs/', meaning: '设备；装置', example: 'Smart devices are everywhere in our lives.' }
+                ]
+            },
+            {
+                title: '导航出行',
+                desc: '打开导航APP，在陌生的城市也能找到方向',
+                vocab: [
+                    { word: 'navigation', phonetic: '/ˌnævɪˈɡeɪʃn/', meaning: '导航', example: 'Navigation apps have changed how we travel.' },
+                    { word: 'destination', phonetic: '/ˌdestɪˈneɪʃn/', meaning: '目的地', example: 'We arrived at our destination in 20 minutes.' },
+                    { word: 'efficient', phonetic: '/ɪˈfɪʃnt/', meaning: '高效的', example: 'Technology makes transportation more efficient.' }
+                ]
+            },
+            {
+                title: '智能餐厅',
+                desc: '机器人为你端上餐点，科技让用餐更有趣',
+                vocab: [
+                    { word: 'automation', phonetic: '/ˌɔːtəˈmeɪʃn/', meaning: '自动化', example: 'Automation is transforming the service industry.' },
+                    { word: 'innovative', phonetic: '/ˈɪnəveɪtɪv/', meaning: '创新的', example: 'This restaurant uses innovative technology.' },
+                    { word: 'transform', phonetic: '/trænsˈfɔːrm/', meaning: '改变；转型', example: 'AI is transforming every aspect of our lives.' }
+                ]
+            },
+            {
+                title: '智能家居',
+                desc: '语音助手帮你关灯拉窗帘，生活越来越智能',
+                vocab: [
+                    { word: 'artificial', phonetic: '/ˌɑːrtɪˈfɪʃl/', meaning: '人工的', example: 'Artificial intelligence is no longer science fiction.' },
+                    { word: 'intelligent', phonetic: '/ɪnˈtelɪdʒənt/', meaning: '智能的', example: 'Intelligent homes respond to voice commands.' },
+                    { word: 'sustainable', phonetic: '/səˈsteɪnəbl/', meaning: '可持续的', example: 'Smart homes help create a sustainable lifestyle.' }
+                ]
+            }
+        ]
+    }
+};
+
+// ===== 连环画查看器 =====
+var _comicCurrentPanel = 0;
+var _comicCurrentTheme = null;
+var _comicTouchStartX = 0;
+var _comicTouchStartY = 0;
+
+function openComicViewer(themeId) {
+    var theme = COMIC_THEMES[themeId];
+    if (!theme) return;
+    _comicCurrentTheme = theme;
+    _comicCurrentPanel = 0;
+
+    // 构建弹窗
+    var overlay = document.getElementById('comic-overlay');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'comic-overlay';
+        overlay.className = 'comic-overlay';
+        document.body.appendChild(overlay);
+    }
+    
+    var panelCount = theme.panels.length;
+    var progressDots = '';
+    for (var i = 0; i < panelCount; i++) {
+        progressDots += '<div class="comic-progress-dot' + (i === 0 ? ' active' : '') + '"></div>';
+    }
+    
+    var panelsHtml = '';
+    for (var j = 0; j < panelCount; j++) {
+        var p = theme.panels[j];
+        var vocabTags = '';
+        for (var k = 0; k < p.vocab.length; k++) {
+            var v = p.vocab[k];
+            vocabTags += '<div class="comic-vocab-tag" onclick="showComicVocab(\'' + themeId + '\',' + j + ',' + k + ')">' +
+                '<span class="vv-word">' + v.word + '</span>' +
+                '<span class="vv-meaning">' + v.meaning + '</span>' +
+                '</div>';
+        }
+        panelsHtml += '<div class="comic-panel" data-panel="' + j + '">' +
+            '<div class="comic-panel-img-wrap quad p' + (j+1) + '">' +
+            '<img class="comic-panel-img" src="' + theme.comic + '" alt="' + p.title + '" loading="lazy">' +
+            '</div>' +
+            '<div class="comic-vocab-bar">' + vocabTags + '</div>' +
+            '<div class="comic-desc">' + p.title + ' · ' + p.desc + '</div>' +
+            '</div>';
+    }
+    
+    overlay.innerHTML =
+        '<div class="comic-header">' +
+        '<div class="comic-header-title">' + theme.title + '</div>' +
+        '<button class="comic-header-close" onclick="closeComicViewer()">✕</button>' +
+        '</div>' +
+        '<div class="comic-progress" id="comic-progress">' + progressDots + '</div>' +
+        '<div class="comic-viewport" id="comic-viewport">' +
+        '<div class="comic-slider" id="comic-slider">' + panelsHtml + '</div>' +
+        '</div>' +
+        '<div class="comic-footer">' +
+        '<button class="comic-nav-btn" id="comic-prev" onclick="comicNav(-1)">‹</button>' +
+        '<button class="comic-cta-btn" id="comic-cta" onclick="comicStartTraining()">开始训练 ›</button>' +
+        '<button class="comic-nav-btn" id="comic-next" onclick="comicNav(1)">›</button>' +
+        '</div>';
+    
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    
+    updateComicNav();
+    
+    // 触摸滑动
+    var viewport = document.getElementById('comic-viewport');
+    viewport.addEventListener('touchstart', function(e) {
+        _comicTouchStartX = e.touches[0].clientX;
+        _comicTouchStartY = e.touches[0].clientY;
+    }, { passive: true });
+    viewport.addEventListener('touchend', function(e) {
+        var dx = e.changedTouches[0].clientX - _comicTouchStartX;
+        var dy = e.changedTouches[0].clientY - _comicTouchStartY;
+        if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
+            if (dx < 0) comicNav(1);
+            else comicNav(-1);
+        }
+    }, { passive: true });
+}
+
+function comicNav(dir) {
+    var panelCount = _comicCurrentTheme.panels.length;
+    var newPanel = _comicCurrentPanel + dir;
+    if (newPanel < 0 || newPanel >= panelCount) return;
+    _comicCurrentPanel = newPanel;
+    
+    var slider = document.getElementById('comic-slider');
+    if (slider) {
+        slider.style.transform = 'translateX(-' + (_comicCurrentPanel * 100) + '%)';
+    }
+    
+    updateComicNav();
+}
+
+function updateComicNav() {
+    var panelCount = _comicCurrentTheme.panels.length;
+    var prevBtn = document.getElementById('comic-prev');
+    var nextBtn = document.getElementById('comic-next');
+    var ctaBtn = document.getElementById('comic-cta');
+    
+    if (prevBtn) prevBtn.disabled = (_comicCurrentPanel === 0);
+    if (nextBtn) nextBtn.disabled = (_comicCurrentPanel === panelCount - 1);
+    
+    // 最后一页显示"开始训练"，其他页显示"下一页"
+    if (ctaBtn) {
+        if (_comicCurrentPanel === panelCount - 1) {
+            ctaBtn.textContent = '🎯 开始' + ({listening:'听力',reading:'阅读',writing:'写作',translation:'翻译'}[_comicCurrentTheme.skill]||'') + '训练';
+            ctaBtn.style.display = '';
+        } else {
+            ctaBtn.textContent = '滑动画板继续 →';
+            ctaBtn.style.background = 'rgba(255,255,255,0.1)';
+            ctaBtn.style.boxShadow = 'none';
+        }
+        if (_comicCurrentPanel === panelCount - 1) {
+            ctaBtn.style.background = '';
+            ctaBtn.style.boxShadow = '';
+        }
+    }
+    
+    // 更新进度点
+    var dots = document.querySelectorAll('.comic-progress-dot');
+    for (var i = 0; i < dots.length; i++) {
+        dots[i].classList.toggle('active', i === _comicCurrentPanel);
+    }
+}
+
+function closeComicViewer() {
+    var overlay = document.getElementById('comic-overlay');
+    if (overlay) overlay.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+function comicStartTraining() {
+    closeComicViewer();
+    var skillMap = { listening: 'listening', reading: 'reading', writing: 'writing', translation: 'translation' };
+    var skill = skillMap[_comicCurrentTheme.skill] || 'reading';
+    startPractice(skill);
+}
+
+function showComicVocab(themeId, panelIdx, vocabIdx) {
+    var theme = COMIC_THEMES[themeId];
+    if (!theme) return;
+    var v = theme.panels[panelIdx].vocab[vocabIdx];
+    
+    var popup = document.getElementById('comic-vocab-popup');
+    if (!popup) {
+        popup = document.createElement('div');
+        popup.id = 'comic-vocab-popup';
+        popup.className = 'comic-vocab-popup';
+        document.body.appendChild(popup);
+    }
+    popup.innerHTML =
+        '<button class="cvp-close" onclick="closeComicVocab()">✕</button>' +
+        '<div class="cvp-word">' + v.word + '</div>' +
+        '<div class="cvp-phonetic">' + v.phonetic + '</div>' +
+        '<div class="cvp-meaning">' + v.meaning + '</div>' +
+        '<div class="cvp-example">' + v.example + '</div>';
+    popup.classList.add('active');
+    
+    setTimeout(function() {
+        document.addEventListener('click', closeComicVocabOnOutside);
+    }, 100);
+}
+
+function closeComicVocab() {
+    var popup = document.getElementById('comic-vocab-popup');
+    if (popup) popup.classList.remove('active');
+    document.removeEventListener('click', closeComicVocabOnOutside);
+}
+
+function closeComicVocabOnOutside(e) {
+    var popup = document.getElementById('comic-vocab-popup');
+    if (popup && !popup.contains(e.target)) closeComicVocab();
+}
+
+window.openComicViewer = openComicViewer;
+window.closeComicViewer = closeComicViewer;
+window.comicNav = comicNav;
+window.comicStartTraining = comicStartTraining;
+window.showComicVocab = showComicVocab;
+window.closeComicVocab = closeComicVocab;
+
