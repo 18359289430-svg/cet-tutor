@@ -1,6 +1,6 @@
 {
   "version": "v1.0-六级版",
-  "total_questions": 50,
+  "total_questions": 60,
   "ability_summary": {
     "细节定位": 14,
     "推理判断": 18,
@@ -422,235 +422,262 @@
     {
       "passage_id": 1,
       "type": "长对话",
-      "text": "M: ... W: ...",
+      "text": "M: Cl)It's my last day at work tomorrow. I start my new job in two weeks. My human resources manager wants to conduct an interview with me before I leave. W: Ah, an exit interview. Are you looking forward to it? M: I'm not sure how I feel about it. I resigned because I've been unhappy at that company for a long time, but I'm not sure if I should tell them how I really feel. W: To my way of thinking, there are two main potential benefits that come from unleashing an agitated stream of truth during an exit interview. The first is release. Unburdening yourself of frustration and perhaps even anger to someone who isn't a friend or close colleague can be wonderfully freeing. M: And let me guess. The second is that the criticism will, theoretically, help the organization I'm leaving to improve, making sure employees of the future are less likely to encounter what I did? W: That's right. But the problem with the company improvement part is that very often it doesn't happen. exit interview is to be but often isn't. In my company, the information gained from these interviews is often not confidential, and the information is used as dirt against another manager, or can be traded among senior managers. M: Now what I'll disclose in the interview. There is chance that it could affect my reputation and my ability to network in the industry. It is a pretty small industry after all. W: Anything you initially gained from the instant satisfaction of telling it like it is, you might lose down the track by injuring your future career prospects. M: it'll be better websites. W: You could. And don't do the interview at all. Exit interviews are not mandatory.",
       "questions": [
         {
-          "id": "2023-06-S1-LC-038",
+          "id": "CET6-L1-Q1",
           "ability": "细节定位",
-          "question": "What does the man say about himself?",
-          "optionA": "The information is not provided.",
-          "optionB": "It can be inferred from the context.",
-          "optionC": "It is mentioned in the passage.",
-          "optionD": "The speaker does not specify.",
-          "answer": "D"
-        },
-        {
-          "id": "2023-06-S1-LC-011",
-          "ability": "细节定位",
-          "question": "How did the postal service contribute to America's westward expansion?",
-          "optionA": "It is mentioned in the passage.",
-          "optionB": "The information is not provided.",
-          "optionC": "It can be inferred from the context.",
-          "optionD": "The speaker does not specify.",
-          "answer": "D"
-        },
-        {
-          "id": "2023-06-S1-LC-003",
-          "ability": "推理判断",
-          "question": "Why does the woman say she is going to sound like an idiot?",
-          "optionA": "She prefers smaller spaces.",
-          "optionB": "She now misses her roommates.",
-          "optionC": "She enjoys her independence.",
-          "optionD": "She used to complain about crowded living.",
+          "question": "What does the man say about his upcoming exit interview?",
+          "optionA": "He is eager to express all his grievances openly during it.",
+          "optionB": "He is uncertain whether to share his true feelings with the HR manager.",
+          "optionC": "He has already decided to decline the interview request.",
+          "optionD": "He plans to use it as an opportunity to negotiate a better severance package.",
           "answer": "B"
         },
         {
-          "id": "2023-06-S1-PASS-13",
+          "id": "CET6-L1-Q2",
           "ability": "推理判断",
-          "question": "How did the postal service contribute to America's westward expansion?",
-          "optionA": "It is mentioned in the passage.",
-          "optionB": "The information is not provided.",
-          "optionC": "It can be inferred from the context.",
-          "optionD": "The speaker does not specify.",
-          "answer": "D"
+          "question": "What can be inferred about the woman’s view on the effectiveness of exit interviews in driving organizational change?",
+          "optionA": "She believes most companies systematically analyze and act upon exit interview feedback.",
+          "optionB": "She is skeptical that such interviews lead to meaningful improvements for future employees.",
+          "optionC": "She thinks confidentiality guarantees honest feedback will result in policy reform.",
+          "optionD": "She recommends standardizing exit interview protocols across industries to enhance impact.",
+          "answer": "B"
+        },
+        {
+          "id": "CET6-L1-Q3",
+          "ability": "同义替换",
+          "question": "The woman says the information from exit interviews is ‘often not confidential’ and ‘can be traded among senior managers’. Which of the following best paraphrases her concern?",
+          "optionA": "Feedback may be shared transparently with HR teams to foster accountability.",
+          "optionB": "Responses might be misused politically rather than constructively within leadership circles.",
+          "optionC": "Interview data is routinely archived for benchmarking against industry standards.",
+          "optionD": "Confidentiality breaches typically occur only when employees speak to external media.",
+          "answer": "B"
+        },
+        {
+          "id": "CET6-L1-Q4",
+          "ability": "态度推断",
+          "question": "What is the woman’s attitude toward the man’s dilemma about speaking candidly in the exit interview?",
+          "optionA": "Supportive but noncommittal—she encourages him to follow his instincts without offering guidance.",
+          "optionB": "Dismissive—she implies his concerns about reputation are exaggerated and unwarranted.",
+          "optionC": "Cautious and pragmatic—she acknowledges emotional relief but warns of tangible professional risks.",
+          "optionD": "Enthusiastic—she urges him to seize the moment and deliver blunt, unfiltered criticism.",
+          "answer": "C"
         }
       ]
     },
     {
       "passage_id": 2,
-      "type": "短文理解",
-      "text": "Now listen to a passage about...",
+      "type": "长对话",
+      "text": "M： Welcome to Money Matters, a weekly program that helps you manage your money. Tonight, I'll be talking to Mary Johnson about budgeting. M：There's a magic about money. When it's not planned for, tracked and kept a record of, it literally disappears. What are some of the steps we can take to prevent this from happening? W：Well, it's all about keeping track of your money. If you don't do that? you'll never be able to set any goals for your budget or have the discipline to stick to them. M：That's easier said than done. ⑵ I read recently that only 41% of Americans adhere to a budget. W： Yes, but knowing what you earn and what you spend can give you reassurance that you won't get into debt in the first place. You can do this by adding up all of your sources of income you have and writing them all down on a piece of paper. On the same page, write down all of your monthly expenses. M：Fm always amazed at how much my expenses add up. But designating each item as an income or an expense really helps me have a much better sense of all my spending. W: Right, most people have no idea how much they spend each day, let alone each week or month, no matter how careful they are. Next, subtract your monthly expenses from income. If the result is positive, you are living within your means. If the result is a negative number, you5re going to have to cut back on your spending. M：I'm usually a negative number. I just can't resist the allure of ail those prestigious goods. W：Well, it's not a catastrophe. But you do have to make some changes：try cutting back on those non-essential items9 sell some stuff in your attic or shop online to avoid unnecessary temptations like chocolate。 Failing that you can always find yourself a part-time job.",
       "questions": [
         {
-          "id": "2023-06-S1-LC-035",
-          "ability": "主旨归纳",
-          "question": "What do we learn from the conversation about Mr. Sanchez?",
-          "optionA": "The speaker does not specify.",
-          "optionB": "The information is not provided.",
-          "optionC": "It can be inferred from the context.",
-          "optionD": "It is mentioned in the passage.",
+          "id": "CET6-L2-Q1",
+          "ability": "细节定位",
+          "question": "What does the man say about the percentage of Americans who adhere to a budget?",
+          "optionA": "He expresses surprise that the figure is as high as 59%.",
+          "optionB": "He cites a recent reading stating that only 41% of Americans stick to a budget.",
+          "optionC": "He doubts the accuracy of the statistic and suggests it may be outdated.",
+          "optionD": "He attributes the low adherence rate to insufficient financial education in schools.",
+          "answer": "B"
+        },
+        {
+          "id": "CET6-L2-Q2",
+          "ability": "推理判断",
+          "question": "What can be inferred about the man’s current financial situation based on his statements?",
+          "optionA": "He has recently paid off all his debts and is now saving consistently.",
+          "optionB": "He earns significantly more than the national average but spends impulsively.",
+          "optionC": "He regularly spends more than he earns and struggles with discretionary purchases.",
+          "optionD": "He relies entirely on part-time work and has no stable income source.",
           "answer": "C"
         },
         {
-          "id": "2023-06-S1-PASS-15",
-          "ability": "主旨归纳",
-          "question": "What did Mr. Blevins do to study the history of the US postal service?",
-          "optionA": "The information is not provided.",
-          "optionB": "The speaker does not specify.",
-          "optionC": "It is mentioned in the passage.",
-          "optionD": "It can be inferred from the context.",
+          "id": "CET6-L2-Q3",
+          "ability": "同义替换",
+          "question": "When the woman says, “You can do this by adding up all of your sources of income… and writing them all down on a piece of paper,” what does “this” refer to?",
+          "optionA": "Setting long-term financial goals such as buying a house or retiring early.",
+          "optionB": "Gaining reassurance that you won’t get into debt in the first place.",
+          "optionC": "Subtracting monthly expenses from income to determine whether you live within your means.",
+          "optionD": "Tracking daily spending to identify unconscious consumption habits.",
+          "answer": "B"
+        },
+        {
+          "id": "CET6-L2-Q4",
+          "ability": "态度推断",
+          "question": "What is the woman’s attitude toward the man’s difficulty in sticking to a budget?",
+          "optionA": "Dismissive — she implies his lack of discipline is unforgivable.",
+          "optionB": "Pessimistic — she warns that his spending habits will inevitably lead to bankruptcy.",
+          "optionC": "Empathetic yet pragmatic — she acknowledges the challenge but offers concrete, actionable alternatives.",
+          "optionD": "Indifferent — she shifts focus immediately to theoretical budgeting principles without addressing his concern.",
           "answer": "C"
-        },
-        {
-          "id": "2023-06-S1-LC-07",
-          "ability": "细节定位",
-          "question": "How should the education budget be allocated according to the man?",
-          "optionA": "The information is not provided.",
-          "optionB": "It can be inferred from the context.",
-          "optionC": "It is mentioned in the passage.",
-          "optionD": "The speaker does not specify.",
-          "answer": "A"
-        },
-        {
-          "id": "2023-06-S2-LEC-19",
-          "ability": "细节定位",
-          "question": "What does the speaker say about Nebraska City in 1854 when Julius Morton moved there?",
-          "optionA": "The information is not provided.",
-          "optionB": "The speaker does not specify.",
-          "optionC": "It is mentioned in the passage.",
-          "optionD": "It can be inferred from the context.",
-          "answer": "A"
         }
       ]
     },
     {
       "passage_id": 3,
-      "type": "长对话",
-      "text": "M: Good morning. W: Good morning. How can I help you?",
+      "type": "短文理解",
+      "text": "Everyone is supposed to cheer for good guys, and we should only punish the bad guys. But that's not what we always do. Most of the time, we do indeed reward good people. We also often punish people who harm others or who aren't good team players. But sometimes the good guys also get punished or criticized, specifically because they are so good. This seems baffling, because it's detrimental to group cooperation. However, the phenomenon has been discovered in multiple fields, and it has been found in every society. Why does this happen? Research suggests a simple reason. When one person looks really good, others look bad by comparison. Those others then have an incentive in stopping that person from looking good, especially if they can't or won't compete. After all, weTe all judged in comparison with others. When faced with someone better, what can a normal person do? One option is to actively compete. A second option is to bring that person down. That is to suppress their cooperation or work ethic, infer selfish motives for their actions, or imply real or imagined hypocrisy. Other tactics include attacking them on unrelated dimensions or punishing them outright. Why does this matter? Critics often attack the motives of people who protect the environment, donate money or work too hard. Such good deeds are dismissed as naive or hypocritical by those who do not perform those deeds. This criticism may ultimately discourage people from doing good deeds. So it's important to recognize these attacks for what they are.",
       "questions": [
         {
-          "id": "2023-06-S1-LC-036",
-          "ability": "推理判断",
-          "question": "Why does the man think he is a very competitive candidate?",
-          "optionA": "It can be inferred from the context.",
-          "optionB": "It is mentioned in the passage.",
-          "optionC": "The speaker does not specify.",
-          "optionD": "The information is not provided.",
+          "id": "CET6-L3-Q1",
+          "ability": "细节定位",
+          "question": "According to the passage, what is one reason why exceptionally good people sometimes get punished?",
+          "optionA": "They tend to violate group norms by working independently.",
+          "optionB": "Others feel inferior by comparison and seek to diminish their standing.",
+          "optionC": "Their achievements threaten formal leadership structures in organizations.",
+          "optionD": "They often underestimate the effort required to sustain high performance.",
           "answer": "B"
         },
         {
-          "id": "2023-06-S1-LEC-21",
+          "id": "CET6-L3-Q2",
           "ability": "推理判断",
-          "question": "What does the speaker suggest marketers do to meet future challenges?",
-          "optionA": "The speaker does not specify.",
-          "optionB": "It is mentioned in the passage.",
-          "optionC": "It can be inferred from the context.",
-          "optionD": "The information is not provided.",
+          "question": "What can be inferred about the societal impact of criticizing morally motivated individuals?",
+          "optionA": "It strengthens collective moral standards by encouraging self-reflection.",
+          "optionB": "It fosters healthy competition that raises overall group performance.",
+          "optionC": "It may reduce prosocial behavior over time due to fear of backlash.",
+          "optionD": "It primarily affects only highly visible public figures, not ordinary citizens.",
+          "answer": "C"
+        },
+        {
+          "id": "CET6-L3-Q3",
+          "ability": "主旨归纳",
+          "question": "What is the main purpose of this passage?",
+          "optionA": "To advocate for stricter social sanctions against hypocrisy in moral behavior.",
+          "optionB": "To describe a counterintuitive social phenomenon and explain its psychological roots.",
+          "optionC": "To compare cross-cultural differences in how generosity is perceived.",
+          "optionD": "To propose policy interventions for protecting altruistic individuals in workplaces.",
           "answer": "B"
         },
         {
-          "id": "2024-12-S2-LEC-16",
-          "ability": "态度推断",
-          "question": "What does the speaker recommend in this talk?",
-          "optionA": "It is mentioned in the passage.",
-          "optionB": "It can be inferred from the context.",
-          "optionC": "The information is not provided.",
-          "optionD": "The speaker does not specify.",
-          "answer": "D"
-        },
-        {
-          "id": "2023-06-S2-LEC-25",
-          "ability": "态度推断",
-          "question": "What question does the speaker raise close to the end of the talk?",
-          "optionA": "The information is not provided.",
-          "optionB": "It can be inferred from the context.",
-          "optionC": "It is mentioned in the passage.",
-          "optionD": "The speaker does not specify.",
-          "answer": "D"
+          "id": "CET6-L3-Q4",
+          "ability": "同义替换",
+          "question": "The word 'baffling' (in line 5) is closest in meaning to which of the following?",
+          "optionA": "Widespread",
+          "optionB": "Unintentional",
+          "optionC": "Confusing",
+          "optionD": "Inevitable",
+          "answer": "C"
         }
       ]
     },
     {
       "passage_id": 4,
       "type": "短文理解",
-      "text": "Today I'd like to talk about...",
+      "text": "Scientists often use specialized jargon terms while communicating with laymen. Most of them don't realize the harmful effects of this practice. In a new study, people exposed to jargon when reading about subjects like autonomous and later were less interested in than others who read about the same topics, but:without the use of specialized terms. They also felt less informed about science and less qualified to discuss science topics. It's noteworthy that it made no difference if the jargon terms were defined in the text. Even when the terms were defined,. readers still felt the same lack of engagement as readers who read jargon that wasn't explained. The problem is that the mere presence of jargon sends a discouraging message to readers. Hillary Shulman, the author of the study, asserts that specialized words are a signal. Jargon tells people that the message isn't for them. There is an even darker side to how people react to jargon. In another study, researchers found that reading scientific articles containing jargon led people to doubt the actual science. They found the opposite when a text is easier to read, then people are more persuaded. Thus, it's important to communicate clearly when talking about complex science subjects. This is especially true with issues related to public health, like the safety of new medications and the benefits of vaccines. C11)Shulman concedes that the use of jargon is appropriate with scientific audiences. But scientists who want to communicate with the general public need to modify their language. They need to eliminate jargon.",
       "questions": [
         {
-          "id": "2021-06-S2-LC-020",
-          "ability": "主旨归纳",
-          "question": "What is the passage/conversation mainly about?",
-          "optionA": "They have unrealistic expectations.",
-          "optionB": "They bear fewer social responsibilities.",
-          "optionC": "They are born with a stronger ability to socialize.",
-          "optionD": "They are better able to survive or handle disease.",
-          "answer": "A"
-        },
-        {
-          "id": "2021-12-S1-LC-037",
-          "ability": "主旨归纳",
-          "question": "What is the passage/conversation mainly about?",
-          "optionA": "Cultivation of new varieties of crops.",
-          "optionB": "The research on crop rotation in developing countries.",
-          "optionC": "The cooperation of the world’s agricultural scientists.",
-          "optionD": "The improvement of agricultural infrastructure.",
-          "answer": "A"
-        },
-        {
-          "id": "2023-06-S1-LEC-22",
+          "id": "CET6-L4-Q1",
           "ability": "细节定位",
-          "question": "What does the speaker say is interesting?",
-          "optionA": "The information is not provided.",
-          "optionB": "It is mentioned in the passage.",
-          "optionC": "The speaker does not specify.",
-          "optionD": "It can be inferred from the context.",
-          "answer": "A"
+          "question": "What did the new study find about readers exposed to jargon in science-related texts?",
+          "optionA": "They showed greater curiosity and asked more follow-up questions.",
+          "optionB": "They felt less informed about science and less qualified to discuss it.",
+          "optionC": "They remembered scientific concepts more accurately when jargon was defined.",
+          "optionD": "They preferred jargon-heavy texts when the topics were highly technical.",
+          "answer": "B"
         },
         {
-          "id": "2023-06-S2-LEC-19",
-          "ability": "细节定位",
-          "question": "What does the speaker say about Nebraska City in 1854 when Julius Morton moved there?",
-          "optionA": "The information is not provided.",
-          "optionB": "The speaker does not specify.",
-          "optionC": "It is mentioned in the passage.",
-          "optionD": "It can be inferred from the context.",
-          "answer": "A"
+          "id": "CET6-L4-Q2",
+          "ability": "推理判断",
+          "question": "What can be inferred about the effect of defining jargon terms in scientific communication with the public?",
+          "optionA": "It significantly improves readers’ comprehension and confidence.",
+          "optionB": "It helps bridge the gap between experts and non-experts over time.",
+          "optionC": "It fails to mitigate the negative psychological impact of jargon presence.",
+          "optionD": "It increases readers’ trust in the scientific validity of the content.",
+          "answer": "C"
+        },
+        {
+          "id": "CET6-L4-Q3",
+          "ability": "态度推断",
+          "question": "What is Hillary Shulman’s attitude toward using jargon when communicating science to the general public?",
+          "optionA": "Cautiously supportive, provided definitions are included.",
+          "optionB": "Strongly opposed, viewing it as inherently exclusionary and counterproductive.",
+          "optionC": "Indifferent, since audience familiarity varies widely.",
+          "optionD": "Conditionally accepting, depending on the complexity of the topic.",
+          "answer": "B"
+        },
+        {
+          "id": "CET6-L4-Q4",
+          "ability": "主旨归纳",
+          "question": "What is the main message of the passage?",
+          "optionA": "Scientific literacy depends primarily on formal education rather than communication style.",
+          "optionB": "Jargon use enhances credibility among both experts and lay audiences.",
+          "optionC": "Clear, jargon-free language is essential for effective public science communication, especially on health-related issues.",
+          "optionD": "Public distrust in science stems mainly from media misrepresentation, not linguistic choices.",
+          "answer": "C"
         }
       ]
     },
     {
       "passage_id": 5,
-      "type": "长对话",
-      "text": "M: Have you heard about...? W: Yes, actually...",
+      "type": "讲座/讲话",
+      "text": "The late Swedish academic Hans Rosling has identified a worrying trend: not only do many people across advanced economies have no idea that the world is becoming a much better place, but they actually even think the opposite.This is no wonder, when the news focuses on reporting catastrophes,terrorist attacks, wars, and famines. Who wants to hear about the fact that every day some 200,00o people around the world are lifted above the S2-a-day poverty line? Or that more than 300,000 pople get accss te certit and cean water for the first time every day? These stories of people in low-income countrics simply don't make for exciting news coverage But,as Rosling pointed out in his book Faifklnes, itsipstant to put alte ad newsin perspective. While it is true that globalization has put some downward pressure on midle-class wages in advanced economies in recent decades, it has also helped lift hundreds of millions of people above the global poverty line. If we really care about global welfare, globalization is the only way forward to ensure that conomic prosperityis shared aong all countriesand not only a elct tew advanced conomies While some people glorify the past, one of the big facts of economic history is that until quite recently a signifiant part of the world populaion has lived under quit miserable conditions and this has ben true throughout most of human history. While there were many long-lasting ups and downs, like the Great Depression or the recent Great Reccsuion, the constancy of the long run growthrate is actual quite miracuous. Low-incomecoutries, including China and India,have been growing at a significantly faster pace in recent decades and are quickl catching up to the West. A 10% growth rate over a prolonged period means that income levels double roughly every seven years.It is bviously god news f prsperi't is more shared across the lobe. Whic inequali't within countries as gone up as a result o lobaiation, global inequ li't has een on a steady downward trend for several ecades.This is mostly a sult o the iprovement of hundreds of ilions of pcople's living standards. In fact, for the first time ever sinc the Industrial Revolution,about half of the global population can be considered midle class.",
       "questions": [
         {
-          "id": "2024-12-S2-LEC-20",
+          "id": "CET6-L5-Q1",
           "ability": "细节定位",
-          "question": "What does the speaker say about globalization?",
-          "optionA": "The information is not provided.",
-          "optionB": "The speaker does not specify.",
-          "optionC": "It can be inferred from the context.",
-          "optionD": "It is mentioned in the passage.",
-          "answer": "C"
+          "question": "What does the speaker say about daily progress in poverty reduction?",
+          "optionA": "Approximately 200,000 people worldwide escape extreme poverty each week.",
+          "optionB": "Around 200,000 people cross the $2-a-day poverty line every day.",
+          "optionC": "Fewer than 100,000 people gain access to clean water daily.",
+          "optionD": "Poverty reduction rates have stagnated in low-income countries since 2010.",
+          "answer": "B"
         },
         {
-          "id": "2023-06-S1-LC-009",
+          "id": "CET6-L5-Q2",
+          "ability": "推理判断",
+          "question": "What can be inferred from the speaker’s discussion of globalization and inequality?",
+          "optionA": "Globalization has worsened both within-country and between-country inequality.",
+          "optionB": "Although domestic inequality has risen in some nations, global inequality has declined steadily due to rising living standards in low-income countries.",
+          "optionC": "The decline in global inequality is primarily attributable to aid transfers from advanced economies.",
+          "optionD": "Rising middle-class populations in the West have offset inequality gains in developing regions.",
+          "answer": "B"
+        },
+        {
+          "id": "CET6-L5-Q3",
+          "ability": "主旨归纳",
+          "question": "What is the main purpose of this lecture?",
+          "optionA": "To criticize media outlets for ignoring economic data in favor of sensationalism.",
+          "optionB": "To argue that globalization, despite its domestic challenges, has driven unprecedented global progress and reduced inequality.",
+          "optionC": "To compare the Great Depression and the Great Recession in terms of long-term growth impact.",
+          "optionD": "To advocate for policy reforms that prioritize wage growth in advanced economies over international development.",
+          "answer": "B"
+        }
+      ]
+    },
+    {
+      "passage_id": 6,
+      "type": "讲座/讲话",
+      "text": "Searching for meaning is something many of us cxperience throughout our lives.For some,this meaning is religious,some political and some interpersonal.And having a sense of meaning can bring u happiness. A new study looks at the relationship between meaning and happiness in the context of financial resources. Rhia Catapano from the University of Toronto and colleagues find meaning, is a far weaker predictor of happiness for rich pcople than poorer people,suggesting cconomic resources can impact how we experience meaning. The team analysed data from over 500, 00o pople across 123 countries. The first study used data 一om a daily pollog us residentscolced etven 20o3 ad 2015.Wel-bEing wastrced usisg measures ofi positive affectwhether,during the day before they were surveyed,participants had smiled or laughed a lot or experi'ncee a lu ot happiness.Neaning was measured through a daily \"'purpose index\",which explored the extent to which participants felt that they like what they do every day and are motivated to achieve their goals. Finally, income levels were assessd. The results showed that the correlation between meaning and happiness was st一ongest among those in lwer ncome brackets. But as income l vels inereased,the corelation becamer weaker.The second study looked at worldwide data. Happiness was measured using the same questions as in the first study,while meaning was measured using the single question: \"Do you feel your life has an important purpose or meaning?\". Again,the strength of the relationship between meaning and happiness depended on participants' income: meaning had a greater influence on happiness for those on lower incomes compared to those in higher brackets. In the final study, French participants indicated the extent to which they fel heyled a purposeftul and meaningfulli' and how much hey considered themselve a happy person. Finally, rather rta using specic income bracket,they placed themselves on a 'scial ladeda,representing where they stand in society with regard to wealth,education, and career. The results from the study duplicated those of the first two So overall, meaning and happiness had a stronger relationship in those with fewer resources than those with more.This might be the case because rich individuals have more access tother surces of happiesany ot which wil e cxtrnal,like lak of sresos somunity. hus,a focuso an internaltsarse of satisfaction, purpose or meaning is less important.",
+      "questions": [
+        {
+          "id": "CET6-L6-Q1",
           "ability": "细节定位",
-          "question": "What trait do all great professionals share?",
-          "optionA": "The information is not provided.",
-          "optionB": "It is mentioned in the passage.",
-          "optionC": "It can be inferred from the context.",
-          "optionD": "The speaker does not specify.",
-          "answer": "D"
+          "question": "According to the lecture, how was 'meaning' measured in the first study?",
+          "optionA": "Through a single question about life’s overall purpose.",
+          "optionB": "Through a daily 'purpose index' assessing motivation and enjoyment of daily activities.",
+          "optionC": "Through participants’ self-placement on a social ladder reflecting wealth, education, and career.",
+          "optionD": "Through frequency of smiling or laughing reported over a one-week period.",
+          "answer": "B"
         },
         {
-          "id": "2023-06-S2-LEC-16",
+          "id": "CET6-L6-Q2",
           "ability": "推理判断",
-          "question": "What does most cyberloafing research focus on?",
-          "optionA": "The information is not provided.",
-          "optionB": "It can be inferred from the context.",
-          "optionC": "The speaker does not specify.",
-          "optionD": "It is mentioned in the passage.",
-          "answer": "A"
+          "question": "What can be inferred from the findings across all three studies?",
+          "optionA": "People with high incomes derive greater happiness from religious beliefs than from interpersonal relationships.",
+          "optionB": "The psychological value of meaning as a source of happiness diminishes when external resources are abundant.",
+          "optionC": "Meaning has no measurable impact on happiness among individuals in high-income countries.",
+          "optionD": "Daily affect measures are unreliable for assessing well-being in cross-cultural samples.",
+          "answer": "B"
         },
         {
-          "id": "2023-06-S1-LEC-20",
-          "ability": "推理判断",
-          "question": "How do marketers capture consumers' attentior as quickly as possible?",
-          "optionA": "The information is not provided.",
-          "optionB": "It can be inferred from the context.",
-          "optionC": "It is mentioned in the passage.",
-          "optionD": "The speaker does not specify.",
-          "answer": "C"
+          "id": "CET6-L6-Q3",
+          "ability": "同义替换",
+          "question": "The speaker states that rich individuals have 'more access to other sources of happiness, some of which will be external, like lack of stress or sense of community.' Which of the following best paraphrases this idea?",
+          "optionA": "Wealthy people rely exclusively on material possessions to feel happy.",
+          "optionB": "Affluent individuals can obtain happiness through non-internal factors such as reduced financial pressure and stronger social ties.",
+          "optionC": "High-income earners experience less meaning because they prioritize community over personal goals.",
+          "optionD": "Stress and isolation are more common among wealthy populations due to their lifestyle choices.",
+          "answer": "B"
         }
       ]
     }
