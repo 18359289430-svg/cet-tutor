@@ -363,69 +363,6 @@ function getExamContext(isCet6) {
     };
 }
 
-function buildRagContext_OLD_REMOVED() { return ''; /* removed duplicate */ } function _buildRagContextPlaceholder(
-    var context = '';
-    // 检测考试类型
-    var isCet6 = detectExamType(userMessage, personality);
-    var examCtx = getExamContext(isCet6);
-    var examLabel = examCtx.examLabel;
-    
-    // 考试类型提示
-    context += '\n\n[考试类型]' + examLabel + '备考';
-    
-    var searchType = '';
-    var weakDimsList = weakDims || [];
-    if (weakDimsList.length > 0) {
-        var firstWeak = weakDimsList[0].replace(/\(.*?\)/, '').trim();
-        var dimTypeMap = {
-            '细节定位': '阅读理解-仔细阅读',
-            '推理判断': '阅读理解-仔细阅读',
-            '同义替换': '阅读理解-仔细阅读',
-            '主旨归纳': '阅读理解-仔细阅读',
-            '态度判断': '听力理解-篇章',
-            '听力': '听力理解-篇章',
-            '听力理解': '听力理解-篇章',
-            '长对话': '听力理解-长对话',
-            '新闻报道': '听力理解-新闻报道',
-            '阅读理解': '阅读理解-仔细阅读',
-            '信息匹配': '阅读理解-信息匹配',
-            '翻译': '翻译'
-        };
-        searchType = dimTypeMap[firstWeak] || '';
-    }
-    var keyword = '';
-    var keywords = userMessage.match(/[\u4e00-\u9fa5a-zA-Z]{2,}/g);
-    if (keywords) keyword = keywords.slice(0, 3).join(' ');
-    var results = searchQuiz(keyword, searchType, 2);
-    if (results.length > 0) {
-        context += '\n\n[真题参考-请基于这些出题或讲解]\n';
-        results.forEach(function(q, i) {
-            context += (i+1) + '. (' + q.type + ') ' + q.question + '\n';
-            context += '   A.' + q.optionA + ' B.' + q.optionB + ' C.' + q.optionC + ' D.' + q.optionD + '\n';
-            context += '   答案:' + q.answer + ' 解析:' + (q.explanation || '').substring(0,50) + '\n';
-        });
-    }
-    context += '\n\n[用户画像]';
-    if (personality) context += '\n- 备考人格: ' + personality;
-    if (dimScores) {
-        try {
-            var scores = JSON.parse(dimScores);
-            context += '\n- 五维能力: ';
-            for (var k in scores) context += k + '=' + scores[k] + ' ';
-        } catch(e) {}
-    }
-    if (weakDimsList.length > 0) {
-        context += '\n- 薄弱维度(按严重程度排序): ' + weakDimsList.join(', ');
-        context += '\n→ 出题要求: 优先出最弱维度的题';
-    }
-    if (wrongSummary) {
-        context += '\n- 近期错题: ' + wrongSummary;
-    }
-    if (studyDays > 0) {
-        context += '\n- 已学习: ' + studyDays + '天';
-    }
-    return context;
-}
 
 // ===== 陪练系统提示词 =====
 const COMPANION_SYSTEM_PROMPT = `你是"小过学长"的AI陪练模式，一个温暖又专业的四六级备考私教。根据用户的题目和对话内容，自动判断是四级还是六级，并使用对应的难度和词汇。
@@ -2790,7 +2727,7 @@ const server = http.createServer((req, res) => {
 
 
 
-function buildRagContext(userMessage, personality, weakDims, dimScores, wrongSummary, studyDays) {
+function buildRagContext(userMessage, personality, weakDims, dimScores, wrongSummary, studyDays, skillLevels, diagTrend, diagCount) {
     var context = '';
     // 根据最薄弱维度搜题（精准匹配题型）
     var searchType = '';
@@ -2847,6 +2784,36 @@ function buildRagContext(userMessage, personality, weakDims, dimScores, wrongSum
     // 注意：前端会通过 pending_task 字段传递待复习错题信息
     if (studyDays > 0) {
         context += '\n- 已学习: ' + studyDays + '天';
+    }
+    
+    // 技能等级
+    if (skillLevels) {
+        try {
+            var levels = JSON.parse(skillLevels);
+            var lvMap = { listening: '听力', reading: '阅读', writing: '写作', translation: '翻译' };
+            var lvLabels = { 1: '基础', 2: '进阶', 3: '真题', 4: '冲刺' };
+            context += '\n- 技能等级: ';
+            for (var sk in levels) {
+                var s = levels[sk];
+                var lv = s >= 80 ? 4 : s >= 60 ? 3 : s >= 35 ? 2 : 1;
+                context += (lvMap[sk] || sk) + 'Lv' + lv + '(' + lvLabels[lv] + '/' + s + '分) ';
+            }
+            var weakestSkill = null, weakestScore = 999;
+            for (var sk2 in levels) { if (levels[sk2] < weakestScore) { weakestScore = levels[sk2]; weakestSkill = sk2; } }
+            if (weakestSkill) {
+                var focusMap = { listening: '先出简单短对话逐步加长', reading: '先出细节定位题再出推理题', writing: '先从翻译句子开始再写段落', translation: '先练关键词翻译再练完整句子' };
+                context += '\n→ 最低技能: ' + (lvMap[weakestSkill] || weakestSkill) + '，' + (focusMap[weakestSkill] || '从基础开始');
+            }
+        } catch(e) {}
+    }
+    
+    // 诊断历史趋势
+    if (diagTrend && diagTrend.length > 0) {
+        context += '\n- 进步趋势: ' + diagTrend + ' → 有进步要鼓励，退步维度重点练';
+    }
+    if (diagCount && diagCount > 1) {
+        context += '\n- 已完成诊断: ' + diagCount + '次';
+        if (diagCount >= 3) context += '（老用户可适当提高难度）';
     }
     
     return context;
