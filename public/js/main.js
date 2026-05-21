@@ -4648,15 +4648,102 @@ function updateHomeStatus() {
                 coachCard.style.display = 'none';
             }
             
-            var streakEl = document.getElementById('home-streak');
             var streak = getStreakData();
             var streakNum = document.getElementById('streak-num');
             if (streakNum) streakNum.textContent = streak.count > 0 ? streak.count : '0';
+
+            // ===== P0: 首页状态化 =====
+            var diagHistory = JSON.parse(localStorage.getItem(examKey('diagnosis_history')) || '[]');
+            var hasDiag = diagHistory.length > 0;
+            var heroTitle = document.getElementById('home-hero-title');
+            var heroSubtitle = document.getElementById('home-hero-subtitle');
             var ctaText = document.getElementById('home-cta-text');
-            if (ctaText) {
-                var hasDiag = data.personality || (data.diagnosis && data.diagnosis.type);
-                ctaText.textContent = hasDiag ? '今日任务' : '精准诊断';
+            var ctaSecondary = document.getElementById('home-cta-secondary');
+            var skillBar = document.getElementById('home-skill-bar');
+            var examLabel = IS_CET6 ? '六级' : '四级';
+
+            if (!hasDiag) {
+                // 未诊断用户 - 引导做诊断
+                if (heroTitle) heroTitle.innerHTML = '开始今天的<span id="exam-type-title">' + examLabel + '</span>备考';
+                if (heroSubtitle) heroSubtitle.textContent = '5分钟找到你的备考短板';
+                if (ctaText) ctaText.textContent = '开始AI诊断';
+                if (ctaSecondary) ctaSecondary.style.display = 'none';
+                if (skillBar) skillBar.style.display = 'none';
+            } else {
+                // 已诊断用户 - 显示状态
+                var latestDiag = diagHistory[diagHistory.length - 1];
+                var scores = latestDiag.scores || {};
+                
+                // 找最弱技能
+                var skillNames = {'listening': '听力', 'reading': '阅读', 'writing': '写作', 'translation': '翻译'};
+                var weakest = null;
+                var weakestScore = 999;
+                var skillLevels = {};
+                for (var sk in skillNames) {
+                    var sc = scores[sk];
+                    if (sc !== undefined) {
+                        if (sc < weakestScore) { weakestScore = sc; weakest = sk; }
+                        skillLevels[sk] = sc >= 80 ? '冲刺' : sc >= 60 ? '良好' : sc >= 35 ? '待提升' : '薄弱';
+                    }
+                }
+
+                // 计算今日训练数
+                var todayStr = new Date().toDateString();
+                var practiceHistory = JSON.parse(localStorage.getItem(examKey('practice_history')) || '[]');
+                var todayPractices = practiceHistory.filter(function(p) {
+                    return new Date(p.date).toDateString() === todayStr;
+                });
+                var todayCount = todayPractices.length;
+                var targetCount = 3;
+
+                if (todayCount >= targetCount) {
+                    // 今日已完成
+                    if (heroTitle) heroTitle.innerHTML = '今日训练已完成 <span style="color:var(--success)">✓</span>';
+                    if (heroSubtitle) heroSubtitle.textContent = '明天继续，保持节奏';
+                    if (ctaText) ctaText.textContent = '再练一组';
+                    if (ctaSecondary) {
+                        ctaSecondary.style.display = '';
+                        ctaSecondary.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>查看数据';
+                        ctaSecondary.setAttribute('onclick', "switchTab('progress')");
+                    }
+                } else if (weakest) {
+                    // 有弱项 - 针对性训练
+                    var weakName = skillNames[weakest] || weakest;
+                    if (heroTitle) heroTitle.innerHTML = '今日目标：练<span id="exam-type-title">' + weakName + '</span> ' + todayCount + '/' + targetCount;
+                    if (heroSubtitle) heroSubtitle.textContent = '上次' + weakName + '薄弱，今天先练这里';
+                    if (ctaText) ctaText.textContent = '开始训练';
+                    if (ctaSecondary) {
+                        ctaSecondary.style.display = '';
+                        ctaSecondary.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>今日任务';
+                        ctaSecondary.setAttribute('onclick', 'openDailyTask()');
+                    }
+                } else {
+                    // 已诊断但没有明显弱项
+                    if (heroTitle) heroTitle.innerHTML = '继续今天的<span id="exam-type-title">' + examLabel + '</span>训练';
+                    if (heroSubtitle) heroSubtitle.textContent = '保持手感，距考试还有' + diff + '天';
+                    if (ctaText) ctaText.textContent = '今日任务';
+                    if (ctaSecondary) {
+                        ctaSecondary.style.display = '';
+                        ctaSecondary.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>今日任务';
+                        ctaSecondary.setAttribute('onclick', 'openDailyTask()');
+                    }
+                }
+
+                // 显示技能等级状态条
+                if (skillBar && Object.keys(skillLevels).length > 0) {
+                    skillBar.style.display = 'flex';
+                    var levelColors = {'薄弱': '#E17055', '待提升': '#FDCB6E', '良好': '#00B894', '冲刺': '#6C5CE7'};
+                    for (var sk in skillNames) {
+                        var dot = document.getElementById('skill-dot-' + sk);
+                        var level = document.getElementById('skill-level-' + sk);
+                        if (skillLevels[sk]) {
+                            if (dot) dot.style.background = levelColors[skillLevels[sk]] || '#ccc';
+                            if (level) { level.textContent = skillLevels[sk]; level.style.color = levelColors[skillLevels[sk]] || '#666'; }
+                        }
+                    }
+                }
             }
+
             updateDailyTask();
         }
 
@@ -5801,12 +5888,39 @@ function showClearChatModal() {
         })();
     
 function handleHomeCta() {
-    // 有诊断数据 → 进今日任务继续练；没做过 → 先诊断
     var diagHistory = JSON.parse(localStorage.getItem(examKey('diagnosis_history')) || '[]');
-    if (diagHistory.length > 0) {
-        openDailyTask();
-    } else {
+    if (diagHistory.length === 0) {
+        // 未诊断 - 直接开始诊断
         startNewDiagnosis();
+        return;
+    }
+    // 已诊断 - 找最弱技能直接练
+    var latestDiag = diagHistory[diagHistory.length - 1];
+    var scores = latestDiag.scores || {};
+    var weakest = null;
+    var weakestScore = 999;
+    var skillMap = {'listening': 'listening', 'reading': 'reading', 'writing': 'writing', 'translation': 'translation'};
+    for (var sk in skillMap) {
+        if (scores[sk] !== undefined && scores[sk] < weakestScore) {
+            weakestScore = scores[sk];
+            weakest = sk;
+        }
+    }
+    // 检查今日是否已完成3组
+    var todayStr = new Date().toDateString();
+    var practiceHistory = JSON.parse(localStorage.getItem(examKey('practice_history')) || '[]');
+    var todayCount = practiceHistory.filter(function(p) { return new Date(p.date).toDateString() === todayStr; }).length;
+    if (todayCount >= 3) {
+        // 今日已完成 - 再来一组
+        if (weakest) {
+            startPractice(weakest);
+        } else {
+            openDailyTask();
+        }
+    } else if (weakest) {
+        startPractice(weakest);
+    } else {
+        openDailyTask();
     }
 }
 

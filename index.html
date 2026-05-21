@@ -31,25 +31,25 @@
     <meta name="twitter:image" content="https://cet-tutor.com/og-image.jpg">
     <link rel="preload" href="/wechat-qr.jpg" as="image">
     <!-- CSS -->
-    <link rel="stylesheet" href="/css/variables.css?v=v115">
-    <link rel="stylesheet" href="/css/base.css?v=v115">
-    <link rel="stylesheet" href="/css/home.css?v=v115">
-    <link rel="stylesheet" href="/css/study.css?v=v115">
-    <link rel="stylesheet" href="/css/chat.css?v=v115">
-    <link rel="stylesheet" href="/css/personality.css?v=v115">
-    <link rel="stylesheet" href="/css/components.css?v=v115">
-    <link rel="stylesheet" href="/css/quiz.css?v=v115">
-    <link rel="stylesheet" href="/css/payment.css?v=v115">
-    <link rel="stylesheet" href="/css/profile.css?v=v115">
-    <link rel="stylesheet" href="/css/dashboard.css?v=v115">
-    <link rel="stylesheet" href="/css/diagnosis.css?v=v115">
-    <link rel="stylesheet" href="/css/essay.css?v=v115">
-    <link rel="stylesheet" href="/css/review.css?v=v115">
-    <link rel="stylesheet" href="/css/plan.css?v=v115">
-    <link rel="stylesheet" href="/css/plan-page.css?v=v115">
-    <link rel="stylesheet" href="/css/wrongbook.css?v=v115">
-    <link rel="stylesheet" href="/css/learning-path.css?v=v115">
-    <link rel="stylesheet" href="/css/vocab.css?v=v115">
+    <link rel="stylesheet" href="/css/variables.css?v=v116">
+    <link rel="stylesheet" href="/css/base.css?v=v116">
+    <link rel="stylesheet" href="/css/home.css?v=v116">
+    <link rel="stylesheet" href="/css/study.css?v=v116">
+    <link rel="stylesheet" href="/css/chat.css?v=v116">
+    <link rel="stylesheet" href="/css/personality.css?v=v116">
+    <link rel="stylesheet" href="/css/components.css?v=v116">
+    <link rel="stylesheet" href="/css/quiz.css?v=v116">
+    <link rel="stylesheet" href="/css/payment.css?v=v116">
+    <link rel="stylesheet" href="/css/profile.css?v=v116">
+    <link rel="stylesheet" href="/css/dashboard.css?v=v116">
+    <link rel="stylesheet" href="/css/diagnosis.css?v=v116">
+    <link rel="stylesheet" href="/css/essay.css?v=v116">
+    <link rel="stylesheet" href="/css/review.css?v=v116">
+    <link rel="stylesheet" href="/css/plan.css?v=v116">
+    <link rel="stylesheet" href="/css/plan-page.css?v=v116">
+    <link rel="stylesheet" href="/css/wrongbook.css?v=v116">
+    <link rel="stylesheet" href="/css/learning-path.css?v=v116">
+    <link rel="stylesheet" href="/css/vocab.css?v=v116">
     <!-- Clarity -->
     <script type="text/javascript">
         (function(c,l,a,r,i,t,y){ c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
@@ -59,7 +59,7 @@
     <!-- Umami -->
     <script async src="https://us.umami.is/script.js" data-website-id="5a41f1b0-59b5-41a7-bafa-5bd7432c4dd3"></script>
 <style>.reform-badge{display:inline-block;font-size:9px;background:#6C5CE7;color:#fff;padding:1px 5px;border-radius:6px;vertical-align:middle;margin-left:4px;font-weight:500;letter-spacing:0.3px;}</style>
-    <link rel="stylesheet" href="/css/comic.css?v=v115">
+    <link rel="stylesheet" href="/css/comic.css?v=v116">
 </head>
 <body>
     <div class="app">
@@ -96,17 +96,41 @@
                                 <span id="streak-num">0</span>天
                             </div>
                         </div>
-                        <div class="home-hero-title">开始今天的<span id="exam-type-title">四级</span>备考</div>
+                        <div class="home-hero-title" id="home-hero-title">开始今天的<span id="exam-type-title">四级</span>备考</div>
                         <div class="home-hero-subtitle" id="home-hero-subtitle">5分钟找到你的备考短板</div>
                         <div class="home-hero-actions">
                             <button class="home-cta-primary" id="home-cta-btn" onclick="handleHomeCta()">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
                                 <span id="home-cta-text">开始AI诊断</span>
                             </button>
-                            <button class="home-cta-secondary" onclick="openDailyTask()">
+                            <button class="home-cta-secondary" id="home-cta-secondary" onclick="openDailyTask()">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
                                 今日任务
                             </button>
+                        </div>
+
+                        <!-- 技能等级状态条（已诊断用户显示） -->
+                        <div class="home-skill-bar" id="home-skill-bar" style="display:none">
+                            <div class="home-skill-item" onclick="startPractice('listening')">
+                                <div class="home-skill-dot" id="skill-dot-listening"></div>
+                                <span>听力</span>
+                                <span class="home-skill-level" id="skill-level-listening">—</span>
+                            </div>
+                            <div class="home-skill-item" onclick="startPractice('reading')">
+                                <div class="home-skill-dot" id="skill-dot-reading"></div>
+                                <span>阅读</span>
+                                <span class="home-skill-level" id="skill-level-reading">—</span>
+                            </div>
+                            <div class="home-skill-item" onclick="startPractice('writing')">
+                                <div class="home-skill-dot" id="skill-dot-writing"></div>
+                                <span>写作</span>
+                                <span class="home-skill-level" id="skill-level-writing">—</span>
+                            </div>
+                            <div class="home-skill-item" onclick="startPractice('translation')">
+                                <div class="home-skill-dot" id="skill-dot-translation"></div>
+                                <span>翻译</span>
+                                <span class="home-skill-level" id="skill-level-translation">—</span>
+                            </div>
                         </div>
 
                     </div>
@@ -884,8 +908,8 @@
     </div>
 
     <!-- JS -->
-    <script src="/js/main.js?v=v115"></script>
-    <script src="/js/essay.js?v=v115"></script>
+    <script src="/js/main.js?v=v116"></script>
+    <script src="/js/essay.js?v=v116"></script>
 
 <!-- Onboarding: Exam Type Selection -->
 <div id="onboarding-overlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,rgba(99,102,241,0.95),rgba(139,92,246,0.95));z-index:99999;align-items:center;justify-content:center;">

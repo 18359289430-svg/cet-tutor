@@ -2277,3 +2277,38 @@
     font-weight: 600;
     color: #6C5CE7;
 }
+
+/* v116: 技能等级状态条 */
+.home-skill-bar {
+    display: flex;
+    gap: 12px;
+    padding: 12px 0 4px 0;
+    justify-content: center;
+}
+.home-skill-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.7);
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.1);
+    transition: all 0.2s;
+}
+.home-skill-item:active {
+    transform: scale(0.95);
+    background: rgba(255,255,255,0.2);
+}
+.home-skill-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #ccc;
+}
+.home-skill-level {
+    font-size: 10px;
+    font-weight: 600;
+}
