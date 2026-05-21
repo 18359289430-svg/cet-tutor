@@ -1942,3 +1942,48 @@
 /* 聊天页模式 - 隐藏顶部状态栏 */
 body.chat-mode .status-bar { display: none !important; }
 body.chat-mode .custom-chat-header { padding-top: calc(8px + var(--safe-top, 0px)); }
+
+/* ===== AI教练浮动气泡 ===== */
+.ai-bubble {
+    position: fixed;
+    bottom: 90px;
+    right: 16px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #6C5CE7;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(108,92,231,0.35);
+    z-index: 900;
+    transition: transform 0.15s;
+}
+.ai-bubble svg { width: 22px; height: 22px; }
+.ai-bubble:active { transform: scale(0.9); }
+.ai-bubble.hidden { display: none; }
+
+/* 聊天浮层模式 - 覆盖在当前页面上 */
+.custom-chat-page.coach-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 950;
+    display: flex !important;
+    flex-direction: column;
+    background: #fff;
+    animation: chatOverlayIn 0.25s ease;
+}
+@keyframes chatOverlayIn {
+    from { transform: translateY(40px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+.custom-chat-page.coach-overlay .custom-chat-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}

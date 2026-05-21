@@ -2330,3 +2330,22 @@
     background: #E17055 !important;
     color: #fff !important;
 }
+/* AI讲解按钮 */
+.train-ai-btn {
+    display: block;
+    width: 100%;
+    padding: 11px;
+    border: 1.5px solid #6C5CE7;
+    border-radius: 10px;
+    background: rgba(108,92,231,0.04);
+    color: #6C5CE7;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 8px;
+    transition: background 0.2s;
+}
+.train-ai-btn:active {
+    background: rgba(108,92,231,0.12);
+    transform: scale(0.98);
+}

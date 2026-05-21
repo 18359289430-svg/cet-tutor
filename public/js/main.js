@@ -11270,6 +11270,10 @@ function selectTrainOption(btn, selectedValue) {
     if (!isCorrect && ts.stageInfo && ts.stageInfo.tip) {
         explainHtml += '<div class="train-explain-tip">' + ts.stageInfo.tip + '</div>';
     }
+    // 答错时提供AI讲解按钮
+    if (!isCorrect) {
+        explainHtml += '<button class="train-ai-btn" onclick="askCoachAbout(\'' + q.id + '\')">问AI教练为什么错</button>';
+    }
     explainHtml += '<button class="train-next-btn" onclick="nextTrainQuestion()">下一题</button>';
     explainHtml += '</div>';
     
@@ -15902,7 +15906,163 @@ function startHomeTodayTask() {
     showToast('今日训练已完成，继续保持！');
 }
 
+
+// ===== AI教练浮动气泡 =====
+var _coachChatOpen = false;
+
+function openCoachChat() {
+    var chatPage = document.getElementById('chat-page');
+    var bubble = document.getElementById('ai-bubble');
+    if (!chatPage) return;
+    
+    // 设置为companion模式
+    if (!chatState.currentMode) chatState.currentMode = 'companion';
+    if (!chatState.botId) chatState.botId = '7637702903679631395';
+    
+    // 显示chat-page为浮层
+    chatPage.classList.add('coach-overlay');
+    chatPage.style.display = 'flex';
+    document.body.classList.add('chat-mode');
+    
+    // 如果没有对话，创建新对话
+    if (!chatState.conversationId) {
+        var recentList = getChatList();
+        if (recentList && recentList.length > 0) {
+            var lastConv = recentList[0];
+            chatState.conversationId = lastConv.id;
+            chatState.botId = lastConv.botId || '7637702903679631395';
+            chatState.currentMode = 'companion';
+            loadChatHistory(lastConv.id);
+        } else {
+            // 新对话，注入教练上下文
+            chatState.conversationId = 'coach_' + Date.now();
+            chatState.currentMode = 'companion';
+            var chatTitleEl = document.getElementById('chat-title');
+            if (chatTitleEl) chatTitleEl.innerHTML = 'AI教练<span class="header-ai-tag">AI</span>';
+            // 发送一个带用户上下文的前缀消息让AI知道用户情况
+            var contextMsg = buildCoachContext();
+            if (contextMsg) {
+                setTimeout(function() { sendSuggestion(contextMsg); }, 200);
+            }
+        }
+    }
+    
+    // 更新标题
+    var chatTitleEl = document.getElementById('chat-title');
+    if (chatTitleEl) chatTitleEl.innerHTML = 'AI教练<span class="header-ai-tag">AI</span>';
+    
+    // 隐藏气泡
+    if (bubble) bubble.classList.add('hidden');
+    _coachChatOpen = true;
+    
+    // 拦截返回按钮
+    var backBtn = chatPage.querySelector('.custom-chat-back');
+    if (backBtn) {
+        backBtn.setAttribute('onclick', 'closeCoachChat()');
+    }
+}
+
+function closeCoachChat() {
+    var chatPage = document.getElementById('chat-page');
+    var bubble = document.getElementById('ai-bubble');
+    if (!chatPage) return;
+    
+    chatPage.classList.remove('coach-overlay');
+    chatPage.style.display = 'none';
+    document.body.classList.remove('chat-mode');
+    
+    // 恢复气泡
+    if (bubble) bubble.classList.remove('hidden');
+    _coachChatOpen = false;
+    
+    // 恢复返回按钮原功能
+    var backBtn = chatPage.querySelector('.custom-chat-back');
+    if (backBtn) {
+        backBtn.setAttribute('onclick', 'handleChatBack()');
+    }
+}
+
+// 构建教练上下文消息（让AI知道用户的学习情况）
+function buildCoachContext() {
+    var diagHist = JSON.parse(localStorage.getItem(examKey('diagnosis_history')) || '[]');
+    var trainingHist = getTrainingHistory();
+    var examDate = new Date('2026-06-13');
+    var daysLeft = Math.ceil((examDate - new Date()) / (1000*60*60*24));
+    var examLabel = IS_CET6 ? '六级' : '四级';
+    
+    if (diagHist.length === 0) {
+        return null; // 未诊断，不注入上下文
+    }
+    
+    var latestDiag = diagHist[diagHist.length - 1];
+    var scores = latestDiag.scores || {};
+    var skillNames = {'listening': '听力', 'reading': '阅读', 'writing': '写作', 'translation': '翻译'};
+    
+    // 各技能阶段
+    var stageInfo = [];
+    for (var sk in skillNames) {
+        if (scores[sk] !== undefined) {
+            var stg = getCurrentStage(sk);
+            var stgInfo = TRAINING_STAGES[sk] ? TRAINING_STAGES[sk][stg - 1] : null;
+            stageInfo.push(skillNames[sk] + ':' + scores[sk] + '分(' + (stgInfo ? stgInfo.name : '基础') + ')');
+        }
+    }
+    
+    // 今日训练
+    var today = new Date().toISOString().split('T')[0];
+    var todayTrained = trainingHist.filter(function(h) { return h.date === today; });
+    var todayInfo = todayTrained.length > 0 ? '今天已练' + todayTrained.length + '次' : '今天还没练习';
+    
+    // 错题
+    var wrongQs = getWrongQuestions();
+    var wrongInfo = wrongQs.length > 0 ? '错题本有' + wrongQs.length + '道' : '';
+    
+    var msg = '我在用AI教练模式备考' + examLabel + '，距考试' + daysLeft + '天。';
+    msg += '我的能力：' + stageInfo.join('、') + '。';
+    msg += todayInfo + '。';
+    if (wrongInfo) msg += wrongInfo + '。';
+    msg += '请根据我的情况回答问题，给出针对性建议。';
+    
+    return msg;
+}
+
+// 重写handleChatBack，如果是从教练模式打开的则关闭浮层
+var _origHandleChatBack = typeof handleChatBack === 'function' ? handleChatBack : null;
+
 window.handleHomeCta = handleHomeCta;
+// 从训练页面问AI教练
+function askCoachAbout(questionId) {
+    var ts = window._trainState;
+    if (!ts) return;
+    var q = ts.questions[ts.currentQIndex];
+    
+    // 保存问题上下文
+    window._coachQuestion = {
+        question: q.question,
+        optionA: q.optionA,
+        optionB: q.optionB,
+        optionC: q.optionC,
+        optionD: q.optionD,
+        answer: q.answer,
+        userAnswer: ts.answers[ts.answers.length - 1].userAnswer,
+        ability: q.ability || '综合',
+        skillName: ts.skillName,
+        stageName: ts.stageName
+    };
+    
+    openCoachChat();
+    
+    // 自动发送问题
+    setTimeout(function() {
+        var ctx = window._coachQuestion;
+        var msg = '我正在练' + ctx.skillName + '·' + ctx.stageName + '，这道' + ctx.ability + '题我选了' + ctx.userAnswer + '但答案是' + ctx.answer + '，帮我分析一下为什么错：\n' + ctx.question + '\nA. ' + ctx.optionA + '\nB. ' + ctx.optionB + '\nC. ' + ctx.optionC + '\nD. ' + ctx.optionD;
+        sendSuggestion(msg);
+    }, 500);
+}
+
+window.openCoachChat = openCoachChat;
+window.askCoachAbout = askCoachAbout;
+window.closeCoachChat = closeCoachChat;
 window.renderHomeTodayTasks = renderHomeTodayTasks;
 window.handleHttClick = handleHttClick;
 window.startHomeTodayTask = startHomeTodayTask;
