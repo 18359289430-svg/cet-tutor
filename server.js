@@ -2169,8 +2169,6 @@ ${user_input}
                     var trainDesc = trainingMatch[3]; // e.g. 练but/however后出答案
                     var isListeningTraining = trainSkill && trainSkill.includes('听力');
                     var audioInstr = isListeningTraining ? '\n- 你必须用【听力原文】...【/听力原文】格式包裹听力原文，系统会自动转成音频播放器' : '';
-                    var isListeningTraining = trainSkill && trainSkill.includes('听力');
-                    var audioInstrTP = isListeningTraining ? '\n- 你必须用【听力原文】...【/听力原文】格式包裹听力原文，系统会自动转成音频播放器' : '';
                     trainingPrompt = '\n\n## 【当前训练模式】\n- 技能：' + trainSkill + '\n- 训练阶段：' + trainStage + '\n- 目标：' + trainDesc + '\n- 你必须严格按照训练方法执行，不要偏离训练目标\n- 训练结束后给出简短评价(正确率+改进建议)\n- 如果用户答错，给1次提示再给答案\n- 不要出无关的题目，专注当前训练阶段' + audioInstr;
                 }
                 
@@ -2188,7 +2186,7 @@ ${user_input}
                         headers: { 'Authorization': 'Bearer ' + DEEPSEEK_API_KEY, 'Content-Type': 'application/json' },
                         body: JSON.stringify(payload)
                     });
-                    const contentType = resp.headers.get('content-type') || '' + audioInstrTP;
+                    const contentType = resp.headers.get('content-type') || '';
                     if (contentType.includes('text/event-stream')) {
                         res.writeHead(200, { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache', 'Connection': 'keep-alive', 'X-Accel-Buffering': 'no' });
                         const reader = resp.body.getReader();
