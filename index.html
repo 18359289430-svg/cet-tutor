@@ -31,25 +31,25 @@
     <meta name="twitter:image" content="https://cet-tutor.com/og-image.jpg">
     <link rel="preload" href="/wechat-qr.jpg" as="image">
     <!-- CSS -->
-    <link rel="stylesheet" href="/css/variables.css?v=148">
-    <link rel="stylesheet" href="/css/base.css?v=148">
-    <link rel="stylesheet" href="/css/home2.css?v=148">
-    <link rel="stylesheet" href="/css/study.css?v=148">
-    <link rel="stylesheet" href="/css/chat.css?v=148">
-    <link rel="stylesheet" href="/css/personality.css?v=148">
-    <link rel="stylesheet" href="/css/components.css?v=148">
-    <link rel="stylesheet" href="/css/quiz.css?v=148">
-    <link rel="stylesheet" href="/css/payment.css?v=148">
-    <link rel="stylesheet" href="/css/profile.css?v=148">
-    <link rel="stylesheet" href="/css/dashboard.css?v=148">
-    <link rel="stylesheet" href="/css/diagnosis.css?v=148">
-    <link rel="stylesheet" href="/css/essay.css?v=148">
-    <link rel="stylesheet" href="/css/review.css?v=148">
-    <link rel="stylesheet" href="/css/plan.css?v=148">
-    <link rel="stylesheet" href="/css/plan-page.css?v=148">
-    <link rel="stylesheet" href="/css/wrongbook.css?v=148">
-    <link rel="stylesheet" href="/css/learning-path.css?v=148">
-    <link rel="stylesheet" href="/css/vocab.css?v=148">
+    <link rel="stylesheet" href="/css/variables.css?v=149">
+    <link rel="stylesheet" href="/css/base.css?v=149">
+    <link rel="stylesheet" href="/css/home2.css?v=149">
+    <link rel="stylesheet" href="/css/study.css?v=149">
+    <link rel="stylesheet" href="/css/chat.css?v=149">
+    <link rel="stylesheet" href="/css/personality.css?v=149">
+    <link rel="stylesheet" href="/css/components.css?v=149">
+    <link rel="stylesheet" href="/css/quiz.css?v=149">
+    <link rel="stylesheet" href="/css/payment.css?v=149">
+    <link rel="stylesheet" href="/css/profile.css?v=149">
+    <link rel="stylesheet" href="/css/dashboard.css?v=149">
+    <link rel="stylesheet" href="/css/diagnosis.css?v=149">
+    <link rel="stylesheet" href="/css/essay.css?v=149">
+    <link rel="stylesheet" href="/css/review.css?v=149">
+    <link rel="stylesheet" href="/css/plan.css?v=149">
+    <link rel="stylesheet" href="/css/plan-page.css?v=149">
+    <link rel="stylesheet" href="/css/wrongbook.css?v=149">
+    <link rel="stylesheet" href="/css/learning-path.css?v=149">
+    <link rel="stylesheet" href="/css/vocab.css?v=149">
     <!-- Clarity -->
     <script type="text/javascript">
         (function(c,l,a,r,i,t,y){ c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
@@ -59,7 +59,7 @@
     <!-- Umami -->
     <script async src="https://us.umami.is/script.js" data-website-id="5a41f1b0-59b5-41a7-bafa-5bd7432c4dd3"></script>
 <style>.reform-badge{display:inline-block;font-size:9px;background:#6C5CE7;color:#fff;padding:1px 5px;border-radius:6px;vertical-align:middle;margin-left:4px;font-weight:500;letter-spacing:0.3px;}</style>
-    <link rel="stylesheet" href="/css/comic.css?v=148">
+    <link rel="stylesheet" href="/css/comic.css?v=149">
 </head>
 <body>
     <div class="app">
@@ -391,47 +391,69 @@
                 <!-- 训练卡片入口 -->
                 <div class="practice-page">
                     <div class="practice-section-title">专项训练</div>
-                    <div class="practice-sub" id="practice-sub">选择科目开始训练</div>
-                    <div class="dash-shortcuts">
-                        <div class="dash-shortcut-item" onclick="startPractice('listening')">
-                            <div class="dash-shortcut-icon" style="background:rgba(69,183,209,0.1);color:#45B7D1;">
-                                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
+                    <div class="practice-sub" id="practice-sub" style="margin-bottom:0;">选择科目开始训练</div>
+                    <!-- 听力训练 卡片 -->
+                    <div class="dashboard-radar-section glass-card" onclick="startPractice('listening')" style="cursor:pointer;">
+                        <div class="dashboard-radar-header" style="margin-bottom:0;">
+                            <div class="dashboard-radar-title">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#45B7D1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
+                                听力训练
                             </div>
-                            <div class="dash-shortcut-info">
-                                <div class="dash-shortcut-name">听力训练</div>
-                                <div class="dash-shortcut-desc" id="practice-stage-listening">先做诊断</div>
-                            </div>
-                            <div class="dash-shortcut-arrow" id="practice-score-listening">—</div>
+                            <div id="practice-score-listening" style="font-size:16px;font-weight:800;color:var(--primary);">—</div>
                         </div>
-                        <div class="dash-shortcut-item" onclick="startPractice('reading')">
-                            <div class="dash-shortcut-icon" style="background:rgba(0,184,148,0.1);color:#00B894;">
-                                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                        <div class="dashboard-radar-empty" style="padding:24px 20px;">
+                            <div class="dashboard-radar-empty-icon" style="background:rgba(69,183,209,0.08);">
+                                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#45B7D1" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.5;"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
                             </div>
-                            <div class="dash-shortcut-info">
-                                <div class="dash-shortcut-name">阅读训练</div>
-                                <div class="dash-shortcut-desc" id="practice-stage-reading">先做诊断</div>
-                            </div>
-                            <div class="dash-shortcut-arrow" id="practice-score-reading">—</div>
+                            <div class="dashboard-radar-empty-text" id="practice-stage-listening">完成诊断后解锁听力训练</div>
                         </div>
-                        <div class="dash-shortcut-item" onclick="startPractice('writing')">
-                            <div class="dash-shortcut-icon" style="background:rgba(253,121,168,0.1);color:#FD79A8;">
-                                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+                    </div>
+                    <!-- 阅读训练 卡片 -->
+                    <div class="dashboard-trend-section glass-card" onclick="startPractice('reading')" style="cursor:pointer;">
+                        <div class="dashboard-trend-header" style="margin-bottom:0;">
+                            <div class="dashboard-trend-title">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#00B894" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                                阅读训练
                             </div>
-                            <div class="dash-shortcut-info">
-                                <div class="dash-shortcut-name">写作批改</div>
-                                <div class="dash-shortcut-desc" id="practice-stage-writing">先做诊断</div>
-                            </div>
-                            <div class="dash-shortcut-arrow" id="practice-score-writing">—</div>
+                            <div id="practice-score-reading" style="font-size:16px;font-weight:800;color:var(--primary);">—</div>
                         </div>
-                        <div class="dash-shortcut-item" onclick="startPractice('translation')">
-                            <div class="dash-shortcut-icon" style="background:rgba(253,203,110,0.1);color:#E17055;">
-                                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                        <div class="dashboard-trend-empty" style="padding:24px 20px;">
+                            <div class="dashboard-trend-empty-icon" style="background:rgba(0,184,148,0.08);">
+                                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#00B894" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.5;"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
                             </div>
-                            <div class="dash-shortcut-info">
-                                <div class="dash-shortcut-name">翻译训练</div>
-                                <div class="dash-shortcut-desc" id="practice-stage-translation">先做诊断</div>
+                            <div class="dashboard-trend-empty-text" id="practice-stage-reading">完成诊断后解锁阅读训练</div>
+                        </div>
+                    </div>
+                    <!-- 写作批改 卡片 -->
+                    <div class="dashboard-report-section" onclick="startPractice('writing')" style="cursor:pointer;padding:0;">
+                        <div class="dashboard-section-title">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#FD79A8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+                            写作批改
+                            <span id="practice-score-writing" style="margin-left:auto;font-size:16px;font-weight:800;color:var(--primary);">—</span>
+                        </div>
+                        <div class="dashboard-report-card">
+                            <div style="display:flex;flex-direction:column;align-items:center;padding:20px;text-align:center;">
+                                <div style="width:48px;height:48px;border-radius:50%;background:rgba(253,121,168,0.08);display:flex;align-items:center;justify-content:center;margin-bottom:12px;">
+                                    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#FD79A8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.5;"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+                                </div>
+                                <div style="font-size:13px;color:var(--text-secondary);" id="practice-stage-writing">完成诊断后解锁写作训练</div>
                             </div>
-                            <div class="dash-shortcut-arrow" id="practice-score-translation">—</div>
+                        </div>
+                    </div>
+                    <!-- 翻译训练 卡片 -->
+                    <div class="dashboard-report-section" onclick="startPractice('translation')" style="cursor:pointer;padding:0;margin-bottom:16px;">
+                        <div class="dashboard-section-title">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#E17055" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                            翻译训练
+                            <span id="practice-score-translation" style="margin-left:auto;font-size:16px;font-weight:800;color:var(--primary);">—</span>
+                        </div>
+                        <div class="dashboard-report-card">
+                            <div style="display:flex;flex-direction:column;align-items:center;padding:20px;text-align:center;">
+                                <div style="width:48px;height:48px;border-radius:50%;background:rgba(253,203,110,0.08);display:flex;align-items:center;justify-content:center;margin-bottom:12px;">
+                                    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#E17055" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.5;"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                                </div>
+                                <div style="font-size:13px;color:var(--text-secondary);" id="practice-stage-translation">完成诊断后解锁翻译训练</div>
+                            </div>
                         </div>
                     </div>
                     
@@ -1011,8 +1033,8 @@
     </div>
 
     <!-- JS -->
-    <script src="/js/main.js?v=148"></script>
-    <script src="/js/essay.js?v=148"></script>
+    <script src="/js/main.js?v=149"></script>
+    <script src="/js/essay.js?v=149"></script>
 
 <!-- Onboarding: Exam Type Selection -->
 <div id="onboarding-overlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,rgba(99,102,241,0.95),rgba(139,92,246,0.95));z-index:99999;align-items:center;justify-content:center;">
