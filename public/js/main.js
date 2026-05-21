@@ -3241,6 +3241,20 @@ function ensureChatOpen(){
     localStorage.setItem("cet_current_tab","diagnosis");
     var chatTitle=document.getElementById("chat-title");if(chatTitle)chatTitle.textContent="AI陪练";
     if(typeof initChatChips==='function')initChatChips(mode);
+    // Load most recent conversation if exists, otherwise show welcome
+    var chatList=getChatList();
+    var msgContainer=document.getElementById('chat-messages');
+    if(chatList&&chatList.length>0){
+        var lastConv=chatList[0];
+        if(lastConv&&lastConv.id){
+            currentConversationId=lastConv.id;
+            chatState.conversationId=lastConv.id;
+            loadChatHistory(lastConv.id);
+        }
+    }else if(msgContainer&&(!msgContainer.children.length||msgContainer.querySelector('div[style]'))){
+        // No conversations, show welcome message
+        msgContainer.innerHTML='';
+    }
 }
 
         function openChat(mode) {
