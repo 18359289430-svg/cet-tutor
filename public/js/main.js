@@ -7107,7 +7107,7 @@ function handleQuizPlayClick() {
     var duration = Math.max(15, text.split(/\s+/).length / 2);
     animateQuizProgress(duration);
     
-    // 使用SpeechSynthesis播放
+    // 使用预生成音频或SpeechSynthesis播放
     playListeningFull(text, quizState.currentListeningIsConv, function() {
         stopQuizListening();
         quizState.listeningPlayed = true;
@@ -8637,6 +8637,14 @@ var listeningPlayer = {
     progressInterval: null
 };
 
+// 预生成听力音频文件映射 (CosyVoice TTS)
+var LISTENING_AUDIO_MAP = {
+    'L1': '/public/audio/listening/cet4_L1.mp3',
+    'L2': '/public/audio/listening/cet4_L2.mp3',
+    'L3': '/public/audio/listening/cet4_L3.mp3'
+};
+var _listeningAudioEl = null; // HTML5 Audio element
+
 function isSpeechSynthesisSupported() {
     return 'speechSynthesis' in window;
 }
@@ -8821,6 +8829,11 @@ function playListeningRound(text, isConversation, onSegmentStart, onComplete) {
 
 function stopListeningPlayback() {
     speechSynthesis.cancel();
+    if (_listeningAudioEl) {
+        _listeningAudioEl.pause();
+        _listeningAudioEl.currentTime = 0;
+        _listeningAudioEl = null;
+    }
     listeningPlayer.isPlaying = false;
     listeningPlayer.isPaused = false;
     listeningPlayer.currentIndex = 0;
@@ -8875,9 +8888,74 @@ function startProgressTimer() {
     }, 500);
 }
 
-function playListeningFull(text, isConversation, onComplete) {
+function playListeningFull(text, isConversation, onComplete, passageId) {
     stopListeningPlayback();
     
+    // 检查是否有预生成的MP3音频（CosyVoice TTS，音质远超浏览器SpeechSynthesis）
+    var audioUrl = passageId ? LISTENING_AUDIO_MAP[passageId] : null;
+    
+    if (audioUrl) {
+        _listeningAudioEl = new Audio(audioUrl);
+        _listeningAudioEl.preload = 'auto';
+        
+        listeningPlayer.isPlaying = true;
+        listeningPlayer.round = 1;
+        listeningPlayer.maxRounds = 1;
+        listeningPlayer.currentText = text;
+        listeningPlayer.onComplete = onComplete;
+        
+        showListeningProgressBar();
+        updatePlayButtonState('playing');
+        
+        _listeningAudioEl.onloadedmetadata = function() {
+            listeningPlayer.totalDuration = Math.floor(_listeningAudioEl.duration);
+        };
+        
+        _listeningAudioEl.ontimeupdate = function() {
+            if (_listeningAudioEl && _listeningAudioEl.duration) {
+                updateListeningProgressUI(_listeningAudioEl.currentTime, _listeningAudioEl.duration);
+            }
+        };
+        
+        _listeningAudioEl.onended = function() {
+            listeningPlayer.isPlaying = false;
+            updatePlayButtonState('ready');
+            diagState.listeningPlayed = true;
+            updateListeningHint('✅ 播放结束，请答题');
+            hideListeningProgressBar();
+            
+            if (listeningPlayer.progressInterval) {
+                clearInterval(listeningPlayer.progressInterval);
+                listeningPlayer.progressInterval = null;
+            }
+            
+            updateReplayButtonState();
+            if (listeningPlayer.onComplete) {
+                listeningPlayer.onComplete();
+            }
+        };
+        
+        _listeningAudioEl.onerror = function() {
+            console.warn('[音频加载失败] 回退到SpeechSynthesis, url:', audioUrl);
+            _listeningAudioEl = null;
+            playListeningFullFallback(text, isConversation, onComplete);
+        };
+        
+        _listeningAudioEl.play().catch(function(e) {
+            console.warn('[音频播放失败] 回退到SpeechSynthesis:', e);
+            _listeningAudioEl = null;
+            playListeningFullFallback(text, isConversation, onComplete);
+        });
+        
+        return;
+    }
+    
+    // 没有预生成音频，使用SpeechSynthesis回退
+    playListeningFullFallback(text, isConversation, onComplete);
+}
+
+// SpeechSynthesis回退播放（当预生成MP3不可用时）
+function playListeningFullFallback(text, isConversation, onComplete) {
     if (!isSpeechSynthesisSupported()) {
         showToast('您的浏览器不支持语音播放，请使用Chrome浏览器');
         if (onComplete) onComplete();
@@ -8886,16 +8964,13 @@ function playListeningFull(text, isConversation, onComplete) {
     
     listeningPlayer.isPlaying = true;
     listeningPlayer.round = 1;
-    listeningPlayer.maxRounds = 1;  // 默认只播放1遍（模拟真题）
+    listeningPlayer.maxRounds = 1;
     listeningPlayer.currentText = text;
-    listeningPlayer.totalDuration = Math.max(30, text.split(/\s+/).length / 2); // 估算时长
+    listeningPlayer.totalDuration = Math.max(30, text.split(/\s+/).length / 2);
     listeningPlayer.onComplete = onComplete;
     
-    // 显示进度条
     showListeningProgressBar();
     updatePlayButtonState('playing');
-    
-    // 开始进度更新
     startProgressTimer();
     
     function doRound(roundNum) {
@@ -8903,12 +8978,9 @@ function playListeningFull(text, isConversation, onComplete) {
             listeningPlayer.isPlaying = false;
             updatePlayButtonState('ready');
             diagState.listeningPlayed = true;
-            
-            // 播放完成，显示提示
             updateListeningHint('✅ 播放结束，请答题');
             hideListeningProgressBar();
             
-            // 清除进度定时器
             if (listeningPlayer.progressInterval) {
                 clearInterval(listeningPlayer.progressInterval);
                 listeningPlayer.progressInterval = null;
@@ -9167,10 +9239,11 @@ function handlePlayClick() {
     
     stopListeningPlayback();
     var isConversation = passage.type === 'conversation';
+    var passageId = passage.passage_id || null;
     
     playListeningFull(passage.text, isConversation, function() {
         console.log('[听力播放完成]');
-    });
+    }, passageId);
 }
 
 function handleReplayClick() {
@@ -9198,9 +9271,8 @@ function handleReplayClick() {
     
     playListeningFull(passage.text, isConversation, function() {
         console.log('[额外重播完成]');
-        // 重播完成后更新按钮状态
         updateReplayButtonState();
-    });
+    }, passage.passage_id || null);
 }
 
 function selectListeningOption(btn, selectedValue) {
