@@ -8626,6 +8626,8 @@ function renderDiagLoading(text) {
 
 // 判断是否为六级用户
 function isCET6User() {
+    // 优先检查EXAM_TYPE（URL参数或localStorage切换）
+    if (EXAM_TYPE === 'cet6' || IS_CET6) return true;
     var userData = safeGetItem(examKey('user'), {});
     var uid = userData.uid || '';
     // 六级UID以CET6开头
