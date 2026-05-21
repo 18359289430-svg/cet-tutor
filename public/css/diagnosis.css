@@ -2192,3 +2192,141 @@
     white-space: pre-wrap;
     -webkit-overflow-scrolling: touch;
 }
+
+/* ===== 结构化训练样式 ===== */
+.train-stage-tip {
+    background: rgba(108,92,231,0.08);
+    border-left: 3px solid #6C5CE7;
+    padding: 10px 14px;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 16px;
+    font-size: 13px;
+    color: #6C5CE7;
+    line-height: 1.5;
+}
+.train-explain {
+    margin-top: 16px;
+    padding: 14px;
+    border-radius: 12px;
+    background: #f8f9fa;
+}
+.train-explain-result {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+.train-explain-result.correct { color: #00B894; }
+.train-explain-result.wrong { color: #E17055; }
+.train-explain-text {
+    font-size: 13px;
+    color: #64748B;
+    line-height: 1.6;
+    margin-bottom: 8px;
+}
+.train-explain-tip {
+    font-size: 12px;
+    color: #6C5CE7;
+    background: rgba(108,92,231,0.06);
+    padding: 8px 12px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+}
+.train-next-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    background: #6C5CE7;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 8px;
+}
+.train-next-btn:active {
+    background: #5a4bd1;
+    transform: scale(0.98);
+}
+
+/* 训练结果页 */
+.train-result {
+    text-align: center;
+    padding: 30px 20px;
+}
+.train-result-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+}
+.train-result-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 16px;
+}
+.train-result-score {
+    font-size: 48px;
+    font-weight: 800;
+    color: #6C5CE7;
+    margin-bottom: 8px;
+}
+.train-result-detail {
+    font-size: 14px;
+    color: #94A3B8;
+    margin-bottom: 20px;
+}
+.train-result-upgrade {
+    font-size: 14px;
+    color: #00B894;
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+.train-result-hint {
+    font-size: 14px;
+    color: #E17055;
+    font-weight: 500;
+    margin-bottom: 16px;
+}
+.train-result-btn {
+    display: block;
+    width: 100%;
+    padding: 13px;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+.train-result-btn.primary {
+    background: #6C5CE7;
+    color: #fff;
+}
+.train-result-btn.primary:active {
+    background: #5a4bd1;
+}
+.train-result-btn.secondary {
+    background: #f1f5f9;
+    color: #64748B;
+}
+.train-result-btn.secondary:active {
+    background: #e2e8f0;
+}
+
+/* 选项正确/错误高亮 */
+.diag-option-btn.correct {
+    background: #f0fdf4 !important;
+    border-color: #00B894 !important;
+}
+.diag-option-btn.correct .diag-option-letter {
+    background: #00B894 !important;
+    color: #fff !important;
+}
+.diag-option-btn.wrong {
+    background: #fef2f2 !important;
+    border-color: #E17055 !important;
+}
+.diag-option-btn.wrong .diag-option-letter {
+    background: #E17055 !important;
+    color: #fff !important;
+}

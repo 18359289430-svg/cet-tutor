@@ -10623,6 +10623,11 @@ function buildWeakDims(dims) {
 
 // 退出诊断
 function exitDiagnosis() {
+    // 训练模式退出确认
+    if (window._trainState && window._trainState.questions.length > 0 && window._trainState.currentQIndex < window._trainState.questions.length) {
+        if (!confirm('训练进行中，确定要退出吗？')) return;
+        window._trainState = null;
+    }
     if (diagState.phase === 'generating') {
         if (!confirm('报告生成中，确定要退出吗？')) return;
     }
@@ -11062,10 +11067,15 @@ function startTraining(skill, stage) {
     var skillName = skillNames[skill] || skill;
     var stageName = stageInfo ? stageInfo.name : '基础';
     var stageDesc = stageInfo ? stageInfo.desc : '';
-    var stagePrompt = stageInfo ? stageInfo.prompt : '';
     var targetCount = (skill === 'writing' || skill === 'translation') ? 1 : 5;
     
-    // 保存当前训练上下文 + 进度追踪
+    // 写作和翻译仍走AI批改（暂无预生成题库）
+    if (skill === 'writing' || skill === 'translation') {
+        startAITraining(skill, stage);
+        return;
+    }
+    
+    // 听力和阅读：结构化做题模式
     localStorage.setItem(examKey('current_training'), JSON.stringify({
         skill: skill,
         stage: stage,
@@ -11074,15 +11084,285 @@ function startTraining(skill, stage) {
         targetCount: targetCount
     }));
     
-    // 切到聊天页，恢复最近对话而不是开新对话
+    // 打开诊断overlay复用结构化做题界面
+    var overlay = document.getElementById('diag-overlay');
+    if (!overlay) { showToast('训练界面加载失败'); return; }
+    
+    // 初始化训练状态
+    window._trainState = {
+        skill: skill,
+        stage: stage,
+        skillName: skillName,
+        stageName: stageName,
+        stageInfo: stageInfo,
+        questions: [],
+        currentQIndex: 0,
+        answers: [],
+        correctCount: 0,
+        targetCount: targetCount
+    };
+    
+    overlay.classList.add('active');
+    document.getElementById('diag-progress-wrap').style.display = '';
+    document.getElementById('diag-title').textContent = skillName + '·' + stageName;
+    document.getElementById('diag-progress-fill').style.width = '0%';
+    document.getElementById('diag-progress-text').textContent = '加载中...';
+    document.getElementById('diag-body').innerHTML = '<div class="diag-loading"><div class="diag-spinner"></div><div class="diag-loading-text">正在加载训练题...</div></div>';
+    
+    // 从quiz_questions.json加载题目
+    var quizUrl = IS_CET6 ? '/public/cet6_quiz_questions.json' : '/public/quiz_questions.json';
+    quizUrl += '?t=' + Date.now();
+    
+    fetchWithTimeout(quizUrl).then(function(resp) {
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        return resp.json();
+    }).then(function(allQuestions) {
+        // 根据skill和stage筛选题目
+        var filtered = filterTrainingQuestions(allQuestions, skill, stage);
+        if (filtered.length === 0) {
+            // 没有匹配题目，随机选5道该技能的题
+            filtered = allQuestions.filter(function(q) {
+                return skill === 'listening' ? (q.type && q.type.indexOf('听力') >= 0) : (q.type && q.type.indexOf('阅读') >= 0);
+            });
+            filtered.sort(function() { return Math.random() - 0.5; });
+            filtered = filtered.slice(0, 5);
+        }
+        
+        if (filtered.length === 0) {
+            closeDiagOverlay();
+            showToast('暂无训练题目，请稍后再试');
+            return;
+        }
+        
+        window._trainState.questions = filtered;
+        showTrainingQuestion();
+    }).catch(function(err) {
+        console.error('[训练] 加载题目失败:', err);
+        closeDiagOverlay();
+        showToast('加载训练题失败，请重试');
+    });
+}
+
+// 根据训练阶段筛选题目
+function filterTrainingQuestions(allQuestions, skill, stage) {
+    var typeFilter = skill === 'listening' ? '听力' : '阅读';
+    var candidates = allQuestions.filter(function(q) {
+        return q.type && q.type.indexOf(typeFilter) >= 0;
+    });
+    
+    // 根据stage映射到ability
+    var stageAbilityMap = {
+        listening: {
+            1: ['细节理解'],  // 听前预判
+            2: ['推理判断', '态度判断'],  // 信号词捕获
+            3: ['同义替换'],  // 同义替换
+            4: ['主旨归纳', '细节理解'],  // 笔记速记
+            5: ['推理判断', '同义替换', '主旨归纳', '细节理解', '态度判断']  // 全真模拟
+        },
+        reading: {
+            1: ['细节理解'],  // 定位速度
+            2: ['同义替换'],  // 同义替换
+            3: ['推理判断'],  // 推理判断
+            4: ['推理判断', '同义替换', '主旨归纳'],  // 限时实战
+            5: ['推理判断', '同义替换', '主旨归纳', '细节理解', '态度判断']  // 全真模拟
+        }
+    };
+    
+    var abilities = stageAbilityMap[skill] && stageAbilityMap[skill][stage];
+    if (abilities) {
+        var filtered = candidates.filter(function(q) {
+            return abilities.indexOf(q.ability) >= 0;
+        });
+        // 随机选targetCount道
+        filtered.sort(function() { return Math.random() - 0.5; });
+        return filtered.slice(0, stage >= 4 ? 8 : 5);
+    }
+    
+    // fallback: 随机选
+    candidates.sort(function() { return Math.random() - 0.5; });
+    return candidates.slice(0, 5);
+}
+
+// 显示训练题目
+function showTrainingQuestion() {
+    var ts = window._trainState;
+    if (!ts || ts.currentQIndex >= ts.questions.length) {
+        finishTraining();
+        return;
+    }
+    
+    var q = ts.questions[ts.currentQIndex];
+    var progress = Math.round((ts.currentQIndex / ts.questions.length) * 100);
+    document.getElementById('diag-progress-fill').style.width = progress + '%';
+    document.getElementById('diag-progress-text').textContent = ts.skillName + '·' + ts.stageName + ' 第' + (ts.currentQIndex + 1) + '题/共' + ts.questions.length + '题';
+    
+    var html = '<div class="diag-question-card">';
+    
+    // 阶段提示
+    if (ts.stageInfo && ts.stageInfo.tip && ts.currentQIndex === 0) {
+        html += '<div class="train-stage-tip">' + ts.stageInfo.tip + '</div>';
+    }
+    
+    // 维度标签
+    var dimName = q.ability || q.dimension_cn || '综合';
+    html += '<div class="diag-dim-tag">' + dimName + '</div>';
+    html += '<div class="diag-question-num">Q' + (ts.currentQIndex + 1) + '</div>';
+    html += '<div class="diag-question-text">' + escapeHtml(q.question) + '</div>';
+    html += '<div class="diag-options">';
+    html += renderTrainOption('A', q.optionA);
+    html += renderTrainOption('B', q.optionB);
+    html += renderTrainOption('C', q.optionC);
+    html += renderTrainOption('D', q.optionD);
+    html += '</div>';
+    html += '</div>';
+    
+    document.getElementById('diag-body').innerHTML = html;
+}
+
+// 渲染训练选项按钮
+function renderTrainOption(letter, text) {
+    return '<div class="diag-option-btn" onclick="selectTrainOption(this, \'' + letter + '\')">' +
+        '<div class="diag-option-letter">' + letter + '</div>' +
+        '<div class="diag-option-text">' + text + '</div>' +
+    '</div>';
+}
+
+// 选择训练选项
+function selectTrainOption(btn, selectedValue) {
+    var ts = window._trainState;
+    if (!ts) return;
+    var q = ts.questions[ts.currentQIndex];
+    var correctAnswer = q.answer || q.correct_answer;
+    var isCorrect = selectedValue === correctAnswer;
+    
+    // 禁用所有按钮
+    var allBtns = document.querySelectorAll('.diag-option-btn');
+    allBtns.forEach(function(b) { b.classList.add('disabled'); });
+    
+    // 高亮正确/错误
+    allBtns.forEach(function(b) {
+        var letter = b.querySelector('.diag-option-letter').textContent.trim();
+        if (letter === correctAnswer) b.classList.add('correct');
+        if (letter === selectedValue && !isCorrect) b.classList.add('wrong');
+    });
+    
+    // 记录答案
+    ts.answers.push({
+        id: q.id,
+        userAnswer: selectedValue,
+        correctAnswer: correctAnswer,
+        isCorrect: isCorrect,
+        ability: q.ability || '综合'
+    });
+    if (isCorrect) ts.correctCount++;
+    
+    // 显示解析
+    var explainHtml = '<div class="train-explain">';
+    if (isCorrect) {
+        explainHtml += '<div class="train-explain-result correct">回答正确 ✓</div>';
+    } else {
+        explainHtml += '<div class="train-explain-result wrong">回答错误，正确答案是 ' + correctAnswer + '</div>';
+    }
+    if (q.explanation) {
+        explainHtml += '<div class="train-explain-text">' + escapeHtml(q.explanation) + '</div>';
+    }
+    // 答错时给出阶段技巧
+    if (!isCorrect && ts.stageInfo && ts.stageInfo.tip) {
+        explainHtml += '<div class="train-explain-tip">' + ts.stageInfo.tip + '</div>';
+    }
+    explainHtml += '<button class="train-next-btn" onclick="nextTrainQuestion()">下一题</button>';
+    explainHtml += '</div>';
+    
+    document.querySelector('.diag-question-card').insertAdjacentHTML('beforeend', explainHtml);
+}
+
+// 下一题
+function nextTrainQuestion() {
+    var ts = window._trainState;
+    if (!ts) return;
+    ts.currentQIndex++;
+    if (ts.currentQIndex >= ts.questions.length) {
+        finishTraining();
+    } else {
+        showTrainingQuestion();
+    }
+}
+
+// 训练完成
+function finishTraining() {
+    var ts = window._trainState;
+    if (!ts) return;
+    
+    var total = ts.questions.length;
+    var correct = ts.correctCount;
+    var accuracy = total > 0 ? Math.round((correct / total) * 100) : 0;
+    
+    // 保存训练记录
+    saveTrainingRecord({
+        skill: ts.skill,
+        stage: ts.stage,
+        correct: correct,
+        total: total,
+        accuracy: accuracy
+    });
+    
+    // 更新首页今日任务卡片
+    renderHomeTodayTasks();
+    
+    // 显示训练结果
+    var html = '<div class="train-result">';
+    html += '<div class="train-result-icon">' + (accuracy >= 60 ? '🎯' : '💪') + '</div>';
+    html += '<div class="train-result-title">' + ts.skillName + '·' + ts.stageName + ' 完成</div>';
+    html += '<div class="train-result-score">' + accuracy + '%</div>';
+    html += '<div class="train-result-detail">答对 ' + correct + '/' + total + ' 题</div>';
+    
+    if (accuracy >= 60) {
+        var nextStage = ts.stage + 1;
+        var maxStage = TRAINING_STAGES[ts.skill] ? TRAINING_STAGES[ts.skill].length : 1;
+        if (nextStage <= maxStage) {
+            var nextInfo = TRAINING_STAGES[ts.skill][nextStage - 1];
+            html += '<div class="train-result-upgrade">表现不错！下一阶段：' + nextInfo.name + '</div>';
+            html += '<button class="train-result-btn primary" onclick="startTraining(\'' + ts.skill + '\', ' + nextStage + ')">进入下一阶段</button>';
+        } else {
+            html += '<div class="train-result-upgrade">已通过所有阶段！可以试试全真模拟</div>';
+            html += '<button class="train-result-btn primary" onclick="closeDiagOverlay();switchTab(\'home\')">返回首页</button>';
+        }
+    } else {
+        html += '<div class="train-result-hint">正确率未达60%，建议再练一次巩固</div>';
+        html += '<button class="train-result-btn primary" onclick="startTraining(\'' + ts.skill + '\', ' + ts.stage + ')">再练一次</button>';
+    }
+    html += '<button class="train-result-btn secondary" onclick="closeDiagOverlay();switchTab(\'home\')">返回首页</button>';
+    html += '</div>';
+    
+    document.getElementById('diag-body').innerHTML = html;
+    document.getElementById('diag-progress-fill').style.width = '100%';
+    document.getElementById('diag-progress-text').textContent = '训练完成';
+}
+
+// 写作/翻译走AI批改（保留原聊天模式）
+function startAITraining(skill, stage) {
+    var stageInfo = TRAINING_STAGES[skill] ? TRAINING_STAGES[skill][stage - 1] : null;
+    var skillNames = { listening: '听力', reading: '阅读', writing: '写作', translation: '翻译' };
+    var skillName = skillNames[skill] || skill;
+    var stageName = stageInfo ? stageInfo.name : '基础';
+    var stageDesc = stageInfo ? stageInfo.desc : '';
+    var stagePrompt = stageInfo ? stageInfo.prompt : '';
+    var targetCount = 1;
+    
+    localStorage.setItem(examKey('current_training'), JSON.stringify({
+        skill: skill,
+        stage: stage,
+        startTime: Date.now(),
+        questionCount: 0,
+        targetCount: targetCount
+    }));
+    
     switchTab('diagnosis');
-    // 直接显示聊天页（跳过对话列表）
     var clv = document.getElementById('chat-list-view');
     if (clv) clv.classList.remove('active');
     var cp = document.getElementById('chat-page');
     if (cp) cp.style.display = 'flex';
     document.body.classList.add('chat-mode');
-    // 恢复最近的陪练对话
     if (!chatState.conversationId) {
         var recentList = getChatList();
         if (recentList && recentList.length > 0) {
@@ -11098,11 +11378,11 @@ function startTraining(skill, stage) {
     if (!chatState.currentMode) chatState.currentMode = 'companion';
     if (!chatState.botId) chatState.botId = '7637702903679631395';
     var chatTitleEl = document.getElementById('chat-title');
-    if (chatTitleEl) chatTitleEl.textContent = 'AI陪练';
+    if (chatTitleEl) chatTitleEl.textContent = skillName + '·' + stageName;
     setTimeout(function() {
         var timeLimit = stageInfo ? stageInfo.time : 10;
         var tipText = stageInfo && stageInfo.tip ? '\n\n' + stageInfo.tip : '';
-        var msg = '[训练模式] ' + skillName + '·' + stageName + '：' + stageDesc + tipText + '\n\n限时' + timeLimit + '分钟，共' + targetCount + '题。AI请按以下方法训练我：' + stagePrompt + '\n\n重要：每道题出完后等用户回答再出下一道。出完' + targetCount + '道题后给出【训练评价】总结正确率。';
+        var msg = '[训练模式] ' + skillName + '·' + stageName + '：' + stageDesc + tipText + '\n\n限时' + timeLimit + '分钟。AI请按以下方法训练我：' + stagePrompt + '\n\n重要：出完题目后等我回答再给评价。给出【训练评价】包含评分和改进建议。';
         sendSuggestion(msg);
         startTrainingTimer(timeLimit, skillName + '·' + stageName);
         showTrainingProgress(skillName, 0, targetCount);
@@ -15626,6 +15906,8 @@ window.handleHomeCta = handleHomeCta;
 window.renderHomeTodayTasks = renderHomeTodayTasks;
 window.handleHttClick = handleHttClick;
 window.startHomeTodayTask = startHomeTodayTask;
+window.selectTrainOption = selectTrainOption;
+window.nextTrainQuestion = nextTrainQuestion;
 
 
 // 渲染提分路线图
