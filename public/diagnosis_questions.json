@@ -1,6 +1,6 @@
 {
   "version": "v2-真题版",
-  "total_questions": 190,
+  "total_questions": 93,
   "ability_summary": {
     "同义替换": 2,
     "细节定位": 182,
@@ -1131,2202 +1131,264 @@
       ]
     },
     {
-      "passage_id": 4,
-      "type": "听力",
-      "text": "",
+      "passage_id": "L4",
+      "type": "news report",
+      "text": "Questions 1 and 2 are based on the news report you have just heard ( l)A22-year-old Chinese woman who suffered from a persistent cough was shocked to learn that she had a piece of chicken bone lodged in her lung. The unnamed woman, from the province of Shandong, started to have coughing problems when she was 7 or 8 years old. For 14 years, she made numerous hospital visits. However, no doctor could identify any problem. Her uncontrollable coughing was a mystery. Finally, the woman got a full body scan at a hospital in the city of Qingdao. This special medical procedure revealed she had a chicken bone stuck in her lung. Doctors performed surgeryand removed the bone. The s imple procedure went smoothly and the woman has recovered fully. With the bone finally removed from her lung, the woman is very happy that she no longer suffers from that annoying cough .",
       "questions": [
         {
-          "id": "2021-12-S1-L-01",
-          "type": "听力",
-          "subtype": "长对话",
-          "question": "",
-          "options": [
-            "A. It has given rise to much controversy.",
-            "B. It has been very favorably received.",
-            "C. It was primarily written for vegetarians.",
-            "D. It offends many environmentalists."
-          ],
-          "answer": "A",
-          "explanation": "",
-          "text": "",
-          "source": "2021-12-S1",
-          "difficulty": "medium",
-          "tags": []
+          "id": "CET4-L4-Q1",
+          "ability": "细节定位",
+          "question": "What was the cause of the woman's persistent cough for 14 years?",
+          "optionA": "Chronic bronchitis diagnosed in childhood",
+          "optionB": "A chicken bone lodged in her lung",
+          "optionC": "An undetected allergic reaction to poultry",
+          "optionD": "A congenital lung abnormality",
+          "answer": "B"
         },
         {
-          "id": "2021-12-S1-L-02",
-          "type": "听力",
-          "subtype": "长对话",
-          "question": "",
-          "options": [
-            "A. She neglects people’s efforts in animal protection.",
-            "B. She tries to force people to accept her radical ideas.",
-            "C. She ignores the various benefits of public transport.",
-            "D. She insists vegetarians are harming the environment."
-          ],
-          "answer": "B",
-          "explanation": "",
-          "text": "",
-          "source": "2021-12-S1",
-          "difficulty": "medium",
-          "tags": []
+          "id": "CET4-L4-Q2",
+          "ability": "细节定位",
+          "question": "Where was the chicken bone finally discovered?",
+          "optionA": "During a routine chest X-ray in Shandong",
+          "optionB": "In a hospital in Qingdao through a full body scan",
+          "optionC": "At a Beijing specialist respiratory center using bronchoscopy",
+          "optionD": "Through a CT scan ordered by her family doctor in Jinan",
+          "answer": "B"
         },
         {
-          "id": "2021-12-S1-L-03",
-          "type": "听力",
-          "subtype": "长对话",
-          "question": "",
-          "options": [
-            "A. They are significant.",
-            "B. They are revolutionary.",
-            "C. They are rational.",
-            "D. They are modest. 1"
-          ],
-          "answer": "D",
-          "explanation": "",
-          "text": "",
-          "source": "2021-12-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2021-12-S1-L-04",
-          "type": "听力",
-          "subtype": "长对话",
-          "question": "",
-          "options": [
-            "A. It would help to protect the environment.",
-            "B. It would generate money for public health.",
-            "C. It would need support from the general public.",
-            "D. It would force poor people to change their diet."
-          ],
-          "answer": "A",
-          "explanation": "",
-          "text": "",
-          "source": "2021-12-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2021-12-S1-L-05",
-          "type": "听力",
-          "subtype": "长对话",
-          "question": "",
-          "options": [
-            "A. Where successful people’s strengths come from.",
-            "B. Why many people fight so hard for success.",
-            "C. How she achieved her life’s goal.",
-            "D. What makes people successful."
-          ],
-          "answer": "D",
-          "explanation": "",
-          "text": "",
-          "source": "2021-12-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2021-12-S1-L-06",
-          "type": "听力",
-          "subtype": "长对话",
-          "question": "",
-          "options": [
-            "A. Having someone who has confidence in them.",
-            "B. Having someone who is ready to help them.",
-            "C. Having a firm belief in their own ability.",
-            "D. Having a realistic attitude towards life."
-          ],
-          "answer": "A",
-          "explanation": "",
-          "text": "",
-          "source": "2021-12-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2021-12-S1-L-07",
-          "type": "听力",
-          "subtype": "长对话",
-          "question": "",
-          "options": [
-            "A. They adjust their goals accordingly.",
-            "B. They try hard to appear optimistic.",
-            "C. They stay positive.",
-            "D. They remain calm."
-          ],
-          "answer": "C",
-          "explanation": "",
-          "text": "",
-          "source": "2021-12-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2021-12-S1-L-08",
-          "type": "听力",
-          "subtype": "长对话",
-          "question": "",
-          "options": [
-            "A. An understanding leadership.",
-            "B. A nurturing environment.",
-            "C. Mutual respect among colleagues.",
-            "D. Highly cooperative teammates. Section B Directions: In this section, you will hear two passages. At the end of each passage, you will hear four questions. Both the passage and the questions will be spoken only once. After you hear a question, you musts choose the best answer from the four choices marked A), B), C) and D). Then mark the corresponding letter on Answer Sheet 1 with a single line through the centre."
-          ],
-          "answer": "D",
-          "explanation": "",
-          "text": "",
-          "source": "2021-12-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2021-12-S1-L-09",
-          "type": "听力",
-          "subtype": "短文听力",
-          "question": "",
-          "options": [
-            "A. They use their sense of hearing to capture their prey.",
-            "B. Their food mainly consists of small animals and fish.",
-            "C. They have big eyes and distinctive visual centers.",
-            "D. Their ancestor is different from that of micro bats."
-          ],
-          "answer": "C",
-          "explanation": "",
-          "text": "",
-          "source": "2021-12-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2021-12-S1-L-10",
-          "type": "听力",
-          "subtype": "短文听力",
-          "question": "",
-          "options": [
-            "A. With the help of moonlight.",
-            "B. By means of echo location. 2",
-            "C. With the aid of daylight vision.",
-            "D. By means of vision and smell."
-          ],
-          "answer": "B",
-          "explanation": "",
-          "text": "",
-          "source": "2021-12-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2021-12-S1-L-11",
-          "type": "听力",
-          "subtype": "短文听力",
-          "question": "",
-          "options": [
-            "A. To make up for their natural absence of vision.",
-            "B. To adapt themselves to a particular lifestyle.",
-            "C. To facilitate their travel over long distances.",
-            "D. To survive in the ever-changing weather."
-          ],
-          "answer": "B",
-          "explanation": "",
-          "text": "",
-          "source": "2021-12-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2021-12-S1-L-12",
-          "type": "听力",
-          "subtype": "短文听力",
-          "question": "",
-          "options": [
-            "A. They acquire knowledge not found in books.",
-            "B. They learn how to interact with their peers.",
-            "C. They become more emotionally aggressive.",
-            "D. They get much better prepared for school."
-          ],
-          "answer": "C",
-          "explanation": "",
-          "text": "",
-          "source": "2021-12-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2021-12-S1-L-13",
-          "type": "听力",
-          "subtype": "短文听力",
-          "question": "",
-          "options": [
-            "A. They are far from emotionally prepared.",
-            "B. They tend to be more attracted by images.",
-            "C. They can’t follow the conflicts in the show.",
-            "D. They lack the cognitive and memory skills."
-          ],
-          "answer": "D",
-          "explanation": "",
-          "text": "",
-          "source": "2021-12-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2021-12-S1-L-14",
-          "type": "听力",
-          "subtype": "短文听力",
-          "question": "",
-          "options": [
-            "A. Choose appropriate programs for their children.",
-            "B. Help their children understand the program’s plot.",
-            "C. Outline the program’s plot for their children first.",
-            "D. Monitor their children’s watching of TV programs."
-          ],
-          "answer": "B",
-          "explanation": "",
-          "text": "",
-          "source": "2021-12-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2021-12-S1-L-15",
-          "type": "听力",
-          "subtype": "短文听力",
-          "question": "",
-          "options": [
-            "A. Explain its message to their children.",
-            "B. Check if their children have enjoyed it.",
-            "C. Encourage their children to retell the story.",
-            "D. Ask their children to describe its characters. Section C Directions: In this section, you will hear three recordings of lectures or talks followed by three or four questions. The recordings will be played only once. After you hear a question, you musts choose the best answer from the four choices marked A), B), C) and D). Then mark the corresponding letter on Answer Sheet 1 with a single line through the centre."
-          ],
-          "answer": "A",
-          "explanation": "",
-          "text": "",
-          "source": "2021-12-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2021-12-S1-L-16",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. They are afraid of injuring their feet.",
-            "B. They have never developed the habit.",
-            "C. They believe a little dirt harms no one.",
-            "D. They find it rather troublesome to do so. 3"
-          ],
-          "answer": "C",
-          "explanation": "",
-          "text": "",
-          "source": "2021-12-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2021-12-S1-L-17",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. Different types of bacteria existed on public-toilet floors.",
-            "B. There were more bacteria on sidewalks than in the home.",
-            "C. Office carpets collected more bacteria than elsewhere.",
-            "D. A large number of bacteria collected on a single shoe."
-          ],
-          "answer": "D",
-          "explanation": "",
-          "text": "",
-          "source": "2021-12-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2021-12-S1-L-18",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. The chemicals on shoes can deteriorate air quality.",
-            "B. Shoes can upset family members with their noise.",
-            "C. The marks left by shoes are hard to erase.",
-            "D. Shoes can leave scratches on the floor."
-          ],
-          "answer": "A",
-          "explanation": "",
-          "text": "",
-          "source": "2021-12-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2021-12-S1-L-19",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. It is sinfu l and immoral.",
-            "B. It is deemed uncivilized.",
-            "C. It is an uncontrollable behavior.",
-            "D. It is a violation of faith and trust."
-          ],
-          "answer": "D",
-          "explanation": "",
-          "text": "",
-          "source": "2021-12-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2021-12-S1-L-20",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. Assess their consequences.",
-            "B. Guard against their harm.",
-            "C. Accept them as normal.",
-            "D. Find out their causes."
-          ],
-          "answer": "C",
-          "explanation": "",
-          "text": "",
-          "source": "2021-12-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2021-12-S1-L-21",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. Try to understand what messages they convey.",
-            "B. Pay attention to their possible consequences.",
-            "C. Consider them from different perspectives.",
-            "D. Make sure they are brought under control."
-          ],
-          "answer": "A",
-          "explanation": "",
-          "text": "",
-          "source": "2021-12-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2021-12-S1-L-22",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. Cultivation of new varieties of crops.",
-            "B. The research on crop rotation in developing countries.",
-            "C. The cooperation of the world’s agricultural scientists.",
-            "D. The improvement of agricultural infrastructure."
-          ],
-          "answer": "A",
-          "explanation": "",
-          "text": "",
-          "source": "2021-12-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2021-12-S1-L-24",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. For encouraging farmers to embrace new farming techniques.",
-            "B. For aligning their research with advances in farming technology.",
-            "C. For turning their focus to the needs of farmers in poorer countries.",
-            "D. For cooperating closely with policymakers in developing countries. 4"
-          ],
-          "answer": "C",
-          "explanation": "",
-          "text": "",
-          "source": "2021-12-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2021-12-S1-L-25",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. accessories",
-            "B. align",
-            "C. concurrently",
-            "D. current E) engaging F) fond G) frame H) locations I) perceive 5 J) positively K) profile L) prospering M) reluctant N) showcase O) wardrobe Section B Directions: In this section, you are going to read a passage with ten statements attached to it. Each statement contains information given in one of the paragraphs. Identify the paragraph from which the information is derived. You may choose a paragraph more than once. Each paragraph is marked with a letter. Answer the questions by marking the corresponding letter on Answer Sheet 2. Why facts don’t change our minds [A]The economist J.K. Galbraith once wrote, “Faced with a choice between changing one’s mind and proving there is no need to do so, almost everyone gets busy with the proof.” [B]Leo Tolstoy was even bolder. “The most difficult subjects can be explained to the most slow-witted man if he has not formed any idea of them already; but the simplest thing cannot be made clear to the most intelligent man if he is firmly persuaded that he knows already, without a shadow of doubt, what is laid before him.” [C] What’s going on here? Why don’t facts change our minds? And why would someone continue to believe a false or inaccurate idea anyway? How do such behaviors serve us? Humans need a reasonably accurate view of the world in order to survive. If your model of reality is wildly different from the actual world, then you struggle to take effective actions each day. However, truth and accuracy are not the only things that matter to the human mind. Humans also seem to have a deep desire to belong. [D] In Atomic Habits, I wrote, “Humans are herd animals. We want to fit in, to bond with others, and to earn the respect and approval of our peers. Such inclinations are essential to our survival. For most of our evolutionary history, our ancestors lived in tribes. Becoming separated from the tribe—or worse, being cast out—was a death sentence.” [E]Understanding the truth of a situation is important, but so is remaining part of a tribe. While these two desires often work well together, they occasionally come into conflict.In many circumstances, social connection is actually more helpful to your daily life than understanding the truth of a particular fact or idea. The Harvard psychologist Steven Pinker put it this way,“ People are embraced or condemned according to their beliefs, so one function of the mind may be to hold beliefs that bring the belief-holder the greatest number of allies, protectors, or disciples (信徒 ), rather than beliefs that are most likely to be true.” [F]We don’t always believe things because they are correct. Sometimes we believe things because they make us look good to the people we care about. I thought Kevin 6 Simler put it well when he wrote, “If a brain anticipates that it will be rewarded for adopting a particular belief, it’s perfectly happy to do so, and doesn’t much care where the reward comes from—whether it’s pragmatic(实用主义的)(better outcomes resulting from better decisions), social (better treatment from one’s peers), or some mix of the two.” [G]False beliefs can be useful in a social sense even if they are not useful in a factual sense. For lack of a better phrase, we might call this approach “factually false, but socially accurate.” When we have to choose between the two, people often select friends and family over facts. This insight not only explains why we might hold our tongue at a dinner party or look the other way when our parents say something offensive, but also reveals a better way to change the minds of others. [H]Convincing someone to change their mind is really the process of convincing them to change their tribe. If they abandon their beliefs, they run the risk of losing social ties. You can’t expect someone to change their mind if you take away their community too. You have to give them somewhere to go. Nobody wants their worldview torn apart if loneliness is the outcome. [I]The way to change people’s minds is to become friends with them, to integrate them into your tribe, to bring them into your circle. Now, they can change their beliefs without the risk of being abandoned socially. [J]Perhaps it is not difference, but distance, that breeds tribalism and hostility. As proximity increases, so does understanding. I am reminded of Abraham Lincoln’s quote,“I don’t like that man. I must get to know him better.” [K]Facts don’t change our minds. Friendship does. Years ago, Ben Casnocha mentioned an idea to me that I haven’t been able to shake: The people who are most likely to change our minds are the ones we agree with on 98 percent of topics. If someone you know, like, and trust believes a radical idea, you are more likely to give it merit, weight, or consideration. You already agree with them in most areas of life. Maybe you should change your mind on this one too. But if someone wildly different than you proposes the same radical idea, well, it’s easy to dismiss them as nuts. [L]One way to visualize this distinction is by mapping belies on a spectrum. If you divide this spectrum into 10 units and you find yourself at Position 7, then there is little sense in trying to convince someone at Position 1. The gap is too wide. When you’re at Position 7, your time is better spent connecting with people who are at Positions 6 and 8, gradually pulling them in your direction. [M] The most heated arguments often occur between people on opposite ends of the spectrum, but the most frequent learning occurs from people who are nearby. The closer you are to someone, the more likely it becomes that the one or two beliefs you don’t share will bleed over into your own mind and shape your thinking. The further away an idea is from your current position, the more likely you are to reject it outright. When it comes to changing people’s minds, it is very difficult to jump from one side to another. You can’t jump down the spectrum. You have to slide down it. [N]Any idea that is sufficiently different from your current worldview will feel threatening. And the best place to ponder a threatening idea is in a non-threatening environment. As a result, books are often a better vehicle, for transforming beliefs 7 than conversations or debates. In conversation, people have to carefully consider their status and appearance. They want to save face and avoid looking stupid. When confronted with an uncomfortable set of facts, the tendency is often to double down on their current position rather than publicly admit to being wrong. Books resolve this tension. With a book, the conversation takes place inside someone’s head and without the risk of being judged by others, It’s easier to be open-minded when you aren’t feeling defensive. [O] There is another reason bad ideas continue to live on, which is that people continue to talk about them. Silence is death for any idea. An idea that is never spoken or written down dies with the person who conceived it. Ideas can only be remembered when they are repeated. They can only be believed when they are repeated, I have already pointed out that people repeat ideas to signal they are part of the same social group. But here’s a crucial point most people miss: People also repeat bad ideas when they complain about them. Before you can criticize an idea, you have to reference that idea. You end up repeating the ideas you’re hoping people will forget—but，of course, people can’t forget them because you keep talking about them. The more you repeat a bad idea, the more likely people are to believe it. [P] Let’s call this phenomenon Clear’s Law of Recurrence: The number of people who believe an idea is directly proportional to the number of times it has been repeated during the last year—even if the idea is false."
-          ],
-          "answer": "B",
-          "explanation": "",
-          "text": "",
-          "source": "2021-12-S1",
-          "difficulty": "medium",
-          "tags": []
+          "id": "CET4-L4-Q3",
+          "ability": "推断/隐含意义",
+          "question": "What can be inferred about the woman’s medical experience before the diagnosis?",
+          "optionA": "She received consistent and accurate treatment from local doctors.",
+          "optionB": "Her symptoms were dismissed as psychological or habitual.",
+          "optionC": "She had never undergone any imaging tests prior to the Qingdao scan.",
+          "optionD": "Doctors suspected a foreign body but failed to locate it with earlier technology.",
+          "answer": "C"
         }
       ]
     },
     {
-      "passage_id": 5,
-      "type": "听力",
-      "text": "",
+      "passage_id": "L5",
+      "type": "news report",
+      "text": "Questions 3 and 4 are based on the news report you have just heard. German police appealed Friday for information about the possible owners of two 17th-century oil paintings. Police said a 64=year-old man found the paintings in a garbage pile at a highway rest stop last month. He later handed them in to the Cologne police. An initial assessment by an art expert concluded the two framed paintings were originals, police said. One is a landscape painted by the Italian artist Pietro Bellotti dating to 1665. The other is a painting of a boy by the 17th-century Dutch artist Samuel van Hoogstraten, date unknown. Their combined worth is estimated to be around one million euros. Authorities have not yet confirmed what will happen if the rightful owner is not found. Nevertheless, it is speculated that they could either be handed over to the National Art Museum of Cologne or sold to the public by the local government.",
       "questions": [
         {
-          "id": "2021-12-S2-L-01",
-          "type": "听力",
-          "subtype": "长对话",
-          "question": "",
-          "options": [
-            "A. He was enjoying his holiday. B) He was recovering in hospital. C) He was busy writing his essays.",
-            "D. He was fighting a throat infection."
-          ],
-          "answer": "D",
-          "explanation": "",
-          "text": "",
-          "source": "2021-12-S2",
-          "difficulty": "medium",
-          "tags": []
+          "id": "CET4-L5-Q1",
+          "ability": "细节定位",
+          "question": "Where were the two 17th-century oil paintings discovered?",
+          "optionA": "In a museum storage room in Cologne.",
+          "optionB": "In a garbage pile at a highway rest stop.",
+          "optionC": "Inside an abandoned villa near Rome.",
+          "optionD": "At an antique market in Amsterdam.",
+          "answer": "B"
         },
         {
-          "id": "2021-12-S2-L-02",
-          "type": "听力",
-          "subtype": "长对话",
-          "question": "",
-          "options": [
-            "A. He broke his wrist. B) He lost his antibiotics. C) He slipped on ice and fell.",
-            "D. He was laughed at by some girls."
-          ],
-          "answer": "C",
-          "explanation": "",
-          "text": "",
-          "source": "2021-12-S2",
-          "difficulty": "medium",
-          "tags": []
+          "id": "CET4-L5-Q2",
+          "ability": "细节理解与推断",
+          "question": "What did the art expert’s initial assessment conclude about the paintings?",
+          "optionA": "They were high-quality forgeries made in the 19th century.",
+          "optionB": "They were confirmed to be original works from the 17th century.",
+          "optionC": "One was authentic, but the other required further testing.",
+          "optionD": "Their provenance could not be established without DNA analysis.",
+          "answer": "B"
         },
         {
-          "id": "2021-12-S2-L-03",
-          "type": "听力",
-          "subtype": "长对话",
-          "question": "",
-          "options": [
-            "A. Turn to her father for help. C) Ask the manufacturer for repair. B) Call the repair shop to fix it. D) Replace it with a brand-new one."
-          ],
-          "answer": "B",
-          "explanation": "",
-          "text": "",
-          "source": "2021-12-S2",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2021-12-S2-L-04",
-          "type": "听力",
-          "subtype": "长对话",
-          "question": "",
-          "options": [
-            "A. Help David retrieve his essays. C) Offer David some refreshments B) Introduce David to her parents. D) Accompany David to his home."
-          ],
-          "answer": "C",
-          "explanation": "",
-          "text": "",
-          "source": "2021-12-S2",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2021-12-S2-L-09",
-          "type": "听力",
-          "subtype": "短文听力",
-          "question": "",
-          "options": [
-            "A. Santa Claus B) Cocoa Seeds",
-            "C. A polar bear D) A glass bottle"
-          ],
-          "answer": "D",
-          "explanation": "",
-          "text": "",
-          "source": "2021-12-S2",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2021-12-S2-L-10",
-          "type": "听力",
-          "subtype": "短文听力",
-          "question": "",
-          "options": [
-            "A. To attract customer attention. B) To keep up with the times.",
-            "C. To combat counterfeits. D) To promote its sales."
-          ],
-          "answer": "C",
-          "explanation": "",
-          "text": "",
-          "source": "2021-12-S2",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2021-12-S2-L-11",
-          "type": "听力",
-          "subtype": "短文听力",
-          "question": "",
-          "options": [
-            "A. It resembles a picture in the encyclopedia. B) It appears in the shape of a cocoa seed.",
-            "C. It has the drink’s logo in the middle. D) It displays the image of Santa Claus."
-          ],
-          "answer": "B",
-          "explanation": "",
-          "text": "",
-          "source": "2021-12-S2",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2021-12-S2-L-16",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. It depends heavily on tourism. C) It is mainly based on agriculture. B) It is flourishing in foreign trade.D) It relies chiefly on mineral export."
-          ],
-          "answer": "C",
-          "explanation": "",
-          "text": "",
-          "source": "2021-12-S2",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2021-12-S2-L-17",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. Tobacco. C) Coffee. B) Bananas. D) Sugar."
-          ],
-          "answer": "D",
-          "explanation": "",
-          "text": "",
-          "source": "2021-12-S2",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2021-12-S2-L-18",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. They toil on farms. C) They live in Spanish-style houses. B) They live a poor life. D) They hire people to do housework."
-          ],
-          "answer": "B",
-          "explanation": "",
-          "text": "",
-          "source": "2021-12-S2",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2021-12-S2-L-20",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. Failure to pay due attention to their behavior. B) Unwillingness to allow them to play with toys.",
-            "C. Unwillingness to satisfy their wishes immediately. D) Failure to spend sufficient quality time with them."
-          ],
-          "answer": "D",
-          "explanation": "",
-          "text": "",
-          "source": "2021-12-S2",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2021-12-S2-L-21",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. It will enable them to learn from mistakes. B) It will help them to handle disappointment.",
-            "C. It will do much good to their mental health. D) It will build their ability to endure hardships."
-          ],
-          "answer": "B",
-          "explanation": "",
-          "text": "",
-          "source": "2021-12-S2",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2021-12-S2-L-22",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. Failing to make sufficient preparations. B) Looking away from the hiring manager.",
-            "C. Saying the wrong thing at the wrong time. D) Making a wrong judgment of the interview."
-          ],
-          "answer": "C",
-          "explanation": "",
-          "text": "",
-          "source": "2021-12-S2",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2021-12-S2-L-23",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. Complaining about their previous job. B) Inquiring about their salary to be paid.",
-            "C. Exaggerating their academic background. D) Understanding their previous achievements."
-          ],
-          "answer": "A",
-          "explanation": "",
-          "text": "",
-          "source": "2021-12-S2",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2021-12-S2-L-24",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. Those who have both skill and experience. B) Those who get along well with colleagues.",
-            "C. Those who take initiative in their work. D) Those who are loyal to their managers."
-          ],
-          "answer": "C",
-          "explanation": "",
-          "text": "",
-          "source": "2021-12-S2",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2021-12-S2-L-25",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. Ability to shoulder new responsibilities. 3",
-            "B. Experience of performing multiple roles. C) Readiness to work to flexible schedules.",
-            "D. Skills to communicate with colleagues. ## Part III Reading Comprehension"
-          ],
-          "answer": "A",
-          "explanation": "",
-          "text": "",
-          "source": "2021-12-S2",
-          "difficulty": "medium",
-          "tags": []
+          "id": "CET4-L5-Q3",
+          "ability": "细节定位与信息匹配",
+          "question": "Which of the following statements is TRUE according to the news report?",
+          "optionA": "The Dutch artist Samuel van Hoogstraten painted both works.",
+          "optionB": "The landscape painting is attributed to Pietro Bellotti and dated 1665.",
+          "optionC": "The paintings were valued at approximately one million dollars.",
+          "optionD": "German authorities have already decided to auction them if no owner comes forward.",
+          "answer": "B"
         }
       ]
     },
     {
-      "passage_id": 6,
-      "type": "听力",
-      "text": "",
+      "passage_id": "L6",
+      "type": "conversation",
+      "text": "Questions 8 to 11 are based on the conversation you have just heard M: Hello , you're through to customer service. This is Michael speaking. Before we continue, I just want to make you aware that this call is being recorded and may be used in the future for training purposes. What can I help you with today? W: Hi, my name is Jean Seimon. I recently bought an office chair from your company , but I returned it about a week ago. I'm just calling to inquire when I will be able to get my money back. It says on your website that your company will pay back the money within three working days of you receiving the returned item. But it's been five working days and I haven't received anything. M: I'm sorry to hear that , Miss Seimon. What's your customer reference number , please? W: It's W: My card number? Oh , (l0)maybe it has something to do with my new card. It was sent to me on Tuesday. Maybe the bank canceled my old one before you've made the payment. M: Well , (ll)you'll need to update your card details directly on our website. Just make sure you're logged in. And then under the description of your personal information , you should see an option for updating payment methods. W: I am logged in , and I'll give that a go. M: I'll make a note here on the system for you, so that the payment will be made tomorrow morning. W: Thank you very much.",
       "questions": [
         {
-          "id": "2022-06-S1-L-01",
-          "type": "听力",
-          "subtype": "长对话",
-          "question": "",
-          "options": [
-            "A. He is a staff writer. B) He is an adventurer."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-06-S1",
-          "difficulty": "medium",
-          "tags": []
+          "id": "CET4-L6-Q1",
+          "ability": "细节定位",
+          "question": "Why is the woman calling customer service?",
+          "optionA": "To report a damaged chair she received.",
+          "optionB": "To ask about the refund status for her returned office chair.",
+          "optionC": "To request a replacement chair instead of a refund.",
+          "optionD": "To complain about poor delivery service.",
+          "answer": "B"
         },
         {
-          "id": "2022-06-S1-L-02",
-          "type": "听力",
-          "subtype": "长对话",
-          "question": "",
-          "options": [
-            "A. They are interested in fairy tales. B) They are curious and autonomous."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-06-S1",
-          "difficulty": "medium",
-          "tags": []
+          "id": "CET4-L6-Q2",
+          "ability": "事实推断",
+          "question": "According to the woman, how long should the refund take after the company receives the returned item?",
+          "optionA": "Within two working days.",
+          "optionB": "Within three working days.",
+          "optionC": "Within five working days.",
+          "optionD": "Within one week (including weekends).",
+          "answer": "B"
         },
         {
-          "id": "2022-06-S1-L-03",
-          "type": "听力",
-          "subtype": "长对话",
-          "question": "",
-          "options": [
-            "A. He offers them ample editorial guidance. B) He recommends model essays to them."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-06-S1",
-          "difficulty": "medium",
-          "tags": []
+          "id": "CET4-L6-Q3",
+          "ability": "细节定位",
+          "question": "What does the man ask the woman for after apologizing?",
+          "optionA": "Her full address and postal code.",
+          "optionB": "The date she mailed the return package.",
+          "optionC": "Her customer reference number.",
+          "optionD": "A photo of the returned chair.",
+          "answer": "C"
         },
         {
-          "id": "2022-06-S1-L-04",
-          "type": "听力",
-          "subtype": "长对话",
-          "question": "",
-          "options": [
-            "A. Her tastes in books changed. B) She realized the power of reading.",
-            "C. Her reading opened her eyes to the world. D) She began to perceive the world differently."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-06-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-06-S1-L-05",
-          "type": "听力",
-          "subtype": "长对话",
-          "question": "",
-          "options": [
-            "A. She is a website designer. B) She is a university graduate."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-06-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-06-S1-L-06",
-          "type": "听力",
-          "subtype": "长对话",
-          "question": "",
-          "options": [
-            "A. They were repeatedly rejected by shops. B) They were popular with her classmates."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-06-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-06-S1-L-07",
-          "type": "听力",
-          "subtype": "长对话",
-          "question": "",
-          "options": [
-            "A. She had a strong interest in doing it. B) She did not like ready-made clothes.",
-            "C. She could not find clothes of her size. D) She found clothes in shops unaffordable."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-06-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-06-S1-L-08",
-          "type": "听力",
-          "subtype": "长对话",
-          "question": "",
-          "options": [
-            "A. , B), C) and D). Then mark the corresponding letter on Answer Sheet 1 with a single line through the centre. ##",
-            "C. Add designs for women. D)Expand her business."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-06-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-06-S1-L-09",
-          "type": "听力",
-          "subtype": "短文听力",
-          "question": "",
-          "options": [
-            "A. Utilizing artificial intelligence to find a powerful new antibiotic. B) Discovering bacteria which are resistant to all known antibiotics.",
-            "C. Identifying bacterial strains that are most harmful to human health. D) Removing a deadly strain of bacteria in humans with a new antibiotic."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-06-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-06-S1-L-10",
-          "type": "听力",
-          "subtype": "短文听力",
-          "question": "",
-          "options": [
-            "A. Ever-increasing strains of bacteria. B) Bacteria's resistance to antibiotics.",
-            "C. The similarity between known drugs. D) The growing threat of bacteria to health."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-06-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-06-S1-L-11",
-          "type": "听力",
-          "subtype": "短文听力",
-          "question": "",
-          "options": [
-            "A. Dispense with experimental testing. B) Predict whether compounds are toxic.",
-            "C. Foresee human reaction to antibiotics. D) Combat bacteria's resistance to antibiotics."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-06-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-06-S1-L-12",
-          "type": "听力",
-          "subtype": "短文听力",
-          "question": "",
-          "options": [
-            "A. By theorization. B) By generalization.",
-            "C. By observation. D) By conversation."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-06-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-06-S1-L-13",
-          "type": "听力",
-          "subtype": "短文听力",
-          "question": "",
-          "options": [
-            "A. They are easy to detect. B) They are well intended. C) They are groundless.",
-            "D. They are harmless."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-06-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-06-S1-L-14",
-          "type": "听力",
-          "subtype": "短文听力",
-          "question": "",
-          "options": [
-            "A. Mostly by chance. B) Basically objective. C) Subject to their mental alertness.",
-            "D. Dependent on their analytical ability."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-06-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-06-S1-L-15",
-          "type": "听力",
-          "subtype": "短文听力",
-          "question": "",
-          "options": [
-            "A. , B), C) and D). Then mark the corresponding letter on Answer Sheet 1 with a single line through the centre. ##",
-            "C. Measuring the speaker's breathing rate. D) Focusing on the speaker's facial expressions."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-06-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-06-S1-L-16",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. They don't treat patients with due respect. B) They witness a lot of doctor-patient conflicts.",
-            "C. They have to deal with social workers9 strikes. D) They don't care how much patients have to pay."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-06-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-06-S1-L-17",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. Appear submissive and grateful to doctors and nurses. B) Express a strong desire to be consulted or informed.",
-            "C. Refrain from saying anything that sounds negative. D) Note down the names of all the doctors and nurses."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-06-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-06-S1-L-18",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. Cooperative. B) Appreciative.",
-            "C. Passive. D) Responsive. ##"
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-06-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-06-S1-L-19",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. Its members work together despite risks of failure. B) It prioritizes recruiting young energetic members.",
-            "C. Its members stay in touch even after it breaks up. D) It grows more and more mature professionally."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-06-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-06-S1-L-20",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. Their differences are likely to impact productivity. B) Their similarity is conducive to future collaboration.",
-            "C. Their connections strengthen with the passage of time. D) Their mutual understanding stems from a common goal."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-06-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-06-S1-L-21",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. It is characterized by diversity. B) Its goals are quite inconsistent.",
-            "C. Its members have similar backgrounds. D) It is connected by a unique mechanism."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-06-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-06-S1-L-22",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. Putting aside twenty percent of one's earnings. B) Spending in anticipation of becoming wealthy.",
-            "C. Living off a small proportion of one's income. D) Saving as much as one can possibly manage."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-06-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-06-S1-L-23",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. It empowers them to cope with irrational emotions. B) It will guarantee the profits from their investments.",
-            "C. It will turn them into successful financial planners. D) It enables them to focus on long-term investments."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-06-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-06-S1-L-24",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. They count on others to take the responsibility. B) They change their investment strategy in time.",
-            "C. They think they themselves are to blame. D) They persist rather than get discouraged."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-06-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-06-S1-L-25",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. They do not resist novel lifestyles. B) They do not try to keep up with others.",
-            "C. They do not care what they have acquired. D) They do not pressure themselves to get rich."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-06-S1",
-          "difficulty": "medium",
-          "tags": []
+          "id": "CET4-L6-Q4",
+          "ability": "语境理解/话轮衔接",
+          "question": "What can be inferred from the woman’s incomplete sentence “It’s W: My card…”?",
+          "optionA": "She is reading her credit card number aloud.",
+          "optionB": "She is about to provide her reference number but gets cut off or interrupted.",
+          "optionC": "She is confused and mistakenly says ‘My card’ instead of the number.",
+          "optionD": "She is referring to her membership card, not the reference number.",
+          "answer": "C"
         }
       ]
     },
     {
-      "passage_id": 7,
-      "type": "听力",
-      "text": "",
+      "passage_id": "L7",
+      "type": "conversation",
+      "text": "Questions 12 to 15 are based on the conversation you have just heard. W：No, but the train was so packed that I could barely move, and it was difficult to breathe too. At every station, more people squeezed in and I got pushed further and further inside. When I got to my station, I could hardly get out. Once I did get out, I was totally exhausted. M：That sounds like a nightmare. Why didn't you take the bus? W：The bus takes twice as long and it's just as crowded. M：Well, what's the alternative? Haven't you got a car? W：I've got a driver's license, but that's all. I'm saving up to buy something reasonably small and cute, but it's still a bit expensive for me, and it'll take a while before I have enough money. M：Have you thought about getting an electric motorbike? W：I consider that for maybe a minute. But honestly, I've just seen too many horrible accidents involving those dangerous monsters. M：What about those popular shared bikes? You could register to use one. W：Yeah, that's a possibility. There are always several of those bikes out in front of our apartment complex. W：Well, it's five kilometers from home to the office. But you've given me a thought. I could take a change of clothes and jog to work. But at this time of year, the air pollution is a real problem. M：Oh, yeah. I didn't think of that. You take a taxi if you really have to. W：Good idea. I'll download one immediately. Thank you.",
       "questions": [
         {
-          "id": "2022-09-L-09",
-          "type": "听力",
-          "subtype": "短文听力",
-          "question": "",
-          "options": [
-            "A. The more commercials they see, the more brands they get to know",
-            "B. Shift children's attention to interesting activities.",
-            "C. Their admiration for celebrities.",
-            "D. Their lack of social experience. ###"
-          ],
-          "answer": "D",
-          "explanation": "",
-          "text": "",
-          "source": "2022-09",
-          "difficulty": "medium",
-          "tags": []
+          "id": "CET4-L7-Q1",
+          "ability": "细节定位",
+          "question": "What was the woman's main problem during her train ride?",
+          "optionA": "She missed her station and had to wait for the next train.",
+          "optionB": "The train was extremely crowded, making it hard to move or breathe.",
+          "optionC": "The train broke down midway, causing a long delay.",
+          "optionD": "She lost her belongings in the crowd.",
+          "answer": "B"
         },
         {
-          "id": "2022-09-L-12",
-          "type": "听力",
-          "subtype": "短文听力",
-          "question": "",
-          "options": [
-            "A. Bad guys may do good deeds B) Bad guys may go unpunished.",
-            "C. Good guys may not always cooperate.",
-            "D. Good guys may get unfair treatment."
-          ],
-          "answer": "D",
-          "explanation": "",
-          "text": "",
-          "source": "2022-09",
-          "difficulty": "medium",
-          "tags": []
+          "id": "CET4-L7-Q2",
+          "ability": "推理判断",
+          "question": "Why does the woman not take the bus instead of the train?",
+          "optionA": "The bus route doesn’t pass near her workplace.",
+          "optionB": "She finds the bus drivers unreliable and often late.",
+          "optionC": "The bus is equally crowded and takes twice as long.",
+          "optionD": "She dislikes the bus fare system and finds it confusing.",
+          "answer": "C"
         },
         {
-          "id": "2022-09-L-13",
-          "type": "听力",
-          "subtype": "短文听力",
-          "question": "",
-          "options": [
-            "A. By what we do. B) By fair evaluation.",
-            "C. In comparison with others.",
-            "D. In accordance with set standards."
-          ],
-          "answer": "C",
-          "explanation": "",
-          "text": "",
-          "source": "2022-09",
-          "difficulty": "medium",
-          "tags": []
+          "id": "CET4-L7-Q3",
+          "ability": "细节定位",
+          "question": "What does the woman currently have regarding a car?",
+          "optionA": "She owns a second-hand compact car.",
+          "optionB": "She rents a car every weekend.",
+          "optionC": "She has only a driver’s license but no car.",
+          "optionD": "She shares a family car with her siblings.",
+          "answer": "C"
         },
         {
-          "id": "2022-09-L-14",
-          "type": "听力",
-          "subtype": "短文听力",
-          "question": "",
-          "options": [
-            "A. Learn from them earnestly. B) Compete with them actively.",
-            "C. Leave them alone temporarily.",
-            "D. Cooperate with them sincerely."
-          ],
-          "answer": "B",
-          "explanation": "",
-          "text": "",
-          "source": "2022-09",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-09-L-15",
-          "type": "听力",
-          "subtype": "短文听力",
-          "question": "",
-          "options": [
-            "A. Being dismissed as hypocritical. B) Not getting the reward they deserve",
-            "C. Having to make too many sacrifices.",
-            "D. Being misunderstood by people around Section C Directions: In this section, you will hear three recordings of lectures or talks followed by three or four questions. The recordings will be played only once. After you hear a question, you must choose the best answer from the four choices marked A), BJ, C) and D). Then mark the corresponding letter onAnswer Sheet 1 with a single line through the centre"
-          ],
-          "answer": "A",
-          "explanation": "",
-          "text": "",
-          "source": "2022-09",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-09-L-16",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. They are increasingly aware of gender differences",
-            "B. They engage themselves in positive recollection.",
-            "C. They begin to see the importance of friendship 2022年9月英语六级真题第1套第 2页共11页一",
-            "D. They make friends with peers of the same sex."
-          ],
-          "answer": "D",
-          "explanation": "",
-          "text": "",
-          "source": "2022-09",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-09-L-17",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. Competing for position",
-            "B. Pursuing fashion.",
-            "C. Forging close ties with friends.",
-            "D. Fulfilling family obligations"
-          ],
-          "answer": "A",
-          "explanation": "",
-          "text": "",
-          "source": "2022-09",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-09-L-18",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. They prioritize romance over friendship.",
-            "B. They try to strengthen same-sex friendships",
-            "C. They begin to take friendship more seriously",
-            "D. They compete intensely for romantic partners"
-          ],
-          "answer": "A",
-          "explanation": "",
-          "text": "",
-          "source": "2022-09",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-09-L-19",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. They regard it as a matter of sheer privacy.",
-            "B. They are worried about being turned down.",
-            "C. They fear that their condition will be made widely known.",
-            "D. They are afraid to be discriminated against once recruited."
-          ],
-          "answer": "B",
-          "explanation": "",
-          "text": "",
-          "source": "2022-09",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-09-L-20",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. After receiving a job offer",
-            "B. During a job interview.",
-            "C. When con伍ming an interview.",
-            "D. Upon completing a cover letter."
-          ],
-          "answer": "C",
-          "explanation": "",
-          "text": "",
-          "source": "2022-09",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-09-L-21",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. Describe the true state of their health.",
-            "B. Provide all the information required.",
-            "C. Stress the irrelevance of their disability to the job.",
-            "D. Avoid mentioning the name of their disab血y"
-          ],
-          "answer": "D",
-          "explanation": "",
-          "text": "",
-          "source": "2022-09",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-09-L-22",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. Their scores were least affected by music with speech",
-            "B. It was the poorest when there was background speech.",
-            "C. Their scores were most depressed with instrumental music.",
-            "D. It was disrupted by the sound of an air conditioner or fan."
-          ],
-          "answer": "B",
-          "explanation": "",
-          "text": "",
-          "source": "2022-09",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-09-L-23",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. It has to do with the type and volume of the background noise",
-            "B. It has to do with short-term memory for listening comprehension.",
-            "C. It depends on the overlap in processing different kinds of information.",
-            "D. It depends on the participants5 ability to concentrate on the task at hand."
-          ],
-          "answer": "C",
-          "explanation": "",
-          "text": "",
-          "source": "2022-09",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-09-L-24",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. Keep everything as quiet as possible",
-            "B. Play nothing but instrumental music.",
-            "C. Use vocal material as little as possible.",
-            "D. Wear a pair of earphones or headphones"
-          ],
-          "answer": "B",
-          "explanation": "",
-          "text": "",
-          "source": "2022-09",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-09-L-25",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. As computer coding has become an increasingly sought-after skill, more K-12 schools are working it into their curriculums. Some states have considered allowing students to forgo （放弃） foreign language for coding classes, despite opposition from educators",
-            "B. There's a debate over whether it's appropriate to teach coding in elementary schools, with fierce opinions on each side. When it comes to allowing coding to fill foreign language requirements, though, most educators agree: Coding should be added to CU订iculums, but not at the expense of foreign language classes.",
-            "C. The idea is that computer programming is a language, allowing people to communicate with machines and programs. It's the language of the 21st century and more valuable than a natural language, some advocates argue. The computer science field is growing faster than schools can keep up because of budget constraints and a lack of sk仆ls training for teachers.",
-            "D. According to the 2016 U.S. News/Raytheon STEM Index, computer science jobs have helped boost wages in the U.S., and computer-related jobs hold the top seven positions in STEM fields for highest number of workers. Foreign language interest, on the other hand, is declining for the first time since 1995. The number of higher education language enrollments declined between 2009 and 2013 by more than 111,000 spots, according to the Modern Language Association of America. E) \"I think the opportunity to give people a choice is important,\" says Florida state Senator Jeremy Ring, who introduced a bill last year that would allow Florida students to choose between foreign language and coding classes for the purpose of university admissions requirements, \"I think if you're going to give two years of language in high school, you might as well do computer coding.\" F) The Florida bill died this year after passing 35-5 in the state Senate when the full Legislature failed to take action. It would have been the first state to try this initiative. Ring says that although he will be out of office, an identical bill will be reintroduced within the next year by others on his behalf. \"In the speech I gave on the Senate floor, I said,'We can be the first state to do this, or we can be the 50th state to do it. It's our choice. It's going to happen,\"'Ring says G) A Kentucky b仆1 similar to the one in Florida was met with complaints from educators, and was then amended to promote computer science education initiatives with no mention of foreign language requirements. Instead, the state will provide support for higher quality certified teachers for programming classes. Under the Washington bill, 2022年9月英语六级真题第1套第5页共11页一 public universities would accept two years of computer science classes in place of two years of foreign language for admission purposes. A report detailing the opinions of state university officials is due to the Legislature by November2017 H) Texas passed a bill in2013 that allows students to substitute computer coding only after they have attempted and perfom记d poorly in a foreign language class. Srini Mandyam, CTO and co-founder of kid-friendly instructional coding company Tynker, believes allowing students to forgo foreign language because they struggle with it is unproductive because every subject, whether art, math or language, is a significant contribution to a well-rounded existence. \"Many students don't fare well with algebra but we never discuss eliminating it or... say chemistry is now counted as an algebra class,\" he said via email.\" We teach algebra because it's important and we should teach foreign language and coding for the same reason. Exposure to a wide breadth of subjects and material results in well-rounded students who are able to make informed decisions… about what they want to pursue.\" I) Computer science courses already fulfill a math or science high school graduation requirement in28 states and the District of Columbia, up from only 12states in2013 And while advocates of the bills say they should count as foreign language instead, opponents stress the importance of balancing computer and foreign language skills J) Studies show that bilingualism （双语） correlates with cognitive development, intelligence, memory and problem solving abilities, according to the American Council on the Teaching of Foreign Languages. A2007 study showed that foreign language students outperfom记d their non-foreign language peers on standardized tests after only two to three years of study. And while a2014 report from German and American universities suggests that programmers are using language (but not mathematical) regions of the brain when understanding code, critics remain wary. They say that regardless of cognitive functions, being monolingual is a disadvantage in the increasingly international economy, even if English has become the defacto （事实上的） language of business K) \"Our world is shrinking but its problems are really growing,\" says ACTFL National Language Teacher of the Year Ted Zarrow, who teaches high school Latin in Westwood, Massachusetts, and has also studied Spanish, French, German, Italian and Greek. \"We need to find a way to put ourselves at the global table and to treat each other with mutual respect. And learning languages allows us to do that because language is not part of culture, language is culture L) Even with the benefits and skill sets languages provide, recruiters and employers value computer skills more. According to the National Association of Colleges and Employers'2016 report, study abroad and foreign language fluency were not very influential in the employee hiring processes, but 55 percent of employers looked for computer skills on applicants' resumes. However, although2016 computer science graduates can expect to make the second highest starting salary compared with other jobs this year, the Bureau of Labor predicts the demand for computer programmers will 2022年9月英语六级真题第1套第6页共11页一 decrease 8 percent or by 26,500 jobs by 2024 M) Ring says foreign language sk仆ls are important, but expresses doubt that school districts could work both coding and language into their curriculum in a significant way because they lack the time in the school day. \"Nothing against language,\" he says. \"I just think it's something you have to start early and not just have something that you do for a couple of years in high school,\" he says N) Zarrow agrees that foreign language education should begin earlier, but says it is possible to work both computer programming and foreign language learning into schools evenly. He suggests an immersive, dual language program where students spend half the day in English and half the day in another language, as several schools around the country have successfully implemented. \"The study of language fosters a respect for diversity, a respect for ethnicity and really a respect for language,\" Zarrow says 0) Though the benefits of computer programming skills are vast, foreign language and coding experts agree that computer science should be negotiated into cu订iculums rather than replacing foreign language outright. Mandyam says the two skill sets are essential but unrelated. \"Coding is an incredibly important 21st century skill for our kids to learn, and that's why we spend so much time trying to teach it,\" Mandyam says via email \"But I believe it is the same as or even really comparable to learning a foreign language. It would be a shame to lose something so important for the sake of adding something else, even something as important as coding. Clearly, education leaders must figure out a way to teach both.\""
-          ],
-          "answer": "A",
-          "explanation": "",
-          "text": "",
-          "source": "2022-09",
-          "difficulty": "medium",
-          "tags": []
+          "id": "CET4-L7-Q4",
+          "ability": "信息预测/推断（未完成句理解）",
+          "question": "What is the woman likely to do next regarding the man’s suggestion about an electric motorbike?",
+          "optionA": "She will immediately buy one online.",
+          "optionB": "She will reject the idea because she dislikes motorbikes.",
+          "optionC": "She will consider it seriously as a more affordable alternative.",
+          "optionD": "She will ask the man to lend her his motorbike temporarily.",
+          "answer": "C"
         }
       ]
     },
     {
-      "passage_id": 8,
-      "type": "听力",
-      "text": "",
+      "passage_id": "L8",
+      "type": "passage",
+      "text": "Questions 16 to 18 are based on the passage you have just heard. The golden rule is a moral principle which states that you should treat others the way you want to be treated yourself. For example, if you want people to treat you with respect, you should treat them with respect. Different people tend to be exposed to different forms of the golden rule, based on factors such as the religion in their society. However, all forms of the golden rule revolve around the same concept. Namely, they help you treat others better, by using the way you yourself would want to be treated as a guide of how to behave. A notable criticism of the golden rule is that its application can lead to undesirable outcomes, when it conflicts with laws and ethical principles. For example, if someone breaks the law, the golden rule would suggest that we should let them go, because we would not want to be punished ourselves. However, this issue with the golden rule can be dealt with in a general manner, by viewing this principle as one of several principles that we use to guide our behavior as individuals and as a society. Specifically, in the example described above, most individuals and societies choose to place laws and ethical principles above the golden rule. This means that they strive to implement the golden rule whenever possible, as long as it doesn't clash with a more important concept.",
       "questions": [
         {
-          "id": "2022-12-S1-L-01",
-          "type": "听力",
-          "subtype": "长对话",
-          "question": "",
-          "options": [
-            "A. She hasn't started writing it.",
-            "B. She hasn't decided on a topic.",
-            "C. She is proofreading the first draft.",
-            "D. She is working on the references."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-12-S1",
-          "difficulty": "medium",
-          "tags": []
+          "id": "CET4-L8-Q1",
+          "ability": "细节定位",
+          "question": "What is the core idea of the golden rule according to the passage?",
+          "optionA": "To follow religious doctrines strictly in daily interactions.",
+          "optionB": "To treat others the way you yourself would want to be treated.",
+          "optionC": "To prioritize legal compliance over personal moral judgment.",
+          "optionD": "To adapt behavior based on others’ cultural backgrounds.",
+          "answer": "B"
         },
         {
-          "id": "2022-12-S1-L-02",
-          "type": "听力",
-          "subtype": "长对话",
-          "question": "",
-          "options": [
-            "A. He lent many books to the man for reference.",
-            "B. He offered the man advice on resource hunting.",
-            "C. He published a lot in a number of reputable journals.",
-            "D. He told the man to be selective when using e-resources."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-12-S1",
-          "difficulty": "medium",
-          "tags": []
+          "id": "CET4-L8-Q2",
+          "ability": "推理判断",
+          "question": "Why might the golden rule lead to undesirable outcomes, as mentioned in the passage?",
+          "optionA": "Because it encourages emotional decision-making without reflection.",
+          "optionB": "Because people often misunderstand others’ preferences.",
+          "optionC": "Because its application may conflict with laws and ethical principles.",
+          "optionD": "Because it is incompatible with modern democratic values.",
+          "answer": "C"
         },
         {
-          "id": "2022-12-S1-L-03",
-          "type": "听力",
-          "subtype": "长对话",
-          "question": "",
-          "options": [
-            "A. He didn't think her dissertation topic viable.",
-            "B. He wasn't interested in her dissertation topic.",
-            "C. He didn't want her to rush through her dissertation.",
-            "D. He wasn't specific about the length of her dissertation."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-12-S1",
-          "difficulty": "medium",
-          "tags": []
+          "id": "CET4-L8-Q3",
+          "ability": "主旨归纳",
+          "question": "What is the main purpose of the passage?",
+          "optionA": "To compare different religious interpretations of morality.",
+          "optionB": "To argue that the golden rule should be replaced by legal standards.",
+          "optionC": "To introduce the golden rule, explain its universal principle, and note a key limitation.",
+          "optionD": "To criticize all forms of traditional moral maxims as outdated.",
+          "answer": "C"
         },
         {
-          "id": "2022-12-S1-L-04",
-          "type": "听力",
-          "subtype": "长对话",
-          "question": "",
-          "options": [
-            "A. Change her research methodology.",
-            "B. Narrow down her dissertation topic.",
-            "C. Consult her professor more.",
-            "D. Follow the man's advice."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-12-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-12-S1-L-05",
-          "type": "听力",
-          "subtype": "长对话",
-          "question": "",
-          "options": [
-            "A. He has translated 12 books.",
-            "B. He is a well-known nutritionist.",
-            "C. His books sell well worldwide.",
-            "D. His latest book sold a million copies."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-12-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-12-S1-L-06",
-          "type": "听力",
-          "subtype": "长对话",
-          "question": "",
-          "options": [
-            "A. The desire of Americans to try exotic cuisines.",
-            "B. The demand for information about food safety.",
-            "C. The fact that over half of Americans are overweight.",
-            "D. The fact that science books are difficult to read."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-12-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-12-S1-L-07",
-          "type": "听力",
-          "subtype": "长对话",
-          "question": "",
-          "options": [
-            "A. The general public.",
-            "B. Those who are overweight.",
-            "C. Those who want to lose weight.",
-            "D. The medical community."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-12-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-12-S1-L-08",
-          "type": "听力",
-          "subtype": "长对话",
-          "question": "",
-          "options": [
-            "A. Switch to a vegetarian diet.",
-            "B. Follow a personalized diet.",
-            "C. Adhere to doctors' advice.",
-            "D. Cut carbohydrate intake. Section B Directions：In this section, you will hear two passages. A t the end of each passage, you will hear three or four questions. Both the passage and the questions will be spoken only once. After you hear a question, you must choose the best answer from the four choices marked A ) , B ) , C ) and D ). Then mark the corresponding letter on Answer Sheet 1 with a single line through the centre."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-12-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-12-S1-L-09",
-          "type": "听力",
-          "subtype": "短文听力",
-          "question": "",
-          "options": [
-            "A. The rate of their growth increased dramatically.",
-            "B. The growth of their new brain cells doubled.",
-            "C. They began to show signs of depression.",
-            "D. They began to get irritated and restless."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-12-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-12-S1-L-10",
-          "type": "听力",
-          "subtype": "短文听力",
-          "question": "",
-          "options": [
-            "A. To avoid them in the future.",
-            "B. To warn others against them."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-12-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-12-S1-L-11",
-          "type": "听力",
-          "subtype": "短文听力",
-          "question": "",
-          "options": [
-            "A. Produce a surprising healing effect.",
-            "B. Weaken one's immunity in the long run. D) Provide protection against mental illnesses."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-12-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-12-S1-L-12",
-          "type": "听力",
-          "subtype": "短文听力",
-          "question": "",
-          "options": [
-            "A. Placing their own interests over their staffJs.",
-            "B. Being overwhelmed by their daily routines."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-12-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-12-S1-L-13",
-          "type": "听力",
-          "subtype": "短文听力",
-          "question": "",
-          "options": [
-            "A. Their leadership may be challenged.",
-            "B. Their companies may go bankrupt."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-12-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-12-S1-L-14",
-          "type": "听力",
-          "subtype": "短文听力",
-          "question": "",
-          "options": [
-            "A. Keep an eye on their employees.",
-            "B. Motivate and inspire their team."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-12-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-12-S1-L-15",
-          "type": "听力",
-          "subtype": "短文听力",
-          "question": "",
-          "options": [
-            "A. Cultivate self-control.",
-            "B. Filter their email boxes.",
-            "C. Respond only after work.",
-            "D. Check only when necessary. Section C Directions：In this section, you will hear three recordings o f lectures or talks followed by three or four questions. The recordings will be played only once. After you hear a question, you must choose the best answer from the four choices marked A ) , B ) , C) and D ). Then mark the corresponding letter on Answer Sheet 1 with a single line through the centre."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-12-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-12-S1-L-16",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. The key to increasing healthy food supply.",
-            "B. The best way to improve marketing research.",
-            "C. The impact of advertisements on consumption.",
-            "D. The importance of the appearance of food."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-12-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-12-S1-L-17",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. By focusing on the nutrients in different foods.",
-            "B. By emphasizing the diversity of food.",
-            "C. By stressing pleasing aesthetics of food.",
-            "D. By winning the support of marketing professors."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-12-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-12-S1-L-18",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. They can attract customers with the healthy qualities of their products.",
-            "B. They can boost sales of healthy foods by making them visually appealing.",
-            "C. They can turn to marketing professors for advice.",
-            "D. They can rely on advertising for sales promotion."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-12-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-12-S1-L-19",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. It has witnessed a spectacular surge in demand.",
-            "B. It has met much criticism from environmentalists.",
-            "C. It has seen more small businesses offering environment-friendly products.",
-            "D. It has experienced increasingly fierce competition among global companies."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-12-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-12-S1-L-20",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. Consumers now know much more about technology.",
-            "B. Their mass production has sharply reduced the price.",
-            "C. Consumers tend to favor all that is novel.",
-            "D. Their quality has been greatly improved."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-12-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-12-S1-L-21",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. Purchasing only this kind of products for home cleaning.",
-            "B. Writing positive comments about them on social media.",
-            "C. Demonstrating on TV how effective these products are.",
-            "D. Telling one another about their incomparable virtues."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-12-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-12-S1-L-22",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. Increasing cleaners5 workload.",
-            "B. Blocking the fountains, works.",
-            "C. Breaking a time-honored ritual.",
-            "D. Polluting the fountains5 water."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-12-S1",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-12-S1-L-23",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. Michael Wardian pushed forward into the penetrating arctic (北极的)wind, fighting the urge to speed up. Too much effort and he'd begin to sweat, which, he was told, would only increase the risk of hypothermia (体温过低).",
-            "B. At the 2014 North Pole Marathon, the temperature dipped to minus-22 degrees F, with a wind chill that made it feel even colder. Along the route, armed guards wandered the large sheets of floating ice to minimize the risk of polar bear attacks.",
-            "C. “I like to do stuff that scares m e,“ Wardian said. With ice frozen to his beard, Wardian crossed the finish line that April afternoon in a winning time of 4 hours 7 minutes and 40 seconds, almost two hours slower than his personal best over 26.2 miles. The race for Wardian, however, was less about the result than overcoming his aversion to the cold.",
-            "D. In a few days, Wardian will once again compete in an unfamiliar territory and below-freezing temperatures. He will line up Monday in Antarctica (南极 ) for the first leg of the World Marathon Challenge—joining 32 other adventure seekers on an unusual journey where participants travel through different time zones and climates to run seven marathons on seven continents in seven days. E) An elite ultra-runner, Wardian has his sights on breaking the event's record average marathon time of 3：32：25 set last January by U. S. Marine Corps captain Daniel Cartica. Wardian, a 42-year-old Arlington resident, is a record-breaking racer, known in the ultra-running community for seeking tough courses and setting world records. Last year, he ran 1,254. 65 miles in 47 races. The World Marathon Challenge, like most of Wardian's running goals, will be about pushing his limits. \"I love diverse and unique challenges,w he said. 'Tm definitely interested in seeing what I can handle and what my body can accept. That drives m e.” F) Something about the way Richard Donovan carried himself appealed to Wardian. Perhaps it was the sense of adventure Donovan displayed when they first met at the 2010 50K Championships in Galway, Ireland, where Donovan was the race director. The two hit it off, and soon Wardian was participating in Donovan's events. It was at the North Pole Marathon, a race that Donovan organizes, that Wardian first heard about the Irishman's plan for the World Marathon Challengea challenge that Donovan himself completed in 2009 and 2012. “I knew that many people had a goal of running seven marathons on seven continents during any time period,“ Donovan, 50, said. \"I felt the natural extension to this idea would be to try to achieve it within a seven-day period.w G) Wardian started saving for the trip in 2014, connecting with sponsors and getting approval from his wife, Jennifer, before committing. Registration for the event costs 36, 000 euros, which covers international charter flights to each of the seven marathon locations：Union Glacier (Antarctica), Punta Arenas, Chile ( South America), Miami (North America), Madrid (Europe), Marrakesh, Morocco (Africa), Dubai (Asia) and Sydney (Australia). The challenge is a test of both physical strength and mental fitness. Sleeping on a crammed plane, adjusting to different time zones and finding food to eat (Wardian is a vegetarian) would make it an exhausting trip over a month, let alone a week. \"The key to a race like this is getting comfortable being uncomfortable,w said Becca Pizzi, last year's women's champion. \"The highs of the race are incredibly high, and the lows incredibly low. ” H) Since turning it into an organized event in 2015, Donovan has attracted a variety of runners. This year's challenge will feature a far more elite field, which includes Ryan Hall, America's fastest marathon runner. Despite his proven track record, Hall said he has no time goals and that he still suffers from the same fatigue issues that forced him to leave the professional ranks in 2015. Hall plans to run with his friend, Pastor Matthew Barnett of The Dream Center in Los Angelesone of the six American men who will be competing. \"I don't expect to run a step with Mike, but I will be excited to see how he does,“ said the 34-year-old Hall, who began weight-lifting after retiring. \"If I finish within an hour of him in each marathon, I'd be surprised.w I) Instead, 43-year-old Petr Vabrousek, an elite Czech Ironman champion, is expected to be Wardian's closest challenger. To others on the trip, simply finishing will be its own reward. Sinead Kane of Ireland is aiming to become the first blind person to complete the challenge. And Beth Ann Telford, a 47-year-old federal government worker from Fairfax and the only American female in this year's mix, is using the event as a platform to raise money for cancer research. It's a cause with a personal connection to Telford, who was diagnosed with brain cancer in 2004. “Doing something Hke this is definitely the hardest challenge that I've ever done except for the chemotherapy and brain surgery,w she said. \"It's going to raise awareness... I just wanted to do something that is epic and this certainly is right up there.MWardian, too, hopes his involvement will give him a platform to promote a cause. He recently became an ambassador for the United Nations Women's HeForShe initiative to fight inequalities faced by women and girls worldwide. J) On a chilly December afternoon, Wardian wove through Washington's crowded sidewalks on the way home from his full-time job as an international ship broker. His elastic, 6-foot frame bounced gently and efficiently off the ground with each step of the hilly six-mile trip back to Arlington. This is a daily routine during the week for Wardian, who started racing professionally in 2003 and runs seven days a week, often multiple times a day. When he travels, he prefers to explore new places on his feet. K) But in some ways, Wardian still has trouble thinking of himself as a runner. For the majority of his childhood, Wardian devoted his energy to becoming a Division I lacrosse (长曲棍球)playera dream he realized when he was recruited to play at Michigan State University. <(Once he decides to do something, he just works at it until he does i t ,“ Michaefs younger sister, Mariele, said. \"Once he decides to do it, it's usually something that's going to happen. He's always been like that. He's a very motivated individual.w L) It was only a year or so ago that Wardian realized that he had been a runner longer than a lacrosse player. It was not until he ran in the 2004 U. S. Olympic Marathon Trials—the first of three for Wardianthat he felt that he was a legitimate runner. Now more than 10 years and numerous ultra­ marathon national titles and world records later, he embraces that identity. Wardian wants to see how far his legs can take him, one epic challenge at a time. \"I want to always keep doing things that are exciting, adventurous, different and most importantly, probably things Fm not the best a t ,“ Wardian said, u because if you5re not seeking things out that are challenging and difficult for you, then you're not growing... So I hope maybe people see what I do, and say, 'Okay, I want to do something different or try something new... Fm going to do something that scares m e.' That's what Fm hoping people will take from it .”"
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-12-S1",
-          "difficulty": "medium",
-          "tags": []
+          "id": "CET4-L8-Q4",
+          "ability": "细节定位",
+          "question": "According to the passage, what factor influences how people encounter different forms of the golden rule?",
+          "optionA": "Their level of education.",
+          "optionB": "The political system of their country.",
+          "optionC": "The religion prevalent in their society.",
+          "optionD": "Their personal life experiences.",
+          "answer": "C"
         }
       ]
     },
     {
-      "passage_id": 9,
-      "type": "听力",
-      "text": "",
+      "passage_id": "L9",
+      "type": "passage",
+      "text": "Questions 16 to 18 are based on the passage you have just heard. Homework is an important part of schooling , but the purposes of giving children homework will change as they grow older. At the primary level , the main aim is to cultivate good habits , like learning to plan and exercising self-discipline. During the secondary school years , extending what is learned at school is positively related to academic achievement , so the content of homework becomes more important. Creating an ideal working environment will make it easier for them to get down to their assignments quickly. Make sure it's free of distractions , and-for primary school children at least-somewhere near you, so you can answer questions and offer encouragement. You probably have to help younger children plan their session , but it's important that by the end of primary school it's second nature. Get them to tell you everything they have to do. Then encourage them to establish an order in which they do work. When there are several different assignments , make sure they begin with one they enjoy , so it seems easy to get started. It's best to take on the most difficult task second-once they're settled , but before they get tired.If older children have more than an hour of homework , encourage them to schedule a short break to stretch.If you encourage them to tell you what they've learned , they'll absorb the information more deeply and remember it more readily.",
       "questions": [
         {
-          "id": "2022-12-S2-L-01",
-          "type": "听力",
-          "subtype": "长对话",
-          "question": "",
-          "options": [
-            "A. Prioritizing happiness over money."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-12-S2",
-          "difficulty": "medium",
-          "tags": []
+          "id": "CET4-L9-Q1",
+          "ability": "细节定位",
+          "question": "According to the passage, what is the main purpose of homework for primary school children?",
+          "optionA": "To improve test scores immediately",
+          "optionB": "To cultivate good habits such as planning and self-discipline",
+          "optionC": "To prepare them for university entrance exams",
+          "optionD": "To reinforce complex subject knowledge independently",
+          "answer": "B"
         },
         {
-          "id": "2022-12-S2-L-02",
-          "type": "听力",
-          "subtype": "长对话",
-          "question": "",
-          "options": [
-            "A. She was in debt.",
-            "B. She was a financial adviser.",
-            "C. Managing one's personal finances wisely."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-12-S2",
-          "difficulty": "medium",
-          "tags": []
+          "id": "CET4-L9-Q2",
+          "ability": "细节定位",
+          "question": "What does the passage suggest about homework during secondary school years?",
+          "optionA": "It should be reduced to avoid student stress",
+          "optionB": "Its content becomes more important due to its positive link with academic achievement",
+          "optionC": "It should focus mainly on developing study habits",
+          "optionD": "It is less effective than classroom teaching",
+          "answer": "B"
         },
         {
-          "id": "2022-12-S2-L-03",
-          "type": "听力",
-          "subtype": "长对话",
-          "question": "",
-          "options": [
-            "A. It reflects one's earning power.",
-            "B. It varies with one's environment.",
-            "C. It mirrors one's sense of wellbeing.",
-            "D. It changes with one's goals in life."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-12-S2",
-          "difficulty": "medium",
-          "tags": []
+          "id": "CET4-L9-Q3",
+          "ability": "推理判断",
+          "question": "Why does the passage recommend placing the homework area near parents for primary school children?",
+          "optionA": "To monitor screen time strictly",
+          "optionB": "To ensure children complete homework faster",
+          "optionC": "To allow parents to answer questions and offer encouragement",
+          "optionD": "To prevent children from using electronic devices",
+          "answer": "C"
         },
         {
-          "id": "2022-12-S2-L-04",
-          "type": "听力",
-          "subtype": "长对话",
-          "question": "",
-          "options": [
-            "A. It would give him more time to be with his loved ones.",
-            "B. It would be good for those who value relationships.",
-            "C. It would mean major sacrifices for him.",
-            "D. It would deprive him of his individuality."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-12-S2",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-12-S2-L-05",
-          "type": "听力",
-          "subtype": "长对话",
-          "question": "",
-          "options": [
-            "A. It was the artist's first landscape.",
-            "B. It was a painting by Christopher."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-12-S2",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-12-S2-L-06",
-          "type": "听力",
-          "subtype": "长对话",
-          "question": "",
-          "options": [
-            "A. It was the painting that instantly made her rich. B) It has cost him a lot of money to purchase it."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-12-S2",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-12-S2-L-07",
-          "type": "听力",
-          "subtype": "长对话",
-          "question": "",
-          "options": [
-            "A. It reflects her emotions.",
-            "B. It contains ample details."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-12-S2",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-12-S2-L-08",
-          "type": "听力",
-          "subtype": "长对话",
-          "question": "",
-          "options": [
-            "A. She is eccentric like any other artist.",
-            "B. She is a very nice and intelligent artist.",
-            "C. She is as lucky as any acclaimed artist.",
-            "D. She is one of the most productive artists. Section B Directions：In this section, you will hear two passages. At the end of each passage, you will hear three or four questions. Both the passage and the questions will be spoken only once. After you hear a question, you must choose the best answer from the four choices markedA ), B ), C) and D ). Then mark the corresponding letter on Answer Sheet 1 with a single line through the centre."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-12-S2",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-12-S2-L-09",
-          "type": "听力",
-          "subtype": "短文听力",
-          "question": "",
-          "options": [
-            "A. It is vital to one's mental health.",
-            "B. It leads to reconciliation and peace.",
-            "C. To have its systems modernised.",
-            "D. To avoid further financial losses."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-12-S2",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-12-S2-L-10",
-          "type": "听力",
-          "subtype": "短文听力",
-          "question": "",
-          "options": [
-            "A. When the offender has power over the victim.",
-            "B. When the offender is not willing to apologize."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-12-S2",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-12-S2-L-11",
-          "type": "听力",
-          "subtype": "短文听力",
-          "question": "",
-          "options": [
-            "A. Talk with the offender calmly.",
-            "B. Accept the offender's apology."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-12-S2",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-12-S2-L-12",
-          "type": "听力",
-          "subtype": "短文听力",
-          "question": "",
-          "options": [
-            "A. The number of passengers dropped sharply.",
-            "B. It served more and more commuters."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-12-S2",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-12-S2-L-13",
-          "type": "听力",
-          "subtype": "短文听力",
-          "question": "",
-          "options": [
-            "A. To increase capacity to meet growing needs.",
-            "B. To make way for other means of transport."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-12-S2",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-12-S2-L-14",
-          "type": "听力",
-          "subtype": "短文听力",
-          "question": "",
-          "options": [
-            "A. It is generally recognised as a world heritage site.",
-            "B. It is the fastest way to reach the city's south side.",
-            "C. It constitutes a source of revenue for the city.",
-            "D. It helps reduce traffic jams in the city centre."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-12-S2",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-12-S2-L-15",
-          "type": "听力",
-          "subtype": "短文听力",
-          "question": "",
-          "options": [
-            "A. They are usually crowded.",
-            "B. They use high-tech systems.",
-            "C. They accept smartcards only.",
-            "D. They are colourfully decorated. Section C Directions：In this section, you will hear three recordings of lectures or talks followed by three or four questions. The recordings will be played only once. After you hear a question, you must choose the best answer from the four choices marked A ) , B ) , C) and D ). Then mark the corresponding letter on Answer Sheet 1 with a single line through the centre."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-12-S2",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-12-S2-L-16",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. They are quite friendly to humans.",
-            "B. They are shrinking in numbers."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-12-S2",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-12-S2-L-17",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. It is strictly forbidden.",
-            "B. It is an uncommon sight."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-12-S2",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-12-S2-L-18",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. Share their food with the bear they see.",
-            "B. Be prepared to run into a hungry bear.",
-            "C. It is a gesture of human generosity.",
-            "D. It is allowed only in certain areas."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-12-S2",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-12-S2-L-19",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. It refers to opinions that are radical and widespread.",
-            "B. It means making judgments without adequate knowledge.",
-            "C. It refers to deep-rooted beliefs about someone or something.",
-            "D. It means sticking to one's judgments even when proved wrong."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-12-S2",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-12-S2-L-20",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. They often lead to war between religious groups.",
-            "B. They keep certain occupations from thriving.",
-            "C. They allow myths and half-truths to persist.",
-            "D. They prevent us from getting to the truth."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-12-S2",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-12-S2-L-21",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. When we start to feel superior.",
-            "B. When we mix with prejudiced people.",
-            "C. When we live in an isolated neighborhood.",
-            "D. When we try to keep up with those around us."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-12-S2",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-12-S2-L-22",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. Motivated.",
-            "B. Disappointed.",
-            "C. Perplexed.",
-            "D. Shocked."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-12-S2",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-12-S2-L-23",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. They would change with the passage of time.",
-            "B. He suffered poor health.",
-            "C. He had lots of stories to tell.",
-            "D. He regretted leaving Vietnam."
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-12-S2",
-          "difficulty": "medium",
-          "tags": []
-        },
-        {
-          "id": "2022-12-S2-L-25",
-          "type": "听力",
-          "subtype": "讲座",
-          "question": "",
-          "options": [
-            "A. What do we lose when natural spaces and species disappear? Increasingly, research has shown that as species and ecosystems vanish, it also chips away at our ability to preserve what remainsbecause we no longer understand what we're losing.",
-            "B. You probably see it all the time. The neighbor who puts pesticides on his lawn rather than deal with annoying bees. The politician who votes against wildlife protection because she's never seen a wolf in the wild. The corporation that wants to bulldoze (用推土机推平)the habitat of a rare frog.",
-            "C. At best this can be termed “the extinction of experience,Mwhere our cultural and natural histories fade from our memories and therefore our reality. At its worst it becomes something even more concerning： “biophobia,“ the fear of living things and a complete aversion to nature.",
-            "D. This isn't the fiction of living in a cold, empty dystopia (绝望的世界).Sadly, it's becoming a way of life for too many people—especially children. A recent study in Japan paints a striking portrait of this problem. A survey of more than 5, 300 school children in the Tochigi Prefecture examined their perception of 14 local insect species and one spider. The results? A collective \"ew!\" Most of the students saw the species as things to dislike or fear, or even as sources of danger. The less experience the students had with nature, the more negative their feelings. E) The results were published earlier this year in the journal Biological Conservation. Lead researcher Masashi Soga with the University of Tokyo says the study stemmed from observations about today's nature-deficient children. \"Humans inherently avoid dangerous organisms such as bees, but children these days avoid even harmless insects such as butterflies and dragonflies (蜻蜓)，“he says. \"I have long wondered why so many of today's children react like this.” F) Although the children's reactions were somewhat expected, the new study did contain an unexpected finding：Many of the surveyed children revealed that their parents also expressed fear or disgust of the same animals. In fact these parental emotions were strong enough to overwhelm any positive experiences the children might have gained from direct experiences in nature. As Soga and his coauthors wrote in their paper, “Our results suggest that there is likely a feedback loop in which an increase in people who have negative attitudes towards nature in one generation will lead to a further increase in people with similar attitudes in the next generation.v G) And that's possibly the greater threat posed by extinction of experience. Soga suggests the generational lossa condition previously dubbed environmental generational amnesia (遗忘)could chip away at our societal ability to preserve what we're losing. \"I believe that increased biophobia is a major, but invisible, threat to global biodiversity,v Soga says. \"As the number of children who have biophobia increases, public interest and support for biodiversity conservation will gradually decline. Although many conservation biologists still consider that preventing the loss of wildlife habitat is the most important way to conserve biodiversity, I think preventing increased biophobia is also important for conservation.w H) What's to be done about this? The paper makes several recommendations, the most obvious of which is that children should experience nature more often. The authors also suggest establishing policies to guide these natural experiences and increasing educational programs about the natural world. I) Helping parents to see species around them in a new light would make a difference, too. And, of course, maintaining support for preserving the wild spaces where these “ scary“ creatures live is the most important thing of all. That's a point reinforced by another recent study, which found that wild spaces located within urban areas—and the plants and animals that thrive in them—are particularly important for human health and well-being. J) Published in the journal Frontiers in Sustainable Cities, the study examined attitudes toward Discovery Park, the heavily forested 534-acre public park in Seattle, Washington. It found that the public had the most appreciation forand gained the most value fromthe wildest parts of the park. \"I have seen whales, seals, fish, eagles, shorebirds and many other sea creatures in their natural habitat,“ one survey participant wrote. \"Coming here with people has allowed me to connect and talk with them about conversation that simply does not happen in everyday life,“ wrote another. K) The participants reported that their most valuable experiences in the park included encountering wildlife, walking through open spaces, exploring the beach and finding beautiful views. \"We saw that a large majority of participants5 interactions, especially their most meaningful interactions, depended on Discovery Park's relative wildness,w says lead author Elizabeth Lev, a master's student in the university of Washington's Human Interaction with Nature Lab. This is only possible because the park is relatively wild. After all, you can't enjoy watching birds if there are no birds to follow? gaze at the sunset if it's obscured by skyscrapers；or stop and smell the flowers if they don't have room to grow. L) And yet even this long-protected space could someday become less hospitable to nature. Over the past few years a lot of people and organizations have suggested developing parts of Discovery Park or the neighboring area. Most recently a plan proposed building 34 acres of much-needed affordable housing and parking spaces adjacent to the park, bringing with them noise, traffic and pollution. M) If anything like that happened, both the park and the people of Seattle could lose something vital. And that would continue the trend of chipping away at Seattle's—and the world's—natural spaces, leaving just tiny pocket parks and green-but-empty spaces that offer little real value to wildlife, plants or people. N) “It is true that any interaction with nature is better than none, but I don't want people to be satisfied with any small bit of grass and trees,“ Lev says. \"We have been in this cycle of environmental generational amnesia for a long time, where the baseline keeps shifting and we don't even realize what we're losing until it's gone. If we can get people to understand how much meaning and value can come from having more experiences with more wild forms of nature, then maybe we can stop this cycle and move toward conserving and restoring what we have left.w O) Building this understanding in an ever-more fearful and disconnected world may be the biggest challenge. Peter Kahn, the senior author of Lev's paper and the director of the Human Interaction with Nature Lab, made several suggestions for bridging this gap in this 2011 book, Technological Nature. They echo the recommendation about getting children into nature, but also include telling stories of how things used to be, imagining what things might be like in the future, and developing a common language about nature, “a way of speaking about wild and domestic interaction patterns, and the meaningful, deep and often joyful feelings that they generate.w P) No matter what techniques we use, this growing field of research illustrates that saving nature requires encouraging people to experience it more often and more deeply. That calls for additional research一 Lev and her coauthors have published a toolkit that other municipalities can follow to study the value of their own wild spaces—and clear communication of the results. \"If we can continue to show people the benefits of these wild spaces,“ Lev says, “maybe people will begin to see more value in keeping these areas undevelopedfor the sake of our mutual benefit.”"
-          ],
-          "answer": "",
-          "explanation": "",
-          "text": "",
-          "source": "2022-12-S2",
-          "difficulty": "medium",
-          "tags": []
+          "id": "CET4-L9-Q4",
+          "ability": "主旨归纳",
+          "question": "What is the overall message of the passage?",
+          "optionA": "Homework should be abolished for young children to reduce pressure",
+          "optionB": "Parents must grade their children’s homework to ensure quality",
+          "optionC": "The role and design of homework should evolve with students’ developmental stages",
+          "optionD": "Schools should assign more homework in secondary school to boost grades",
+          "answer": "C"
         }
       ]
     }
