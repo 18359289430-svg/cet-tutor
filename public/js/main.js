@@ -9383,9 +9383,27 @@ function startListeningTest() {
             return;
         }
         
-        // 随机选取2-3个passage
+        // 优先选短passage(对话/短文)，总题数不超过8
         passages.sort(function() { return Math.random() - 0.5; });
-        var selected = passages.slice(0, Math.min(3, passages.length));
+        var selected = [];
+        var totalQ = 0;
+        // 先选短题passage
+        var shortPassages = passages.filter(function(p) { return (p.questions || []).length <= 5; });
+        var longPassages = passages.filter(function(p) { return (p.questions || []).length > 5; });
+        shortPassages.forEach(function(p) {
+            if (totalQ + p.questions.length <= 8) {
+                selected.push(p);
+                totalQ += p.questions.length;
+            }
+        });
+        // 如果短题不够，从长题里截取前3题
+        if (totalQ < 5 && longPassages.length > 0) {
+            var lp = longPassages[0];
+            var truncated = Object.assign({}, lp);
+            truncated.questions = lp.questions.slice(0, 8 - totalQ);
+            selected.push(truncated);
+            totalQ += truncated.questions.length;
+        }
         
         // 确保题目格式一致（选项用optionA/B/C/D）
         selected.forEach(function(p) {
