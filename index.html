@@ -31,25 +31,25 @@
     <meta name="twitter:image" content="https://cet-tutor.com/og-image.jpg">
     <link rel="preload" href="/wechat-qr.jpg" as="image">
     <!-- CSS -->
-    <link rel="stylesheet" href="/css/variables.css?v=145">
-    <link rel="stylesheet" href="/css/base.css?v=145">
-    <link rel="stylesheet" href="/css/home2.css?v=145">
-    <link rel="stylesheet" href="/css/study.css?v=145">
-    <link rel="stylesheet" href="/css/chat.css?v=145">
-    <link rel="stylesheet" href="/css/personality.css?v=145">
-    <link rel="stylesheet" href="/css/components.css?v=145">
-    <link rel="stylesheet" href="/css/quiz.css?v=145">
-    <link rel="stylesheet" href="/css/payment.css?v=145">
-    <link rel="stylesheet" href="/css/profile.css?v=145">
-    <link rel="stylesheet" href="/css/dashboard.css?v=145">
-    <link rel="stylesheet" href="/css/diagnosis.css?v=145">
-    <link rel="stylesheet" href="/css/essay.css?v=145">
-    <link rel="stylesheet" href="/css/review.css?v=145">
-    <link rel="stylesheet" href="/css/plan.css?v=145">
-    <link rel="stylesheet" href="/css/plan-page.css?v=145">
-    <link rel="stylesheet" href="/css/wrongbook.css?v=145">
-    <link rel="stylesheet" href="/css/learning-path.css?v=145">
-    <link rel="stylesheet" href="/css/vocab.css?v=145">
+    <link rel="stylesheet" href="/css/variables.css?v=146">
+    <link rel="stylesheet" href="/css/base.css?v=146">
+    <link rel="stylesheet" href="/css/home2.css?v=146">
+    <link rel="stylesheet" href="/css/study.css?v=146">
+    <link rel="stylesheet" href="/css/chat.css?v=146">
+    <link rel="stylesheet" href="/css/personality.css?v=146">
+    <link rel="stylesheet" href="/css/components.css?v=146">
+    <link rel="stylesheet" href="/css/quiz.css?v=146">
+    <link rel="stylesheet" href="/css/payment.css?v=146">
+    <link rel="stylesheet" href="/css/profile.css?v=146">
+    <link rel="stylesheet" href="/css/dashboard.css?v=146">
+    <link rel="stylesheet" href="/css/diagnosis.css?v=146">
+    <link rel="stylesheet" href="/css/essay.css?v=146">
+    <link rel="stylesheet" href="/css/review.css?v=146">
+    <link rel="stylesheet" href="/css/plan.css?v=146">
+    <link rel="stylesheet" href="/css/plan-page.css?v=146">
+    <link rel="stylesheet" href="/css/wrongbook.css?v=146">
+    <link rel="stylesheet" href="/css/learning-path.css?v=146">
+    <link rel="stylesheet" href="/css/vocab.css?v=146">
     <!-- Clarity -->
     <script type="text/javascript">
         (function(c,l,a,r,i,t,y){ c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
@@ -59,7 +59,7 @@
     <!-- Umami -->
     <script async src="https://us.umami.is/script.js" data-website-id="5a41f1b0-59b5-41a7-bafa-5bd7432c4dd3"></script>
 <style>.reform-badge{display:inline-block;font-size:9px;background:#6C5CE7;color:#fff;padding:1px 5px;border-radius:6px;vertical-align:middle;margin-left:4px;font-weight:500;letter-spacing:0.3px;}</style>
-    <link rel="stylesheet" href="/css/comic.css?v=145">
+    <link rel="stylesheet" href="/css/comic.css?v=146">
 </head>
 <body>
     <div class="app">
@@ -392,26 +392,34 @@
                 <div class="practice-page">
                     <div class="practice-section-title">专项训练</div>
                     <div class="practice-sub" id="practice-sub">选择科目开始训练</div>
-                    <div class="practice-card-list" style="display:flex;flex-direction:column;gap:14px;margin-bottom:20px;">
-                        <div onclick="startPractice('listening')" style="background:#1E1B3A;color:#fff;border-radius:16px;padding:22px 20px;display:flex;align-items:center;gap:16px;box-shadow:0 2px 8px rgba(30,27,58,0.15);cursor:pointer;">
-                            <div style="width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.15);flex-shrink:0;"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg></div>
-                            <div style="flex:1;min-width:0;"><div style="font-size:16px;font-weight:700;">听力训练</div><div id="practice-stage-listening" style="font-size:12px;margin-top:3px;color:rgba(255,255,255,0.5);">先做诊断</div></div>
-                            <div id="practice-score-listening" style="font-size:32px;font-weight:800;letter-spacing:-1px;flex-shrink:0;">—</div>
+                    <div class="dashboard-overview">
+                        <div class="dashboard-overview-card large streak-card" onclick="startPractice('listening')">
+                            <div class="overview-icon" style="background:rgba(255,255,255,0.2)">
+                                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
+                            </div>
+                            <div class="overview-num" id="practice-score-listening">—</div>
+                            <div class="overview-label">听力训练</div>
                         </div>
-                        <div onclick="startPractice('reading')" style="background:#1E1B3A;color:#fff;border-radius:16px;padding:22px 20px;display:flex;align-items:center;gap:16px;box-shadow:0 2px 8px rgba(30,27,58,0.15);cursor:pointer;">
-                            <div style="width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.15);flex-shrink:0;"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
-                            <div style="flex:1;min-width:0;"><div style="font-size:16px;font-weight:700;">阅读训练</div><div id="practice-stage-reading" style="font-size:12px;margin-top:3px;color:rgba(255,255,255,0.5);">先做诊断</div></div>
-                            <div id="practice-score-reading" style="font-size:32px;font-weight:800;letter-spacing:-1px;flex-shrink:0;">—</div>
+                        <div class="dashboard-overview-card large score-card" onclick="startPractice('reading')">
+                            <div class="overview-icon" style="background:rgba(255,255,255,0.2)">
+                                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                            </div>
+                            <div class="overview-num" id="practice-score-reading">—</div>
+                            <div class="overview-label">阅读训练</div>
                         </div>
-                        <div onclick="startPractice('writing')" style="background:#fff;border:1px solid #f1f5f9;border-radius:16px;padding:22px 20px;display:flex;align-items:center;gap:16px;box-shadow:0 1px 3px rgba(0,0,0,0.04);cursor:pointer;">
-                            <div style="width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:rgba(253,121,168,0.1);color:#FD79A8;flex-shrink:0;"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></div>
-                            <div style="flex:1;min-width:0;"><div style="font-size:16px;font-weight:700;color:#1a1a2e;">写作批改</div><div id="practice-stage-writing" style="font-size:12px;margin-top:3px;color:#94A3B8;">先做诊断</div></div>
-                            <div id="practice-score-writing" style="font-size:28px;font-weight:800;letter-spacing:-0.5px;color:#1a1a2e;flex-shrink:0;">—</div>
+                        <div class="dashboard-overview-card small practice" onclick="startPractice('writing')">
+                            <div class="overview-icon" style="background:rgba(253,121,168,0.1);color:#FD79A8;">
+                                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+                            </div>
+                            <div class="overview-num" id="practice-score-writing">—</div>
+                            <div class="overview-label">写作批改</div>
                         </div>
-                        <div onclick="startPractice('translation')" style="background:#fff;border:1px solid #f1f5f9;border-radius:16px;padding:22px 20px;display:flex;align-items:center;gap:16px;box-shadow:0 1px 3px rgba(0,0,0,0.04);cursor:pointer;">
-                            <div style="width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:rgba(253,203,110,0.1);color:#E17055;flex-shrink:0;"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
-                            <div style="flex:1;min-width:0;"><div style="font-size:16px;font-weight:700;color:#1a1a2e;">翻译训练</div><div id="practice-stage-translation" style="font-size:12px;margin-top:3px;color:#94A3B8;">先做诊断</div></div>
-                            <div id="practice-score-translation" style="font-size:28px;font-weight:800;letter-spacing:-0.5px;color:#1a1a2e;flex-shrink:0;">—</div>
+                        <div class="dashboard-overview-card small accuracy" onclick="startPractice('translation')">
+                            <div class="overview-icon" style="background:rgba(253,203,110,0.1);color:#E17055;">
+                                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                            </div>
+                            <div class="overview-num" id="practice-score-translation">—</div>
+                            <div class="overview-label">翻译训练</div>
                         </div>
                     </div>
                     
@@ -990,8 +998,8 @@
     </div>
 
     <!-- JS -->
-    <script src="/js/main.js?v=145"></script>
-    <script src="/js/essay.js?v=145"></script>
+    <script src="/js/main.js?v=146"></script>
+    <script src="/js/essay.js?v=146"></script>
 
 <!-- Onboarding: Exam Type Selection -->
 <div id="onboarding-overlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,rgba(99,102,241,0.95),rgba(139,92,246,0.95));z-index:99999;align-items:center;justify-content:center;">
