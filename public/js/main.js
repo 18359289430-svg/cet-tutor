@@ -16106,30 +16106,74 @@ var _origHandleChatBack = typeof handleChatBack === 'function' ? handleChatBack 
 function updatePracticeCards() {
     var diagHist = JSON.parse(localStorage.getItem(examKey('diagnosis_history')) || '[]');
     var skills = ['listening', 'reading', 'writing', 'translation'];
-    var skillNames = { listening: '听力', reading: '阅读', writing: '写作', translation: '翻译' };
-    
-    skills.forEach(function(sk) {
-        var stageEl = document.getElementById('practice-stage-' + sk);
-        var scoreEl = document.getElementById('practice-score-' + sk);
-        if (!stageEl || !scoreEl) return;
-        
-        if (diagHist.length === 0) {
-            stageEl.textContent = '先做诊断';
-            scoreEl.textContent = '—';
-            scoreEl.style.color = '#94A3B8';
-            return;
+    var skillNames = { listening: '听力训练', reading: '阅读训练', writing: '写作批改', translation: '翻译训练' };
+    var skillIcons = {
+        listening: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>',
+        reading: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>',
+        writing: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>',
+        translation: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>'
+    };
+    var iconBgs = {
+        listening: 'rgba(255,255,255,0.2)',
+        reading: 'rgba(255,255,255,0.2)',
+        writing: 'rgba(253,121,168,0.1)',
+        translation: 'rgba(253,203,110,0.1)'
+    };
+    var iconColors = {
+        writing: 'color:#FD79A8;',
+        translation: 'color:#E17055;'
+    };
+    var smallColors = { writing: '#FD79A8', translation: '#E17055' };
+
+    var container = document.getElementById('practice-cards-container');
+    if (!container) return;
+
+    // Build HTML exactly like dashboard-overview cards
+    var html = '<div class="dashboard-overview">';
+
+    skills.forEach(function(sk, idx) {
+        var isDark = idx < 2;
+        var score = '—';
+        var stage = '先做诊断';
+
+        if (diagHist.length > 0) {
+            var scores = diagHist[diagHist.length - 1].scores || {};
+            score = scores[sk] !== undefined ? scores[sk] : '—';
+            var stage2 = getCurrentStage(sk);
+            var stageInfo = TRAINING_STAGES[sk] ? TRAINING_STAGES[sk][stage2 - 1] : null;
+            stage = stageInfo ? stageInfo.name : '基础训练';
         }
-        
-        var scores = diagHist[diagHist.length - 1].scores || {};
-        var score = scores[sk];
-        var stage = getCurrentStage(sk);
-        var stageInfo = TRAINING_STAGES[sk] ? TRAINING_STAGES[sk][stage - 1] : null;
-        
-        stageEl.textContent = stageInfo ? stageInfo.name + '·' + stageInfo.desc : '基础训练';
-        scoreEl.textContent = score !== undefined ? score : '—';
-        scoreEl.style.color = score >= 80 ? '#6C5CE7' : score >= 60 ? '#00B894' : score >= 35 ? '#FDCB6E' : '#E17055';
+
+        if (isDark) {
+            html += '<div class="dashboard-overview-card large ' + (idx === 0 ? 'streak-card' : 'score-card') + '" onclick="startPractice(\'' + sk + '\')">';
+            html += '<div class="overview-icon" style="background:rgba(255,255,255,0.2)">' + skillIcons[sk] + '</div>';
+            html += '<div class="overview-num" id="practice-score-' + sk + '">' + score + '</div>';
+            html += '<div class="overview-label">' + skillNames[sk] + '</div>';
+            if (diagHist.length > 0) {
+                html += '<div class="overview-label" style="opacity:0.6;font-size:11px;margin-top:2px;">' + stage + '</div>';
+            } else {
+                html += '<div class="overview-label" style="opacity:0.6;font-size:11px;margin-top:2px;"><span class="overview-label-hint">完成诊断后解锁</span></div>';
+            }
+        } else {
+            var colorKey = sk;
+            var afterClass = idx === 2 ? 'practice' : 'accuracy';
+            html += '<div class="dashboard-overview-card small ' + afterClass + '" onclick="startPractice(\'' + sk + '\')">';
+            html += '<div class="overview-icon" style="background:' + iconBgs[sk] + (iconColors[sk] || '') + '">' + skillIcons[sk] + '</div>';
+            html += '<div class="overview-num" id="practice-score-' + sk + '">' + score + '</div>';
+            html += '<div class="overview-label">' + skillNames[sk] + '</div>';
+            if (diagHist.length > 0) {
+                html += '<div class="overview-label" style="font-size:11px;margin-top:2px;color:#94A3B8;">' + stage + '</div>';
+            } else {
+                html += '<div class="overview-label" style="font-size:11px;margin-top:2px;color:#94A3B8;">先做诊断</div>';
+            }
+        }
+        html += '</div>';
     });
-    
+
+    html += '</div>';
+    container.innerHTML = html;
+
+    // Update sub text
     var subEl = document.getElementById('practice-sub');
     if (subEl) {
         if (diagHist.length === 0) {
@@ -16141,8 +16185,6 @@ function updatePracticeCards() {
             subEl.textContent = '今天已练' + todayCount + '次，继续加油';
         }
     }
-    
-
 }
 
 
