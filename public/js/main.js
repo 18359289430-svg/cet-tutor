@@ -10524,10 +10524,10 @@ function openReportPayModal() {
 
 // ===== 技能等级评估系统 =====
 function getSkillLevel(score) {
-    if (score >= 80) return { level: 4, name: '稳过', color: '#6C5CE7', icon: '🏆', desc: '该技能稳过，冲高分' };
-    if (score >= 60) return { level: 3, name: '有望', color: '#00B894', icon: '✅', desc: '有望过线，需巩固细节' };
-    if (score >= 35) return { level: 2, name: '悬', color: '#FDCB6E', icon: '⚠️', desc: '过线悬，需专项突破' };
-    return { level: 1, name: '危险', color: '#E17055', icon: '🔴', desc: '裸考危险，需从基础抓起' };
+    if (score >= 80) return { level: 4, name: '冲刺', color: '#6C5CE7', icon: '🏆', desc: '该技能表现较好，可冲刺高分' };
+    if (score >= 60) return { level: 3, name: '良好', color: '#00B894', icon: '✅', desc: '该技能良好，注意细节' };
+    if (score >= 35) return { level: 2, name: '待提升', color: '#FDCB6E', icon: '⚠️', desc: '该技能待提升，需专项练习' };
+    return { level: 1, name: '薄弱', color: '#E17055', icon: '🔴', desc: '该技能薄弱，建议从基础开始' };
 }
 
 function getSkillLevels(dims) {
@@ -10573,10 +10573,10 @@ function estimateExamScores(skillLevels) {
 
 function getNextAction(skillKey, skillInfo) {
     var actions = {
-        listening: { 1: '抓基础分：短对话关键词', 2: '提分关键：长对话推理', 3: '真题实战限时练', 4: '冲高分：全真模拟25min' },
-        reading: { 1: '保底分：细节定位题', 2: '提分关键：推理+同义替换', 3: '真题实战限时练', 4: '冲高分：3篇连做' },
-        writing: { 1: '保底分：翻译句子练句型', 2: '提分关键：段落写作', 3: '真题实战：完整作文', 4: '冲高分：30min限时' },
-        translation: { 1: '保底分：核心词翻译', 2: '提分关键：句式转换', 3: '真题实战：段落翻译', 4: '冲高分：5min限时' }
+        listening: { 1: '练基础：短对话关键词', 2: '练进阶：长对话推理', 3: '真题实战限时练', 4: '全真模拟25min' },
+        reading: { 1: '练基础：细节定位题', 2: '练进阶：推理+同义替换', 3: '真题实战限时练', 4: '全真模拟3篇连做' },
+        writing: { 1: '练基础：翻译句子练句型', 2: '练进阶：段落写作', 3: '真题实战：完整作文', 4: '全真模拟30min' },
+        translation: { 1: '练基础：核心词翻译', 2: '练进阶：句式转换', 3: '真题实战：段落翻译', 4: '全真模拟5min' }
     };
     var level = skillInfo.level.level;
     var actionMap = actions[skillKey] || {};
