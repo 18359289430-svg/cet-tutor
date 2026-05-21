@@ -9794,7 +9794,7 @@ function startWritingTest() {
                 '<div class="diag-prompt-title">' + escapeHtml(prompt.title) + '</div>' +
                 '<div class="diag-prompt-desc">' + escapeHtml(prompt.description) + '</div>' +
             '</div>' +
-            '<textarea class="diag-writing-textarea" id="writing-input" placeholder="请在这里输入你的作文..." oninput="updateWritingCount()"></textarea>' +
+            '<div style="position:relative;"><textarea class="diag-writing-textarea" id="writing-input" placeholder="请在这里输入你的作文..." oninput="updateWritingCount()"></textarea><label for="diag-writing-camera" style="position:absolute;bottom:12px;right:12px;cursor:pointer;opacity:0.5;font-size:20px;" title="拍照上传手写作文">📷</label><input type="file" id="diag-writing-camera" accept="image/*" style="display:none" onchange="handleDiagWritingPhoto(this)" /></div>' +
             '<div class="diag-word-count" id="writing-count">已写 0 字（至少30字）</div>' +
             '<div class="diag-writing-actions">' +
                 '<button class="diag-writing-submit" id="writing-submit-btn" onclick="submitWritingTest()" disabled>提交评分</button>' +
@@ -9803,6 +9803,38 @@ function startWritingTest() {
         '</div>';
     
     document.getElementById('diag-body').innerHTML = html;
+}
+
+// 诊断模式写作页拍照上传
+function handleDiagWritingPhoto(input) {
+    var file = input.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        var base64 = e.target.result;
+        var pureBase64 = base64.split(',')[1];
+        showToast('\U0001f4f7 正在识别手写作文...');
+        fetch('/api/essay/upload', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ image_base64: pureBase64, essay_type: isCET6User() ? 'cet6' : 'cet4' })
+        }).then(function(r) { return r.json(); }).then(function(resp) {
+            if (resp.success && resp.recognized_text) {
+                var textarea = document.getElementById('writing-input');
+                if (textarea) {
+                    textarea.value = resp.recognized_text;
+                    updateWritingCount();
+                    showToast('\u2705 识别成功，已填入文本框');
+                }
+            } else {
+                showToast('\U0001f4f7 ' + (resp.error || '识别失败，请手动输入'));
+            }
+        }).catch(function(err) {
+            showToast('\U0001f4f7 上传失败，请手动输入');
+        });
+    };
+    reader.readAsDataURL(file);
+    input.value = '';
 }
 
 // 更新写作字数统计
@@ -9980,7 +10012,7 @@ function startTranslationTest() {
             '<div class="diag-translation-source">' +
                 '<div class="diag-source-text">' + escapeHtml(prompt.chinese) + '</div>' +
             '</div>' +
-            '<textarea class="diag-translation-textarea" id="translation-input" placeholder="请在这里输入你的英文翻译..." oninput="updateTranslationCount()"></textarea>' +
+            '<div style="position:relative;"><textarea class="diag-translation-textarea" id="translation-input" placeholder="请在这里输入你的英文翻译..." oninput="updateTranslationCount()"></textarea><label for="diag-trans-camera" style="position:absolute;bottom:12px;right:12px;cursor:pointer;opacity:0.5;font-size:20px;" title="拍照上传翻译">📷</label><input type="file" id="diag-trans-camera" accept="image/*" style="display:none" onchange="handleDiagTransPhoto(this)" /></div>' +
             '<div class="diag-char-count" id="translation-count">已写 0 字（至少10字）</div>' +
             '<div class="diag-translation-actions">' +
                 '<button class="diag-translation-submit" id="translation-submit-btn" onclick="submitTranslationTest()" disabled>提交评分</button>' +
@@ -10617,7 +10649,7 @@ var TRAINING_STAGES = {
     reading: [
         { stage: 1, name: '定位速度', desc: '关键词回文找位置', icon: '🎯', time: 10, prompt: '训练方法：给一篇短文+题目，让用户说出关键词在原文第几段第几句。重点练快速定位，不需要理解全文。出3道定位题。' },
         { stage: 2, name: '同义替换', desc: '选项是原文的改写', icon: '🔄', time: 10, prompt: '训练方法：给短文+题目，正确选项是原文的同义改写。让用户判断哪些选项是原文的等价表达。出3道同义替换识别题。' },
-        { stage: 3, name: '推理判断', desc: '转折词后藏答案，段首段尾是关键(新规占50%)', icon: '💡', time: 15, prompt: '训练方法：2026新规重点！出推理判断题，答案藏在but/however之后或段首段尾。引导用户找推理链：原文信息→逻辑推导→正确选项。出3道推理题，逐步讲解推理思路。' },
+        { stage: 3, name: '推理判断', desc: '转折词后藏答案，段首段尾是关键(新规占50%)', icon: '💡', time: 15, prompt: '训练方法：2026新规重点！推理判断现在占阅读50%(以前30%)。出推理判断题，答案藏在but/however/although/despite之后或段首段尾。引导用户找推理链：原文信息→逻辑推导→正确选项。出3道推理题，逐步讲解推理思路。每道题讲完告诉用户'这种题在新规中占比最大'。' },
         { stage: 4, name: '长篇匹配', desc: '12段文章快速定位匹配', icon: '📋', time: 15, prompt: '训练方法：给较长文章(8-10段)+5道匹配题，训练用特殊词(大写/数字/专有名词)快速定位。不按顺序做，先做有特征的。限时8分钟。' },
         { stage: 5, name: '全真模拟', desc: '3篇连做40分钟', icon: '🏆', time: 40, prompt: '训练方法：模拟考试完整流程，选词填空+长篇匹配+仔细阅读，限时40分钟。训练考试节奏。' }
     ],
@@ -10625,12 +10657,12 @@ var TRAINING_STAGES = {
         { stage: 1, name: '语法清零', desc: '修复低级语法错误', icon: '🔧', time: 10, prompt: '训练方法：给5个含典型语法错误的句子(如he don\'t/I am agree/three childs)，让用户找出并改正。确保基础语法不出错。' },
         { stage: 2, name: '逻辑框架', desc: '三段式结构不是模板', icon: '📐', time: 10, prompt: '训练方法：给一个话题，让用户列出三段式提纲(引入→论述→总结)。评价逻辑链是否完整，不评价语言。注意：教结构不教套句，2026新规反模板。' },
         { stage: 3, name: '自然表达', desc: '用自己的话，不套句', icon: '✨', time: 10, prompt: '训练方法：2026新规重点！给3个常见套句(如With the development of/As is known to all)，让用户改成自然表达。评分标准：越不像模板越好。' },
-        { stage: 4, name: '完整写作', desc: '30分钟独立完成', icon: '✍️', time: 30, prompt: '训练方法：给话题，30分钟限时写作。AI批改时重点看：1.模板化程度(超30%压分) 2.逻辑连贯性 3.语法错误。给出改进建议。' }
+        { stage: 4, name: '完整写作', desc: '30分钟独立完成', icon: '✍️', time: 30, prompt: '训练方法：给话题，30分钟限时写作。AI批改时必须：1.给出模板化分数(0-100)，>70分警告'新规会压分'并标出模板化句子 2.评价逻辑连贯性 3.标出语法错误 4.每个模板化句子给出自然替代写法。' }
     ],
     translation: [
         { stage: 1, name: '核心词汇', desc: '中国文化/社会高频词', icon: '📚', time: 10, prompt: '训练方法：给5个中国文化和社论高频词(如繁荣/传承/创新/协调/绿色)，让用户翻译。重点练关键词覆盖。' },
         { stage: 2, name: '拆句成短', desc: '中文长句拆英文短句', icon: '✂️', time: 10, prompt: '训练方法：给2个中文长句，让用户拆成2-3个英文短句。评分看：每个短句语法对、意思完整。不需要高级句式。' },
-        { stage: 3, name: '反中式英语', desc: '常见Chinglish纠错(新规重点)', icon: '🚫', time: 10, prompt: '训练方法：2026新规重点！给5个典型中式英语表达(如open the light/people mountain people sea)，让用户改成地道英文。重点练思维转换。' },
+        { stage: 3, name: '反中式英语', desc: '常见Chinglish纠错(新规重点)', icon: '🚫', time: 10, prompt: '训练方法：2026新规重点！给5个典型中式英语表达(如open the light/developing fast/every coin has two sides)，让用户改成地道英文。每次纠错必须给出：1.为什么这是中式英语 2.地道说法是什么 3.这个替换为什么更自然。重点练思维转换，不是简单给答案。' },
         { stage: 4, name: '完整段落', desc: '限时段落翻译', icon: '📝', time: 30, prompt: '训练方法：给一段完整中文(140-160字四级/180-200字六级)，限时翻译。AI评分：关键词覆盖25%+语法35%+表达地道度40%。' }
     ]
 };
@@ -10826,8 +10858,10 @@ function startTraining(skill, stage) {
     // 切到聊天页并发送训练指令
     switchTab('chat');
     setTimeout(function() {
-        var msg = '[训练模式] ' + skillName + '·' + stageName + '：' + stageDesc + '\n\nAI请按以下方法训练我：' + stagePrompt;
+        var timeLimit = stageInfo ? stageInfo.time : 10;
+        var msg = '[训练模式] ' + skillName + '·' + stageName + '：' + stageDesc + '\n\n限时' + timeLimit + '分钟。AI请按以下方法训练我：' + stagePrompt;
         sendSuggestion(msg);
+        startTrainingTimer(timeLimit, skillName + '·' + stageName);
     }, 300);
 }
 
@@ -10848,6 +10882,55 @@ function estimateExamScores(skillLevels) {
     result.total = totalEstimate;
     result.passGap = 425 - totalEstimate;
     return result;
+}
+
+// ===== 训练倒计时 =====
+var _trainingTimerInterval = null;
+var _trainingTimerEnd = 0;
+
+function startTrainingTimer(minutes, label) {
+    clearTrainingTimer();
+    _trainingTimerEnd = Date.now() + minutes * 60 * 1000;
+    
+    var header = document.querySelector('.chat-header-title');
+    if (!header) return;
+    
+    var oldTimer = document.getElementById('training-timer');
+    if (oldTimer) oldTimer.remove();
+    
+    var timerEl = document.createElement('span');
+    timerEl.id = 'training-timer';
+    timerEl.style.cssText = 'font-size:11px;color:#FF6B35;margin-left:8px;font-weight:500;';
+    header.appendChild(timerEl);
+    
+    _trainingTimerInterval = setInterval(function() {
+        var remaining = Math.max(0, _trainingTimerEnd - Date.now());
+        var min = Math.floor(remaining / 60000);
+        var sec = Math.floor((remaining % 60000) / 1000);
+        var el = document.getElementById('training-timer');
+        if (el) {
+            if (remaining > 0) {
+                el.textContent = '\u23F1 ' + min + ':' + (sec < 10 ? '0' : '') + sec;
+                if (remaining < 60000) {
+                    el.style.color = '#FF3B30';
+                }
+            } else {
+                el.textContent = '\u23F0 时间到！';
+                el.style.color = '#FF3B30';
+                clearTrainingTimer();
+                showToast('\u23F0 ' + label + ' 训练时间到！');
+            }
+        }
+    }, 1000);
+}
+
+function clearTrainingTimer() {
+    if (_trainingTimerInterval) {
+        clearInterval(_trainingTimerInterval);
+        _trainingTimerInterval = null;
+    }
+    var el = document.getElementById('training-timer');
+    if (el) el.remove();
 }
 
 function getNextAction(skillKey, skillInfo) {
