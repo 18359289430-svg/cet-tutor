@@ -9364,6 +9364,21 @@ function startReadingPhase() {
 }
 
 
+// ===== 专项训练入口 =====
+function startPractice(type) {
+    ensureChatOpen();
+    setTimeout(function() {
+        var msgs = {
+            'listening': '给我出一道' + EXAM_LABEL + '听力理解题，先播放听力材料，再出选择题',
+            'reading': '给我出一篇' + EXAM_LABEL + '阅读理解，带3-4道选择题',
+            'writing': '给我出一道' + EXAM_LABEL + '写作题，我写完后你帮我批改打分',
+            'translation': '给我出一道' + EXAM_LABEL + '汉译英翻译题，我翻译完后你帮我评分'
+        };
+        var msg = msgs[type] || '开始练习';
+        sendSuggestion(msg);
+    }, 400);
+}
+
 // ===== 听力诊断阶段 =====
 function startListeningTest() {
     diagState.phase = 'listening';

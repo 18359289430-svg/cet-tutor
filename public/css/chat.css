@@ -1858,3 +1858,8 @@
     fill: none;
 }
 .custom-chat-camera:hover svg { stroke: #6C5CE7; }
+
+.ai-cap-icon.blue { background: rgba(59,130,246,0.1); color: #3B82F6; }
+.ai-cap-icon.emerald { background: rgba(16,185,129,0.1); color: #10B981; }
+.ai-cap-icon.rose { background: rgba(244,63,94,0.1); color: #F43F5E; }
+.ai-cap-icon.amber { background: rgba(245,158,11,0.1); color: #F59E0B; }
