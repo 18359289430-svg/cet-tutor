@@ -3264,7 +3264,7 @@ async function handleDeepseekEssayGrade(req, res) {
             // 优先使用预压缩文件
             const gzPath = filePath + '.gz';
             if (acceptEncoding.includes('gzip') && fs.existsSync(gzPath)) {
-                res.setHeader('Cache-Control', 'public, max-age=3600');
+                res.setHeader('Cache-Control', 'public, max-age=300');
                 res.setHeader('Content-Type', contentTypes[ext] || 'application/octet-stream');
                 res.setHeader('Content-Encoding', 'gzip');
                 res.setHeader('Vary', 'Accept-Encoding');
@@ -3275,19 +3275,19 @@ async function handleDeepseekEssayGrade(req, res) {
             if (acceptEncoding.includes('gzip') && fileContent.length > 1024) {
                 zlib.gzip(fileContent, (err, compressed) => {
                     if (!err) {
-                        res.setHeader('Cache-Control', 'public, max-age=3600');
+                        res.setHeader('Cache-Control', 'public, max-age=300');
                         res.setHeader('Content-Type', contentTypes[ext] || 'application/octet-stream');
                         res.setHeader('Content-Encoding', 'gzip');
                         res.setHeader('Vary', 'Accept-Encoding');
                         res.end(compressed);
                     } else {
-                        res.setHeader('Cache-Control', 'public, max-age=3600');
+                        res.setHeader('Cache-Control', 'public, max-age=300');
                         res.setHeader('Content-Type', contentTypes[ext] || 'application/octet-stream');
                         res.end(fileContent);
                     }
                 });
             } else {
-                res.setHeader('Cache-Control', 'public, max-age=3600');
+                res.setHeader('Cache-Control', 'public, max-age=300');
                 res.setHeader('Content-Type', contentTypes[ext] || 'application/octet-stream');
                 res.end(fileContent);
             }
@@ -3300,7 +3300,7 @@ async function handleDeepseekEssayGrade(req, res) {
         const filePath = path.join(__dirname, 'public', pathname.slice(1));
         if (fs.existsSync(filePath)) {
             const ext = path.extname(filePath).toLowerCase();
-            res.setHeader('Cache-Control', 'public, max-age=604800');
+            res.setHeader('Cache-Control', 'public, max-age=300');
             res.setHeader('Content-Type', ext === '.jpg' || ext === '.jpeg' ? 'image/jpeg' : 'image/' + ext.slice(1));
             res.end(fs.readFileSync(filePath));
             return;
@@ -3331,7 +3331,7 @@ async function handleDeepseekEssayGrade(req, res) {
                 '.pdf': 'application/pdf',
                 '.mp3': 'audio/mpeg'
             };
-            res.setHeader('Cache-Control', ext === '.json' ? 'no-cache' : 'public, max-age=604800');
+            res.setHeader('Cache-Control', ext === '.json' ? 'no-cache' : 'public, max-age=300');
             res.setHeader('Content-Type', contentTypes[ext] || 'application/octet-stream');
             res.end(fs.readFileSync(filePath));
             return;
@@ -3344,7 +3344,7 @@ async function handleDeepseekEssayGrade(req, res) {
     if (imageExts.includes(ext)) {
         const filePath = path.join(__dirname, pathname);
         if (fs.existsSync(filePath)) {
-            res.setHeader('Cache-Control', 'public, max-age=604800'); // 7天缓存
+            res.setHeader('Cache-Control', 'public, max-age=300'); // 7天缓存
             res.setHeader('Content-Type', ext === '.svg' ? 'image/svg+xml' : 
                           ext === '.woff' || ext === '.woff2' ? 'font/woff' :
                           ext === '.ttf' || ext === '.otf' ? 'font/truetype' :
