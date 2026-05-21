@@ -3365,7 +3365,7 @@ function ensureChatOpen(){
     var chatList=getChatList();
     var msgContainer=document.getElementById('chat-messages');
     if(chatList&&chatList.length>0){
-        var lastConv=v105List[0];
+        var lastConv=chatList[0];
         if(lastConv&&lastConv.id){
             currentConversationId=lastConv.id;
             chatState.conversationId=lastConv.id;
@@ -11032,8 +11032,31 @@ function startTraining(skill, stage) {
         targetCount: targetCount
     }));
     
-    // 切到聊天页并发送训练指令
-    switchTab('chat');
+    // 切到聊天页，恢复最近对话而不是开新对话
+    switchTab('diagnosis');
+    // 直接显示聊天页（跳过对话列表）
+    var clv = document.getElementById('chat-list-view');
+    if (clv) clv.classList.remove('active');
+    var cp = document.getElementById('chat-page');
+    if (cp) cp.style.display = 'flex';
+    document.body.classList.add('chat-mode');
+    // 恢复最近的陪练对话
+    if (!chatState.conversationId) {
+        var recentList = getChatList();
+        if (recentList && recentList.length > 0) {
+            var lastConv = recentList[0];
+            if (lastConv && lastConv.id) {
+                chatState.conversationId = lastConv.id;
+                chatState.botId = lastConv.botId || '7637702903679631395';
+                chatState.currentMode = 'companion';
+                loadChatHistory(lastConv.id);
+            }
+        }
+    }
+    if (!chatState.currentMode) chatState.currentMode = 'companion';
+    if (!chatState.botId) chatState.botId = '7637702903679631395';
+    var chatTitleEl = document.getElementById('chat-title');
+    if (chatTitleEl) chatTitleEl.textContent = 'AI陪练';
     setTimeout(function() {
         var timeLimit = stageInfo ? stageInfo.time : 10;
         var tipText = stageInfo && stageInfo.tip ? '\n\n' + stageInfo.tip : '';
