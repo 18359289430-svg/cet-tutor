@@ -1340,45 +1340,25 @@ function initApp() {
         }
         
         function handleCapsuleClick(text) {
-            // 快捷胶囊按钮点击处理
-            if (text === '练题' || text === '真题练习') {
-                openQuiz();
-                return;
-            }
             if (text === '批改作文') {
-                handleEssayClick();
-                return;
-            }
-            // 新增6个快捷按钮处理
-            if (text === '开始诊断') {
-                // 切换到诊断模式
-                updateModeDesc('diagnosis');
-                startNewDiagnosis();
-                return;
-            }
-            if (text === '翻译练习') {
                 ensureChatOpen();
-                setTimeout(function() { sendSuggestion('翻译练习'); }, 300);
+                setTimeout(function() { sendSuggestion('帮我批改作文'); }, 300);
                 return;
             }
-            if (text === '错题重做') {
-                switchTab('wrongbook');
+            if (text === '错题分析') {
+                var questions = getWrongQuestions();
+                if (questions.length === 0) {
+                    showToast('还没有错题，先去练习吧');
+                    return;
+                }
+                ensureChatOpen();
+                setTimeout(function() { analyzeWeakness(); }, 300);
                 return;
             }
             if (text === '今日任务') {
                 ensureChatOpen();
                 setTimeout(function() { sendSuggestion('今天练什么好'); }, 300);
                 return;
-            }
-            if (text === '写作模板') {
-                ensureChatOpen();
-                setTimeout(function() { sendSuggestion('给我写作模板'); }, 300);
-                return;
-            }
-            var input = document.getElementById('chat-input');
-            if (input) {
-                input.value = text;
-                sendMessage();
             }
         }
         
