@@ -10786,30 +10786,30 @@ function getSkillLevels(dims) {
 // ===== 训练阶段系统 =====
 var TRAINING_STAGES = {
     listening: [
-        { stage: 1, name: '听前预判', desc: '先看选项再听，猜出题方向', icon: '🎯', time: 10, target: 3, prompt: '你是四六级听力教练，距考试仅22天，必须高效。训练流程：1.先给3-4个ABCD选项，让用户5秒内预判题目问什么（人物关系/地点/态度/原因）2.用户预判后，给出听力原文关键片段，验证预判是否正确 3.每题讲清：选项里哪个词暴露了线索 4.出3题，逐题进行，等用户回答再出下一题 5.最后给【训练评价】总结正确率' },
-        { stage: 2, name: '信号词捕获', desc: 'but/however后90%是答案', icon: '🔑', time: 10, target: 5, prompt: '你是四六级听力教练。信号词是听力的命门：but/however/actually/in fact/because/instead后面跟答案的概率超90%。训练流程：1.给一段含信号词的短对话，先让用户注意听信号词 2.信号词后停顿，让用户预测答案方向 3.揭示答案，讲清信号词和答案的关系 4.逐步增加难度：先but再because再however 5.出5题，逐题进行，最后给【训练评价】总结正确率' },
-        { stage: 3, name: '同义替换', desc: '选项换了说法才是正确答案', icon: '🔄', time: 15, target: 5, prompt: '你是四六级听力教练。听力最坑的陷阱：正确选项永远不会用原文原词，一定是同义改写。错误选项反而喜欢用原词迷惑你。训练流程：1.给听力片段+题目，让用户选答案 2.讲清：正确选项=原文的换说法，错误选项=原文原词照搬 3.常见替换：important→crucial, problem→issue, help→assist 4.出5题，每题都训练识别同义替换的意识 5.最后给【训练评价】总结正确率' },
-        { stage: 4, name: '笔记速记', desc: '长讲座抓关键信息', icon: '📝', time: 20, target: 5, prompt: '你是四六级听力教练。讲座/讲话是最难的题型，3-4分钟只放1遍。训练流程：1.给一段讲座片段，告诉用户记什么：数字/人名/因果/转折 2.播放后让用户回忆关键信息 3.针对细节出题，训练信息捕捉 4.教速记技巧：只记名词+动词，不记完整句子 5.出5题，最后给【训练评价】总结正确率' },
-        { stage: 5, name: '全真模拟', desc: '完整passage限时实战', icon: '🏆', time: 25, target: 5, prompt: '你是四六级听力教练，现在做全真模拟。规则：1.模拟真实考试流程，给完整听力材料 2.只放1遍，限时答题 3.答完后逐题讲思路：预判→信号词→同义替换 4.出5题，严格限时 5.最后给【训练评价】包含：正确率、每题用时、薄弱环节分析。注意：这是冲刺阶段，要求用户像在考场上一样认真作答。' }
+        { stage: 1, name: '听前预判', desc: '先看选项再听，猜出题方向', icon: '🎯', tip: '💡 听力秘诀：先看选项5秒，比多听10秒更有用', time: 10, target: 3, prompt: '你是四六级听力教练，距考试仅22天，必须高效。训练流程：1.先给3-4个ABCD选项，让用户5秒内预判题目问什么（人物关系/地点/态度/原因）2.用户预判后，给出听力原文关键片段，验证预判是否正确 3.每题讲清：选项里哪个词暴露了线索 4.出3题，逐题进行，等用户回答再出下一题 5.最后给【训练评价】总结正确率' },
+        { stage: 2, name: '信号词捕获', desc: 'but/however后90%是答案', icon: '🔑', tip: '💡 听力秘诀：听到but就竖起耳朵，后面9成是答案', time: 10, target: 5, prompt: '你是四六级听力教练。信号词是听力的命门：but/however/actually/in fact/because/instead后面跟答案的概率超90%。训练流程：1.给一段含信号词的短对话，先让用户注意听信号词 2.信号词后停顿，让用户预测答案方向 3.揭示答案，讲清信号词和答案的关系 4.逐步增加难度：先but再because再however 5.出5题，逐题进行，最后给【训练评价】总结正确率' },
+        { stage: 3, name: '同义替换', desc: '选项换了说法才是正确答案', icon: '🔄', tip: '💡 阅读秘诀：照搬原词的选项=干扰项，改写的才是答案', tip: '💡 听力秘诀：原词复现的选项是陷阱，换说法的才是答案', time: 15, target: 5, prompt: '你是四六级听力教练。听力最坑的陷阱：正确选项永远不会用原文原词，一定是同义改写。错误选项反而喜欢用原词迷惑你。训练流程：1.给听力片段+题目，让用户选答案 2.讲清：正确选项=原文的换说法，错误选项=原文原词照搬 3.常见替换：important→crucial, problem→issue, help→assist 4.出5题，每题都训练识别同义替换的意识 5.最后给【训练评价】总结正确率' },
+        { stage: 4, name: '笔记速记', desc: '长讲座抓关键信息', icon: '📝', tip: '💡 听力秘诀：只记名词+动词，不记完整句子', time: 20, target: 5, prompt: '你是四六级听力教练。讲座/讲话是最难的题型，3-4分钟只放1遍。训练流程：1.给一段讲座片段，告诉用户记什么：数字/人名/因果/转折 2.播放后让用户回忆关键信息 3.针对细节出题，训练信息捕捉 4.教速记技巧：只记名词+动词，不记完整句子 5.出5题，最后给【训练评价】总结正确率' },
+        { stage: 5, name: '全真模拟', desc: '完整passage限时实战', icon: '🏆', tip: '💡 阅读秘诀：先做仔细阅读（分值高），再做匹配和选词', tip: '💡 听力秘诀：考场上没时间犹豫，选了就过', time: 25, target: 5, prompt: '你是四六级听力教练，现在做全真模拟。规则：1.模拟真实考试流程，给完整听力材料 2.只放1遍，限时答题 3.答完后逐题讲思路：预判→信号词→同义替换 4.出5题，严格限时 5.最后给【训练评价】包含：正确率、每题用时、薄弱环节分析。注意：这是冲刺阶段，要求用户像在考场上一样认真作答。' }
     ],
     reading: [
-        { stage: 1, name: '定位速度', desc: '先看题再读文，10秒找到答案', icon: '🎯', time: 10, target: 5, prompt: '你是四六级阅读教练。阅读不是读懂才做题，是先看题再找答案。训练流程：1.先给题目（不看文章），让用户圈出关键词（人名/数字/大写/特殊名词）2.再给文章，让用户10秒内定位到关键词所在句子 3.答案就在定位句前后1-2句 4.出5题，训练先题后文的习惯 5.最后给【训练评价】总结正确率和定位速度' },
-        { stage: 2, name: '同义替换', desc: '正确选项一定是原文的改写', icon: '🔄', time: 10, target: 5, prompt: '你是四六级阅读教练。阅读正确选项=原文的paraphrase。错误选项=原文原词照搬或张冠李戴。训练流程：1.给短文+题目，让用户选出答案 2.讲清每题的同义替换链：原文A→选项A的改写 3.常见替换模式：动词换动词/名词换名词/否定换否定 4.出5题，每题都点明替换关系 5.最后给【训练评价】总结正确率' },
-        { stage: 3, name: '推理判断', desc: '新规重点！占阅读50%', icon: '💡', time: 15, target: 5, prompt: '你是四六级阅读教练。2026新规：推理判断从30%升到50%，这是最大变化。训练流程：1.推理题标志词：imply/suggest/infer/conclude/likely 2.解题方法：答案不在原文直接写出来，需要1步逻辑推导 3.推理链：原文事实→逻辑关系→正确结论 4.陷阱：不能选原文直接说的（那是细节题），不能选过度推断的 5.重点看：转折词后(but/however)、段首段尾、因果词(because/therefore) 6.出5道推理题，每题讲清推理过程 7.最后给【训练评价】总结正确率，并提醒这种题新规占比最大' },
-        { stage: 4, name: '限时实战', desc: '8分钟1篇，训练考场节奏', icon: '⏱️', time: 15, target: 5, prompt: '你是四六级阅读教练。现在练限时做题，8分钟完成1篇阅读理解。训练流程：1.给1篇短文+5题，告诉用户限时8分钟 2.答完后逐题讲解：定位→替换→推理 3.重点讲错题：为什么选错？是定位错了还是理解错了？4.每题给解题用时参考：定位题30秒，推理题60秒 5.最后给【训练评价】包含正确率和时间分配分析' },
-        { stage: 5, name: '全真模拟', desc: '3篇连做40分钟', icon: '🏆', time: 40, target: 10, prompt: '你是四六级阅读教练，全真模拟。40分钟完成3篇阅读。训练流程：1.依次出3篇阅读，每篇3-4题 2.限时40分钟，提醒用户分配时间 3.全部做完后统一讲解 4.重点分析：哪类题花时间最多？哪类题错最多？5.最后给【训练评价】包含：总正确率、各题型正确率、时间分配建议。这是冲刺阶段，要求用户严格限时。' }
+        { stage: 1, name: '定位速度', desc: '先看题再读文，10秒找到答案', icon: '🎯', tip: '💡 阅读秘诀：不用读懂全文，找到关键词就能拿分', time: 10, target: 5, prompt: '你是四六级阅读教练。阅读不是读懂才做题，是先看题再找答案。训练流程：1.先给题目（不看文章），让用户圈出关键词（人名/数字/大写/特殊名词）2.再给文章，让用户10秒内定位到关键词所在句子 3.答案就在定位句前后1-2句 4.出5题，训练先题后文的习惯 5.最后给【训练评价】总结正确率和定位速度' },
+        { stage: 2, name: '同义替换', desc: '正确选项一定是原文的改写', icon: '🔄', tip: '💡 阅读秘诀：照搬原词的选项=干扰项，改写的才是答案', tip: '💡 听力秘诀：原词复现的选项是陷阱，换说法的才是答案', time: 10, target: 5, prompt: '你是四六级阅读教练。阅读正确选项=原文的paraphrase。错误选项=原文原词照搬或张冠李戴。训练流程：1.给短文+题目，让用户选出答案 2.讲清每题的同义替换链：原文A→选项A的改写 3.常见替换模式：动词换动词/名词换名词/否定换否定 4.出5题，每题都点明替换关系 5.最后给【训练评价】总结正确率' },
+        { stage: 3, name: '推理判断', desc: '新规重点！占阅读50%', icon: '💡', tip: '💡 阅读秘诀：2026新规推理题翻倍，转折词后藏答案', time: 15, target: 5, prompt: '你是四六级阅读教练。2026新规：推理判断从30%升到50%，这是最大变化。训练流程：1.推理题标志词：imply/suggest/infer/conclude/likely 2.解题方法：答案不在原文直接写出来，需要1步逻辑推导 3.推理链：原文事实→逻辑关系→正确结论 4.陷阱：不能选原文直接说的（那是细节题），不能选过度推断的 5.重点看：转折词后(but/however)、段首段尾、因果词(because/therefore) 6.出5道推理题，每题讲清推理过程 7.最后给【训练评价】总结正确率，并提醒这种题新规占比最大' },
+        { stage: 4, name: '限时实战', desc: '8分钟1篇，训练考场节奏', icon: '⏱️', tip: '💡 阅读秘诀：定位题30秒，推理题60秒，超时就猜', time: 15, target: 5, prompt: '你是四六级阅读教练。现在练限时做题，8分钟完成1篇阅读理解。训练流程：1.给1篇短文+5题，告诉用户限时8分钟 2.答完后逐题讲解：定位→替换→推理 3.重点讲错题：为什么选错？是定位错了还是理解错了？4.每题给解题用时参考：定位题30秒，推理题60秒 5.最后给【训练评价】包含正确率和时间分配分析' },
+        { stage: 5, name: '全真模拟', desc: '3篇连做40分钟', icon: '🏆', tip: '💡 阅读秘诀：先做仔细阅读（分值高），再做匹配和选词', tip: '💡 听力秘诀：考场上没时间犹豫，选了就过', time: 40, target: 10, prompt: '你是四六级阅读教练，全真模拟。40分钟完成3篇阅读。训练流程：1.依次出3篇阅读，每篇3-4题 2.限时40分钟，提醒用户分配时间 3.全部做完后统一讲解 4.重点分析：哪类题花时间最多？哪类题错最多？5.最后给【训练评价】包含：总正确率、各题型正确率、时间分配建议。这是冲刺阶段，要求用户严格限时。' }
     ],
     writing: [
-        { stage: 1, name: '框架填空', desc: '给你骨架，你填肉', icon: '📐', time: 15, target: 1, prompt: '你是四六级写作教练。距考试22天，先学框架再练写作。训练流程：1.给一个作文话题，先展示万能框架（不是模板！）：开头段-现象描述+观点引出（2句）；中间段1-论点1+例证（3句）；中间段2-论点2+例证（3句）；结尾段-总结+建议（2句）2.框架中留空，让用户填具体内容 3.评价：逻辑是否连贯、论据是否支撑论点 4.不评价语言，只看思路 5.最后给【训练评价】。注意：教结构不教套句，2026新规反模板检测会识别套话。框架=逻辑结构，模板=固定词句。' },
-        { stage: 2, name: '反模板表达', desc: '新规重点！套话会被识别压分', icon: '🚫', time: 15, target: 1, prompt: '你是四六级写作教练。2026新规：AI反模板检测上线，套话直接压分。训练流程：1.列出5个最常见套话，让用户改成自然表达：With the development of society/As is known to all/Every coin has two sides/Last but not least/In a word 2.每个改完后点评：是否自然、是否有个人表达 3.教方法：用具体内容替代空话（用数据/现象替代society develops）4.最后给【训练评价】包含模板化程度评分（0-100，越低越好）' },
-        { stage: 3, name: '加分句式', desc: '3个高级句式让你脱颖而出', icon: '✨', time: 15, target: 1, prompt: '你是四六级写作教练。阅卷老师1篇作文看30秒，加分句式是抓住眼球的关键。训练流程：1.教3个万能加分句式（不是套话，是语法结构）：①倒装Not only...but also...②强调It is...that...③虚拟If it were not for...2.给一个话题，让用户在写作中用上这3个句式 3.逐句点评：句式使用是否正确、是否自然不生硬 4.告诉用户：1篇作文用2个加分句式就够了，多了反而刻意 5.最后给【训练评价】' },
-        { stage: 4, name: '限时写作', desc: '30分钟写完一篇完整作文', icon: '✍️', time: 30, target: 1, prompt: '你是四六级写作教练。30分钟限时写作，模拟考场。训练流程：1.给话题，限时30分钟 2.用户写完后，AI必须严格按以下标准批改：①模板化程度(0-100)：大于70分警告新规会压分，标出每个模板化句子并给自然替代 ②逻辑连贯性：段落间是否有逻辑过渡 ③语法错误：逐句标出 ④加分点：是否使用了高级句式 ⑤估分：按710制给写作部分估分(满分106.5) 3.给出一篇范文对比 4.最后给【训练评价】。批改要严格，像阅卷老师一样评分。' }
+        { stage: 1, name: '框架填空', desc: '给你骨架，你填肉', icon: '📐', tip: '💡 写作秘诀：框架≠模板，教逻辑不教套句', time: 15, target: 1, prompt: '你是四六级写作教练。距考试22天，先学框架再练写作。训练流程：1.给一个作文话题，先展示万能框架（不是模板！）：开头段-现象描述+观点引出（2句）；中间段1-论点1+例证（3句）；中间段2-论点2+例证（3句）；结尾段-总结+建议（2句）2.框架中留空，让用户填具体内容 3.评价：逻辑是否连贯、论据是否支撑论点 4.不评价语言，只看思路 5.最后给【训练评价】。注意：教结构不教套句，2026新规反模板检测会识别套话。框架=逻辑结构，模板=固定词句。' },
+        { stage: 2, name: '反模板表达', desc: '新规重点！套话会被识别压分', icon: '🚫', tip: '💡 写作秘诀：2026新规AI反模板，套话直接压一档分', time: 15, target: 1, prompt: '你是四六级写作教练。2026新规：AI反模板检测上线，套话直接压分。训练流程：1.列出5个最常见套话，让用户改成自然表达：With the development of society/As is known to all/Every coin has two sides/Last but not least/In a word 2.每个改完后点评：是否自然、是否有个人表达 3.教方法：用具体内容替代空话（用数据/现象替代society develops）4.最后给【训练评价】包含模板化程度评分（0-100，越低越好）' },
+        { stage: 3, name: '加分句式', desc: '3个高级句式让你脱颖而出', icon: '✨', tip: '💡 写作秘诀：1篇作文用2个加分句式就够了', time: 15, target: 1, prompt: '你是四六级写作教练。阅卷老师1篇作文看30秒，加分句式是抓住眼球的关键。训练流程：1.教3个万能加分句式（不是套话，是语法结构）：①倒装Not only...but also...②强调It is...that...③虚拟If it were not for...2.给一个话题，让用户在写作中用上这3个句式 3.逐句点评：句式使用是否正确、是否自然不生硬 4.告诉用户：1篇作文用2个加分句式就够了，多了反而刻意 5.最后给【训练评价】' },
+        { stage: 4, name: '限时写作', desc: '30分钟写完一篇完整作文', icon: '✍️', tip: '💡 写作秘诀：先列提纲3分钟，再写正文25分钟，检查2分钟', time: 30, target: 1, prompt: '你是四六级写作教练。30分钟限时写作，模拟考场。训练流程：1.给话题，限时30分钟 2.用户写完后，AI必须严格按以下标准批改：①模板化程度(0-100)：大于70分警告新规会压分，标出每个模板化句子并给自然替代 ②逻辑连贯性：段落间是否有逻辑过渡 ③语法错误：逐句标出 ④加分点：是否使用了高级句式 ⑤估分：按710制给写作部分估分(满分106.5) 3.给出一篇范文对比 4.最后给【训练评价】。批改要严格，像阅卷老师一样评分。' }
     ],
     translation: [
-        { stage: 1, name: '踩分点训练', desc: '每个句子有必须翻对的关键词', icon: '🎯', time: 10, target: 3, prompt: '你是四六级翻译教练。翻译评分看踩分点，踩到就给分。训练流程：1.给1个中文句子，先标出踩分点（2-3个关键词/结构）2.让用户翻译，重点看踩分点是否翻对 3.讲解每个踩分点的标准译法 4.常见踩分点类型：文化词汇(春节/功夫/丝绸之路)、社会词汇(改革开放/可持续发展/创新创业)、语法结构(被字句/的字短语/无主句) 5.出3句，逐句进行，最后给【训练评价】总结踩分点命中率' },
-        { stage: 2, name: '拆句成短', desc: '中文1句英文2-3短句', icon: '✂️', time: 10, target: 3, prompt: '你是四六级翻译教练。中英思维最大差异：中文喜欢长句，英文喜欢短句。训练流程：1.给2个中文长句，让用户拆成2-3个英文短句 2.拆句原则：找到「的」「了」「和」做拆分点；每个短句1个核心意思；短句间用and/but/because连接 3.评分：每个短句语法正确+意思完整=满分 4.不需要高级句式，简单正确比复杂错误好100倍 5.出3题，最后给【训练评价】' },
-        { stage: 3, name: '反中式英语', desc: '新规重点！地道度占40%', icon: '🚫', time: 15, target: 5, prompt: '你是四六级翻译教练。2026新规：翻译评分中表达地道度从20%升到40%。训练流程：1.给5个典型中式英语，让用户改成地道英文：open the light→turn on the light; play computer→use the computer; more and more people→an increasing number of people 2.每个纠错必须讲3点：①为什么这是中式英语（直译了中文思维）②地道说法是什么 ③这个替换为什么更自然 3.教核心方法：英文重名词，中文重动词（用名词化替代动词堆叠）4.出5题，最后给【训练评价】包含地道度评分' },
-        { stage: 4, name: '限时段落翻译', desc: '30分钟完成整段翻译', icon: '📝', time: 30, target: 1, prompt: '你是四六级翻译教练。30分钟限时翻译，模拟考场。训练流程：1.给完整中文段落（四级140-160字/六级180-200字），限时翻译 2.用户翻完后，AI严格评分：①关键词覆盖(25%)：踩分点是否都翻到了 ②语法正确(35%)：时态/单复数/冠词是否正确 ③表达地道(40%)：是否有中式英语，2026新规重点 3.逐句批改：标出错误→给正确译法→解释为什么 4.给出参考译文对比 5.估分：按710制给翻译部分估分(满分106.5) 6.最后给【训练评价】。地道度评分要严格，中式英语必须标出。' }
+        { stage: 1, name: '踩分点训练', desc: '每个句子有必须翻对的关键词', icon: '🎯', tip: '💡 翻译秘诀：踩分点翻到就给分，翻不到说再多也没用', time: 10, target: 3, prompt: '你是四六级翻译教练。翻译评分看踩分点，踩到就给分。训练流程：1.给1个中文句子，先标出踩分点（2-3个关键词/结构）2.让用户翻译，重点看踩分点是否翻对 3.讲解每个踩分点的标准译法 4.常见踩分点类型：文化词汇(春节/功夫/丝绸之路)、社会词汇(改革开放/可持续发展/创新创业)、语法结构(被字句/的字短语/无主句) 5.出3句，逐句进行，最后给【训练评价】总结踩分点命中率' },
+        { stage: 2, name: '拆句成短', desc: '中文1句英文2-3短句', icon: '✂️', tip: '💡 翻译秘诀：简单正确比复杂错误好100倍', time: 10, target: 3, prompt: '你是四六级翻译教练。中英思维最大差异：中文喜欢长句，英文喜欢短句。训练流程：1.给2个中文长句，让用户拆成2-3个英文短句 2.拆句原则：找到「的」「了」「和」做拆分点；每个短句1个核心意思；短句间用and/but/because连接 3.评分：每个短句语法正确+意思完整=满分 4.不需要高级句式，简单正确比复杂错误好100倍 5.出3题，最后给【训练评价】' },
+        { stage: 3, name: '反中式英语', desc: '新规重点！地道度占40%', icon: '🚫', tip: '💡 翻译秘诀：2026新规地道度占40%，中式英语重罚', time: 15, target: 5, prompt: '你是四六级翻译教练。2026新规：翻译评分中表达地道度从20%升到40%。训练流程：1.给5个典型中式英语，让用户改成地道英文：open the light→turn on the light; play computer→use the computer; more and more people→an increasing number of people 2.每个纠错必须讲3点：①为什么这是中式英语（直译了中文思维）②地道说法是什么 ③这个替换为什么更自然 3.教核心方法：英文重名词，中文重动词（用名词化替代动词堆叠）4.出5题，最后给【训练评价】包含地道度评分' },
+        { stage: 4, name: '限时段落翻译', desc: '30分钟完成整段翻译', icon: '📝', tip: '💡 翻译秘诀：先翻踩分点，再补完整，最后检查时态', time: 30, target: 1, prompt: '你是四六级翻译教练。30分钟限时翻译，模拟考场。训练流程：1.给完整中文段落（四级140-160字/六级180-200字），限时翻译 2.用户翻完后，AI严格评分：①关键词覆盖(25%)：踩分点是否都翻到了 ②语法正确(35%)：时态/单复数/冠词是否正确 ③表达地道(40%)：是否有中式英语，2026新规重点 3.逐句批改：标出错误→给正确译法→解释为什么 4.给出参考译文对比 5.估分：按710制给翻译部分估分(满分106.5) 6.最后给【训练评价】。地道度评分要严格，中式英语必须标出。' }
     ]
 };
 
@@ -15380,6 +15380,92 @@ async function doRestoreData() {
 window.switchExamType = switchExamType;
 window.handleQuickAction = handleQuickAction;
 window.handleHomeCta = handleHomeCta;
+
+
+// 渲染提分路线图
+function renderScoreRoadmap() {
+    var container = document.getElementById('roadmap-content');
+    if (!container) return;
+    
+    var diagHistory = JSON.parse(localStorage.getItem(examKey('diagnosis_history')) || '[]');
+    var examLabel = IS_CET6 ? '六级' : '四级';
+    
+    if (diagHistory.length === 0) {
+        container.innerHTML = '<div class="roadmap-phase"><div class="roadmap-phase-num active">1</div><div class="roadmap-phase-body"><div class="roadmap-phase-title">先做AI诊断</div><div class="roadmap-phase-sub">5分钟找到你的薄弱点，才能对症下药</div><div class="roadmap-action" onclick="startNewDiagnosis()">开始诊断</div></div></div>';
+        return;
+    }
+    
+    var latest = diagHistory[diagHistory.length - 1];
+    var scores = latest.scores || {};
+    var totalScore = 0;
+    for (var k in scores) totalScore += scores[k];
+    
+    var trainingHist = JSON.parse(localStorage.getItem(examKey('training_history')) || '[]');
+    var today = new Date().toISOString().split('T')[0];
+    var todayTrained = trainingHist.filter(function(h) { return h.date === today; });
+    var totalTrained = trainingHist.length;
+    
+    var skillNames = {listening:'听力',reading:'阅读',writing:'写作',translation:'翻译'};
+    var weakest = null, weakestScore = 999;
+    var strongest = null, strongestScore = 0;
+    for (var sk in skillNames) {
+        if (scores[sk] !== undefined) {
+            if (scores[sk] < weakestScore) { weakestScore = scores[sk]; weakest = sk; }
+            if (scores[sk] > strongestScore) { strongestScore = scores[sk]; strongest = sk; }
+        }
+    }
+    
+    var phase = 1;
+    if (totalTrained >= 9) phase = 3;
+    else if (totalTrained >= 3) phase = 2;
+    
+    var weakName = skillNames[weakest] || '听力';
+    var strongName = skillNames[strongest] || '阅读';
+    
+    var html = '';
+    
+    html += '<div class="roadmap-phase"><div class="roadmap-phase-num done">✓</div><div class="roadmap-phase-body"><div class="roadmap-phase-title">诊断定位</div><div class="roadmap-phase-sub">你的' + weakName + '最薄弱（' + weakestScore + '分），' + strongName + '最强（' + strongestScore + '分）</div></div></div>';
+    
+    var weakTips = {
+        listening: '听力是短期最好提的技能。听到but/however就竖耳朵，后面9成是答案。每天练2组，1周正确率能从50%提到70%',
+        reading: '阅读不用读懂全文，先看题找关键词，10秒定位到原文。2026新规推理题翻倍，转折词后藏答案',
+        writing: '写作短期提分最大。框架≠模板，2026新规AI反模板，套话直接压分。1个自然框架+2个加分句式就够了',
+        translation: '翻译踩分点翻到就给分。2026新规地道度占40%，中式英语重罚。简单正确比复杂错误好100倍'
+    };
+    var strongTips = {
+        listening: '听力是你的强项，保持每天1组维持手感。考场上听力放1遍就过，熟悉感就是安全感',
+        reading: '阅读是你的强项，保持限时练习节奏。考场上8分钟1篇，定位题30秒推理题60秒',
+        writing: '写作是你的强项，考前再练2篇保持手速。30分钟限时，先列提纲3分钟',
+        translation: '翻译是你的强项，考前每天1段保持手感。先翻踩分点再补完整'
+    };
+    
+    html += '<div class="roadmap-phase"><div class="roadmap-phase-num ' + (phase >= 2 ? 'done' : 'active') + '">' + (phase >= 2 ? '✓' : '2') + '</div><div class="roadmap-phase-body"><div class="roadmap-phase-title">先补' + weakName + '（见效最快）</div><div class="roadmap-phase-sub">' + (weakTips[weakest] || '') + '</div>' + (phase < 2 ? '<div class="roadmap-action" data-practice="' + weakest + '">开始练' + weakName + '</div>' : '') + '</div></div>';
+    
+    html += '<div class="roadmap-phase"><div class="roadmap-phase-num">3</div><div class="roadmap-phase-body"><div class="roadmap-phase-title">稳住' + strongName + '（保分不丢）</div><div class="roadmap-phase-sub">' + (strongTips[strongest] || '') + '</div>' + (phase >= 2 ? '<div class="roadmap-action" data-practice="' + strongest + '">巩固' + strongName + '</div>' : '') + '</div></div>';
+    
+    html += '<div class="roadmap-phase"><div class="roadmap-phase-num">4</div><div class="roadmap-phase-body"><div class="roadmap-phase-title">再诊断看进步</div><div class="roadmap-phase-sub">练3-5组后重新诊断，看分数有没有提升。进步是最好的动力</div><div class="roadmap-action" onclick="startNewDiagnosis()">再诊断一次</div></div></div>';
+    
+    html += '<div class="roadmap-current">📍 今天已练 ' + todayTrained.length + ' 组' + (todayTrained.length >= 3 ? ' · 今日目标已完成 ✅' : ' · 再练 ' + (3 - todayTrained.length) + ' 组完成今日目标') + '</div>';
+    
+    container.innerHTML = html;
+    
+    // Bind data-practice clicks
+    var actions = container.querySelectorAll('[data-practice]');
+    actions.forEach(function(el) {
+        el.addEventListener('click', function() {
+            startPractice(this.getAttribute('data-practice'));
+        });
+    });
+}
+// 在switchTab('plan')时渲染路线图
+var _origSwitchTab = switchTab;
+switchTab = function(tab) {
+    _origSwitchTab(tab);
+    if (tab === 'plan') {
+        setTimeout(renderScoreRoadmap, 100);
+    }
+};
+
 window.handleEssayClick = handleEssayClick;
 window.handleReviewClick = handleReviewClick;
 window.handleModeTag = handleModeTag;
