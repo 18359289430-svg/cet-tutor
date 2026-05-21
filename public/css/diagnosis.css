@@ -2015,3 +2015,78 @@
 .diag-translation-textarea:focus {
     border-color: #6366f1;
 }
+
+
+/* ===== 技能等级卡片 ===== */
+.report-skills-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.report-skill-card {
+    background: #fafafa;
+    border-radius: 12px;
+    padding: 14px;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.report-skill-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.report-skill-card:active {
+    transform: scale(0.98);
+}
+
+.report-skill-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+
+.report-skill-emoji {
+    font-size: 16px;
+}
+
+.report-skill-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1a1a1a;
+    flex: 1;
+}
+
+.report-skill-lv {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+}
+
+.report-skill-bars {
+    display: flex;
+    gap: 3px;
+    margin-bottom: 6px;
+}
+
+.skill-bar {
+    flex: 1;
+    height: 4px;
+    border-radius: 2px;
+    transition: background 0.3s;
+}
+
+.report-skill-score {
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 4px;
+}
+
+.report-skill-action {
+    font-size: 11px;
+    color: #6C5CE7;
+    font-weight: 500;
+}

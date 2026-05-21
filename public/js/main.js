@@ -10521,6 +10521,55 @@ function openReportPayModal() {
 }
 
 // 渲染报告页面
+
+// ===== 技能等级评估系统 =====
+function getSkillLevel(score) {
+    if (score >= 80) return { level: 4, name: '冲刺', color: '#6C5CE7', icon: '🚀', desc: '接近考试水平，保持冲刺' };
+    if (score >= 60) return { level: 3, name: '真题', color: '#00B894', icon: '✅', desc: '能应对真题难度，注意细节' };
+    if (score >= 35) return { level: 2, name: '进阶', color: '#FDCB6E', icon: '📈', desc: '有基础但不够稳，需专项强化' };
+    return { level: 1, name: '基础', color: '#E17055', icon: '🌱', desc: '基础薄弱，建议从简单题开始' };
+}
+
+function getSkillLevels(dims) {
+    // 听力：直接取听力分数
+    var listeningScore = dims['听力'] || 0;
+    // 阅读：取阅读相关维度平均
+    var readingDims = ['细节定位', '推理判断', '同义替换', '主旨归纳', '态度判断'];
+    var readingScore = 0, readingCount = 0;
+    readingDims.forEach(function(d) {
+        if (dims[d] !== undefined) { readingScore += dims[d]; readingCount++; }
+    });
+    if (readingCount > 0) readingScore = Math.round(readingScore / readingCount);
+    // 写作：用写作评分
+    var writingScore = (reportData && reportData.writingFeedback) ? Math.min(100, Math.round(reportData.writingFeedback.total / 25 * 100)) : (dims['写作'] || 0);
+    // 翻译：用翻译评分
+    var translationScore = (reportData && reportData.translationFeedback) ? Math.min(100, Math.round(reportData.translationFeedback.total / 70 * 100)) : (dims['翻译'] || 0);
+    
+    return {
+        listening: { score: listeningScore, level: getSkillLevel(listeningScore) },
+        reading: { score: readingScore, level: getSkillLevel(readingScore) },
+        writing: { score: writingScore, level: getSkillLevel(writingScore) },
+        translation: { score: translationScore, level: getSkillLevel(translationScore) }
+    };
+}
+
+function getNextAction(skillKey, skillInfo) {
+    var actions = {
+        listening: { 1: '先练短对话关键词抓取', 2: '练长对话推理题', 3: '做真题听力限时训练', 4: '全真模拟25分钟' },
+        reading: { 1: '先练细节定位题', 2: '练推理+同义替换', 3: '做真题阅读限时训练', 4: '3篇连做模拟考场' },
+        writing: { 1: '先练翻译句子', 2: '练段落写作', 3: '完整作文AI批改', 4: '30分钟限时写作' },
+        translation: { 1: '先练核心词汇翻译', 2: '练句式转换', 3: '完整段落AI评分', 4: '5分钟限时翻译' }
+    };
+    var level = skillInfo.level.level;
+    var actionMap = actions[skillKey] || {};
+    return actionMap[level] || '继续练习';
+}
+
+function getPracticeType(skillKey) {
+    var map = { listening: 'listening', reading: 'reading', writing: 'writing', translation: 'translation' };
+    return map[skillKey] || 'reading';
+}
+
 function renderReportPage() {
     var content = document.getElementById('report-content');
     if (!content) return;
@@ -10620,6 +10669,42 @@ function renderReportPage() {
         '</div>' +
         
         '<div class="report-dims-grid">' + dimCardsHtml + '</div>' +
+        
+        // 技能等级评估
+        (function() {
+            var skillLevels = getSkillLevels(d.dims);
+            var skills = [
+                { key: 'listening', name: '听力', emoji: '🎧' },
+                { key: 'reading', name: '阅读', emoji: '📖' },
+                { key: 'writing', name: '写作', emoji: '✏️' },
+                { key: 'translation', name: '翻译', emoji: '🌐' }
+            ];
+            var html = '<div class="report-section-title">📊 四项技能等级</div>';
+            html += '<div class="report-skills-grid">';
+            skills.forEach(function(s) {
+                var info = skillLevels[s.key];
+                var lv = info.level;
+                var nextAction = getNextAction(s.key, info);
+                var practiceType = getPracticeType(s.key);
+                var bars = '';
+                for (var i = 1; i <= 4; i++) {
+                    var isActive = i <= lv.level;
+                    bars += '<div class="skill-bar ' + (isActive ? 'active' : '') + '" style="background:' + (isActive ? lv.color : '#eee') + '"></div>';
+                }
+                html += '<div class="report-skill-card" onclick="startPractice(\'' + practiceType + '\')">';
+                html += '<div class="report-skill-header">';
+                html += '<span class="report-skill-emoji">' + s.emoji + '</span>';
+                html += '<span class="report-skill-name">' + s.name + '</span>';
+                html += '<span class="report-skill-lv" style="color:' + lv.color + '">Lv' + lv.level + ' ' + lv.name + '</span>';
+                html += '</div>';
+                html += '<div class="report-skill-bars">' + bars + '</div>';
+                html += '<div class="report-skill-score">' + info.score + '分</div>';
+                html += '<div class="report-skill-action">' + nextAction + ' →</div>';
+                html += '</div>';
+            });
+            html += '</div>';
+            return html;
+        })() +
         
         (weakAdviceHtml ? '<div class="report-advice-section"><div class="report-section-title">💪 专项提升建议</div>' + weakAdviceHtml + '</div>' : '') +
         
