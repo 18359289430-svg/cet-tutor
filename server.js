@@ -363,7 +363,7 @@ function getExamContext(isCet6) {
     };
 }
 
-function buildRagContext(userMessage, personality, weakDims, dimScores, wrongSummary, studyDays) {
+function buildRagContext_OLD_REMOVED() { return ''; /* removed duplicate */ } function _buildRagContextPlaceholder(
     var context = '';
     // 检测考试类型
     var isCet6 = detectExamType(userMessage, personality);
@@ -2130,7 +2130,7 @@ ${user_input}
                 const weakDims = body.weak_dims || [];
                 const userId = body.user_id || 'anonymous';
                 let ragCtx = '';
-                try { ragCtx = buildRagContext(messages[messages.length-1].content || '', userPersonality, weakDims, body.dim_scores, body.wrong_summary, body.study_days || 0); } catch(e) {}
+                try { ragCtx = buildRagContext(messages[messages.length-1].content || '', userPersonality, weakDims, body.dim_scores, body.wrong_summary, body.study_days || 0, body.skill_levels, body.diag_trend, body.diag_count); } catch(e) {}
                 // 检测考试类型并注入到system prompt
                 var lastMsgChat = messages[messages.length-1] ? messages[messages.length-1].content : '';
                 var isCet6Chat = detectExamType(lastMsgChat, userPersonality);
